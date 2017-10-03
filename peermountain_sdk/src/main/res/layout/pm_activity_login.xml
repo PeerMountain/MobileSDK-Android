@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.peermountain.sdk.ui.LoginActivity">
+    <FrameLayout
+        android:id="@+id/pm_flLoginLinkedInBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="@dimen/margin_big"
+        android:layout_marginRight="@dimen/margin_big"
+        android:background="@drawable/pm_login_button_rectangle">
+
+        <ImageView
+            android:layout_width="@dimen/inner_icon_size"
+            android:layout_height="@dimen/inner_icon_size"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:src="@drawable/pm_linkedin_logo"
+            tools:ignore="ContentDescription"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="0dp"
+            android:text="@string/pm_login_btn"
+            android:textColor="@color/white"
+            android:textSize="@dimen/regular_text"
+            android:textStyle="bold"/>
+
+    </FrameLayout>
+</FrameLayout>

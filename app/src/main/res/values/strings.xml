@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Peer Mountain Demo</string>
+    <string name="login_btn">Login with LinkedIn</string>
+</resources>
