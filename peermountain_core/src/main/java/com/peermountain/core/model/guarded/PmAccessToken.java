@@ -1,4 +1,4 @@
-package com.peermountain.core.model;
+package com.peermountain.core.model.guarded;
 
 /**
  * Created by Galeen on 10/3/2017.

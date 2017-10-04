@@ -11,7 +11,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.peermountain.core.model.PublicUser;
+import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.utils.LogUtils;
 
 import java.security.MessageDigest;

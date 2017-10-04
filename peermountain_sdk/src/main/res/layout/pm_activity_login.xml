@@ -5,6 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.peermountain.sdk.ui.LoginActivity">
+
+    <FrameLayout
+        android:id="@+id/pm_flLoginWithFB"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="120dp"
+        android:layout_marginLeft="@dimen/margin_big"
+        android:layout_marginRight="@dimen/margin_big"
+        android:background="@color/fb">
+
+        <ImageView
+            android:layout_width="@dimen/inner_icon_size"
+            android:layout_height="@dimen/inner_icon_size"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:src="@drawable/pm_logo_facebook"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/pm_login_btn_fb"
+            android:textColor="@color/white"
+            android:textSize="@dimen/regular_text"
+            android:textStyle="bold"/>
+    </FrameLayout>
+
     <FrameLayout
         android:id="@+id/pm_flLoginLinkedInBtn"
         android:layout_width="match_parent"

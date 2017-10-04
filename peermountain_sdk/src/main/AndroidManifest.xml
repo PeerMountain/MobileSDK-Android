@@ -14,6 +14,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <!--android:theme="@style/SdkTheme"-->
+
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait">

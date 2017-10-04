@@ -5,7 +5,8 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.JsonWriter;
 
-import com.peermountain.core.model.PublicUser;
+import com.peermountain.core.model.guarded.PeerMountainConfig;
+import com.peermountain.core.model.guarded.PublicUser;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -71,6 +72,37 @@ class MyJsonParser {
         writer.endObject();
         writer.close();
         return sw.toString();
+    }
+
+    private static final String DEBUG = "debug";
+    static String writeConfig(PeerMountainConfig config) throws IOException {
+        StringWriter sw = new StringWriter();
+        JsonWriter writer = new JsonWriter(sw);
+        writer.beginObject();
+        writer.name(DEBUG).value(config.isDebug());
+        writer.endObject();
+        writer.close();
+        return sw.toString();
+    }
+    static PeerMountainConfig readConfig(String json) throws IOException {
+        if (json == null) return null;
+        String name;
+        PeerMountainConfig config = new PeerMountainConfig();
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.beginObject();
+        while (reader.hasNext()) {
+            name = reader.nextName();
+            switch (name) {
+                case DEBUG:
+                    config.setDebug(getBoolean(reader));
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        reader.close();
+        return config;
     }
 
 //    public static Login readLogin(String response) throws IOException {

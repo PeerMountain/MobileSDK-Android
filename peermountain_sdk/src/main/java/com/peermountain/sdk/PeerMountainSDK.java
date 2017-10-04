@@ -2,6 +2,8 @@ package com.peermountain.sdk;
 
 import android.app.Activity;
 
+import com.facebook.login.LoginManager;
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.ui.LoginActivity;
 
 /**
@@ -11,12 +13,13 @@ import com.peermountain.sdk.ui.LoginActivity;
 
 public class PeerMountainSDK {
 
-    public static void init(){
-
-    }
-
     public static void authorize(Activity callerActivity, int requestCode){
         LoginActivity.show(callerActivity,requestCode);
+    }
+
+    public static void logout(){
+        PeerMountainManager.logout();
+        LoginManager.getInstance().logOut();
     }
 
     public static void scanID(Activity callerActivity, int requestCode){

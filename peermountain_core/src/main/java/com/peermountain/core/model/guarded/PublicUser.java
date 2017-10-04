@@ -1,5 +1,5 @@
 
-package com.peermountain.core.model;
+package com.peermountain.core.model.guarded;
 
 import android.os.Parcel;
 import android.os.Parcelable;

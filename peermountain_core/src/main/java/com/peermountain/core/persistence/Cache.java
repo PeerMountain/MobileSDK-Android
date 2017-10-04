@@ -3,8 +3,9 @@ package com.peermountain.core.persistence;
 
 import android.support.annotation.RestrictTo;
 
-import com.peermountain.core.model.PmAccessToken;
-import com.peermountain.core.model.PublicUser;
+import com.peermountain.core.model.guarded.PeerMountainConfig;
+import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.PublicUser;
 
 
 /**
@@ -17,7 +18,7 @@ class Cache {
     private String sessionToken = null;
     private PmAccessToken accessToken;
     private PublicUser publicUser;
-
+    private PeerMountainConfig config;
 
     private Cache() {
     }
@@ -46,6 +47,14 @@ class Cache {
 
     void setPublicUser(PublicUser publicUser) {
         this.publicUser = publicUser;
+    }
+
+    public PeerMountainConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(PeerMountainConfig config) {
+        this.config = config;
     }
 }
 
