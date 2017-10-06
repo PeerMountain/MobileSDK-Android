@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     String idNumber = data.getExtras().getString(PeerMountainSdkConstants.EXTRA_ID_NUMBER,null);
                     if(idNumber!=null){
                         mTvMessage.setText(publicUser.getFirstname()+
-                        ", your id number is "+idNumber);
+                        ", your id number is  "+idNumber);
                     }else {
                         mTvMessage.setText(publicUser.getFirstname() +
                                 " your id number is not scanned");
