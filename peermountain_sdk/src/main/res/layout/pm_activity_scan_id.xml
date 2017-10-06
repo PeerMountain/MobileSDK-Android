@@ -1,9 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
     tools:context="com.peermountain.sdk.ui.ScanIdActivity">
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_normal">
+
+        <ProgressBar
+            android:id="@+id/pbPmProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/tvPmError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/tvPmNumber"
+            style="@style/id_tv"/>
+
+        <TextView
+            android:id="@+id/tvPmFirstName"
+            style="@style/id_tv"
+            android:text="@string/pm_msg_prepare_id"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/tvPmLastName"
+            style="@style/id_tv"/>
+
+        <TextView
+            android:id="@+id/tvPmCountry"
+            style="@style/id_tv"/>
+
+        <TextView
+            android:id="@+id/tvPmExpiration"
+            style="@style/id_tv"/>
+
+        <TextView
+            android:id="@+id/tvPmIssued"
+            style="@style/id_tv"/>
+
+        <TextView
+            android:id="@+id/tvPmValid"
+            style="@style/id_tv"/>
+
+        <TextView
+            android:id="@+id/tvPmDob"
+            style="@style/id_tv"/>
+
+
+        <ImageView
+            android:id="@+id/ivPmFaceImage"
+            style="@style/id_iv"/>
+
+        <ImageView
+            android:id="@+id/ivPmFullImage"
+            style="@style/id_iv"/>
+
+        <ImageView
+            android:id="@+id/ivPmFullImageBack"
+            style="@style/id_iv"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnPmScanId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_margin="@dimen/margin_normal"
+            android:text="@string/pm_btn_scan_id"/>
+
+    </LinearLayout>
+</ScrollView>

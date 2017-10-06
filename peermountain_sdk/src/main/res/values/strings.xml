@@ -1,9 +1,14 @@
 <resources>
     <string name="facebook_app_id" translatable="false">1887230464938657</string>
-    <string name="pm_login_btn">Login with LinkedIn</string>
+    <string name="pm_login_btn_ln">Login with LinkedIn</string>
     <string name="pm_msg_no_network">No network</string>
     <string name="pm_btn_ok">OK</string>
     <string name="pm_error_msg">Error : %s</string>
     <string name="pm_error_canceled">Canceled!</string>
     <string name="pm_login_btn_fb">Connect with Facebook</string>
+    <string name="pm_btn_scan_id">Scan</string>
+    <string name="pm_btn_re_scan_id">Rescan</string>
+    <string name="pm_msg_prepare_id">Please prepare your document for scan  from MRZ side and click on "Scan"</string>
+    <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
+    <string name="pm_err_msg_init_scan_id">SDK error init</string>
 </resources>

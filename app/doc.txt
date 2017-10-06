@@ -1,0 +1,14 @@
+1.Application assets must have license.axt file for AreadNext
+
+2.Facebook application id must be set in the application manifest that will be in use for "peermountain_sdk" if not set already.
+
+3.Add to project gradle
+        allprojects {
+          repositories {
+              ...
+              flatDir {
+                  dirs 'libs'
+                  dirs project(':peermountain_core').file('libs')
+              }
+          }
+      }

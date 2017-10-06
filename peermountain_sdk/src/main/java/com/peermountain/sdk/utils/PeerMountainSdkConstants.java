@@ -7,4 +7,5 @@ package com.peermountain.sdk.utils;
 
 public class PeerMountainSdkConstants {
     public static final String EXTRA_PUBLIC_USER = "pm_extra_public_user";
+    public static final String EXTRA_ID_NUMBER = "pm_EXTRA_ID_NUMBER";
 }

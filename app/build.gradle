@@ -46,11 +46,7 @@ buildTypes {
     }
 }
 }
-ext {
-    // dependencies versions
-    supportLibraryVersion = '26.0.2'
-//    playServicesVersion = '9.8.0'
-}
+
 
 dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -60,7 +56,7 @@ dependencies {
 
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibraryVersion}"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     compile project(path: ':peermountain_sdk')

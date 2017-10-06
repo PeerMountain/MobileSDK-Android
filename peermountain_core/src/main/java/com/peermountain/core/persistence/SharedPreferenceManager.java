@@ -76,7 +76,7 @@ class SharedPreferenceManager {
         return new PmAccessToken(token, expiresOn);
     }
 
-    static void logout() {
+    static void logoutPublicProfile() {
         if (getContext() == null) return;
         SharedPreferences prefs = getPrefs(getContext());
         SharedPreferences.Editor editor = prefs.edit();
@@ -87,7 +87,7 @@ class SharedPreferenceManager {
         editor.commit();
     }
 
-//    this below do not remove on logout
+//    this below do not remove on logoutPublicProfile
 
 
     static void saveConfig(PeerMountainConfig config) {

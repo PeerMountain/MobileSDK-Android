@@ -20,11 +20,7 @@ android {
         }
     }
 }
-ext {
-    // dependencies versions
-    supportLibraryVersion = '26.0.2'
-//    playServicesVersion = '9.8.0'
-}
+
 dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -35,14 +31,8 @@ dependencies {
 
     compile project(':peermountain_core')
     compile project(':linkedin-sdk')
-    compile 'com.facebook.android:facebook-android-sdk:4.20.0'
-
-    //idcheck.io
-    compile 'de.mindpipe.android:android-logging-log4j:1.0.3'
-    compile 'log4j:log4j:1.2.17'
-    compile 'au.com.datasymphony:EasyFlow:1.3.1'
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    //idcheck.io end
+    compile ('com.facebook.android:facebook-android-sdk:4.27.0')
+    {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
 }

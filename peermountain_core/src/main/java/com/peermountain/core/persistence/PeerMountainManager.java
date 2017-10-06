@@ -1,11 +1,24 @@
 package com.peermountain.core.persistence;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.text.TextUtils;
 
+import com.ariadnext.android.smartsdk.bean.enums.AXTSdkParameters;
+import com.ariadnext.android.smartsdk.exception.CaptureApiException;
+import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterface;
+import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
+import com.ariadnext.android.smartsdk.interfaces.bean.AXTDataExtractionRequirement;
+import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
+import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
+import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.PublicUser;
+import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
 
@@ -62,7 +75,7 @@ public class PeerMountainManager {
         return SharedPreferenceManager.getDeviceId();
     }
 
-    public static PublicUser saveLiUser(String publicUserJson) {
+    public static PublicUser savePublicUser(String publicUserJson) {
         PublicUser liUser = null;
         try {
             liUser = MyJsonParser.readPublicUser(publicUserJson);
@@ -74,7 +87,7 @@ public class PeerMountainManager {
         return liUser;
     }
 
-    public static void saveLiUser(PublicUser publicUser) {
+    public static void savePublicUser(PublicUser publicUser) {
             Cache.getInstance().setPublicUser(publicUser);
         try {
             SharedPreferenceManager.savePublicUser(MyJsonParser.writePublicUser(publicUser));
@@ -90,10 +103,72 @@ public class PeerMountainManager {
     }
 
 
-    public static void logout() {
-        Cache.getInstance().clearCache();
-        SharedPreferenceManager.logout();
+    public static void logoutPublicProfile() {
+        Cache.getInstance().clearPublicProfileCache();
+        SharedPreferenceManager.logoutPublicProfile();
 //        Messenger.clearAll();
     }
 
+    /**
+     * This method works in background and takes a fell seconds
+     * also needs network to verify license
+     * @param activity caller
+     * @param callback return onSuccess and onError events
+     */
+    public static void initScanSDK(Activity activity, AXTCaptureInterfaceCallback callback) {
+        if(getPeerMountainConfig()==null ||
+                TextUtils.isEmpty(getPeerMountainConfig().getIdCheckLicense())){
+            LogUtils.e("initScanSDK","no license");
+            return;
+        }
+        // TODO: 10/5/2017 check for internet
+
+        AXTSdkInit sdkInit = new AXTSdkInit(getPeerMountainConfig().getIdCheckLicense());
+
+        sdkInit.setUseImeiForActivation(true);
+        // Initialisation of SDK
+        try {
+            // TODO: 10/5/2017 implement inner callback and save in cache if sdk is initialized
+            AXTCaptureInterface.INSTANCE.initCaptureSdk(activity, sdkInit, callback);
+        } catch (CaptureApiException e) {
+            e.printStackTrace();
+            LogUtils.e("initScanSDK","An exception occured during SmartSdk initialization \n"+e.getMessage());
+        }
+    }
+
+    public static boolean scanId( Activity activity,  int requestCode) {
+       if(!AXTCaptureInterface.INSTANCE.sdkIsActivated()){
+           return false;
+       }else{
+           startScanningId(activity, requestCode);
+           return true;
+       }
+    }
+
+    private static void startScanningId(Activity activity, int requestCode) {
+        try {
+            AXTSdkParams sdkParams = createAxtSdkParamsForID();
+            final Intent intentSDK = AXTCaptureInterface.INSTANCE.getIntentCapture(activity, sdkParams);
+            activity.startActivityForResult(intentSDK, requestCode);
+
+        } catch (final CaptureApiException ex) {
+            ex.printStackTrace();
+            LogUtils.e("startScan", ex.getMessage());
+        }
+    }
+
+    @NonNull
+    private static AXTSdkParams createAxtSdkParamsForID() {
+        AXTSdkParams sdkParams = new AXTSdkParams();
+        sdkParams.addParameters(AXTSdkParameters.DISPLAY_CAPTURE, true);
+        sdkParams.setDocType(AXTDocumentType.ID);
+        sdkParams.addParameters(AXTSdkParameters.USE_FRONT_CAMERA, false);
+        sdkParams.addParameters(AXTSdkParameters.EXTRACT_DATA, true);
+        sdkParams.addParameters(AXTSdkParameters.SCAN_RECTO_VERSO, true);
+        sdkParams.addParameters(AXTSdkParameters.READ_RFID, true);
+        sdkParams.addParameters(AXTSdkParameters.USE_HD, true);
+        sdkParams.addParameters(AXTSdkParameters.DATA_EXTRACTION_REQUIREMENT,
+                AXTDataExtractionRequirement.MRZ_FOUND);
+        return sdkParams;
+    }
 }

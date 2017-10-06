@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onApiSuccess(ApiResponse s) {
                 LogUtils.d("getLiUser", s.toString());
-                PublicUser liUser = PeerMountainManager.saveLiUser(s.getResponseDataAsString());
+                PublicUser liUser = PeerMountainManager.savePublicUser(s.getResponseDataAsString());
                 returnUser(liUser);
             }
 
@@ -173,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onCompleted(JSONObject userJ, GraphResponse response) {
                     PublicUser publicUser = parseFbUser(userJ);
-                    PeerMountainManager.saveLiUser(publicUser);
+                    PeerMountainManager.savePublicUser(publicUser);
                     returnUser(publicUser);
                 }
             });

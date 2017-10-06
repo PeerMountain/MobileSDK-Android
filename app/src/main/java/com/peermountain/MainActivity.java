@@ -9,17 +9,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.sdk.PeerMountainSDK;
+import com.peermountain.sdk.utils.PeerMountainSdkConstants;
+import com.peermountain.ui.StartActivity;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_SCAN_ID = 493;
     private static final String EXTRA_USER = "EXTRA_USER";
     private TextView mTvMessage;
+    private Button mBtnScanId;
+    private Button mBtnLogout;
 
     public static void show(Context context, PublicUser publicUser) {
         Intent starter = new Intent(context, MainActivity.class);
@@ -43,8 +51,30 @@ public class MainActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             printKeyHash();
         }
+
         initView();
-        mTvMessage.setText("Welcome "+ publicUser.getFirstname());
+        setListeners();
+
+        mTvMessage.setText("Welcome " + publicUser.getFirstname());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_SCAN_ID:
+                if(resultCode == RESULT_OK && data !=null && data.getExtras()!=null){
+                    String idNumber = data.getExtras().getString(PeerMountainSdkConstants.EXTRA_ID_NUMBER,null);
+                    if(idNumber!=null){
+                        mTvMessage.setText(publicUser.getFirstname()+
+                        ", your id number is "+idNumber);
+                    }else {
+                        mTvMessage.setText(publicUser.getFirstname() +
+                                " your id number is not scanned");
+                    }
+                }
+                break;
+        }
     }
 
     private void printKeyHash() {
@@ -63,5 +93,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         mTvMessage = (TextView) findViewById(R.id.tvMessage);
+        mBtnScanId = (Button) findViewById(R.id.btnScanId);
+        mBtnLogout = (Button) findViewById(R.id.btnLogout);
+    }
+
+    private void setListeners() {
+        mBtnScanId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PeerMountainSDK.scanID(MainActivity.this, REQUEST_SCAN_ID);
+            }
+        });
+
+        mBtnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PeerMountainSDK.logout();
+                startActivity(new Intent(MainActivity.this, StartActivity.class));
+                finish();
+            }
+        });
     }
 }

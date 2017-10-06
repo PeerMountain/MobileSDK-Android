@@ -15,12 +15,22 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
         maven {
             url "https://maven.google.com"
+        }
+        flatDir {
+            dirs 'libs'
+            dirs project(':peermountain_core').file('libs')
         }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+ext {
+    // dependencies versions
+    supportLibraryVersion = '26.0.2'
+    playServicesVersion = '11.0.4'
 }

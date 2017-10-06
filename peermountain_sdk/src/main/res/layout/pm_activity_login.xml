@@ -57,7 +57,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginTop="0dp"
-            android:text="@string/pm_login_btn"
+            android:text="@string/pm_login_btn_ln"
             android:textColor="@color/white"
             android:textSize="@dimen/regular_text"
             android:textStyle="bold"/>

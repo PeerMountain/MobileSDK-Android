@@ -32,6 +32,12 @@ class Cache {
         instance = null;
     }
 
+    void clearPublicProfileCache() {
+        if(instance==null) return;
+        instance.publicUser = null;
+        instance.accessToken = null;
+    }
+
 
     PmAccessToken getAccessToken() {
         return accessToken;

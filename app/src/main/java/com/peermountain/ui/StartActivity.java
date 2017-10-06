@@ -30,14 +30,16 @@ public class StartActivity extends AppCompatActivity {
         if(config==null){//create
             config = new PeerMountainConfig()
                     .setApplicationContext(getApplicationContext())
-                    .setDebug(BuildConfig.DEBUG);
+                    .setDebug(BuildConfig.DEBUG)
+                    .setIdCheckLicense("licence-2017-09-12");//axt file from assets
         }else{//just update
             config.setApplicationContext(getApplicationContext())
                     .setDebug(BuildConfig.DEBUG);
         }
-        PeerMountainManager.init(config);
+        PeerMountainSDK.init(config);//ui ready
+//        PeerMountainManager.init(config); // must implement ui in the app
 
-        PeerMountainSDK.logout();
+//        PeerMountainSDK.logout();//to test login
 
         showSplash();
     }
@@ -48,13 +50,17 @@ public class StartActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_LOGIN:
                 if (resultCode == RESULT_OK && data != null) {
-                    MainActivity.show(this, (PublicUser) data.getParcelableExtra(PeerMountainSdkConstants.EXTRA_PUBLIC_USER));
-                    finish();
+                    goToMain((PublicUser) data.getParcelableExtra(PeerMountainSdkConstants.EXTRA_PUBLIC_USER));
                 } else {
                     Toast.makeText(this, "Login refused!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
+    }
+
+    private void goToMain(PublicUser publicUser) {
+        MainActivity.show(this, publicUser);
+        finish();
     }
 
     @Override
@@ -76,7 +82,11 @@ public class StartActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                PeerMountainSDK.authorize(StartActivity.this, REQUEST_LOGIN);
+                if(PeerMountainManager.getPublicUser()!=null){
+                    goToMain(PeerMountainManager.getPublicUser());
+                }else {
+                    PeerMountainSDK.authorize(StartActivity.this, REQUEST_LOGIN);
+                }
                 timer = null;
             }
         };

@@ -9,6 +9,7 @@ import android.content.Context;
 public class PeerMountainConfig {
     private boolean debug = false;
     private Context applicationContext;
+    private String idCheckLicense = null;
 
     public PeerMountainConfig() {
     }
@@ -28,6 +29,15 @@ public class PeerMountainConfig {
 
     public PeerMountainConfig setApplicationContext(Context applicationContext) {
         this.applicationContext = applicationContext;
+        return this;
+    }
+
+    public String getIdCheckLicense() {
+        return idCheckLicense;
+    }
+
+    public PeerMountainConfig setIdCheckLicense(String idCheckLicense) {
+        this.idCheckLicense = idCheckLicense;
         return this;
     }
 }

@@ -75,11 +75,13 @@ class MyJsonParser {
     }
 
     private static final String DEBUG = "debug";
+    private static final String LICENSE = "license";
     static String writeConfig(PeerMountainConfig config) throws IOException {
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
         writer.beginObject();
         writer.name(DEBUG).value(config.isDebug());
+        writer.name(LICENSE).value(config.getIdCheckLicense());
         writer.endObject();
         writer.close();
         return sw.toString();
@@ -95,6 +97,9 @@ class MyJsonParser {
             switch (name) {
                 case DEBUG:
                     config.setDebug(getBoolean(reader));
+                    break;
+                case LICENSE:
+                    config.setIdCheckLicense(getString(reader));
                     break;
                 default:
                     reader.skipValue();
