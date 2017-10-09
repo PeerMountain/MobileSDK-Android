@@ -102,6 +102,28 @@ public class PeerMountainManager {
         return Cache.getInstance().getPublicUser();
     }
 
+    public static void savePin(String pin) {
+        Cache.getInstance().setPin(pin);
+            SharedPreferenceManager.savePin(pin);
+    }
+
+    public static String getPin() {
+        if (Cache.getInstance().getPin() == null)
+            Cache.getInstance().setPin(SharedPreferenceManager.getPin());
+        return Cache.getInstance().getPin();
+    }
+
+    public static void saveFingerprint(boolean enabled) {
+        Cache.getInstance().setFingerprint(enabled);
+        SharedPreferenceManager.saveFingerprint(enabled);
+    }
+
+    public static boolean getFingerprint() {
+        if (Cache.getInstance().isFingerprint())
+            Cache.getInstance().setFingerprint(SharedPreferenceManager.getFingerprint());
+        return Cache.getInstance().isFingerprint();
+    }
+
 
     public static void logoutPublicProfile() {
         Cache.getInstance().clearPublicProfileCache();

@@ -16,8 +16,8 @@ import java.util.UUID;
  * Created by SmartIntr on 8.4.2016 г..
  */
 class SharedPreferenceManager {
-    private static final String PREF_LOGIN = "PREF_login";
-    private static final String PREF_USER = "PREF_USER";
+    private static final String PREF_FINGERPRINT = "PREF_FINGERPRINT";
+    private static final String PREF_PIN = "PREF_PIN";
     private static final String PREF_LI_USER = "PREF_LI_USER";
     private static final String PREF_LI_TOKEN = "PREF_LI_TOKEN";
     private static final String PREF_LI_EXPIRES = "PREF_LI_EXPIRES";
@@ -39,14 +39,14 @@ class SharedPreferenceManager {
     }
 
 
-     static void savePublicUser(String user) {
+    static void savePublicUser(String user) {
         if (getContext() == null) return;
         SharedPreferences.Editor mEditor = getEditor(getContext());
         mEditor.putString(PREF_LI_USER, user);
         mEditor.apply();
     }
 
-     static PublicUser getPublicUser() {
+    static PublicUser getPublicUser() {
         if (getContext() == null) return null;
         SharedPreferences mSharedPreferences = getPrefs(getContext());
         try {
@@ -57,6 +57,31 @@ class SharedPreferenceManager {
         }
     }
 
+    static void savePin(String user) {
+        if (getContext() == null) return;
+        SharedPreferences.Editor mEditor = getEditor(getContext());
+        mEditor.putString(PREF_PIN, user);
+        mEditor.apply();
+    }
+
+    static String getPin() {
+        if (getContext() == null) return null;
+        SharedPreferences mSharedPreferences = getPrefs(getContext());
+        return mSharedPreferences.getString(PREF_PIN, null);
+    }
+
+    static void saveFingerprint(boolean enabled) {
+        if (getContext() == null) return;
+        SharedPreferences.Editor mEditor = getEditor(getContext());
+        mEditor.putBoolean(PREF_FINGERPRINT, enabled);
+        mEditor.apply();
+    }
+
+    static boolean getFingerprint() {
+        if (getContext() == null) return false;
+        SharedPreferences mSharedPreferences = getPrefs(getContext());
+        return mSharedPreferences.getBoolean(PREF_FINGERPRINT, false);
+    }
 
     static void savePmAccessToken(PmAccessToken accessToken) {
         if (getContext() == null) return;
@@ -83,6 +108,7 @@ class SharedPreferenceManager {
         editor.remove(PREF_LI_EXPIRES);
         editor.remove(PREF_LI_TOKEN);
         editor.remove(PREF_LI_USER);
+//        editor.remove(PREF_PIN);
 //        editor.remove(PREF_CONFIG);
         editor.commit();
     }

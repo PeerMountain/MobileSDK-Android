@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/text_color</item>
     </style>
 
     <style name="id_tv" >
@@ -23,5 +24,36 @@
         <item name="android:layout_marginTop">@dimen/margin_normal</item>
         <item name="android:visibility">gone</item>
         <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="keyboard_row" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
+        <!--<item name="android:background">@drawable/keyboard_btn</item>-->
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
+    </style>
+
+    <style name="keyboard_btn" >
+        <item name="android:layout_width">90dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+    </style>
+
+    <style name="keyboard_btn_num" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/keyboard_text_color</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="keyboard_btn_hint" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/keyboard_text_hint_color</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginLeft">@dimen/margin_small</item>
     </style>
 </resources>

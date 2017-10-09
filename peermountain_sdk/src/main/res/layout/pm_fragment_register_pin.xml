@@ -1,0 +1,276 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:paddingTop="@dimen/margin_big"
+              tools:background="@drawable/pm_bkg"
+              tools:context="com.peermountain.sdk.ui.register.RegisterPinFragment"
+    >
+
+    <!--<include layout="@layout/pm_toolbar"/>-->
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/pmTvMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_big"
+        android:gravity="center"
+        android:text="@string/pm_please_enter_a_6_digits_pin_code"
+        android:textSize="@dimen/big_text"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_big"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/pmIvDot1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pm_white_dot"
+            tools:src="@drawable/pm_blue_dot"/>
+
+        <ImageView
+            android:id="@+id/pmIvDot2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:src="@drawable/pm_white_dot"/>
+
+        <ImageView
+            android:id="@+id/pmIvDot3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:src="@drawable/pm_white_dot"/>
+
+        <ImageView
+            android:id="@+id/pmIvDot4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:src="@drawable/pm_white_dot"/>
+
+        <ImageView
+            android:id="@+id/pmIvDot5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:src="@drawable/pm_white_dot"/>
+
+        <ImageView
+            android:id="@+id/pmIvDot6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:src="@drawable/pm_white_dot"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pm_don_t_remember_your_code"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:orientation="vertical">
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/pmTvRecover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pm_recover_here"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/text_color"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/keyboard_color"
+        android:gravity="center">
+
+        <TableRow style="@style/keyboard_row">
+
+            <LinearLayout
+                android:id="@+id/kbKey1"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey2"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="2"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_hint"
+                    android:text="ABC"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey3"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="3"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_hint"
+                    android:text="DEF"/>
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow style="@style/keyboard_row">
+
+            <LinearLayout
+                android:id="@+id/kbKey4"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="4"/>
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_hint"
+                    android:text="GHI"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey5"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="5"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_hint"
+                    android:text="GHI"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey6"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="6"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_hint"
+                    android:text="MNO"/>
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow style="@style/keyboard_row">
+
+            <LinearLayout
+                android:id="@+id/kbKey7"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="7"/>
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_hint"
+                    android:text="PQRS"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey8"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="8"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/peerMountainTextView"
+                    style="@style/keyboard_btn_hint"
+                    android:text="TUV"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey9"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="9"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/peerMountainTextView2"
+                    style="@style/keyboard_btn_hint"
+                    android:text="WXYZ"/>
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow style="@style/keyboard_row">
+
+            <LinearLayout
+                android:id="@+id/kbKeyDelete"
+                style="@style/keyboard_btn">
+
+                <ImageView
+                    android:layout_width="@dimen/keyboard_icon_size"
+                    android:layout_height="@dimen/keyboard_icon_size"
+                    android:padding="3dp"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:src="@drawable/pm_kb_delete"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKey0"
+                style="@style/keyboard_btn">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/keyboard_btn_num"
+                    android:text="0"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/kbKeyFingerprint"
+                style="@style/keyboard_btn">
+
+                <ImageView
+                    android:layout_width="@dimen/keyboard_icon_size"
+                    android:layout_height="@dimen/keyboard_icon_size"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:background="@drawable/pm_blue_dot"
+                    android:padding="8dp"
+                    android:src="@drawable/pm_kb_fingerprint"/>
+
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

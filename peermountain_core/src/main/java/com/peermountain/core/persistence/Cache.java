@@ -19,6 +19,8 @@ class Cache {
     private PmAccessToken accessToken;
     private PublicUser publicUser;
     private PeerMountainConfig config;
+    private String pin;
+    private boolean fingerprint=false;
 
     private Cache() {
     }
@@ -61,6 +63,22 @@ class Cache {
 
     public void setConfig(PeerMountainConfig config) {
         this.config = config;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public boolean isFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(boolean fingerprint) {
+        this.fingerprint = fingerprint;
     }
 }
 

@@ -63,6 +63,10 @@ public class StartActivity extends AppCompatActivity {
         finish();
     }
 
+    private void goToRegister(PublicUser publicUser) {
+        MainActivity.show(this, publicUser);
+        finish();
+    }
     @Override
     protected void onDestroy() {
         if (timer != null) {
@@ -82,11 +86,12 @@ public class StartActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if(PeerMountainManager.getPublicUser()!=null){
-                    goToMain(PeerMountainManager.getPublicUser());
-                }else {
-                    PeerMountainSDK.authorize(StartActivity.this, REQUEST_LOGIN);
-                }
+                PeerMountainSDK.registerFlow(StartActivity.this, REQUEST_LOGIN);
+//                if(PeerMountainManager.getPublicUser()!=null){
+//                    goToMain(PeerMountainManager.getPublicUser());
+//                }else {
+//                    PeerMountainSDK.authorize(StartActivity.this, REQUEST_LOGIN);
+//                }
                 timer = null;
             }
         };

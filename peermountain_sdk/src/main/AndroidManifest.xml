@@ -6,19 +6,25 @@
         android:name="android.hardware.camera"
         android:required="true"/>
 
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-        <!--android:theme="@style/SdkTheme"-->
+
+        <!-- android:theme="@style/SdkTheme" -->
 
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".ui.ScanIdActivity"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".ui.register.RegisterActivity"
+                  android:theme="@style/SdkTheme"
+                  android:windowSoftInputMode="adjustResize"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

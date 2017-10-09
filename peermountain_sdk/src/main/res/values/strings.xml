@@ -1,14 +1,55 @@
 <resources>
     <string name="facebook_app_id" translatable="false">1887230464938657</string>
+
+
+    <string name="pm_btn_scan_id">Scan</string>
+    <string name="pm_btn_re_scan_id">Rescan</string>
+    <string name="pm_msg_prepare_id">Please prepare your document for scan  from MRZ side and click on "Scan"</string>
+    <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
+    <string name="pm_err_msg_init_scan_id">SDK error init</string>
+
+    <!-- login fragment -->
     <string name="pm_login_btn_ln">Login with LinkedIn</string>
     <string name="pm_msg_no_network">No network</string>
     <string name="pm_btn_ok">OK</string>
     <string name="pm_error_msg">Error : %s</string>
     <string name="pm_error_canceled">Canceled!</string>
     <string name="pm_login_btn_fb">Connect with Facebook</string>
-    <string name="pm_btn_scan_id">Scan</string>
-    <string name="pm_btn_re_scan_id">Rescan</string>
-    <string name="pm_msg_prepare_id">Please prepare your document for scan  from MRZ side and click on "Scan"</string>
-    <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
-    <string name="pm_err_msg_init_scan_id">SDK error init</string>
+    <!-- login fragment  end-->
+
+    <!-- register fragment -->
+    <string name="pm_please_enter_a_6_digits_pin_code">Please enter a 6 digits PIN Code</string>
+    <string name="pm_please_confirm_your_pin_code">Please confirm your PIN Code</string>
+    <string name="pm_don_t_remember_your_code">Don\'t remember your code?</string>
+    <string name="pm_recover_here">Recover here.</string>
+    <string name="pm_register_title">Sign Up</string>
+    <string name="pm_pin_match_error_msg">PIN Code doesn\'t match!</string>
+    <!--Fast login-->
+    <string name="dialog_title_login">Do you want to activate fingerprint option to unlock the app? </string>
+
+    <string name="btn_fingerprint">Activate fingerprint</string>
+    <string name="dialog_fingerprint_info">Fingerprint option is enabled!</string>
+    <string name="btn_dont_save_code">Close</string>
+    <string name="position_finger_for_scan">Scan you finger</string>
+    <string name="err_no_fingerprint_permission">No permission for getting fingerprint</string>
+    <string name="err_no_saved_fingerprint">Please register fingerprint first in the system.</string>
+    <string name="err_no_keyguard">To use the fingerprint scanner, the system must be protected with pin or pattern</string>
+    <string name="btn_add_pass">Create</string>
+    <string name="btn_dont_add_pass">I don\'t want to</string>
+    <string name="message_fast_login_enabled">Fingerprint is enabled!</string>
+
+    <!--unused-->
+            <string name="dialog_confirm_user_title" translatable="false">Моля потвърдете, че сте вие</string>
+            <string name="dialog_fast_or" translatable="false">или Парола</string>
+            <string name="check_dont_ask_me_any_more" translatable="false">Не ме питай повече</string>
+            <string name="hint_fast_code" translatable="false">код 4&#8211;6 числа</string>
+            <string name="btn_save_code" translatable="false">Запази кода</string>
+    <!--Fast login end-->
+    <!-- register fragment end-->
+
+    <!--register keywords-->
+    <string name="pm_keywords_message">Please enter your keywords</string>
+    <string name="keywords">Keywords</string>
+    <string name="hint_register_keywords">keyword, keyword, keyword, keyword</string>
+    <!--register keywords end-->
 </resources>

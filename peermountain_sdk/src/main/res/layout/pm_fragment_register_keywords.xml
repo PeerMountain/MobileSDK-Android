@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/pm_bkg"
+              android:orientation="vertical"
+              tools:context="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/pmTvMessageKeywords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big"
+        android:gravity="center"
+        android:text="@string/pm_keywords_message"
+        android:textSize="@dimen/big_text"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/keyword"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_normal">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/keywords"
+            android:textColor="@color/keyword"
+            android:textSize="@dimen/regular_text"/>
+
+        <EditText android:id="@+id/pmEtKeywords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@color/transparent"
+            android:hint="@string/hint_register_keywords"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine"
+            android:textColor="@color/white"
+            android:textColorHint="@color/keyword"
+            android:textSize="@dimen/regular_text"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <ImageView android:id="@+id/pmIvValid"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/confirm_btn_size"
+        android:background="@color/keyword"
+        android:padding="@dimen/margin_normal"
+        android:src="@drawable/pm_ic_check_24dp"/>
+</LinearLayout>

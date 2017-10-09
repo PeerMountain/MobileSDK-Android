@@ -169,7 +169,7 @@ public class DialogUtils {
 //    }
 
     public static void showSimpleDialog(Context ctx, int msg, DialogInterface.OnClickListener listener) {
-       showSimpleDialog(ctx,-1, msg, listener);
+        showSimpleDialog(ctx, -1, msg, listener);
     }
 
     public static void showSimpleDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener) {
@@ -187,7 +187,9 @@ public class DialogUtils {
             });
         else
             dialog.setPositiveButton(R.string.pm_btn_ok, listener);
-        dialog.show();
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorAccent);
+        alertDialog.show();
     }
 
     public static void showChoiceDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener1
@@ -196,7 +198,9 @@ public class DialogUtils {
         dialog.setCancelable(false);
         if (title != -1)
             dialog.setTitle(title);
-        dialog.setMessage(msg);
+
+        if (msg != -1)
+            dialog.setMessage(msg);
         if (listener1 == null)
             dialog.setPositiveButton(btnYes, new DialogInterface.OnClickListener() {
                 @Override
@@ -215,7 +219,9 @@ public class DialogUtils {
             });
         else
             dialog.setNegativeButton(btnNo, listener2);
-        dialog.show();
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorAccent);
+        alertDialog.show();
     }
 
 //    public static AlertDialog openGPSSettingsDialog(final Context context, final SettingsDialogListener listener) {

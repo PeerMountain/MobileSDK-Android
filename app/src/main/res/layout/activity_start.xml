@@ -6,11 +6,5 @@
     android:layout_height="match_parent"
     tools:context="com.peermountain.ui.StartActivity">
 
-   <ImageView
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_gravity="center"
-       android:src="@drawable/peer_mountain_logo"
-       android:layout_margin="@dimen/margin_big"
-       tools:ignore="ContentDescription"/>
+
 </FrameLayout>

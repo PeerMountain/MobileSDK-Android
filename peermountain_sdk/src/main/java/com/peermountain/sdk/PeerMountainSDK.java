@@ -1,12 +1,14 @@
 package com.peermountain.sdk;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.facebook.login.LoginManager;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.ui.LoginActivity;
 import com.peermountain.sdk.ui.ScanIdActivity;
+import com.peermountain.sdk.ui.register.RegisterActivity;
 
 /**
  * Created by Galeen on 10/2/17.
@@ -21,6 +23,10 @@ public class PeerMountainSDK {
 
     public static void authorize(Activity callerActivity, int requestCode){
         LoginActivity.show(callerActivity,requestCode);
+    }
+
+    public static void registerFlow(Activity callerActivity, int requestCode){
+       callerActivity.startActivity(new Intent(callerActivity, RegisterActivity.class));
     }
 
     public static void logout(){
