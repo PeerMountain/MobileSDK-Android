@@ -19,19 +19,20 @@ import com.peermountain.sdk.utils.fingerprint.FingerprintHandler;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
-public class RegisterPinFragment extends ToolbarFragments {
+public class RegisterPinFragment extends ToolbarFragment {
+    private static final String ARG_LOGIN = "ARG_LOGIN";
     private OnFragmentInteractionListener mListener;
 
     public RegisterPinFragment() {
         // Required empty public constructor
     }
 
+    private boolean isLogin;
 
-    public static RegisterPinFragment newInstance() {
+    public static RegisterPinFragment newInstance(boolean isLogin) {
         RegisterPinFragment fragment = new RegisterPinFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(ARG_LOGIN, isLogin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +53,7 @@ public class RegisterPinFragment extends ToolbarFragments {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            isLogin = getArguments().getBoolean(ARG_LOGIN, false);
         }
     }
 
@@ -63,14 +65,20 @@ public class RegisterPinFragment extends ToolbarFragments {
     }
 
     FastLoginHelper fastLoginHelper;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (!isLogin) reset();
         getViews(view);
         setListeners();
         setToolbar();
         fastLoginHelper = new FastLoginHelper(getActivity(), "key", true);
 //        fastLoginHelper.checkFastLogin();
+
+        if(isLogin && !PeerMountainManager.getFingerprint()){
+            kbKeyFingerprint.setVisibility(View.GONE);
+        }
 
     }
 
@@ -87,6 +95,11 @@ public class RegisterPinFragment extends ToolbarFragments {
         mListener = null;
     }
 
+    public void reset() {
+        PeerMountainManager.savePin(null);
+        PeerMountainManager.saveFingerprint(false);
+    }
+
     private void setToolbar() {
         if (mToolbarListener == null) return;
         mToolbarListener.setToolbarTitle(R.string.pm_register_title, null);
@@ -99,7 +112,7 @@ public class RegisterPinFragment extends ToolbarFragments {
     }
 
     ImageView[] dots = new ImageView[6];
-    TextView pmTvRecover,  pmTvMessage;
+    TextView pmTvRecover, pmTvMessage;
     LinearLayout kbKeyDelete, kbKeyFingerprint;
     LinearLayout[] keys = new LinearLayout[10];
 
@@ -152,13 +165,14 @@ public class RegisterPinFragment extends ToolbarFragments {
         });
 
 
-        kbKeyFingerprint.setOnClickListener(new RippleOnClickListener() {
-            @Override
-            public void onClickListener(View clickedView) {
-                enableFastLogin();
-            }
-        });
-        RippleUtils.setRippleEffectSquare( kbKeyDelete, kbKeyFingerprint, pmTvRecover);
+            kbKeyFingerprint.setOnClickListener(new RippleOnClickListener() {
+                @Override
+                public void onClickListener(View clickedView) {
+                    enableFastLogin();
+                }
+            });
+
+        RippleUtils.setRippleEffectSquare(kbKeyDelete, kbKeyFingerprint, pmTvRecover);
 
     }
 
@@ -169,7 +183,7 @@ public class RegisterPinFragment extends ToolbarFragments {
             pin = new StringBuilder();
             pinRepeat = new StringBuilder();
             resetDots();
-            if(mToolbarListener!=null){
+            if (mToolbarListener != null) {
                 mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_logo);
             }
         }
@@ -209,17 +223,25 @@ public class RegisterPinFragment extends ToolbarFragments {
     }
 
     private void onPinEntered() {
-        if (isRepeating) {
+        if (isLogin) {
+            if (pin.toString().equalsIgnoreCase(PeerMountainManager.getPin())){
+                if (mListener != null) {
+                    mListener.onLogin();
+                }
+            }else {
+                DialogUtils.showError(getActivity(), R.string.pm_pin_match_error_msg);
+            }
+        } else if (isRepeating) {
             if (pin.toString().equalsIgnoreCase(pinRepeat.toString())) {
                 PeerMountainManager.savePin(pin.toString());
-                if(mListener!=null){
+                if (mListener != null) {
                     mListener.goToRegisterKeyWords();
                 }
             } else {
                 DialogUtils.showError(getActivity(), R.string.pm_pin_match_error_msg);
             }
         } else {
-            if(mToolbarListener!=null){
+            if (mToolbarListener != null) {
                 mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_arrow_back_24dp);
             }
             pmTvMessage.setText(R.string.pm_please_confirm_your_pin_code);
@@ -247,19 +269,30 @@ public class RegisterPinFragment extends ToolbarFragments {
                     new FingerprintHandler.FingerprintEvents() {
                         @Override
                         public void onSuccess() {
-                            PeerMountainManager.saveFingerprint(true);
-                            if(mListener!=null){
-                                mListener.goToRegisterKeyWords();
-                            }
-                            DialogUtils.showInfoSnackbar(getActivity(), R.string.message_fast_login_enabled);
+                            onFingerprintAuthorized();
                         }
                     }, false, true, false);
+        }
+    }
+
+    private void onFingerprintAuthorized() {
+        if(isLogin){
+            if (mListener != null) {
+                mListener.onLogin();
+            }
+        }else {
+            PeerMountainManager.saveFingerprint(true);
+            if (mListener != null) {
+                mListener.goToRegisterKeyWords();
+            }
+            DialogUtils.showInfoSnackbar(getActivity(), R.string.message_fast_login_enabled);
         }
     }
 
 
     public interface OnFragmentInteractionListener {
         void goToRegisterKeyWords();
+        void onLogin();
     }
 
 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.TextView;
@@ -173,7 +174,7 @@ public class DialogUtils {
     }
 
     public static void showSimpleDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx,getDialogStyle());
         dialog.setCancelable(false);
         if (title != -1)
             dialog.setTitle(title);
@@ -188,17 +189,20 @@ public class DialogUtils {
         else
             dialog.setPositiveButton(R.string.pm_btn_ok, listener);
         AlertDialog alertDialog = dialog.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorAccent);
+//        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorAccent);
         alertDialog.show();
     }
 
+    private static int getDialogStyle(){
+        return Build.VERSION.SDK_INT>=22?android.R.style.Theme_DeviceDefault_Dialog_Alert:
+                AlertDialog.THEME_DEVICE_DEFAULT_DARK;
+    }
     public static void showChoiceDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener1
             , DialogInterface.OnClickListener listener2, int btnYes, int btnNo) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx,getDialogStyle());
         dialog.setCancelable(false);
         if (title != -1)
             dialog.setTitle(title);
-
         if (msg != -1)
             dialog.setMessage(msg);
         if (listener1 == null)
@@ -220,7 +224,7 @@ public class DialogUtils {
         else
             dialog.setNegativeButton(btnNo, listener2);
         AlertDialog alertDialog = dialog.create();
-        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorAccent);
+//        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
         alertDialog.show();
     }
 

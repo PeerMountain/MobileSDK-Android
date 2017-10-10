@@ -1,0 +1,97 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:background="@drawable/pm_bkg"
+             tools:context="com.peermountain.sdk.ui.register.ScanIdFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_big"
+        android:layout_marginTop="@dimen/margin_big"
+        android:background="@color/transparent"
+        android:padding="@dimen/margin_big">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+
+            android:layout_marginLeft="@dimen/margin_xbig"
+            android:layout_marginRight="@dimen/margin_xbig"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/pm_card"
+            android:elevation="@dimen/shadow">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginRight="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_big"
+            android:background="@drawable/pm_card"
+            android:elevation="@dimen/shadow">
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="@dimen/margin_first_card"
+            android:background="@drawable/pm_card_white"
+            android:elevation="@dimen/shadow"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5">
+
+                <ProgressBar android:id="@+id/pbPmProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="visible"/>
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:src="@drawable/pm_ic_id_card"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="@dimen/margin_normal"
+                    android:text="@string/pm_btn_scan_id_msg"
+                    android:textColor="@color/text_color_dark"
+                    android:textSize="@dimen/regular_text"/>
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/pmIvNext"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/confirm_btn_size"
+                android:background="@drawable/pm_keywords_btn_selector"
+                android:padding="@dimen/margin_normal"
+                android:rotation="180"
+                android:src="@drawable/pm_ic_arrow_back_24dp"/>
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+</FrameLayout>

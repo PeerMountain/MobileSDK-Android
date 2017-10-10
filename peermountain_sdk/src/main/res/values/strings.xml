@@ -4,9 +4,8 @@
 
     <string name="pm_btn_scan_id">Scan</string>
     <string name="pm_btn_re_scan_id">Rescan</string>
-    <string name="pm_msg_prepare_id">Please prepare your document for scan  from MRZ side and click on "Scan"</string>
+    <string name="pm_msg_prepare_id">Please prepare your document for scan from MRZ side and click on "Scan"</string>
     <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
-    <string name="pm_err_msg_init_scan_id">SDK error init</string>
 
     <!-- login fragment -->
     <string name="pm_login_btn_ln">Login with LinkedIn</string>
@@ -24,7 +23,7 @@
     <string name="pm_recover_here">Recover here.</string>
     <string name="pm_register_title">Sign Up</string>
     <string name="pm_pin_match_error_msg">PIN Code doesn\'t match!</string>
-    <!--Fast login-->
+    <!--Fingerprint login-->
     <string name="dialog_title_login">Do you want to activate fingerprint option to unlock the app? </string>
 
     <string name="btn_fingerprint">Activate fingerprint</string>
@@ -39,17 +38,31 @@
     <string name="message_fast_login_enabled">Fingerprint is enabled!</string>
 
     <!--unused-->
-            <string name="dialog_confirm_user_title" translatable="false">Моля потвърдете, че сте вие</string>
-            <string name="dialog_fast_or" translatable="false">или Парола</string>
-            <string name="check_dont_ask_me_any_more" translatable="false">Не ме питай повече</string>
-            <string name="hint_fast_code" translatable="false">код 4&#8211;6 числа</string>
-            <string name="btn_save_code" translatable="false">Запази кода</string>
-    <!--Fast login end-->
+    <string name="dialog_confirm_user_title" translatable="false">Моля потвърдете, че сте вие</string>
+    <string name="dialog_fast_or" translatable="false">или Парола</string>
+    <string name="check_dont_ask_me_any_more" translatable="false">Не ме питай повече</string>
+    <string name="hint_fast_code" translatable="false">код 4&#8211;6 числа</string>
+    <string name="btn_save_code" translatable="false">Запази кода</string>
+    <!--Fingerprint login end-->
     <!-- register fragment end-->
 
     <!--register keywords-->
     <string name="pm_keywords_message">Please enter your keywords</string>
-    <string name="keywords">Keywords</string>
-    <string name="hint_register_keywords">keyword, keyword, keyword, keyword</string>
+    <string name="pm_keywords">Keywords</string>
+    <string name="pm_hint_register_keywords">keyword, keyword, keyword, keyword</string>
+    <string name="pm_saved_keywords_message">Store your recovery keywords\nsomewhere safe. You\'ll need them in\ncase your forget your PIN Code.</string>
+    <string name="pm_show_keywords_title">Keywords</string>
     <!--register keywords end-->
+
+    <!--scan id fragment-->
+    <string name="pm_btn_scan_id_msg">Scan your ID or Passport.\nPlease prepare your document for scan from MRZ side first!</string>
+    <string name="btn_ask_for_permission_again">OK</string>
+    <string name="btn_refuse_permission">Refuse</string>
+    <string name="pm_err_msg_init_scan_id">SDK error init</string>
+    <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
+    <!--scan id fragment end-->
+
+    <!--scanned id data fragment -->
+    <string name="pm_id_scan_lbl">ID SCAN</string>
+    <!--scanned id data fragment end-->
 </resources>

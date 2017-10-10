@@ -13,10 +13,14 @@
     <dimen name="toolbar_size">40dp</dimen>
 
     <dimen name="big_text">18sp</dimen>
-    <dimen name="regular_text">14sp</dimen>
+    <dimen name="regular_text">15sp</dimen>
     <dimen name="shadow_size">15dp</dimen>
 
     <dimen name="dot_size">15dp</dimen>
     <dimen name="keyboard_icon_size">40dp</dimen>
     <dimen name="confirm_btn_size">60dp</dimen>
+    <dimen name="circle_btn_size">50dp</dimen>
+
+    <dimen name="corners">6dp</dimen>
+    <dimen name="shadow">0dp</dimen>
 </resources>

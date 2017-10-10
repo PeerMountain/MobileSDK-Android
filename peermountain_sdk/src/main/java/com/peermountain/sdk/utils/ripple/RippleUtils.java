@@ -17,10 +17,11 @@ public class RippleUtils {
                 .rippleHover(true).create();
     }
 
-    public static void setRippleEffectSquare(View view) {
+    public static MaterialRippleLayout setRippleEffectSquare(View view) {
         if (view != null)
-            MaterialRippleLayout.on(view).rippleColor(Color.BLACK).rippleAlpha(0.2f).rippleDuration(RIPPLE_DURATION).rippleOverlay(true)
+           return MaterialRippleLayout.on(view).rippleColor(Color.BLACK).rippleAlpha(0.2f).rippleDuration(RIPPLE_DURATION).rippleOverlay(true)
                     .rippleHover(true).create();
+        return null;
     }
     public static void setRippleEffectSquare(View... views) {
         for (View view : views) {

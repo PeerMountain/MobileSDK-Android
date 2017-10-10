@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.ariadnext.android.smartsdk.bean.enums.AXTSdkParameters;
@@ -30,7 +31,7 @@ public class PeerMountainManager {
     // TODO: 6.1.2017 г. create a method to update the cache if is dirty
     static Context applicationContext = null;
 
-    public static void init(PeerMountainConfig config){
+    public static void init(PeerMountainConfig config) {
         PeerMountainManager.applicationContext = config.getApplicationContext();
         config.setApplicationContext(null);
         Cache.getInstance().setConfig(config);
@@ -39,6 +40,7 @@ public class PeerMountainManager {
 
     /**
      * Get last saved Config
+     *
      * @param context any context works to get the value
      * @return PeerMountainConfig object without applicationContext in it
      */
@@ -70,7 +72,6 @@ public class PeerMountainManager {
     }
 
 
-
     public static String getDeviceId() {
         return SharedPreferenceManager.getDeviceId();
     }
@@ -88,7 +89,7 @@ public class PeerMountainManager {
     }
 
     public static void savePublicUser(PublicUser publicUser) {
-            Cache.getInstance().setPublicUser(publicUser);
+        Cache.getInstance().setPublicUser(publicUser);
         try {
             SharedPreferenceManager.savePublicUser(MyJsonParser.writePublicUser(publicUser));
         } catch (IOException e) {
@@ -102,9 +103,15 @@ public class PeerMountainManager {
         return Cache.getInstance().getPublicUser();
     }
 
+    public static void logoutPublicProfile() {
+        Cache.getInstance().clearPublicProfileCache();
+        SharedPreferenceManager.logoutPublicProfile();
+//        Messenger.clearAll();
+    }
+
     public static void savePin(String pin) {
         Cache.getInstance().setPin(pin);
-            SharedPreferenceManager.savePin(pin);
+        SharedPreferenceManager.savePin(pin);
     }
 
     public static String getPin() {
@@ -124,23 +131,26 @@ public class PeerMountainManager {
         return Cache.getInstance().isFingerprint();
     }
 
-
-    public static void logoutPublicProfile() {
-        Cache.getInstance().clearPublicProfileCache();
-        SharedPreferenceManager.logoutPublicProfile();
-//        Messenger.clearAll();
+    public static void saveKeywords(String keywords) {
+        SharedPreferenceManager.saveKeywords(keywords);
     }
 
+    public static String getKeywords() {
+        return SharedPreferenceManager.getKeywords();
+    }
+
+
     /**
-     * This method works in background and takes a fell seconds
+     * This method works in background and takes a few seconds
      * also needs network to verify license
+     *
      * @param activity caller
      * @param callback return onSuccess and onError events
      */
     public static void initScanSDK(Activity activity, AXTCaptureInterfaceCallback callback) {
-        if(getPeerMountainConfig()==null ||
-                TextUtils.isEmpty(getPeerMountainConfig().getIdCheckLicense())){
-            LogUtils.e("initScanSDK","no license");
+        if (getPeerMountainConfig() == null ||
+                TextUtils.isEmpty(getPeerMountainConfig().getIdCheckLicense())) {
+            LogUtils.e("initScanSDK", "no license");
             return;
         }
         // TODO: 10/5/2017 check for internet
@@ -154,25 +164,44 @@ public class PeerMountainManager {
             AXTCaptureInterface.INSTANCE.initCaptureSdk(activity, sdkInit, callback);
         } catch (CaptureApiException e) {
             e.printStackTrace();
-            LogUtils.e("initScanSDK","An exception occured during SmartSdk initialization \n"+e.getMessage());
+            LogUtils.e("initScanSDK", "An exception occured during SmartSdk initialization \n" + e.getMessage());
         }
     }
 
-    public static boolean scanId( Activity activity,  int requestCode) {
-       if(!AXTCaptureInterface.INSTANCE.sdkIsActivated()){
-           return false;
-       }else{
-           startScanningId(activity, requestCode);
-           return true;
-       }
+    public static boolean scanId(Activity activity, int requestCode) {
+        if (!AXTCaptureInterface.INSTANCE.sdkIsActivated()) {
+            return false;
+        } else {
+            startScanningId(activity,null, requestCode);
+            return true;
+        }
     }
 
-    private static void startScanningId(Activity activity, int requestCode) {
+    public static boolean scanId(Fragment fragment, int requestCode) {
+        if (!AXTCaptureInterface.INSTANCE.sdkIsActivated()) {
+            return false;
+        } else {
+            startScanningId(null,fragment, requestCode);
+            return true;
+        }
+    }
+
+    public static boolean isScanIdSDKReady() {
+       return AXTCaptureInterface.INSTANCE.sdkIsActivated();
+    }
+
+
+    private static void startScanningId(Activity activity, Fragment fragment, int requestCode) {
+        if(activity==null && fragment==null) return;
         try {
             AXTSdkParams sdkParams = createAxtSdkParamsForID();
-            final Intent intentSDK = AXTCaptureInterface.INSTANCE.getIntentCapture(activity, sdkParams);
-            activity.startActivityForResult(intentSDK, requestCode);
-
+            final Intent intentSDK = AXTCaptureInterface.INSTANCE.
+                    getIntentCapture(activity!=null?activity:fragment.getContext(), sdkParams);
+            if(activity!=null) {
+                activity.startActivityForResult(intentSDK, requestCode);
+            }else {
+                fragment.startActivityForResult(intentSDK, requestCode);
+            }
         } catch (final CaptureApiException ex) {
             ex.printStackTrace();
             LogUtils.e("startScan", ex.getMessage());

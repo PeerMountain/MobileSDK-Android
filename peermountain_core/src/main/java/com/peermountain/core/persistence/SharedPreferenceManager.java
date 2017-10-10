@@ -22,7 +22,7 @@ class SharedPreferenceManager {
     private static final String PREF_LI_TOKEN = "PREF_LI_TOKEN";
     private static final String PREF_LI_EXPIRES = "PREF_LI_EXPIRES";
     private static final String PREF_CONFIG = "config";
-    private static final String PREF_TAGS = "PREF_TAGS";
+    private static final String PREF_KEYWORDS = "PREF_Keywords";
     private static final String PREF_DEMO_TICKETS_SHOWN = "PREF_DEMO_TICKETS_SHOWN";
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
@@ -57,10 +57,10 @@ class SharedPreferenceManager {
         }
     }
 
-    static void savePin(String user) {
+    static void savePin(String pin) {
         if (getContext() == null) return;
         SharedPreferences.Editor mEditor = getEditor(getContext());
-        mEditor.putString(PREF_PIN, user);
+        mEditor.putString(PREF_PIN, pin);
         mEditor.apply();
     }
 
@@ -81,6 +81,19 @@ class SharedPreferenceManager {
         if (getContext() == null) return false;
         SharedPreferences mSharedPreferences = getPrefs(getContext());
         return mSharedPreferences.getBoolean(PREF_FINGERPRINT, false);
+    }
+
+    static void saveKeywords(String keywords) {
+        if (getContext() == null) return;
+        SharedPreferences.Editor mEditor = getEditor(getContext());
+        mEditor.putString(PREF_KEYWORDS, keywords);
+        mEditor.apply();
+    }
+
+    static String getKeywords() {
+        if (getContext() == null) return null;
+        SharedPreferences mSharedPreferences = getPrefs(getContext());
+        return mSharedPreferences.getString(PREF_KEYWORDS, null);
     }
 
     static void savePmAccessToken(PmAccessToken accessToken) {

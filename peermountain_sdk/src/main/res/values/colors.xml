@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0049C5DE</color>
+    <color name="colorPrimary">#FF126B82</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#49C5DE</color>
     <color name="text_color">#FFFFFF</color>
+    <color name="text_color_dark">#FF1D1D26</color>
     <color name="white">#FFFFFF</color>
-    <color name="keyword">#33FFFFFF</color>
+    <color name="keyword_bkg">#33FFFFFF</color>
+    <color name="keyword">#80FFFFFF</color>
+    <color name="keyword_btn_selected">#FF126B82</color>
     <color name="fb">#48649C</color>
     <color name="dot_line">#59FFFFFF</color>
     <color name="keyboard_color">#E1E1E1</color>
     <color name="keyboard_text_color">#000000</color>
     <color name="keyboard_text_hint_color">#69747A</color>
     <color name="green">#00940c</color>
+    <color name="card_bkg">#80FFFFFF</color>
+    <color name="grey_line">#FFD8D8D8</color>
 
 </resources>

@@ -39,7 +39,7 @@ public class StartActivity extends AppCompatActivity {
         PeerMountainSDK.init(config);//ui ready
 //        PeerMountainManager.init(config); // must implement ui in the app
 
-//        PeerMountainSDK.logout();//to test login
+//        PeerMountainSDK.logout();//to test login again
 
         showSplash();
     }
@@ -86,6 +86,7 @@ public class StartActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                // TODO: 10/10/2017 check for pin or fingerprint and call login
                 PeerMountainSDK.registerFlow(StartActivity.this, REQUEST_LOGIN);
 //                if(PeerMountainManager.getPublicUser()!=null){
 //                    goToMain(PeerMountainManager.getPublicUser());

@@ -2,7 +2,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@drawable/pm_bkg"
+              tools:background="@drawable/pm_bkg"
               android:orientation="vertical"
               tools:context="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
 
@@ -16,17 +16,17 @@
         android:textSize="@dimen/big_text"
         android:textStyle="bold"/>
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/pmLlAddKeywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/keyword"
+        android:background="@color/keyword_bkg"
         android:orientation="vertical"
         android:padding="@dimen/margin_normal">
 
         <com.peermountain.sdk.views.PeerMountainTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/keywords"
+            android:text="@string/pm_keywords"
             android:textColor="@color/keyword"
             android:textSize="@dimen/regular_text"/>
 
@@ -35,24 +35,47 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:background="@color/transparent"
-            android:hint="@string/hint_register_keywords"
+            android:hint="@string/pm_hint_register_keywords"
             android:imeOptions="actionDone"
-            android:inputType="textMultiLine"
+            android:inputType="textFilter|textNoSuggestions|textMultiLine"
             android:textColor="@color/white"
             android:textColorHint="@color/keyword"
             android:textSize="@dimen/regular_text"
             />
     </LinearLayout>
 
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/pmTVSavedKeywords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+        android:gravity="center"
+        android:textSize="@dimen/regular_text"
+        tools:text="Saved keywords here"
+        android:visibility="gone"
+        tools:visibility="visible"/>
     <View
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/pmTVSavedKeywordsHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"
+        android:layout_marginBottom="@dimen/margin_xbig"
+        android:gravity="center"
+        android:text="@string/pm_saved_keywords_message"
+        android:textSize="@dimen/regular_text"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <ImageView android:id="@+id/pmIvValid"
         android:layout_width="match_parent"
         android:layout_height="@dimen/confirm_btn_size"
-        android:background="@color/keyword"
+        android:background="@drawable/pm_keywords_btn_selector"
         android:padding="@dimen/margin_normal"
         android:src="@drawable/pm_ic_check_24dp"/>
 </LinearLayout>
