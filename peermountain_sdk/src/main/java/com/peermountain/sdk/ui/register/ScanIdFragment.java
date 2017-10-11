@@ -16,18 +16,16 @@ import com.balysv.materialripple.MaterialRippleLayout;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
 
 public class ScanIdFragment extends ToolbarFragment {
     private static final int REQUEST_SCAN_ID = 786;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -71,7 +69,7 @@ public class ScanIdFragment extends ToolbarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_scan_id, container, false);
+        return inflater.inflate(R.layout.pm_fragment_scan_id, container, false);
     }
 
     @Override
@@ -155,6 +153,7 @@ public class ScanIdFragment extends ToolbarFragment {
         public void onClickListener(View view) {
 //            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 //            pbPmProgress.setVisibility(View.VISIBLE);//useless
+            // TODO: 10/11/2017 show loading text the SDK is slow
             PeerMountainManager.scanId(ScanIdFragment.this, REQUEST_SCAN_ID);
         }
     };

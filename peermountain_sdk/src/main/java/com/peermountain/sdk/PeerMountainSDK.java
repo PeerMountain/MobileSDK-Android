@@ -8,6 +8,7 @@ import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.ui.LoginActivity;
 import com.peermountain.sdk.ui.ScanIdActivity;
+import com.peermountain.sdk.ui.home.HomeActivity;
 import com.peermountain.sdk.ui.register.RegisterActivity;
 
 /**
@@ -26,7 +27,11 @@ public class PeerMountainSDK {
     }
 
     public static void registerFlow(Activity callerActivity, int requestCode){
-       callerActivity.startActivity(new Intent(callerActivity, RegisterActivity.class));
+       callerActivity.startActivityForResult(new Intent(callerActivity, RegisterActivity.class),requestCode);
+    }
+
+    public static void goHome(Activity callerActivity){
+        callerActivity.startActivity(new Intent(callerActivity, HomeActivity.class));
     }
 
     public static void logout(){

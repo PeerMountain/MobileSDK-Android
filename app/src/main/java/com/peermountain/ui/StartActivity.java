@@ -1,23 +1,19 @@
 package com.peermountain.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.peermountain.BuildConfig;
-import com.peermountain.MainActivity;
 import com.peermountain.R;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
-import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.PeerMountainSDK;
-import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 
 
 public class StartActivity extends AppCompatActivity {
     private static final int REQUEST_LOGIN = 123;
+    private static final int REQUEST_REGISTER = 321;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +23,12 @@ public class StartActivity extends AppCompatActivity {
         //is important to pass Application context to prevent memory leaks
         //for now it holds only 2 values, in future will keep all customizable data
         PeerMountainConfig config = PeerMountainManager.getLastPeerMountainConfig(this);
-        if(config==null){//create
+        if (config == null) {//create
             config = new PeerMountainConfig()
                     .setApplicationContext(getApplicationContext())
                     .setDebug(BuildConfig.DEBUG)
                     .setIdCheckLicense("licence-2017-09-12");//axt file from assets
-        }else{//just update
+        } else {//just update
             config.setApplicationContext(getApplicationContext())
                     .setDebug(BuildConfig.DEBUG);
         }
@@ -44,29 +40,6 @@ public class StartActivity extends AppCompatActivity {
         showSplash();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_LOGIN:
-                if (resultCode == RESULT_OK && data != null) {
-                    goToMain((PublicUser) data.getParcelableExtra(PeerMountainSdkConstants.EXTRA_PUBLIC_USER));
-                } else {
-                    Toast.makeText(this, "Login refused!", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-
-    private void goToMain(PublicUser publicUser) {
-        MainActivity.show(this, publicUser);
-        finish();
-    }
-
-    private void goToRegister(PublicUser publicUser) {
-        MainActivity.show(this, publicUser);
-        finish();
-    }
     @Override
     protected void onDestroy() {
         if (timer != null) {
@@ -86,14 +59,9 @@ public class StartActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                // TODO: 10/10/2017 check for pin or fingerprint and call login
-                PeerMountainSDK.registerFlow(StartActivity.this, REQUEST_LOGIN);
-//                if(PeerMountainManager.getPublicUser()!=null){
-//                    goToMain(PeerMountainManager.getPublicUser());
-//                }else {
-//                    PeerMountainSDK.authorize(StartActivity.this, REQUEST_LOGIN);
-//                }
+                PeerMountainSDK.goHome(StartActivity.this);
                 timer = null;
+                finish();
             }
         };
         timer.start();

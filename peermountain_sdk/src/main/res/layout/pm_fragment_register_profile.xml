@@ -1,0 +1,182 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:background="@color/white"
+             tools:context="com.peermountain.sdk.ui.register.RegisterProfileFragment">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_line"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/confirm_btn_size">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin_big">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/pmIvAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorAccent"
+                    app:riv_border_color="@color/colorAccent"
+                    app:riv_border_width="2dp"
+                    app:riv_oval="true"/>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/pm_ic_camera"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_name"/>
+
+            <EditText
+                android:id="@+id/pmEtNames"
+                style="@style/reg_profile_et"
+                android:inputType="textCapWords"
+                tools:hint="Names"/>
+
+            <View
+                style="@style/grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_dob"/>
+
+            <EditText
+                android:id="@+id/pmEtDob"
+                style="@style/reg_profile_et"
+                android:inputType="date"
+                tools:hint="Text"/>
+
+            <View
+                style="@style/grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_pob"
+                />
+
+            <EditText
+                android:id="@+id/pmEtPob"
+                style="@style/reg_profile_et"
+                android:inputType="textPostalAddress"
+                tools:hint="Text"/>
+
+            <View
+                style="@style/grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_mail"/>
+
+            <EditText
+                android:id="@+id/pmEtMail"
+                style="@style/reg_profile_et"
+                android:inputType="textEmailAddress"
+                tools:hint="Text"/>
+
+            <View
+                style="@style/grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_phone"/>
+
+            <EditText
+                android:id="@+id/pmEtPhone"
+                style="@style/reg_profile_et"
+                android:inputType="phone"
+                tools:hint="Text"/>
+
+            <View
+                style="@style/grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_fb"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/pmTvFB"
+                    style="@style/reg_profile_et"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/pmTvFBConnect"
+                    style="@style/reg_profile_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/pm_register_btn_connect"/>
+
+
+            </LinearLayout>
+
+            <View
+                style="@style/grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/reg_profile_lbl"
+                android:text="@string/pm_lbl_ln"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:layout_marginBottom="@dimen/margin_normal"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/pmTvLN"
+                    style="@style/reg_profile_et"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/pmTvLNConnect"
+                    style="@style/reg_profile_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/pm_register_btn_connect"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/pmIvNext"
+        style="@style/square_btn"
+        android:layout_gravity="bottom"
+        android:rotation="180"
+        android:src="@drawable/pm_ic_arrow_back_24dp"/>
+</FrameLayout>

@@ -3,10 +3,8 @@ package com.peermountain.sdk.ui.register;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ariadnext.android.smartsdk.exception.CaptureApiException;
-import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterface;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentAbstract;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentChip;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentIdentity;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentValidityResult;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
+import com.peermountain.core.model.guarded.Document;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.sdk.utils.DocumentUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
@@ -88,7 +80,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_scanned_id, container, false);
+        return inflater.inflate(R.layout.pm_fragment_show_scanned_id, container, false);
     }
 
     @Override
@@ -96,7 +88,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         setListeners();
-        getScannedData( );
+        getScannedData(scannedData);
         setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
         setTheme(ToolbarFragment.THEME_LIGHT);
     }
@@ -115,7 +107,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
 //                this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 if (resultCode == Activity.RESULT_OK) {
                     scannedData = data;
-                    getScannedData();
+                    getScannedData(scannedData);
                 } else {
                     onRejectClickListener.resetConsumed();
                     Toast.makeText(getActivity(), R.string.pm_err_msg_scan_data, Toast.LENGTH_SHORT).show();
@@ -151,7 +143,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
             @Override
             public void onClickListener(View view) {
                 if(mListener!=null){
-                    mListener.onScannedIdDataAccepted();
+                    mListener.onScannedIdDataAccepted(document);
                 }
             }
         });
@@ -166,86 +158,36 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         }
     };
 
-    private void getScannedData() {
-        if(scannedData==null) return;
-        try {
-            final AXTSdkResult result = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);
-            final AXTImageResult imageSource = result.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO);
-            final AXTImageResult imageSourceBack = result.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO);
-            final AXTImageResult imageCroppped = result.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO);
-            final AXTImageResult imageCroppedBack = result.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO);
-            final AXTImageResult imageFace = result.getMapImageFace().get(AXTSdkResult.FACE_CROPPED);
-            AXTDocumentIdentity document = (AXTDocumentIdentity)
-                    result.getMapDocument().get(AXTSdkResult.IDENTITY_DOCUMENT);
-            // Récupération des champs d'un document d'identité
-            final String name = document.getField(AXTDocumentIdentity.AxtField.LAST_NAMES);
-            final String firstname = document.getField(AXTDocumentIdentity.AxtField.FIRST_NAMES);
-            final String gender = document.getField(AXTDocumentIdentity.AxtField.GENDER);
-            final String birthdate = document.getField(AXTDocumentIdentity.AxtField.BIRTH_DATE);
-
-            final String docNumber = document.getField(AXTDocumentIdentity.AxtField.DOCUMENT_NUMBER);
-            final String country = document.getField(AXTDocumentIdentity.AxtField.EMIT_COUNTRY);
-            String emitDate = document.getField(AXTDocumentIdentity.AxtField.EMIT_DATE);
-            final String mrzID = document.getField(AXTDocumentAbstract.AxtField.CODELINE);
-            final AXTDocumentValidityResult validity = document.getDocumentValidity();
-            AXTDocumentChip documentNfc = (AXTDocumentChip)
-                    result.getMapDocument().get(AXTSdkResult.RFID_DOCUMENT);
-            String expirationDate = null;
-            if (documentNfc != null) {
-                expirationDate =documentNfc.getField(AXTDocumentChip.AxtField.EXPIRATION_DATE);
-            }
-            setDataInView(imageCroppped, imageFace, name, firstname, birthdate, country, validity, docNumber, emitDate, imageCroppedBack, expirationDate,documentNfc);
-        } catch (CaptureApiException e) {
-            e.printStackTrace();
-        }
+    Document document;
+    private void getScannedData(Intent scannedData) {
+        document = DocumentUtils.getScannedData(scannedData);
+        setDataInView(document);
     }
 
-    private void setDataInView(AXTImageResult imageCroppped, AXTImageResult imageFace, String name, String firstname, String birthdate, String country, AXTDocumentValidityResult validity, String docNumber, String emitDate,
-                               AXTImageResult imageCroppedBack,String expirationDate, AXTDocumentChip documentNfc) {
-        // TODO: 10/10/2017 use placeholders and create a POJO holder
+    private void setDataInView(Document document) {
+        if(document==null) return;
+            // TODO: 10/10/2017 use placeholders
         StringBuilder sb = new StringBuilder();
-        setText(mTvPmNumber, "# ", docNumber, "\nno number", sb);
-        setText(mTvPmFirstName, "First name : ", firstname, "\nno first name", sb);
-        setText(mTvPmLastName, "Last name : ", name, "\nno last name", sb);
-        setText(mTvPmCountry, "Country : ", country, "\nno country", sb);
-        setText(mTvPmExpiration, "Expiration Date : ", expirationDate, "\nno Expiration Date", sb);
-        setText(mTvPmIssued, "Emitted : ", emitDate, "\nno emitDate", sb);
-        setText(mTvPmDob, "Dob : ", birthdate, "\nno Dob", sb);
-        setText(mTvPmValid, "", validity == AXTDocumentValidityResult.VALID ?
-                "Valid" : "Invalid", "", sb);
+        DocumentUtils.setText(mTvPmNumber, "# ", document.getDocNumber(), "\nno number", sb);
+        DocumentUtils.setText(mTvPmFirstName, "First name : ", document.getFirstName(), "\nno first name", sb);
+        DocumentUtils.setText(mTvPmLastName, "Last name : ", document.getLastName(), "\nno last name", sb);
+        DocumentUtils.setText(mTvPmCountry, "Country : ", document.getCountry(), "\nno country", sb);
+        DocumentUtils.setText(mTvPmExpiration, "Expiration Date : ", document.getExpirationDate(), "\nno Expiration Date", sb);
+        DocumentUtils.setText(mTvPmIssued, "Emitted : ", document.getEmitDate(), "\nno emitDate", sb);
+        DocumentUtils.setText(mTvPmDob, "Dob : ", document.getBirthday(), "\nno Dob", sb);
+        DocumentUtils.setText(mTvPmValid, "", document.isValid() ?"Valid" : "Invalid", "", sb);
 
-        setImage(mIvPmFaceImage, imageFace, "\nno face image", sb);
-        setImage(mIvPmFullImage, imageCroppped, "\nno mrz image", sb);
-        setImage(mIvPmFullImageBack, imageCroppedBack, "\nno verso image", sb);
+        DocumentUtils.setImage(mIvPmFaceImage, document.getImageFace(), "\nno face image", sb);
+        DocumentUtils.setImage(mIvPmFullImage, document.getImageCropped(), "\nno mrz image", sb);
+        DocumentUtils.setImage(mIvPmFullImageBack, document.getImageCroppedBack(), "\nno verso image", sb);
 
-        if(documentNfc==null){
-            sb.append("\nNo NFC data");
-        }
+//        if(document.getScannedResult().getMapDocument().get(AXTSdkResult.RFID_DOCUMENT)==null){
+//            sb.append("\nNo NFC data");
+//        }
         mTvPmError.setText(sb.toString());
     }
 
-    private void setImage(ImageView iv, AXTImageResult imageFace, String error, StringBuilder sb) {
-        if (imageFace != null && !TextUtils.isEmpty(imageFace.getImageUri())) {
-            LogUtils.d("image",Uri.parse(imageFace.getImageUri()).toString());
-            iv.setImageURI(Uri.parse(imageFace.getImageUri()));
-            iv.setVisibility(View.VISIBLE);
-        } else {
-            sb.append(error);
-            iv.setVisibility(View.GONE);
-        }
-    }
-
-    private void setText(TextView tv, String prefix, String value, String error, StringBuilder sb) {
-        if (!TextUtils.isEmpty(value) && !value.equalsIgnoreCase("null")) {
-            tv.setText(prefix + value);
-            tv.setVisibility(View.VISIBLE);
-        } else {
-            sb.append(error);
-            tv.setVisibility(View.GONE);
-        }
-    }
-
     public interface OnFragmentInteractionListener {
-        void onScannedIdDataAccepted();
+        void onScannedIdDataAccepted(Document scannedDocument);
     }
 }

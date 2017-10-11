@@ -113,7 +113,7 @@ public class FastLoginHelper {
     @NonNull
     private View getDialogViews() {
         LayoutInflater vi = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = vi.inflate(R.layout.fast_login_dialog, null);
+        View view = vi.inflate(R.layout.pm_fast_login_dialog, null);
         tvTitleFastDialog = (TextView) view.findViewById(R.id.tvTitleFastDialog);
         tvFingerBtn = (TextView) view.findViewById(R.id.tvFingerBtn);
         tvOr = (TextView) view.findViewById(R.id.tvOr);

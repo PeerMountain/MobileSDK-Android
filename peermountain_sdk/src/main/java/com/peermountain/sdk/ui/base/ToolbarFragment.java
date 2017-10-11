@@ -1,4 +1,4 @@
-package com.peermountain.sdk.ui.register;
+package com.peermountain.sdk.ui.base;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -38,16 +38,22 @@ public abstract class ToolbarFragment extends Fragment {
     }
 
     public void setToolbar(int leftIconRes,int resTitle, View.OnClickListener listener){
+        setToolbar(leftIconRes,-1,resTitle,listener,null);
+    }
+
+    public void setToolbar(int leftIconRes,int rightIconRes,int resTitle, View.OnClickListener listener, View.OnClickListener listenerRight){
         if (mToolbarListener == null) return;
         mToolbarListener.setMenuLeftIcon(leftIconRes);
         mToolbarListener.setToolbarTitle(resTitle, null);
-        mToolbarListener.setMenuButtonEvent(listener);
+        mToolbarListener.setLeftMenuButtonEvent(listener);
+        mToolbarListener.setMenuRightIcon(rightIconRes);
+        mToolbarListener.setRightMenuButtonEvent(listenerRight);
     }
     public void setToolbar(int leftIconRes,String title, View.OnClickListener listener){
         if (mToolbarListener == null) return;
         mToolbarListener.setMenuLeftIcon(leftIconRes);
         mToolbarListener.setToolbarTitle(-1, title);
-        mToolbarListener.setMenuButtonEvent(listener);
+        mToolbarListener.setLeftMenuButtonEvent(listener);
     }
 
     public void setTheme(int theme){
@@ -68,8 +74,10 @@ public abstract class ToolbarFragment extends Fragment {
 
     public interface ToolbarEvents{
         void setToolbarTitle(int resTitle, String title);
-        void setMenuButtonEvent(View.OnClickListener listener);
+        void setLeftMenuButtonEvent(View.OnClickListener listener);
         void setMenuLeftIcon(int res);
+        void setRightMenuButtonEvent(View.OnClickListener listener);
+        void setMenuRightIcon(int res);
         void setToolbarTheme(int theme);
         void setTopFragment(ToolbarFragment topFragment);
     }

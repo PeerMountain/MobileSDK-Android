@@ -22,6 +22,7 @@
     <string name="pm_don_t_remember_your_code">Don\'t remember your code?</string>
     <string name="pm_recover_here">Recover here.</string>
     <string name="pm_register_title">Sign Up</string>
+    <string name="pm_login_title">Login</string>
     <string name="pm_pin_match_error_msg">PIN Code doesn\'t match!</string>
     <!--Fingerprint login-->
     <string name="dialog_title_login">Do you want to activate fingerprint option to unlock the app? </string>
@@ -65,4 +66,23 @@
     <!--scanned id data fragment -->
     <string name="pm_id_scan_lbl">ID SCAN</string>
     <!--scanned id data fragment end-->
+
+
+    <!--register profile fragment -->
+    <string name="pm_lbl_name">NAME</string>
+    <string name="pm_lbl_dob">DATE OF BIRTH</string>
+    <string name="pm_lbl_pob">PLACE OF BIRTH</string>
+    <string name="pm_lbl_mail">EMAIL</string>
+    <string name="pm_lbl_phone">PHONE</string>
+    <string name="pm_lbl_fb">FACEBOOK ACCOUNT</string>
+    <string name="pm_lbl_ln">LINKEDIN ACCOUNT</string>
+    <string name="pm_register_btn_connect">Connect</string>
+    <string name="pm_register_btn_disconnect">Disconnect</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <!--register profile fragment end-->
 </resources>

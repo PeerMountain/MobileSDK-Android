@@ -83,10 +83,7 @@
 
             <ImageView
                 android:id="@+id/pmIvNext"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/confirm_btn_size"
-                android:background="@drawable/pm_keywords_btn_selector"
-                android:padding="@dimen/margin_normal"
+                style="@style/square_btn"
                 android:rotation="180"
                 android:src="@drawable/pm_ic_arrow_back_24dp"/>
         </LinearLayout>

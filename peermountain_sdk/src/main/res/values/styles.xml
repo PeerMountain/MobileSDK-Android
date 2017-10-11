@@ -9,7 +9,7 @@
         <item name="android:textColor">@color/text_color</item>
     </style>
 
-    <style name="id_tv" >
+    <style name="id_tv">
         <!-- Customize your theme here. -->
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -18,7 +18,7 @@
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="id_iv" >
+    <style name="id_iv">
         <!-- Customize your theme here. -->
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">130dp</item>
@@ -27,34 +27,71 @@
         <item name="android:scaleType">centerInside</item>
     </style>
 
-    <style name="keyboard_row" >
+    <style name="keyboard_row">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:gravity">center</item>
         <item name="android:clickable">true</item>
-        <!--<item name="android:background">@drawable/keyboard_btn</item>-->
         <item name="android:layout_marginTop">@dimen/margin_normal</item>
     </style>
 
-    <style name="keyboard_btn" >
+    <style name="keyboard_btn">
         <item name="android:layout_width">90dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/pm_keyboard_btn</item>
         <item name="android:layout_marginLeft">@dimen/margin_normal</item>
     </style>
 
-    <style name="keyboard_btn_num" >
+    <style name="keyboard_btn_num">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/keyboard_text_color</item>
         <item name="android:textSize">40sp</item>
     </style>
 
-    <style name="keyboard_btn_hint" >
+    <style name="keyboard_btn_hint">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/keyboard_text_hint_color</item>
         <item name="android:textSize">18sp</item>
         <item name="android:layout_marginLeft">@dimen/margin_small</item>
     </style>
+
+    <style name="square_btn">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/confirm_btn_size</item>
+        <item name="android:background">@drawable/pm_keywords_btn_selector</item>
+        <item name="android:padding">@dimen/margin_normal</item>
+    </style>
+
+    <style name="reg_profile_lbl">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text_blue_lbl</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+    </style>
+
+    <style name="reg_profile_et">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/margin_normal</item>
+        <item name="android:textColor">@color/text_blue</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="grey_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/grey_line</item>
+        <item name="android:layout_marginTop">@dimen/margin_normal</item>
+        <item name="android:layout_marginBottom">@dimen/margin_normal</item>
+    </style>
+
+    <style name="SdkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="SdkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

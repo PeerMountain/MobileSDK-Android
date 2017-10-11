@@ -5,6 +5,7 @@ import android.support.annotation.RestrictTo;
 
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 
 
@@ -18,9 +19,9 @@ class Cache {
     private String sessionToken = null;
     private PmAccessToken accessToken;
     private PublicUser publicUser;
+    private Profile profile;
     private PeerMountainConfig config;
     private String pin;
-    private boolean fingerprint=false;
 
     private Cache() {
     }
@@ -73,12 +74,12 @@ class Cache {
         this.pin = pin;
     }
 
-    public boolean isFingerprint() {
-        return fingerprint;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setFingerprint(boolean fingerprint) {
-        this.fingerprint = fingerprint;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }
 

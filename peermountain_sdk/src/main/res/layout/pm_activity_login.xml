@@ -4,7 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/llMain"
+    android:background="@drawable/pm_bkg"
     tools:context="com.peermountain.sdk.ui.LoginActivity">
+
+    <include layout="@layout/pm_toolbar"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/flContainer"
+        android:layout_marginTop="@dimen/toolbar_size">
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/pm_flLoginWithFB"
@@ -14,7 +26,8 @@
         android:layout_marginBottom="120dp"
         android:layout_marginLeft="@dimen/margin_big"
         android:layout_marginRight="@dimen/margin_big"
-        android:background="@color/fb">
+        android:background="@color/fb"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="@dimen/inner_icon_size"
@@ -42,7 +55,8 @@
         android:layout_marginBottom="40dp"
         android:layout_marginLeft="@dimen/margin_big"
         android:layout_marginRight="@dimen/margin_big"
-        android:background="@drawable/pm_login_button_rectangle">
+        android:background="@drawable/pm_login_button_rectangle"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="@dimen/inner_icon_size"
@@ -55,8 +69,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_marginTop="0dp"
+            android:gravity="center"
             android:text="@string/pm_login_btn_ln"
             android:textColor="@color/white"
             android:textSize="@dimen/regular_text"

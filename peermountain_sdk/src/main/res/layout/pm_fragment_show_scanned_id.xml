@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:orientation="vertical"
-        tools:context="com.peermountain.sdk.ui.ScanIdActivity">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,9 +102,6 @@
                 android:scaleType="centerInside"
                 android:background="@drawable/pm_blue_circle_button"
                 android:src="@drawable/pm_ic_close_24dp"/>
-
-
-
 
             <ImageView
                 android:id="@+id/btnPmScanIdAccept"

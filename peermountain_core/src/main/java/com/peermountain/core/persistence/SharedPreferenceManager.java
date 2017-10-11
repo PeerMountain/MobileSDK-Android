@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.utils.LogUtils;
 
@@ -23,7 +24,7 @@ class SharedPreferenceManager {
     private static final String PREF_LI_EXPIRES = "PREF_LI_EXPIRES";
     private static final String PREF_CONFIG = "config";
     private static final String PREF_KEYWORDS = "PREF_Keywords";
-    private static final String PREF_DEMO_TICKETS_SHOWN = "PREF_DEMO_TICKETS_SHOWN";
+    private static final String PREF_PROFILE = "PREF_PROFILE";
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
 
@@ -56,6 +57,25 @@ class SharedPreferenceManager {
             return null;
         }
     }
+
+    static void saveProfile(String profile) {
+        if (getContext() == null) return;
+        SharedPreferences.Editor mEditor = getEditor(getContext());
+        mEditor.putString(PREF_PROFILE, profile);
+        mEditor.apply();
+    }
+
+    static Profile getProfile() {
+        if (getContext() == null) return null;
+        SharedPreferences mSharedPreferences = getPrefs(getContext());
+        try {
+            return MyJsonParser.readProfile(mSharedPreferences.getString(PREF_PROFILE, null));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     static void savePin(String pin) {
         if (getContext() == null) return;

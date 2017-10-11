@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.fingerprint.FastLoginHelper;
 import com.peermountain.sdk.utils.fingerprint.FingerprintHandler;
@@ -72,11 +73,11 @@ public class RegisterPinFragment extends ToolbarFragment {
         if (!isLogin) reset();
         getViews(view);
         setListeners();
-        setToolbar();
+        initToolbar();
         fastLoginHelper = new FastLoginHelper(getActivity(), "key", true);
 //        fastLoginHelper.checkFastLogin();
 
-        if(isLogin && !PeerMountainManager.getFingerprint()){
+        if (isLogin && !PeerMountainManager.getFingerprint()) {
             kbKeyFingerprint.setVisibility(View.GONE);
         }
 
@@ -95,15 +96,18 @@ public class RegisterPinFragment extends ToolbarFragment {
         mListener = null;
     }
 
+    @Override
+    public boolean onBackPressed() {
+        return onMenuBtnClick();
+    }
+
     public void reset() {
         PeerMountainManager.savePin(null);
         PeerMountainManager.saveFingerprint(false);
     }
 
-    private void setToolbar() {
-        if (mToolbarListener == null) return;
-        mToolbarListener.setToolbarTitle(R.string.pm_register_title, null);
-        mToolbarListener.setMenuButtonEvent(new View.OnClickListener() {
+    private void initToolbar() {
+        setToolbar(R.drawable.pm_ic_logo, isLogin?R.string.pm_login_title:R.string.pm_register_title, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onMenuBtnClick();
@@ -155,7 +159,7 @@ public class RegisterPinFragment extends ToolbarFragment {
                     onKeyboardBtnClick(view);
                 }
             });
-            RippleUtils.setRippleEffectSquare(keys[i]);
+//            RippleUtils.setRippleEffectSquare(keys[i]);
         }
         kbKeyDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,19 +169,21 @@ public class RegisterPinFragment extends ToolbarFragment {
         });
 
 
-            kbKeyFingerprint.setOnClickListener(new RippleOnClickListener() {
-                @Override
-                public void onClickListener(View clickedView) {
-                    enableFastLogin();
-                }
-            });
+        kbKeyFingerprint.setOnClickListener(new RippleOnClickListener() {
+            @Override
+            public void onClickListener(View clickedView) {
+                enableFastLogin();
+            }
+        });
 
-        RippleUtils.setRippleEffectSquare(kbKeyDelete, kbKeyFingerprint, pmTvRecover);
+        RippleUtils.setRippleEffectSquare(kbKeyFingerprint, pmTvRecover);//kbKeyDelete,
 
     }
 
     public boolean onMenuBtnClick() {
-        if (isRepeating) {
+        if (isLogin) {
+            if(mListener!=null) mListener.onLoginCanceled();
+        } else if (isRepeating) {
             isRepeating = false;
             pmTvMessage.setText(R.string.pm_please_enter_a_6_digits_pin_code);
             pin = new StringBuilder();
@@ -224,11 +230,11 @@ public class RegisterPinFragment extends ToolbarFragment {
 
     private void onPinEntered() {
         if (isLogin) {
-            if (pin.toString().equalsIgnoreCase(PeerMountainManager.getPin())){
+            if (pin.toString().equalsIgnoreCase(PeerMountainManager.getPin())) {
                 if (mListener != null) {
                     mListener.onLogin();
                 }
-            }else {
+            } else {
                 DialogUtils.showError(getActivity(), R.string.pm_pin_match_error_msg);
             }
         } else if (isRepeating) {
@@ -276,11 +282,11 @@ public class RegisterPinFragment extends ToolbarFragment {
     }
 
     private void onFingerprintAuthorized() {
-        if(isLogin){
+        if (isLogin) {
             if (mListener != null) {
                 mListener.onLogin();
             }
-        }else {
+        } else {
             PeerMountainManager.saveFingerprint(true);
             if (mListener != null) {
                 mListener.goToRegisterKeyWords();
@@ -292,7 +298,10 @@ public class RegisterPinFragment extends ToolbarFragment {
 
     public interface OnFragmentInteractionListener {
         void goToRegisterKeyWords();
+
         void onLogin();
+
+        void onLoginCanceled();
     }
 
 }

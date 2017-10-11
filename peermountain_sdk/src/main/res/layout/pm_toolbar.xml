@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/toolbar_size"
-    tools:showIn="@layout/pm_fragment_register_pin">
+    tools:showIn="@layout/pm_content_home">
 
     <ImageView
         android:id="@+id/pmMenuLeft"
@@ -22,4 +22,14 @@
         android:textSize="@dimen/big_text"
         android:textColor="@color/white"
         tools:text="Title"/>
+
+    <ImageView
+        android:id="@+id/pmMenuRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pm_ic_qrcode"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="@dimen/margin_normal"
+        tools:visibility="visible"
+        android:visibility="gone"/>
 </FrameLayout>

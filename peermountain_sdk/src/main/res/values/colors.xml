@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#49C5DE</color>
     <color name="text_color">#FFFFFF</color>
+    <color name="text_blue">#FF126B82</color>
+    <color name="text_blue_lbl">#8C126B82</color> <!--55%-->
     <color name="text_color_dark">#FF1D1D26</color>
     <color name="white">#FFFFFF</color>
     <color name="keyword_bkg">#33FFFFFF</color>

@@ -18,6 +18,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.utils.LogUtils;
 
@@ -76,37 +77,61 @@ public class PeerMountainManager {
         return SharedPreferenceManager.getDeviceId();
     }
 
-    public static PublicUser savePublicUser(String publicUserJson) {
+    public static PublicUser readPublicUser(String publicUserJson) {
         PublicUser liUser = null;
         try {
             liUser = MyJsonParser.readPublicUser(publicUserJson);
-            Cache.getInstance().setPublicUser(liUser);
-            SharedPreferenceManager.savePublicUser(publicUserJson);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return liUser;
     }
+//    public static PublicUser savePublicUser(String publicUserJson) {
+//        PublicUser liUser = null;
+//        try {
+//            liUser = MyJsonParser.readPublicUser(publicUserJson);
+//            Cache.getInstance().setPublicUser(liUser);
+//            SharedPreferenceManager.savePublicUser(publicUserJson);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return liUser;
+//    }
 
-    public static void savePublicUser(PublicUser publicUser) {
-        Cache.getInstance().setPublicUser(publicUser);
-        try {
-            SharedPreferenceManager.savePublicUser(MyJsonParser.writePublicUser(publicUser));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static PublicUser getPublicUser() {
-        if (Cache.getInstance().getPublicUser() == null)
-            Cache.getInstance().setPublicUser(SharedPreferenceManager.getPublicUser());
-        return Cache.getInstance().getPublicUser();
-    }
+//    public static void savePublicUser(PublicUser publicUser) {
+//        Cache.getInstance().setPublicUser(publicUser);
+//        try {
+//            SharedPreferenceManager.savePublicUser(MyJsonParser.writePublicUser(publicUser));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public static PublicUser getPublicUser() {
+//        if (Cache.getInstance().getPublicUser() == null)
+//            Cache.getInstance().setPublicUser(SharedPreferenceManager.getPublicUser());
+//        return Cache.getInstance().getPublicUser();
+//    }
 
     public static void logoutPublicProfile() {
         Cache.getInstance().clearPublicProfileCache();
         SharedPreferenceManager.logoutPublicProfile();
 //        Messenger.clearAll();
+    }
+
+    public static void saveProfile(Profile profile) {
+        Cache.getInstance().setProfile(profile);
+        try {
+            SharedPreferenceManager.saveProfile(MyJsonParser.writeProfile(profile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Profile getProfile() {
+        if (Cache.getInstance().getProfile() == null)
+            Cache.getInstance().setProfile(SharedPreferenceManager.getProfile());
+        return Cache.getInstance().getProfile();
     }
 
     public static void savePin(String pin) {
@@ -121,14 +146,11 @@ public class PeerMountainManager {
     }
 
     public static void saveFingerprint(boolean enabled) {
-        Cache.getInstance().setFingerprint(enabled);
         SharedPreferenceManager.saveFingerprint(enabled);
     }
 
     public static boolean getFingerprint() {
-        if (Cache.getInstance().isFingerprint())
-            Cache.getInstance().setFingerprint(SharedPreferenceManager.getFingerprint());
-        return Cache.getInstance().isFingerprint();
+        return SharedPreferenceManager.getFingerprint();
     }
 
     public static void saveKeywords(String keywords) {

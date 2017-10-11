@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.SystemHelper;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
