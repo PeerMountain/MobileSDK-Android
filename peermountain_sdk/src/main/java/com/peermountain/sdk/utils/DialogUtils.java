@@ -23,7 +23,7 @@ public class DialogUtils {
 //        if (title != null)
 //            dialog.setTitle(title);
 //        if (message != null)
-//            dialog.setMessage(message);
+//            dialog.setShowActivity(message);
 //        dialog.setPositiveButton(R.string.btn_close,
 //                new DialogInterface.OnClickListener() {
 //                    @Override
@@ -46,9 +46,9 @@ public class DialogUtils {
 //        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 //        dialog.setTitle(R.string.msg_no_network);
 //        if (message == null)
-//            dialog.setMessage(R.string.msg_need_network);
+//            dialog.setShowActivity(R.string.msg_need_network);
 //        else
-//            dialog.setMessage(message);
+//            dialog.setShowActivity(message);
 //        dialog.setPositiveButton(R.string.btn_change_settings_3g,
 //                new DialogInterface.OnClickListener() {
 //                    @Override
@@ -232,7 +232,7 @@ public class DialogUtils {
 //        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 //        dialog.setCancelable(false);
 //        dialog.setTitle(R.string.msg_no_gps);
-//        dialog.setMessage(R.string.msg_need_gps);
+//        dialog.setShowActivity(R.string.msg_need_gps);
 //        dialog.setPositiveButton(R.string.btn_change_settings,
 //                new DialogInterface.OnClickListener() {
 //                    @Override

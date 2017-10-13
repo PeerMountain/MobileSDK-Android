@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.balysv.materialripple.MaterialRippleLayout;
@@ -76,6 +77,7 @@ public class ScanIdFragment extends ToolbarFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        pbPmProgress.setVisibility(View.GONE);
         setListeners();
         setToolbar(R.drawable.pm_ic_logo, R.string.pm_register_title, null);
         setTheme(ToolbarFragment.THEME_DARK);
@@ -96,6 +98,7 @@ public class ScanIdFragment extends ToolbarFragment {
         switch (requestCode) {
             case REQUEST_SCAN_ID:
 //                this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                pmTvLoading.setVisibility(View.GONE);
                 if (resultCode == Activity.RESULT_OK) {
                     if (mListener != null) mListener.onIdScanned(data);
                 } else {
@@ -120,7 +123,7 @@ public class ScanIdFragment extends ToolbarFragment {
     }
 
     private void onScanSDKEnabledLocal(boolean enabled) {
-        pbPmProgress.setVisibility(!enabled?View.VISIBLE:View.GONE);
+        pmTvLoading.setVisibility(!enabled?View.VISIBLE:View.GONE);
         pmIvNext.setEnabled(enabled);
         rippleIvNext.setEnabled(enabled);
     }
@@ -134,8 +137,10 @@ public class ScanIdFragment extends ToolbarFragment {
 
     MaterialRippleLayout rippleIvNext;
     ProgressBar pbPmProgress;
+    TextView pmTvLoading;
 
     private void initView(View view) {
+        pmTvLoading = view.findViewById(R.id.pmTvLoading);
         pbPmProgress = view.findViewById(R.id.pbPmProgress);
         pmIvNext = (ImageView) view.findViewById(R.id.pmIvNext);
         rippleIvNext = RippleUtils.setRippleEffectSquare(pmIvNext);
@@ -153,7 +158,7 @@ public class ScanIdFragment extends ToolbarFragment {
         public void onClickListener(View view) {
 //            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 //            pbPmProgress.setVisibility(View.VISIBLE);//useless
-            // TODO: 10/11/2017 show loading text the SDK is slow
+            pmTvLoading.setVisibility(View.VISIBLE);
             PeerMountainManager.scanId(ScanIdFragment.this, REQUEST_SCAN_ID);
         }
     };

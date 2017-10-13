@@ -90,7 +90,7 @@ public class RegisterKeywordsFragment extends ToolbarFragment {
     }
 
     private void setToolbarForKeywordsResult() {
-        setToolbar(-1,R.string.pm_show_keywords_title,null);
+        setToolbar(ToolbarFragment.MENU_HIDE,R.string.pm_show_keywords_title,null);
     }
 
     private void initView(View view) {

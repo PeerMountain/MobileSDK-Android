@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_size"
+    android:layout_height="@dimen/pm_toolbar_size"
     tools:showIn="@layout/pm_content_home">
 
     <ImageView
@@ -12,15 +12,15 @@
         android:layout_height="wrap_content"
         android:src="@drawable/pm_ic_logo"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/margin_normal"/>
+        android:layout_marginLeft="@dimen/pm_margin_normal"/>
 
     <com.peermountain.sdk.views.PeerMountainTextView
         android:id="@+id/pmToolbarTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="@dimen/big_text"
-        android:textColor="@color/white"
+        android:textSize="@dimen/pm_big_text"
+        android:textColor="@color/pm_toolbar_title"
         tools:text="Title"/>
 
     <ImageView
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/pm_ic_qrcode"
         android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/pm_margin_normal"
         tools:visibility="visible"
         android:visibility="gone"/>
 </FrameLayout>

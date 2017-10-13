@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/transparent"
+              android:orientation="vertical"
+              android:padding="@dimen/pm_margin_normal"
+              tools:showIn="@layout/pm_activity_home"
+              tools:background="@drawable/pm_bkg"
+              tools:context="com.peermountain.sdk.ui.authorized.MenuFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/pmIvAvatar"
+            android:layout_width="@dimen/pm_avatar_size"
+            android:layout_height="@dimen/pm_avatar_size"
+            android:scaleType="centerCrop"
+            android:src="@drawable/pm_profil_white"
+            app:riv_border_color="@color/pm_avatar_border"
+            app:riv_border_width="2dp"
+            app:riv_oval="true"/>
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/pm_margin_normal"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/pm_text_color"
+            android:textSize="@dimen/pm_regular_text"
+            tools:text="Username"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/tvMenuHome"
+                style="@style/pm_menu_text"
+                android:layout_marginLeft="@dimen/pm_margin_normal"
+                android:layout_marginRight="@dimen/pm_margin_normal"
+                android:layout_marginTop="@dimen/pm_margin_xbig"
+                android:text="@string/pm_menu_home"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/tvMenuDocuments"
+                style="@style/pm_menu_text"
+                android:text="@string/pm_menu_documents"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/tvMenuContacts"
+                style="@style/pm_menu_text"
+                android:text="@string/pm_menu_contacts"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/tvMenuSettings"
+                style="@style/pm_menu_text"
+                android:text="@string/pm_menu_settings"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/tvMenuWipe"
+                style="@style/pm_menu_text"
+                android:text="Wipe profile"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

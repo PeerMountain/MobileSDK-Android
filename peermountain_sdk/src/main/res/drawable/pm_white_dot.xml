@@ -3,8 +3,8 @@
     android:shape="oval"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <size
-        android:height="@dimen/dot_size"
-        android:width="@dimen/dot_size" />
+        android:height="@dimen/pm_dot_size"
+        android:width="@dimen/pm_dot_size" />
     <solid
-        android:color="@color/white"/>
+        android:color="@color/pm_dot_white"/>
 </shape>

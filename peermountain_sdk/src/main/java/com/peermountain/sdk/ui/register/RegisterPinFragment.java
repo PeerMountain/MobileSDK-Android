@@ -2,6 +2,7 @@ package com.peermountain.sdk.ui.register;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -70,17 +71,10 @@ public class RegisterPinFragment extends ToolbarFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (!isLogin) reset();
         getViews(view);
         setListeners();
         initToolbar();
-        fastLoginHelper = new FastLoginHelper(getActivity(), "key", true);
-//        fastLoginHelper.checkFastLogin();
-
-        if (isLogin && !PeerMountainManager.getFingerprint()) {
-            kbKeyFingerprint.setVisibility(View.GONE);
-        }
-
+        setUpView();
     }
 
     @Override
@@ -101,13 +95,29 @@ public class RegisterPinFragment extends ToolbarFragment {
         return onMenuBtnClick();
     }
 
-    public void reset() {
+    public void resetProfile() {
         PeerMountainManager.savePin(null);
         PeerMountainManager.saveFingerprint(false);
     }
 
+    private void setUpView() {
+        fastLoginHelper = new FastLoginHelper(getActivity(), "key", true);
+        if (isLogin ) {
+            if(!PeerMountainManager.getFingerprint()) {
+                kbKeyFingerprint.setVisibility(View.GONE);
+            }else {
+                showFastLoginDialog();
+            }
+        }else{
+            resetProfile();
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){//not available
+                kbKeyFingerprint.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void initToolbar() {
-        setToolbar(R.drawable.pm_ic_logo, isLogin?R.string.pm_login_title:R.string.pm_register_title, new View.OnClickListener() {
+        setToolbar(R.drawable.pm_ic_logo, isLogin ? R.string.pm_login_title : R.string.pm_register_title, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onMenuBtnClick();
@@ -172,7 +182,7 @@ public class RegisterPinFragment extends ToolbarFragment {
         kbKeyFingerprint.setOnClickListener(new RippleOnClickListener() {
             @Override
             public void onClickListener(View clickedView) {
-                enableFastLogin();
+                showFastLoginDialog();
             }
         });
 
@@ -182,7 +192,7 @@ public class RegisterPinFragment extends ToolbarFragment {
 
     public boolean onMenuBtnClick() {
         if (isLogin) {
-            if(mListener!=null) mListener.onLoginCanceled();
+            if (mListener != null) mListener.onLoginCanceled();
         } else if (isRepeating) {
             isRepeating = false;
             pmTvMessage.setText(R.string.pm_please_enter_a_6_digits_pin_code);
@@ -257,7 +267,7 @@ public class RegisterPinFragment extends ToolbarFragment {
     }
 
     private void resetDots() {
-        //reset circles
+        //resetProfile circles
         int lastNumberPosition = getCurrentStringBuilder().length();
         for (int i = 0; i < dots.length; i++) {
             if (i < lastNumberPosition) {
@@ -268,16 +278,17 @@ public class RegisterPinFragment extends ToolbarFragment {
         }
     }
 
-    private void enableFastLogin() {
+    private void showFastLoginDialog() {
         if (fastLoginHelper != null) {
             fastLoginHelper.autoPopUp = false;
+            fastLoginHelper.directScan = isLogin;
             fastLoginHelper.checkFastLogin(
                     new FingerprintHandler.FingerprintEvents() {
                         @Override
                         public void onSuccess() {
                             onFingerprintAuthorized();
                         }
-                    }, false, true, false);
+                    }, isLogin, true, false);
         }
     }
 
@@ -291,7 +302,7 @@ public class RegisterPinFragment extends ToolbarFragment {
             if (mListener != null) {
                 mListener.goToRegisterKeyWords();
             }
-            DialogUtils.showInfoSnackbar(getActivity(), R.string.message_fast_login_enabled);
+            DialogUtils.showInfoSnackbar(getActivity(), R.string.pm_message_fast_login_enabled);
         }
     }
 
@@ -302,6 +313,8 @@ public class RegisterPinFragment extends ToolbarFragment {
         void onLogin();
 
         void onLoginCanceled();
+
+
     }
 
 }

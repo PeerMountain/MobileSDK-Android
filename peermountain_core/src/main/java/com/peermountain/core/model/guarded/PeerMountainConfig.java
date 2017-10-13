@@ -10,6 +10,7 @@ public class PeerMountainConfig {
     private boolean debug = false;
     private Context applicationContext;
     private String idCheckLicense = null;
+    private long userValidTime = 1000*60*5;//5min
 
     public PeerMountainConfig() {
     }
@@ -38,6 +39,15 @@ public class PeerMountainConfig {
 
     public PeerMountainConfig setIdCheckLicense(String idCheckLicense) {
         this.idCheckLicense = idCheckLicense;
+        return this;
+    }
+
+    public long getUserValidTime() {
+        return userValidTime;
+    }
+
+    public PeerMountainConfig setUserValidTime(long userValidTime) {
+        this.userValidTime = userValidTime;
         return this;
     }
 }

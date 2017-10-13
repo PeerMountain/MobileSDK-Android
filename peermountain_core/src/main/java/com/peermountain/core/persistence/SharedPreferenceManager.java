@@ -146,6 +146,19 @@ class SharedPreferenceManager {
         editor.commit();
     }
 
+    static void logout() {
+        if (getContext() == null) return;
+        logoutPublicProfile();
+        SharedPreferences prefs = getPrefs(getContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(PREF_FINGERPRINT);
+        editor.remove(PREF_PROFILE);
+        editor.remove(PREF_KEYWORDS);
+        editor.remove(PREF_PIN);
+//        editor.remove(PREF_CONFIG);//keep config file not related to profile
+        editor.commit();
+    }
+
 //    this below do not remove on logoutPublicProfile
 
 

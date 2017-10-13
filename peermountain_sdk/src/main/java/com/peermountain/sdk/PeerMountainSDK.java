@@ -8,7 +8,7 @@ import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.ui.LoginActivity;
 import com.peermountain.sdk.ui.ScanIdActivity;
-import com.peermountain.sdk.ui.home.HomeActivity;
+import com.peermountain.sdk.ui.authorized.HomeActivity;
 import com.peermountain.sdk.ui.register.RegisterActivity;
 
 /**
@@ -41,5 +41,10 @@ public class PeerMountainSDK {
 
     public static void scanID(Activity callerActivity, int requestCode){
         ScanIdActivity.show(callerActivity,requestCode);
+    }
+
+    public static void resetProfile(){
+        PeerMountainManager.resetProfile();
+        LoginManager.getInstance().logOut();
     }
 }

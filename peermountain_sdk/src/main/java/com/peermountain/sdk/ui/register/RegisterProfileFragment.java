@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -279,7 +280,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 if(imageUri==null && liUser.getPictureUrl()!=null){
                     Picasso.with(getContext())
                             .load(liUser.getPictureUrl())
-                            .error(R.color.colorAccent)
+                            .error(R.color.pm_error_loading_avatar)
                             .into(pmIvAvatar);
                 }
                 pmTvLN.setText(liUser.getEmail());
@@ -333,7 +334,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                     if(imageUri==null && fbUser.getPictureUrl()!=null){
                         Picasso.with(getContext())
                                 .load(fbUser.getPictureUrl())
-                                .error(R.color.colorAccent)
+                                .error(R.color.pm_error_loading_avatar)
                                 .into(pmIvAvatar);
                     }
                 }
@@ -365,7 +366,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                     }
                 }
                 publicUser = new PublicUser(id, email, name, lastName, picture);
-                pmTvFB.setText(email==null?name:email);
+                pmTvFB.setText(TextUtils.isEmpty(email)?name:email);
                 pmTvFBConnect.setText(R.string.pm_register_btn_disconnect);
 //                Toast.makeText(getContext(), "FB logged", Toast.LENGTH_LONG).show();
             }

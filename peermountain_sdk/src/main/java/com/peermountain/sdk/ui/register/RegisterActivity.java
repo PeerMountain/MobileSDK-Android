@@ -27,8 +27,7 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pm_activity_register);
-        initParentToolbarViews(findViewById(R.id.llMainView));
+        setContentView(R.layout.pm_activity_register,R.id.llMainView);
         fb = PmFragmentUtils.init(this, containerId);
         showPinFragment();
         setResult(Activity.RESULT_CANCELED);
@@ -67,7 +66,7 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
                         public void onClick(DialogInterface dialogInterface, int i) {
                             finish();
                         }
-                    }, R.string.btn_ask_for_permission_again, R.string.btn_refuse_permission);
+                    }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
         }
     }
 

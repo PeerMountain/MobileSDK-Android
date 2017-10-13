@@ -8,21 +8,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/margin_big"
-        android:layout_marginTop="@dimen/margin_big"
+        android:layout_marginBottom="@dimen/pm_margin_big"
+        android:layout_marginTop="@dimen/pm_margin_big"
         android:background="@color/transparent"
-        android:padding="@dimen/margin_big">
+        android:padding="@dimen/pm_margin_big">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal"
 
-            android:layout_marginLeft="@dimen/margin_xbig"
-            android:layout_marginRight="@dimen/margin_xbig"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/pm_margin_xbig"
+            android:layout_marginRight="@dimen/pm_margin_xbig"
+            android:layout_marginTop="@dimen/pm_margin_small"
             android:background="@drawable/pm_card"
-            android:elevation="@dimen/shadow">
+            android:elevation="@dimen/pm_shadow">
 
         </FrameLayout>
 
@@ -30,11 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="@dimen/margin_normal"
-            android:layout_marginRight="@dimen/margin_normal"
-            android:layout_marginTop="@dimen/margin_big"
+            android:layout_marginLeft="@dimen/pm_margin_normal"
+            android:layout_marginRight="@dimen/pm_margin_normal"
+            android:layout_marginTop="@dimen/pm_margin_big"
             android:background="@drawable/pm_card"
-            android:elevation="@dimen/shadow">
+            android:elevation="@dimen/pm_shadow">
 
         </FrameLayout>
 
@@ -44,7 +44,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginTop="@dimen/margin_first_card"
             android:background="@drawable/pm_card_white"
-            android:elevation="@dimen/shadow"
+            android:elevation="@dimen/pm_shadow"
             android:orientation="vertical">
 
             <FrameLayout
@@ -75,15 +75,26 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:padding="@dimen/margin_normal"
+                    android:padding="@dimen/pm_margin_normal"
                     android:text="@string/pm_btn_scan_id_msg"
-                    android:textColor="@color/text_color_dark"
-                    android:textSize="@dimen/regular_text"/>
+                    android:textColor="@color/pm_text_color_dark"
+                    android:textSize="@dimen/pm_regular_text"/>
             </FrameLayout>
 
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/pmTvLoading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/pm_margin_normal"
+                android:text="@string/pm_lbl_loading_sdk"
+                android:textColor="@color/pm_text_accent"
+                android:textSize="@dimen/pm_regular_text"
+                android:visibility="gone"
+                tools:visibility="visible"/>
             <ImageView
                 android:id="@+id/pmIvNext"
-                style="@style/square_btn"
+                style="@style/pm_square_btn"
                 android:rotation="180"
                 android:src="@drawable/pm_ic_arrow_back_24dp"/>
         </LinearLayout>

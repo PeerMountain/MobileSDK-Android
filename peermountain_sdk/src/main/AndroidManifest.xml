@@ -12,14 +12,14 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:theme="@style/SdkTheme"        >
+        android:theme="@style/PmSdkTheme"        >
 
         <!-- android:theme="@style/SdkTheme" -->
 
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SdkTheme">
+            android:theme="@style/PmSdkTheme">
         </activity>
         <activity
             android:name=".ui.ScanIdActivity"
@@ -28,13 +28,12 @@
         <activity
             android:name=".ui.register.RegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SdkTheme"
+            android:theme="@style/PmSdkTheme"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
-            android:name=".ui.home.HomeActivity"
-            android:label="@string/title_activity_home"
-            android:theme="@style/SdkTheme">
+            android:name=".ui.authorized.HomeActivity"
+            android:theme="@style/PmSdkTheme">
         </activity>
     </application>
 

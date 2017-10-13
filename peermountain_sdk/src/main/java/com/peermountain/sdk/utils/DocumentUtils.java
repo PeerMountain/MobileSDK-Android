@@ -50,7 +50,6 @@ public final class DocumentUtils {
             document.setValid(validity == AXTDocumentValidityResult.VALID);
             AXTDocumentChip documentNfc = (AXTDocumentChip)
                     scannedResult.getMapDocument().get(AXTSdkResult.RFID_DOCUMENT);
-            String expirationDate = null;
             if (documentNfc != null) {
                 document.setExpirationDate(documentNfc.getField(AXTDocumentChip.AxtField.EXPIRATION_DATE));
             }

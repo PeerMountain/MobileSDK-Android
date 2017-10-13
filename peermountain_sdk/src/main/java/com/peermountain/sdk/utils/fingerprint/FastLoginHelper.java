@@ -59,8 +59,7 @@ public class FastLoginHelper {
         checkFastLogin(callback, false, true, true);
     }
 
-    public void checkFastLogin(FingerprintHandler.FingerprintEvents callback, boolean disable, boolean
-            withFingerprint, boolean withCode) {
+    public void checkFastLogin(FingerprintHandler.FingerprintEvents callback, boolean disable, boolean withFingerprint, boolean withCode) {
         this.callback = callback;
         this.disable = disable;
         if (registerFingerprint) {
@@ -94,7 +93,7 @@ public class FastLoginHelper {
         dialog.setCancelable(false);
         View view = getDialogViews();
         if (disable) {//set text for disable
-            tvTitleFastDialog.setText(R.string.dialog_confirm_user_title);
+            tvTitleFastDialog.setText(R.string.pm_dialog_confirm_user_title);
         }
         if (!registerFingerprint || disable || !autoPopUp) {
             cbDontAsk.setVisibility(View.GONE);
@@ -102,8 +101,8 @@ public class FastLoginHelper {
         setCodeBtn(withCode);
         setFingerprintBtn(withFingerprint);
         setRefuseBtn();
-        if (fromProfile)//this option is just to set buttons
-            fromProfile = false;
+        if (directScan)//this option is just to set buttons
+            directScan = false;
         if (!autoPopUp)
             autoPopUp = true;
         dialog.setView(view);
@@ -144,11 +143,11 @@ public class FastLoginHelper {
     /**
      * This flag is set in profile fragment to notify is just authentication
      */
-    public boolean fromProfile = false;
+    public boolean directScan = false;
 
     private void setFingerprintBtn(boolean withFingerprint) {
         if (withFingerprint) {
-            if (fromProfile) {
+            if (directScan) {
                 init();
             } else {
                 tvFingerBtn.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +166,7 @@ public class FastLoginHelper {
 
     private void setCodeBtn(boolean withCode) {
         if (withCode) {
-//            if (fromProfile) {
+//            if (directScan) {
 //                tvCodeBtn.setText(R.string.btn_authenticate_code);
 //            }
 //            tvCodeBtn.setOnClickListener(new View.OnClickListener() {
@@ -252,7 +251,7 @@ public class FastLoginHelper {
                 startListenForFingerprint(tv);
                 break;
             case FingerprintHandler.ERR_NO_PERMISSION:
-                DialogUtils.showError(activity, R.string.err_no_fingerprint_permission);
+                DialogUtils.showError(activity, R.string.pm_err_no_fingerprint_permission);
                 if (dialogFastLogin != null)
                     dialogFastLogin.dismiss();
                 break;
@@ -282,15 +281,15 @@ public class FastLoginHelper {
             if (fingerprintHandler != null)
                 fingerprintHandler.startAuth();
             if (tv != null) {
-                tv.setTextColor(ContextCompat.getColor(activity, R.color.green));
-                tv.setText(R.string.position_finger_for_scan);
+                tv.setTextColor(ContextCompat.getColor(activity, R.color.pm_finger_print_scan_color));
+                tv.setText(R.string.pm_position_finger_for_scan);
             }
         }
     }
 
     private void handleNoSecurityDevice(boolean isFingerprint) {
-        DialogUtils.showChoiceDialog(activity, isFingerprint ? R.string.err_no_saved_fingerprint :
-                        R.string.err_no_keyguard, -1,
+        DialogUtils.showChoiceDialog(activity, isFingerprint ? R.string.pm_err_no_saved_fingerprint :
+                        R.string.pm_err_no_keyguard, -1,
 
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -307,7 +306,7 @@ public class FastLoginHelper {
                             dialogFastLogin.dismiss();
                     }
                 },
-                R.string.btn_add_pass,R.string.btn_dont_add_pass);
+                R.string.pm_btn_add_pass, R.string.pm_btn_dont_add_pass);
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

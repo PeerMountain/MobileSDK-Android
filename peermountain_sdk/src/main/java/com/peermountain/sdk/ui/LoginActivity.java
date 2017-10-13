@@ -20,8 +20,7 @@ public class LoginActivity extends ToolbarActivity implements RegisterPinFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pm_activity_login);
-        initParentToolbarViews(findViewById(R.id.llMain));
+        setContentView(R.layout.pm_activity_login,R.id.llMain);
         showPinFragment();
         setResult(Activity.RESULT_CANCELED);
    }

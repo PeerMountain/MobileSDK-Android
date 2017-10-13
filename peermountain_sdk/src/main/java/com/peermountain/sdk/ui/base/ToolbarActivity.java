@@ -1,5 +1,9 @@
 package com.peermountain.sdk.ui.base;
 
+import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,27 +14,30 @@ import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 
 public abstract class ToolbarActivity extends AppCompatActivity implements
-        ToolbarFragment.ToolbarEvents{
+        ToolbarFragment.ToolbarEvents, HomeToolbarFragment.HomeToolbarEvents{
 
     public ToolbarFragment topFragment;
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if(llMainView==null){
-//            initParentToolbarViews();
-//        }
-//    }
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+    public void setContentView(@LayoutRes int layoutResID,@IdRes int mainViewID) {
+        super.setContentView(layoutResID);
+        llMainView = findViewById(mainViewID);
+        getViews();
+    }
 
     public void initParentToolbarViews(View llMainView) {
         this.llMainView = llMainView;
-        getViews();
     }
 
 
     public ImageView pmMenuLeft, pmMenuRight;
     public TextView pmToolbarTitle;
-    public View llMainView;
+    public View llMainView;//we need main view to change the background of it
 
     private void getViews() {
         pmMenuLeft = findViewById(R.id.pmMenuLeft);
@@ -41,7 +48,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setToolbarTitle(int resTitle, String title) {
-        if (resTitle != -1) {
+        if (resTitle != ToolbarFragment.MENU_HIDE) {
             pmToolbarTitle.setText(resTitle);
         } else {
             pmToolbarTitle.setText(title);
@@ -64,7 +71,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setMenuLeftIcon(int res) {
-        if (res == -1) {
+        if (res == ToolbarFragment.MENU_HIDE) {
             pmMenuLeft.setImageResource(android.R.color.transparent);
         } else {
             pmMenuLeft.setImageResource(res);
@@ -78,11 +85,11 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
         if (currentTheme == theme) return;
         switch (theme) {
             case ToolbarFragment.THEME_LIGHT:
-                pmToolbarTitle.setTextColor(ContextCompat.getColor(this, R.color.text_color_dark));
-                llMainView.setBackgroundResource(R.color.white);
+                pmToolbarTitle.setTextColor(ContextCompat.getColor(this, R.color.pm_text_color_dark));
+                llMainView.setBackgroundResource(R.color.pm_theme_light_bkg);
                 break;
             default:
-                pmToolbarTitle.setTextColor(ContextCompat.getColor(this, R.color.text_color));
+                pmToolbarTitle.setTextColor(ContextCompat.getColor(this, R.color.pm_text_color));
                 llMainView.setBackgroundResource(R.drawable.pm_bkg);
         }
         currentTheme = theme;
@@ -95,7 +102,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setMenuRightIcon(int res) {
-        if (res == -1) {
+        if (res == ToolbarFragment.MENU_HIDE) {
             pmMenuRight.setImageResource(android.R.color.transparent);
         } else {
             pmMenuRight.setImageResource(res);
@@ -114,5 +121,10 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
         } else {
             pmMenuRight.setOnClickListener(null);
         }
+    }
+
+    @Override
+    public View.OnClickListener getOpenMenuListener() {
+        return null;
     }
 }

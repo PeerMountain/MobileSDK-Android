@@ -155,9 +155,9 @@ public class ScanIdActivity extends AppCompatActivity {
         setText(mTvPmValid, "", validity == AXTDocumentValidityResult.VALID ?
                 "Valid" : "Invalid", "", sb);
 
-        setImage(mIvPmFaceImage, imageFace, "\nno face image", sb);
-        setImage(mIvPmFullImage, imageCroppped, "\nno mrz image", sb);
-        setImage(mIvPmFullImageBack, imageCroppedBack, "\nno verso image", sb);
+        setImage(mIvPmFaceImage, imageFace, "\nno face btn", sb);
+        setImage(mIvPmFullImage, imageCroppped, "\nno mrz btn", sb);
+        setImage(mIvPmFullImageBack, imageCroppedBack, "\nno verso btn", sb);
 
         if(documentNfc==null){
             sb.append("\nNo NFC data");

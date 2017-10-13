@@ -22,9 +22,15 @@ class Cache {
     private Profile profile;
     private PeerMountainConfig config;
     private String pin;
+    private long lastTimeLogin;
 
     private Cache() {
     }
+
+    private Cache(PeerMountainConfig config) {
+        this.config = config;
+    }
+
     static Cache getInstance() {
         if (instance == null)
             instance = new Cache();
@@ -32,7 +38,9 @@ class Cache {
     }
 
     void clearCache() {
-        instance = null;
+        if (instance != null) {
+            instance = new Cache(instance.config);
+        }
     }
 
     void clearPublicProfileCache() {
@@ -80,6 +88,14 @@ class Cache {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public long getLastTimeLogin() {
+        return lastTimeLogin;
+    }
+
+    public void setLastTimeLogin(long lastTimeLogin) {
+        this.lastTimeLogin = lastTimeLogin;
     }
 }
 

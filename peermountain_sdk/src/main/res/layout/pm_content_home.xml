@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
+    android:id="@+id/llMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/llMain"
     android:background="@drawable/pm_bkg"
     android:orientation="vertical"
-    tools:context="com.peermountain.sdk.ui.home.HomeActivity">
+    tools:context="com.peermountain.sdk.ui.authorized.HomeActivity">
 
-    <include layout="@layout/pm_toolbar"/>
-
-    <FrameLayout
-        android:id="@+id/flContainer"
+    <LinearLayout
+        android:id="@+id/llContentView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </FrameLayout>
+        <include layout="@layout/pm_toolbar"/>
 
+        <FrameLayout
+            android:id="@+id/flContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

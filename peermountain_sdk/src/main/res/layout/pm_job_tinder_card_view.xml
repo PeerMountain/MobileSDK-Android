@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/pm_card"
+              android:elevation="@dimen/pm_shadow">
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:id="@+id/tvJobMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/pm_margin_normal"
+                tools:text="Job showActivity"
+                android:textColor="@color/pm_text_color_dark"
+                android:textSize="@dimen/pm_regular_text"/>
+        </FrameLayout>
+
+    <ImageView
+        android:id="@+id/pmIvDoJob"
+        style="@style/pm_square_btn"
+        android:rotation="180"
+        android:src="@drawable/pm_ic_arrow_back_24dp"/>
+</LinearLayout>

@@ -145,6 +145,17 @@ public class PeerMountainManager {
         return Cache.getInstance().getPin();
     }
 
+    public static void saveLastTimeLogin() {
+        Cache.getInstance().setLastTimeLogin(System.currentTimeMillis());
+    }
+
+    /**
+     * @return if the time for valid user set in PeerMountainConfig has past since was authorization
+     */
+    public static boolean shuldAuthorize() {
+        return System.currentTimeMillis() > Cache.getInstance().getLastTimeLogin() + getPeerMountainConfig().getUserValidTime();
+    }
+
     public static void saveFingerprint(boolean enabled) {
         SharedPreferenceManager.saveFingerprint(enabled);
     }
@@ -161,7 +172,10 @@ public class PeerMountainManager {
         return SharedPreferenceManager.getKeywords();
     }
 
-
+    public static void resetProfile() {
+        Cache.getInstance().clearCache();
+        SharedPreferenceManager.logout();
+    }
     /**
      * This method works in background and takes a few seconds
      * also needs network to verify license

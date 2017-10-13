@@ -219,7 +219,7 @@ class MyJsonParser {
 
         if(profile.getLnProfile()!=null) {
             writer.name(LINKEDIN);
-            writePublicUser(profile.getLnProfile());
+            writePublicUser(writer, profile.getLnProfile());
         }
 
         if(profile.getDocuments().size()>0){

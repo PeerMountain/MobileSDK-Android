@@ -37,8 +37,11 @@ public abstract class ToolbarFragment extends Fragment {
         mToolbarListener = null;
     }
 
+    public static final int MENU_HIDE = -1;
+    public static final int MENU_MAIN_SHOW = -2;
+
     public void setToolbar(int leftIconRes,int resTitle, View.OnClickListener listener){
-        setToolbar(leftIconRes,-1,resTitle,listener,null);
+        setToolbar(leftIconRes,MENU_HIDE,resTitle,listener,null);
     }
 
     public void setToolbar(int leftIconRes,int rightIconRes,int resTitle, View.OnClickListener listener, View.OnClickListener listenerRight){

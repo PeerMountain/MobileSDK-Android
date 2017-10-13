@@ -166,8 +166,18 @@ public class ShowScannedIdFragment extends ToolbarFragment {
 
     private void setDataInView(Document document) {
         if(document==null) return;
-            // TODO: 10/10/2017 use placeholders
         StringBuilder sb = new StringBuilder();
+
+        DocumentUtils.setImage(mIvPmFullImage, document.getImageCropped(), "\nno mrz", sb);
+        DocumentUtils.setImage(mIvPmFullImageBack, document.getImageCroppedBack(), "\nno ID verso image", sb);
+
+        // TODO: 10/10/2017 comment bellow if you just want to show ID images
+        showExtraInfo(document, sb);
+//        mTvPmError.setVisibility(View.GONE);
+    }
+
+    private void showExtraInfo(Document document, StringBuilder sb) {
+        DocumentUtils.setImage(mIvPmFaceImage, document.getImageFace(), "\nno face image", sb);
         DocumentUtils.setText(mTvPmNumber, "# ", document.getDocNumber(), "\nno number", sb);
         DocumentUtils.setText(mTvPmFirstName, "First name : ", document.getFirstName(), "\nno first name", sb);
         DocumentUtils.setText(mTvPmLastName, "Last name : ", document.getLastName(), "\nno last name", sb);
@@ -176,10 +186,6 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         DocumentUtils.setText(mTvPmIssued, "Emitted : ", document.getEmitDate(), "\nno emitDate", sb);
         DocumentUtils.setText(mTvPmDob, "Dob : ", document.getBirthday(), "\nno Dob", sb);
         DocumentUtils.setText(mTvPmValid, "", document.isValid() ?"Valid" : "Invalid", "", sb);
-
-        DocumentUtils.setImage(mIvPmFaceImage, document.getImageFace(), "\nno face image", sb);
-        DocumentUtils.setImage(mIvPmFullImage, document.getImageCropped(), "\nno mrz image", sb);
-        DocumentUtils.setImage(mIvPmFullImageBack, document.getImageCroppedBack(), "\nno verso image", sb);
 
 //        if(document.getScannedResult().getMapDocument().get(AXTSdkResult.RFID_DOCUMENT)==null){
 //            sb.append("\nNo NFC data");

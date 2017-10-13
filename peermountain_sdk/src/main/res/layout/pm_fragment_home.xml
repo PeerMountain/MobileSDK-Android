@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:background="@drawable/pm_bkg"
+              tools:context="com.peermountain.sdk.ui.authorized.home.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvTabActivity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/pm_margin_normal"
+            android:text="@string/pm_tab_activity"
+            android:textColor="@color/pm_tab_text_color"
+            android:textSize="@dimen/pm_regular_text"/>
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvTabInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/pm_margin_normal"
+            android:text="@string/pm_tab_information"
+            android:textColor="@color/pm_tab_text_inactive"
+            android:textSize="@dimen/pm_regular_text"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+       <!-- android:paddingLeft="@dimen/margin_big"
+        android:paddingRight="@dimen/margin_big"
+        android:paddingBottom="@dimen/margin_big">-->
+
+      <!--  <com.mindorks.placeholderview.SwipePlaceHolderView
+            android:id="@+id/swipeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>-->
+
+        <com.yuyakaido.android.cardstackview.CardStackView
+            android:id="@+id/pm_main_card_stack_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/pm_margin_big"
+            android:paddingBottom="@dimen/pm_margin_big"
+            android:paddingLeft="@dimen/pm_margin_big"
+            android:paddingRight="@dimen/pm_margin_big"
+            android:clipToPadding="false"
+            app:visibleCount="3"
+            app:swipeThreshold="0.75"
+            app:translationDiff="30"
+            app:scaleDiff="0.07"
+            app:stackFrom="top"
+            app:elevationEnabled="true"
+            app:swipeEnabled="true"
+            app:swipeDirection="freedom"/>
+
+        <!--android:paddingTop="32dp"
+        android:paddingBottom="32dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:leftOverlay="@layout/overlay_left"
+        app:rightOverlay="@layout/overlay_right"
+        app:topOverlay="@layout/overlay_top"-->
+        <!--<FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginLeft="@dimen/margin_xbig"
+            android:layout_marginRight="@dimen/margin_xbig"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/pm_card"
+            android:elevation="@dimen/shadow">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginRight="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:background="@drawable/pm_card"
+            android:elevation="@dimen/shadow">
+
+        </FrameLayout>
+
+        <include layout="@layout/job_tinder_card_view"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:layout_gravity="bottom|center_horizontal"
+                 android:layout_marginTop="@dimen/margin_xbig"/>-->
+    </FrameLayout>
+</LinearLayout>
