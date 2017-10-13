@@ -50,6 +50,13 @@ class MyJsonParser {
     public static final String IMAGE_CROPPED = "imageCropped";
     public static final String IMAGE_SOURCE_BACK = "imageSourceBack";
     public static final String IMAGE_SOURCE = "imageSource";
+    public static final String PUBLIC_PROFILES = "publicProfiles";
+    public static final String LOGIN_TYPE = "login_type";
+    public static final String COMPANY_TITLE = "company-title";
+    public static final String PUBLIC_PROFILE_URL = "publicProfileUrl";
+    public static final String COMPANY = "company";
+    public static final String COMPANY_START_DATE = "company_start_date";
+    public static final String COMPANY_END_DATE = "company_end_date";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -182,12 +189,15 @@ class MyJsonParser {
                 case POB:
                     profile.setPob(getString(reader));
                     break;
-                case FACEBOOK:
-                    profile.setFbProfile(readPublicUser(reader));
+                case PUBLIC_PROFILES:
+                    profile.setPublicProfiles(readPublicUsers(reader));
                     break;
-                case LINKEDIN:
-                    profile.setLnProfile(readPublicUser(reader));
-                    break;
+//                case FACEBOOK:
+//                    profile.setFbProfile(readPublicUser(reader));
+//                    break;
+//                case LINKEDIN:
+//                    profile.setLnProfile(readPublicUser(reader));
+//                    break;
                 case DOCUMENTS:
                     profile.setDocuments(readDocuments(reader));
                     break;
@@ -212,21 +222,29 @@ class MyJsonParser {
         writer.name(DOB).value(profile.getDob());
         writer.name(POB).value(profile.getPob());
 
-        if(profile.getFbProfile()!=null) {
-            writer.name(FACEBOOK);
-            writePublicUser(writer, profile.getFbProfile());
+        if (profile.getPublicProfiles() != null && profile.getPublicProfiles().size() > 0) {
+            writer.name(PUBLIC_PROFILES);
+            writer.beginArray();
+            for (PublicUser publicUser : profile.getPublicProfiles()) {
+                writePublicUser(writer, publicUser);
+            }
+            writer.endArray();
         }
+//        if(profile.getFbProfile()!=null) {
+//            writer.name(FACEBOOK);
+//            writePublicUser(writer, profile.getFbProfile());
+//        }
+//
+//        if(profile.getLnProfile()!=null) {
+//            writer.name(LINKEDIN);
+//            writePublicUser(writer, profile.getLnProfile());
+//        }
 
-        if(profile.getLnProfile()!=null) {
-            writer.name(LINKEDIN);
-            writePublicUser(writer, profile.getLnProfile());
-        }
-
-        if(profile.getDocuments().size()>0){
+        if (profile.getDocuments().size() > 0) {
             writer.name(DOCUMENTS);
             writer.beginArray();
             for (Document document : profile.getDocuments()) {
-                writeDocument(writer,document);
+                writeDocument(writer, document);
             }
             writer.endArray();
         }
@@ -308,7 +326,7 @@ class MyJsonParser {
     }
 
     private static void writeDocument(JsonWriter writer, Document document) throws IOException {
-        if(document==null) return ;
+        if (document == null) return;
         writer.beginObject();
         writer.name(GANDER).value(document.getGender());
         writer.name(FIRST_NAME).value(document.getFirstName());
@@ -319,33 +337,34 @@ class MyJsonParser {
         writer.name(MRZ_ID).value(document.getMrzID());
         writer.name(EXPIRATION_DATE).value(document.getExpirationDate());
         writer.name(VALID).value(document.isValid());
-        if(checkDocumentImageNotEmpty(document.getImageSource())) {
+        if (checkDocumentImageNotEmpty(document.getImageSource())) {
             writer.name(IMAGE_SOURCE);
             writeAXTImage(writer, document.getImageSource());
         }
-        if(checkDocumentImageNotEmpty(document.getImageSourceBack())) {
+        if (checkDocumentImageNotEmpty(document.getImageSourceBack())) {
             writer.name(IMAGE_SOURCE_BACK);
             writeAXTImage(writer, document.getImageSourceBack());
         }
-        if(checkDocumentImageNotEmpty(document.getImageCropped())) {
+        if (checkDocumentImageNotEmpty(document.getImageCropped())) {
             writer.name(IMAGE_CROPPED);
             writeAXTImage(writer, document.getImageCropped());
         }
-        if(checkDocumentImageNotEmpty(document.getImageCroppedBack())) {
+        if (checkDocumentImageNotEmpty(document.getImageCroppedBack())) {
             writer.name(IMAGE_CROPPED_BACK);
             writeAXTImage(writer, document.getImageCroppedBack());
         }
-        if(checkDocumentImageNotEmpty(document.getImageFace())) {
+        if (checkDocumentImageNotEmpty(document.getImageFace())) {
             writer.name(IMAGE_FACE);
             writeAXTImage(writer, document.getImageFace());
         }
         writer.endObject();
     }
+
     private static boolean checkDocumentImageNotEmpty(AXTImageResult image) {
-        return  image != null && !TextUtils.isEmpty(image.getImageUri());
+        return image != null && !TextUtils.isEmpty(image.getImageUri());
     }
 
-    private static void writeAXTImage(JsonWriter writer,AXTImageResult image) throws IOException {
+    private static void writeAXTImage(JsonWriter writer, AXTImageResult image) throws IOException {
         writer.beginObject();
         writer.name(IMAGE_URI).value(image.getImageUri());
         writer.name(WIDTH).value(image.getWidth());
@@ -358,7 +377,7 @@ class MyJsonParser {
         AXTImageResult axtImageResult = null;
         reader.beginObject();
         while (reader.hasNext()) {
-            if(axtImageResult==null) axtImageResult = new AXTImageResult();
+            if (axtImageResult == null) axtImageResult = new AXTImageResult();
             name = reader.nextName();
             switch (name) {
                 case IMAGE_URI:
@@ -378,6 +397,17 @@ class MyJsonParser {
         return axtImageResult;
     }
 
+    private static ArrayList<PublicUser> readPublicUsers(JsonReader reader) throws IOException {
+        ArrayList<PublicUser> publicUsers = new ArrayList<PublicUser>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            PublicUser publicUser = readPublicUser(reader);
+            if (publicUser != null) publicUsers.add(publicUser);
+        }
+        reader.endArray();
+        return publicUsers;
+    }
+
     private static PublicUser readPublicUser(JsonReader reader) throws IOException {
         String name = null;
         PublicUser liUser = new PublicUser();
@@ -385,6 +415,9 @@ class MyJsonParser {
         while (reader.hasNext()) {
             name = reader.nextName();
             switch (name) {
+                case LOGIN_TYPE:
+                    liUser.setLoginType(getString(reader));
+                    break;
                 case EMAIL_ADDRESS:
                     liUser.setEmail(getString(reader));
                     break;
@@ -400,10 +433,22 @@ class MyJsonParser {
                 case PICTURE_URL:
                     liUser.setPictureUrl(getString(reader));
                     break;
-                case "publicProfileUrl":
+                case PUBLIC_PROFILE_URL:
                     liUser.setPublicProfileUrl(getString(reader));
                     break;
-                case "positions":
+                case COMPANY:
+                    liUser.setCompany(getString(reader));
+                    break;
+                case COMPANY_TITLE:
+                    liUser.setCompanyTitle(getString(reader));
+                    break;
+                case COMPANY_START_DATE:
+                    liUser.setCompanyStartDate(getString(reader));
+                    break;
+                case COMPANY_END_DATE:
+                    liUser.setCompanyEndDate(getString(reader));
+                    break;
+                case "positions"://this is read from LinkedIn profile only
                     readCompanies(liUser, reader);
                     break;
                 default:
@@ -426,26 +471,36 @@ class MyJsonParser {
 
     // TODO: 10/3/2017 update to populate the right fields
     static String writePublicUser(PublicUser liUser) throws IOException {
-        if(liUser==null) return null;
+        if (liUser == null) return null;
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
         writer.beginObject();
+        writer.name(LOGIN_TYPE).value(liUser.getLoginType());
         writer.name(EMAIL_ADDRESS).value(liUser.getEmail());
         writer.name(FIRST_NAME).value(liUser.getFirstname());
         writer.name(LAST_NAME).value(liUser.getSurname());
         writer.name(ID).value(liUser.getLinked_in());
         writer.name(PICTURE_URL).value(liUser.getPictureUrl());
+        writer.name(COMPANY_TITLE).value(liUser.getCompanyTitle());
+        writer.name(PUBLIC_PROFILE_URL).value(liUser.getPublicProfileUrl());
         writer.endObject();
         writer.close();
         return sw.toString();
     }
-    private static void writePublicUser(JsonWriter writer,PublicUser liUser) throws IOException {
+
+    private static void writePublicUser(JsonWriter writer, PublicUser liUser) throws IOException {
         writer.beginObject();
+        writer.name(LOGIN_TYPE).value(liUser.getLoginType());
         writer.name(EMAIL_ADDRESS).value(liUser.getEmail());
         writer.name(FIRST_NAME).value(liUser.getFirstname());
         writer.name(LAST_NAME).value(liUser.getSurname());
         writer.name(ID).value(liUser.getLinked_in());
         writer.name(PICTURE_URL).value(liUser.getPictureUrl());
+        writer.name(COMPANY_TITLE).value(liUser.getCompanyTitle());
+        writer.name(COMPANY).value(liUser.getCompany());
+        writer.name(COMPANY_START_DATE).value(liUser.getCompanyStartDate());
+        writer.name(COMPANY_END_DATE).value(liUser.getCompanyEndDate());
+        writer.name(PUBLIC_PROFILE_URL).value(liUser.getPublicProfileUrl());
         writer.endObject();
     }
 

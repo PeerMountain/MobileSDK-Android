@@ -1,0 +1,189 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:background="@drawable/pm_bkg"
+              tools:context="com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/pmIvAvatar"
+        style="@style/pm_avatar_image"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/pm_margin_normal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvTabGeneral"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:shadowColor="@color/pm_text_shadow"
+            android:shadowDx="3"
+            android:shadowDy="5"
+            android:shadowRadius="10"
+            android:padding="@dimen/pm_margin_normal"
+            android:text="@string/pm_tab_profile_general"
+            android:textColor="@color/pm_tab_text_color"
+            android:textSize="@dimen/pm_regular_text"/>
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvTabSocial"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="@dimen/pm_margin_normal"
+            android:text="@string/pm_tab_profile_social"
+            android:textColor="@color/pm_tab_text_inactive"
+            android:textSize="@dimen/pm_regular_text"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/pm_theme_light_bkg"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/llGeneralData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_margin_normal"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_name"/>
+
+                <EditText
+                    android:id="@+id/etNames"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_name"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_dob"/>
+
+                <EditText
+                    android:id="@+id/etDob"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_dob"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_pob"/>
+
+                <EditText
+                    android:id="@+id/etPob"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_pob"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_mail"/>
+
+                <EditText
+                    android:id="@+id/etEmail"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_mail"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_phone"/>
+
+                <EditText
+                    android:id="@+id/etPhone"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_phone"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSocialData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_margin_normal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_fb"/>
+
+                <EditText
+                    android:id="@+id/etFb"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_fb"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_profile_row_height"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    style="@style/pm_settings_profile_lbl"
+                    android:text="@string/pm_profile_settings_lbl_ln"/>
+
+                <EditText
+                    android:id="@+id/etLn"
+                    style="@style/pm_settings_profile_et"
+                    tools:text="@string/pm_profile_settings_lbl_ln"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvAddContact"
+        style="@style/pm_square_btn"
+        android:gravity="center"
+        android:text="@string/pm_settings_add_to_contacts"
+        android:textColor="@color/pm_text_color"
+        android:textSize="@dimen/pm_big_text"/>
+</LinearLayout>

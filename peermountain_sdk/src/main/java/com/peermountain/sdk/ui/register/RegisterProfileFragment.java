@@ -236,8 +236,12 @@ public class RegisterProfileFragment extends ToolbarFragment {
             profile.setImageUri(imageUri.toString());
         }
         profile.setPictureUrl(pictureUrl);
-        profile.setLnProfile(liUser);
-        profile.setFbProfile(fbUser);
+        if(liUser!=null) {
+            profile.getPublicProfiles().add(liUser);
+        }
+        if(fbUser!=null) {
+            profile.getPublicProfiles().add(fbUser);
+        }
         PeerMountainManager.saveProfile(profile);
     }
 

@@ -1,25 +1,25 @@
 package com.peermountain.sdk.ui.authorized;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.home.HomeFragment;
+import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.ToolbarActivity;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
-public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener {
+public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener {
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
     private DrawerLayout drawer;
@@ -31,6 +31,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         getViews();
         initDrawer();
         authorize();
+//        setUpView();
     }
 
     @Override
@@ -88,32 +89,32 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         navigationView = findViewById(R.id.navigationView);
         llContentView = findViewById(R.id.llContentView);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.setScrimColor(Color.TRANSPARENT);
-        drawer.addDrawerListener(
-                new DrawerLayout.SimpleDrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawer, float slideOffset) {
-//                        LogUtils.d("slideOffset",""+slideOffset);
-                        pmIvLogout.setAlpha(slideOffset);
-                        pmIvLogout.setEnabled(slideOffset>0.8);
-                        pmIvLogout.setVisibility(slideOffset > 0 ? View.VISIBLE : View.GONE);
-                        llContentView.setX(navigationView.getWidth() * slideOffset);
-                        FrameLayout.LayoutParams lp =
-                                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
-                        lp.height = drawer.getHeight() -
-                                (int) (drawer.getHeight() * slideOffset * 0.3f);
-                        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
-                        llContentView.setLayoutParams(lp);
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                        pmIvLogout.setVisibility(View.GONE);
-//                        pmIvLogout.setAlpha(0f);
-//                        pmIvLogout.setEnabled(false);
-                    }
-                }
-        );
+//        drawer.setScrimColor(Color.TRANSPARENT);
+//        drawer.addDrawerListener(
+//                new DrawerLayout.SimpleDrawerListener() {
+//                    @Override
+//                    public void onDrawerSlide(View drawer, float slideOffset) {
+////                        LogUtils.d("slideOffset",""+slideOffset);
+//                        pmIvLogout.setAlpha(slideOffset);
+//                        pmIvLogout.setEnabled(slideOffset>0.8);
+//                        pmIvLogout.setVisibility(slideOffset > 0 ? View.VISIBLE : View.GONE);
+//                        llContentView.setX(navigationView.getWidth() * slideOffset);
+//                        FrameLayout.LayoutParams lp =
+//                                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
+//                        lp.height = drawer.getHeight() -
+//                                (int) (drawer.getHeight() * slideOffset * 0.3f);
+//                        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
+//                        llContentView.setLayoutParams(lp);
+//                    }
+//
+//                    @Override
+//                    public void onDrawerClosed(View drawerView) {
+//                        pmIvLogout.setVisibility(View.GONE);
+////                        pmIvLogout.setAlpha(0f);
+////                        pmIvLogout.setEnabled(false);
+//                    }
+//                }
+//        );
     }
 
     private MenuFragment menuFragment;
@@ -166,6 +167,18 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         fb.replace(HomeFragment.newInstance());
     }
 
+    private void showMyProfileSettingsFragment() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(false);
+        fb.replace(ProfileSettingsFragment.newInstance(null));
+    }
+
+    private void showContactProfileSettingsFragment(Contact contact) {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(true);
+        fb.replace(ProfileSettingsFragment.newInstance(contact));
+    }
+
     public void closeMenu() {
         drawer.closeDrawer(Gravity.LEFT);
     }
@@ -186,6 +199,9 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     @Override
     public void onMenuSettingsClicked() {
         closeMenu();
+        if (topFragment == null || !(topFragment instanceof ProfileSettingsFragment)) {
+//            showMyProfileSettingsFragment();
+        }
     }
 
     @Override

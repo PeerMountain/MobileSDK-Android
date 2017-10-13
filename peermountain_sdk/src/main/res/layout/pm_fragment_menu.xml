@@ -6,24 +6,19 @@
               android:background="@color/transparent"
               android:orientation="vertical"
               android:padding="@dimen/pm_margin_normal"
-              tools:showIn="@layout/pm_activity_home"
               tools:background="@drawable/pm_bkg"
-              tools:context="com.peermountain.sdk.ui.authorized.MenuFragment">
+              tools:context="com.peermountain.sdk.ui.authorized.MenuFragment"
+              tools:showIn="@layout/pm_activity_home">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/pmIvAvatar"
-            android:layout_width="@dimen/pm_avatar_size"
-            android:layout_height="@dimen/pm_avatar_size"
-            android:scaleType="centerCrop"
-            android:src="@drawable/pm_profil_white"
-            app:riv_border_color="@color/pm_avatar_border"
-            app:riv_border_width="2dp"
-            app:riv_oval="true"/>
+            style="@style/pm_avatar_image"/>
 
         <com.peermountain.sdk.views.PeerMountainTextView
             android:id="@+id/tvUsername"

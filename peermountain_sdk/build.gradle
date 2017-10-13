@@ -37,10 +37,10 @@ dependencies {
             }
     compile "com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"
     //ripple animation over all views
+    // tinder like cards
     compile 'com.balysv:material-ripple:1.0.2'
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    // tinder like cards
     compile 'com.yuyakaido.android:card-stack-view:1.0.0-beta6'
     testCompile 'junit:junit:4.12'
 }

@@ -8,6 +8,8 @@
     <color name="pm_text_accent">#FF126B82</color>
     <color name="pm_text_accent_lbl">#8C126B82</color> <!--55%-->
     <color name="pm_text_color_dark">#FF1D1D26</color>
+    <color name="pm_text_color_dark_lbl">#801D1D26</color><!--50%-->
+    <color name="pm_text_shadow">#000000</color>
     <color name="pm_toolbar_title">#FFFFFF</color>
     <color name="pm_dot_white">#FFFFFF</color>
     <color name="pm_dot_accent">#49C5DE</color>
@@ -16,8 +18,8 @@
     <color name="pm_fingerprint_dialog_text_color">#FFFFFF</color>
     <color name="pm_finger_print_scan_color">#00940c</color>
     <color name="pm_theme_light_bkg">#FFFFFF</color>
-    <color name="pm_keyword_bkg">#33FFFFFF</color>
-    <color name="pm_keyword_text">#80FFFFFF</color>
+    <color name="pm_keyword_bkg">#33FFFFFF</color><!--20%-->
+    <color name="pm_keyword_text">#80FFFFFF</color><!--50%-->
     <color name="pm_square_btn_selected">#FF126B82</color>
     <color name="pm_square_btn_deselected">#33126B82</color>
     <color name="pm_circle_btn">#FF126B82</color>
@@ -25,8 +27,8 @@
     <color name="pm_keyboard_btn_pressed">#49C5DE</color>
     <color name="pm_keyboard_text_color">#000000</color>
     <color name="pm_keyboard_text_hint_color">#69747A</color>
-    <color name="pm_card_bkg">#80FFFFFF</color>
-    <color name="pm_card_border">#80126B82</color>
+    <color name="pm_card_bkg">#80FFFFFF</color><!--50%-->
+    <color name="pm_card_border">#80126B82</color><!--50%-->
     <color name="pm_1st_card_bkg">#FFFFFF</color>
     <color name="pm_1st_card_border">#FF126B82</color>
     <color name="pm_line">#FFD8D8D8</color>

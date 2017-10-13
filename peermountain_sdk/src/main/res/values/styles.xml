@@ -21,7 +21,7 @@
     <style name="pm_id_iv">
         <!-- Customize your theme here. -->
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">130dp</item>
+        <item name="android:layout_height">@dimen/pm_scanned_id_image_height</item>
         <item name="android:layout_marginTop">@dimen/pm_margin_normal</item>
         <item name="android:visibility">gone</item>
         <item name="android:scaleType">centerInside</item>
@@ -29,14 +29,14 @@
 
     <style name="pm_keyboard_row">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_height">@dimen/pm_keyboard_btn_height</item>
         <item name="android:gravity">center</item>
         <item name="android:clickable">true</item>
         <item name="android:layout_marginTop">@dimen/pm_margin_normal</item>
     </style>
 
     <style name="pm_keyboard_btn">
-        <item name="android:layout_width">90dp</item>
+        <item name="android:layout_width">@dimen/pm_keyboard_btn_width</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:background">@drawable/pm_keyboard_btn</item>
@@ -47,14 +47,14 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/pm_keyboard_text_color</item>
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">@dimen/pm_keyboard_text_size</item>
     </style>
 
     <style name="pm_keyboard_btn_hint">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/pm_keyboard_text_hint_color</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/pm_keyboard_text_hint_size</item>
         <item name="android:layout_marginLeft">@dimen/pm_margin_small</item>
     </style>
 
@@ -69,7 +69,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/pm_text_accent_lbl</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/pm_reg_profile_text_hint_size</item>
         <item name="android:layout_marginBottom">@dimen/pm_margin_small</item>
         <item name="android:layout_marginLeft">@dimen/pm_margin_normal</item>
     </style>
@@ -79,21 +79,21 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/pm_margin_normal</item>
         <item name="android:textColor">@color/pm_text_accent</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/pm_reg_profile_text_size</item>
         <item name="android:background">@color/transparent</item>
     </style>
 
     <style name="pm_grey_line">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_height">@dimen/pm_line_size</item>
         <item name="android:background">@color/pm_line</item>
-        <item name="android:layout_marginTop">@dimen/pm_margin_normal</item>
-        <item name="android:layout_marginBottom">@dimen/pm_margin_normal</item>
+        <item name="android:layout_marginTop">@dimen/pm_spacing_profile</item>
+        <item name="android:layout_marginBottom">@dimen/pm_spacing_profile</item>
     </style>
 
     <style name="pm_menu_text">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">@dimen/pm_menu_item_height</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/pm_text_color</item>
         <item name="android:layout_marginTop">@dimen/pm_margin_small</item>
@@ -102,5 +102,31 @@
         <!--<item name="android:layout_marginBottom">@dimen/margin_small</item>-->
         <item name="android:textSize">@dimen/pm_menu_text</item>
     </style>
+    <style name="pm_avatar_image">
+        <item name="android:layout_width">@dimen/pm_avatar_size</item>
+        <item name="android:layout_height">@dimen/pm_avatar_size</item>
+        <item name="android:src">@drawable/pm_profil_white</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="riv_border_color">@color/pm_avatar_border</item>
+        <item name="riv_border_width">@dimen/pm_avatar_border_size</item>
+        <item name="riv_oval">true</item>
+    </style>
 
+    <style name="pm_settings_profile_lbl">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/pm_text_color_dark_lbl</item>
+        <item name="android:textSize">@dimen/pm_regular_text</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="pm_settings_profile_et">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:enabled">false</item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:textColor">@color/pm_text_color_dark</item>
+        <item name="android:textSize">@dimen/pm_regular_text</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
 </resources>

@@ -39,11 +39,11 @@
     <string name="pm_message_fast_login_enabled">Fingerprint is enabled!</string>
     <string name="pm_dialog_confirm_user_title" translatable="false">Please confirm is you by scanning your finger</string>
 
-        <!--unused-->
-        <string name="dialog_fast_or" translatable="false">или Парола</string>
-        <string name="check_dont_ask_me_any_more" translatable="false">Не ме питай повече</string>
-        <string name="hint_fast_code" translatable="false">код 4&#8211;6 числа</string>
-        <string name="btn_save_code" translatable="false">Запази кода</string>
+    <!--unused-->
+    <string name="dialog_fast_or" translatable="false">или Парола</string>
+    <string name="check_dont_ask_me_any_more" translatable="false">Не ме питай повече</string>
+    <string name="hint_fast_code" translatable="false">код 4&#8211;6 числа</string>
+    <string name="btn_save_code" translatable="false">Запази кода</string>
     <!--Fingerprint login end-->
     <!-- register fragment end-->
 
@@ -83,8 +83,8 @@
 
     <!--home fragment-->
     <string name="pm_title_home">Home</string>
-    <string name="pm_tab_activity">ACTIVITY</string>
-    <string name="pm_tab_information">INFORMATION</string>
+    <string name="pm_tab_home_activity">ACTIVITY</string>
+    <string name="pm_tab_home_information">INFORMATION</string>
     <!--home fragment end-->
 
     <!--menu fragment-->
@@ -93,4 +93,18 @@
     <string name="pm_menu_contacts">Contacts</string>
     <string name="pm_menu_settings">Settings</string>
     <!--menu fragment end-->
+
+    <!--profile fragment-->
+    <string name="pm_profile_settings_title">Profile</string>
+    <string name="pm_tab_profile_general">GENERAL</string>
+    <string name="pm_tab_profile_social">SOCIAL</string>
+    <string name="pm_profile_settings_lbl_name">Full Name</string>
+    <string name="pm_profile_settings_lbl_dob">Date of Birth</string>
+    <string name="pm_profile_settings_lbl_pob">Place of birth</string>
+    <string name="pm_profile_settings_lbl_mail">Email</string>
+    <string name="pm_profile_settings_lbl_phone">Phone</string>
+    <string name="pm_profile_settings_lbl_fb">Facebook</string>
+    <string name="pm_profile_settings_lbl_ln">Linkedin</string>
+    <string name="pm_settings_add_to_contacts">ADD TO CONTACTS</string>
+    <!--profile fragment end-->
 </resources>

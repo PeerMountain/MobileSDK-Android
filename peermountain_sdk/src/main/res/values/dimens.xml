@@ -10,17 +10,34 @@
     <dimen name="pm_toolbar_size">40dp</dimen>
 
     <dimen name="pm_menu_text">18sp</dimen>
+    <dimen name="pm_menu_item_height">40dp</dimen>
     <dimen name="pm_big_text">18sp</dimen>
     <dimen name="pm_regular_text">15sp</dimen>
     <dimen name="pm_shadow_size">15dp</dimen>
 
     <dimen name="pm_dot_size">15dp</dimen>
+    <dimen name="pm_line_size">1dp</dimen>
+
     <dimen name="pm_keyboard_icon_size">40dp</dimen>
+    <dimen name="pm_keyboard_btn_height">60dp</dimen>
+    <dimen name="pm_keyboard_btn_width">90dp</dimen>
+    <dimen name="pm_keyboard_text_size">40sp</dimen>
+    <dimen name="pm_keyboard_text_hint_size">18sp</dimen>
+
     <dimen name="pm_confirm_btn_size">60dp</dimen>
     <dimen name="pm_circle_btn_size">50dp</dimen>
 
     <dimen name="pm_corners">6dp</dimen>
     <dimen name="pm_shadow">0dp</dimen>
     <dimen name="pm_card_border_size">0dp</dimen>
+
     <dimen name="pm_avatar_size">70dp</dimen>
+    <dimen name="pm_avatar_border_size">2dp</dimen>
+
+    <dimen name="pm_reg_profile_text_size">16sp</dimen>
+    <dimen name="pm_reg_profile_text_hint_size">12sp</dimen>
+    <dimen name="pm_spacing_profile">16dp</dimen>
+    <dimen name="pm_profile_row_height">40dp</dimen>
+
+    <dimen name="pm_scanned_id_image_height">130dp</dimen>
 </resources>
