@@ -25,6 +25,7 @@ import com.peermountain.core.utils.LogUtils;
 public final class DocumentUtils {
 
     public static Document getScannedData(Intent scannedData) {
+        if(PeerMountainSdkConstants.isFake) return getFakeScannedData();
         if(scannedData==null) return null;
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);
@@ -58,6 +59,25 @@ public final class DocumentUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static Document getFakeScannedData() {
+            Document document = new Document();
+//            document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
+//            document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
+//            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
+//            document.setImageCroppedBack(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO));
+//            document.setImageFace(scannedResult.getMapImageFace().get(AXTSdkResult.FACE_CROPPED));
+            document.setLastName("FakeLastName");
+            document.setFirstName("FakeLFirstName");
+            document.setBirthday("01/04/1990");
+
+            document.setDocNumber("FakeNumber");
+            document.setCountry("FakeCountry");
+            document.setEmitDate("01/04/1990");
+            document.setMrzID("kjhsdcaui67yasch");
+            document.setValid(true);
+            return document;
     }
     public static void setImage(ImageView iv, AXTImageResult image, String error, StringBuilder sb) {
         if (image != null && !TextUtils.isEmpty(image.getImageUri())) {

@@ -16,7 +16,7 @@
         style="@style/pm_square_btn"
         android:layout_gravity="bottom"
         android:rotation="180"
-        android:src="@drawable/pm_ic_arrow_back_24dp"/>
+        app:srcCompat="@drawable/pm_ic_arrow_back_24dp"/>
 
     <ScrollView
         android:layout_width="match_parent"

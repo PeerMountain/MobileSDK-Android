@@ -18,6 +18,7 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
@@ -99,7 +100,8 @@ public class ScanIdFragment extends ToolbarFragment {
             case REQUEST_SCAN_ID:
 //                this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 pmTvLoading.setVisibility(View.GONE);
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK
+                        || PeerMountainSdkConstants.isFake) {
                     if (mListener != null) mListener.onIdScanned(data);
                 } else {
                     onNextClickListener.resetConsumed();

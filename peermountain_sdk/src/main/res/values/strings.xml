@@ -1,11 +1,16 @@
 <resources>
-    <string name="facebook_app_id" translatable="false">1887230464938657</string>
 
 
     <string name="pm_btn_scan_id">Scan</string>
     <string name="pm_btn_re_scan_id">Rescan</string>
     <string name="pm_msg_prepare_id">Please prepare your document for scan from MRZ side and click on "Scan"</string>
     <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
+
+    <!--wipe data dialog-->
+    <string name="pm_btn_ok_wipe">OK</string>
+    <string name="pm_btn_cancel_wipe">Ops!</string>
+    <string name="pm_msg_wipe">Do you really want to wipe your profile and all related data?</string>
+    <!--wipe data dialog end-->
 
     <!-- login fragment -->
     <string name="pm_login_btn_ln">Login with LinkedIn</string>
@@ -96,6 +101,7 @@
 
     <!--profile fragment-->
     <string name="pm_profile_settings_title">Profile</string>
+    <string name="pm_other_profile_settings_title">Contact Details</string>
     <string name="pm_tab_profile_general">GENERAL</string>
     <string name="pm_tab_profile_social">SOCIAL</string>
     <string name="pm_profile_settings_lbl_name">Full Name</string>

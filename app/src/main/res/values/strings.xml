@@ -1,5 +1,4 @@
 <resources>
+    <string name="facebook_app_id" translatable="false">1887230464938657</string>
     <string name="app_name">Peer Mountain Demo</string>
-    <string name="btn_scan_id">Scan ID</string>
-    <string name="btn_logout">Logout</string>
 </resources>

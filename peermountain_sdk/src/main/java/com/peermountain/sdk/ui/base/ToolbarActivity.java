@@ -127,4 +127,10 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
     public View.OnClickListener getOpenMenuListener() {
         return null;
     }
+
+
+    @Override
+    public View.OnClickListener getOpenBarcodeListener() {
+        return null;
+    }
 }

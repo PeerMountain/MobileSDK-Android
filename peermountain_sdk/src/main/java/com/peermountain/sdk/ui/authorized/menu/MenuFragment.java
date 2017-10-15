@@ -1,6 +1,7 @@
-package com.peermountain.sdk.ui.authorized;
+package com.peermountain.sdk.ui.authorized.menu;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,8 @@ import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.authorized.HomeActivity;
+import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.sdk.views.PeerMountainTextView;
@@ -116,13 +119,19 @@ public class MenuFragment extends Fragment {
         mTvMenuWipe.setOnClickListener(new RippleOnClickListener() {
             @Override
             public void onClickListener(View view) {
-                                // TODO: 10/13/2017 remove when is done
-                PeerMountainSDK.resetProfile();
-                HomeActivity ha = (HomeActivity) getActivity();
-                ha.authorize();
+                // TODO: 10/13/2017 remove when is done
+                DialogUtils.showChoiceDialog(getContext(), -1, R.string.pm_msg_wipe,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                PeerMountainSDK.resetProfile();
+                                HomeActivity ha = (HomeActivity) getActivity();
+                                ha.authorize();
+                            }
+                        }, null, R.string.pm_btn_ok_wipe, R.string.pm_btn_cancel_wipe);
             }
         });
-        RippleUtils.setRippleEffectSquareWhite(mTvMenuContacts,mTvMenuHome,mTvMenuDocuments,mTvMenuSettings);
+        RippleUtils.setRippleEffectSquareWhite(mTvMenuContacts, mTvMenuHome, mTvMenuDocuments, mTvMenuSettings);
     }
 
     /**
@@ -130,11 +139,11 @@ public class MenuFragment extends Fragment {
      */
     public void updateView() {
         Profile profile = PeerMountainManager.getProfile();
-        if(profile!=null){
+        if (profile != null) {
             mTvUsername.setText(profile.getNames());
-            if(!TextUtils.isEmpty(profile.getImageUri())){
+            if (!TextUtils.isEmpty(profile.getImageUri())) {
                 mPmIvAvatar.setImageURI(Uri.parse(profile.getImageUri()));
-            }else if(!TextUtils.isEmpty(profile.getPictureUrl())){
+            } else if (!TextUtils.isEmpty(profile.getPictureUrl())) {
                 Picasso.with(getContext())
                         .load(profile.getPictureUrl())
                         .placeholder(R.drawable.pm_profil_white)
@@ -146,8 +155,11 @@ public class MenuFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         void onMenuHomeClicked();
+
         void onMenuDocumentsClicked();
+
         void onMenuSettingsClicked();
+
         void onMenuContactsClicked();
     }
 }

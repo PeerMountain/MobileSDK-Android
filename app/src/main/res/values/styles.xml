@@ -14,6 +14,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:background">@drawable/pm_splash_screen</item>
+        <item name="android:background">@drawable/splash_screen</item>
     </style>
 </resources>

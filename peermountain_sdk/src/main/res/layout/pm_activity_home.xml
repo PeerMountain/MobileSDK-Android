@@ -33,7 +33,7 @@
 
             <fragment
                 android:id="@+id/menuFragment"
-                android:name="com.peermountain.sdk.ui.authorized.MenuFragment"
+                android:name="com.peermountain.sdk.ui.authorized.menu.MenuFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"

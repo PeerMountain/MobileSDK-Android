@@ -3,16 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/pm_toolbar_size"
+    android:layout_height="@dimen/pm_toolbar_height"
     tools:showIn="@layout/pm_content_home">
-
-    <ImageView
-        android:id="@+id/pmMenuLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/pm_ic_logo"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/pm_margin_normal"/>
 
     <com.peermountain.sdk.views.PeerMountainTextView
         android:id="@+id/pmToolbarTitle"
@@ -25,11 +17,20 @@
 
     <ImageView
         android:id="@+id/pmMenuRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/pm_ic_qrcode"
+        android:layout_width="@dimen/pm_inner_icon_size"
+        android:layout_height="@dimen/pm_inner_icon_size"
+        tools:src="@drawable/pm_ic_qrcode"
         android:layout_gravity="center_vertical|right"
+        android:padding="10dp"
         android:layout_marginRight="@dimen/pm_margin_normal"
-        tools:visibility="visible"
-        android:visibility="gone"/>
+        tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/pmMenuLeft"
+        android:layout_width="@dimen/pm_inner_icon_size"
+        android:layout_height="@dimen/pm_inner_icon_size"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/pm_margin_normal"
+        android:padding="5dp"
+        android:src="@drawable/pm_ic_logo"/>
 </FrameLayout>

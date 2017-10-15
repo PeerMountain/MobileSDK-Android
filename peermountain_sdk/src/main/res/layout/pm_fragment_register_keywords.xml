@@ -2,6 +2,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               tools:background="@drawable/pm_bkg"
               android:orientation="vertical"
               tools:context="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
@@ -77,5 +78,5 @@
 
     <ImageView android:id="@+id/pmIvValid"
         style="@style/pm_square_btn"
-        android:src="@drawable/pm_ic_check_24dp"/>
+               app:srcCompat="@drawable/pm_ic_check_24dp"/>
 </LinearLayout>

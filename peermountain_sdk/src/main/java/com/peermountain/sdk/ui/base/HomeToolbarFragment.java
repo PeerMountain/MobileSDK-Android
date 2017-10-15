@@ -29,5 +29,6 @@ public abstract class HomeToolbarFragment extends ToolbarFragment {
 
     public interface HomeToolbarEvents{
         View.OnClickListener getOpenMenuListener();
+        View.OnClickListener getOpenBarcodeListener();
     }
 }

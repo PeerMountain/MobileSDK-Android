@@ -7,7 +7,7 @@
     <dimen name="pm_margin_micro">4dp</dimen>
 
     <dimen name="pm_inner_icon_size">40dp</dimen>
-    <dimen name="pm_toolbar_size">40dp</dimen>
+    <dimen name="pm_toolbar_height">40dp</dimen>
 
     <dimen name="pm_menu_text">18sp</dimen>
     <dimen name="pm_menu_item_height">40dp</dimen>

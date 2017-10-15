@@ -282,10 +282,8 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 LogUtils.d("getLiUser", s.toString());
                 liUser = PeerMountainManager.readPublicUser(s.getResponseDataAsString());
                 if(imageUri==null && liUser.getPictureUrl()!=null){
-                    Picasso.with(getContext())
-                            .load(liUser.getPictureUrl())
-                            .error(R.color.pm_error_loading_avatar)
-                            .into(pmIvAvatar);
+                    pictureUrl = liUser.getPictureUrl();
+                    loadAvatarFromPublicProfileUrl();
                 }
                 pmTvLN.setText(liUser.getEmail());
                 pmTvLNConnect.setText(R.string.pm_register_btn_disconnect);
@@ -297,6 +295,13 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 onLoginError(error.toString());
             }
         });
+    }
+
+    public void loadAvatarFromPublicProfileUrl() {
+        Picasso.with(getContext())
+                .load(pictureUrl)
+                .error(R.color.pm_error_loading_avatar)
+                .into(pmIvAvatar);
     }
 
     private void onLoginError(String errorMsg) {
@@ -336,10 +341,8 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 public void onCompleted(JSONObject userJ, GraphResponse response) {
                     fbUser = parseFbUser(userJ);
                     if(imageUri==null && fbUser.getPictureUrl()!=null){
-                        Picasso.with(getContext())
-                                .load(fbUser.getPictureUrl())
-                                .error(R.color.pm_error_loading_avatar)
-                                .into(pmIvAvatar);
+                        pictureUrl = fbUser.getPictureUrl();
+                        loadAvatarFromPublicProfileUrl();
                     }
                 }
             });

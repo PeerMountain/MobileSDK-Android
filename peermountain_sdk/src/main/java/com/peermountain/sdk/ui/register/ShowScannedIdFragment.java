@@ -168,7 +168,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         if(document==null) return;
         StringBuilder sb = new StringBuilder();
 
-        DocumentUtils.setImage(mIvPmFullImage, document.getImageCropped(), "\nno mrz", sb);
+        DocumentUtils.setImage(mIvPmFullImage, document.getImageCropped(), "\nno ID image", sb);
         DocumentUtils.setImage(mIvPmFullImageBack, document.getImageCroppedBack(), "\nno ID verso image", sb);
 
         // TODO: 10/10/2017 comment bellow if you just want to show ID images

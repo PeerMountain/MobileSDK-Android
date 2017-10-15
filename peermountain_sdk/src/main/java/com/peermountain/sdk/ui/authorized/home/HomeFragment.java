@@ -93,12 +93,7 @@ public class HomeFragment extends HomeToolbarFragment {
     }
 
     private void setUpView() {
-        setToolbar(R.drawable.pm_ic_logo, R.drawable.pm_ic_qrcode, R.string.pm_title_home, homeToolbarEvents.getOpenMenuListener(), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 10/12/2017 open barcode screen
-            }
-        });
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_qrcode, R.string.pm_title_home, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
         setCardsView();
     }
 

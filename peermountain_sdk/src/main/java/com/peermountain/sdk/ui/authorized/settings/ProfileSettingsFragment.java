@@ -17,11 +17,11 @@ import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.views.PeerMountainTextView;
 import com.squareup.picasso.Picasso;
 
-public class ProfileSettingsFragment extends ToolbarFragment {
+public class ProfileSettingsFragment extends HomeToolbarFragment {
     private static final String ARG_CONTACT = "param1";
 
 
@@ -119,6 +119,9 @@ public class ProfileSettingsFragment extends ToolbarFragment {
     public void setUpView() {
         if (isMe) {
             tvAddContact.setVisibility(View.GONE);
+            setToolbarForMyProfile();
+        }else {
+            setToolbarForContact();
         }
         if(contact==null) return;
         etNames.setText(contact.getNames());
@@ -128,6 +131,14 @@ public class ProfileSettingsFragment extends ToolbarFragment {
         etPhone.setText(contact.getPob());
         setUpPublicProfiles();
         setUpAvatar();
+    }
+
+    public void setToolbarForContact() {
+        setToolbar(R.drawable.pm_ic_arrow_back_24dp, R.drawable.pm_ic_close_24dp, R.string.pm_other_profile_settings_title, homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null, homeToolbarEvents != null ? homeToolbarEvents.getOpenBarcodeListener() : null);
+    }
+
+    public void setToolbarForMyProfile() {
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_edit_24dp, R.string.pm_profile_settings_title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
     }
 
     public void setUpAvatar() {
@@ -169,6 +180,7 @@ public class ProfileSettingsFragment extends ToolbarFragment {
             tvAddContact.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    // TODO: 10/14/2017 implement add contact
 //                    if (mListener != null)
 //                        mListener.;
                 }

@@ -46,4 +46,5 @@ public class LoginActivity extends ToolbarActivity implements RegisterPinFragmen
     public void onLoginCanceled() {
         finish();
     }
+
 }

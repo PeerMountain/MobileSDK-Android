@@ -2,6 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:orientation="vertical"
              tools:background="@color/pm_theme_light_bkg"
              tools:context="com.peermountain.sdk.ui.register.ShowScannedIdFragment">
@@ -101,7 +102,7 @@
                 android:layout_gravity="center"
                 android:scaleType="centerInside"
                 android:background="@drawable/pm_blue_circle_button"
-                android:src="@drawable/pm_ic_close_24dp"/>
+                app:srcCompat="@drawable/pm_ic_close_24dp"/>
 
             <ImageView
                 android:id="@+id/btnPmScanIdAccept"
@@ -111,6 +112,6 @@
                 android:layout_gravity="center"
                 android:scaleType="centerInside"
                 android:background="@drawable/pm_blue_circle_button"
-                android:src="@drawable/pm_ic_check_24dp"/>
+                app:srcCompat="@drawable/pm_ic_check_24dp"/>
     </LinearLayout>
 </FrameLayout>
