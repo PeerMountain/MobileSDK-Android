@@ -14,25 +14,14 @@
 
         <com.peermountain.sdk.views.PeerMountainTextView
             android:id="@+id/tvTabActivity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="@dimen/pm_margin_normal"
-            android:text="@string/pm_tab_home_activity"
-            android:textColor="@color/pm_tab_text_color"
-            android:textSize="@dimen/pm_regular_text"/>
+            style="@style/pm_tab"
+            android:text="@string/pm_tab_home_activity"/>
 
         <com.peermountain.sdk.views.PeerMountainTextView
             android:id="@+id/tvTabInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:padding="@dimen/pm_margin_normal"
+            style="@style/pm_tab"
             android:text="@string/pm_tab_home_information"
-            android:textColor="@color/pm_tab_text_inactive"
-            android:textSize="@dimen/pm_regular_text"/>
+            android:textColor="@color/pm_tab_text_inactive"/>
     </LinearLayout>
 
     <FrameLayout

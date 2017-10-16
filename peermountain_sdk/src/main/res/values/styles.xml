@@ -91,7 +91,7 @@
         <item name="android:layout_marginBottom">@dimen/pm_spacing_profile</item>
     </style>
 
-    <style name="pm_menu_text">
+    <style name="pm_menu_text" parent="pm_tv_shadow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/pm_menu_item_height</item>
         <item name="android:gravity">center_vertical</item>
@@ -128,5 +128,22 @@
         <item name="android:textColor">@color/pm_text_color_dark</item>
         <item name="android:textSize">@dimen/pm_regular_text</item>
         <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="pm_tv_shadow">
+        <item name="android:shadowColor">@color/pm_text_shadow</item>
+        <item name="android:shadowDx">@integer/pm_tv_shadow_dx</item>
+        <item name="android:shadowDy">@integer/pm_tv_shadow_dy</item>
+        <item name="android:shadowRadius">@integer/pm_tv_shadow_radius</item>
+    </style>
+
+    <style name="pm_tab" parent="pm_tv_shadow">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/pm_text_color</item>
+        <item name="android:padding">@dimen/pm_margin_normal</item>
+        <item name="android:textSize">@dimen/pm_regular_text</item>
     </style>
 </resources>

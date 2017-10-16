@@ -1,5 +1,6 @@
 package com.peermountain.sdk.ui.base;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -86,10 +87,18 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
         switch (theme) {
             case ToolbarFragment.THEME_LIGHT:
                 pmToolbarTitle.setTextColor(ContextCompat.getColor(this, R.color.pm_text_color_dark));
+                pmToolbarTitle.setShadowLayer(getResources().getInteger(R.integer.pm_tv_shadow_radius),
+                        getResources().getInteger(R.integer.pm_tv_shadow_radius),
+                        getResources().getInteger(R.integer.pm_tv_shadow_radius),
+                        Color.TRANSPARENT);
                 llMainView.setBackgroundResource(R.color.pm_theme_light_bkg);
                 break;
             default:
                 pmToolbarTitle.setTextColor(ContextCompat.getColor(this, R.color.pm_text_color));
+                pmToolbarTitle.setShadowLayer(getResources().getInteger(R.integer.pm_tv_shadow_radius),
+                        getResources().getInteger(R.integer.pm_tv_shadow_radius),
+                        getResources().getInteger(R.integer.pm_tv_shadow_radius),
+                        ContextCompat.getColor(this,R.color.pm_text_shadow));
                 llMainView.setBackgroundResource(R.drawable.pm_bkg);
         }
         currentTheme = theme;

@@ -255,6 +255,8 @@ public class RegisterPinFragment extends ToolbarFragment {
                 }
             } else {
                 DialogUtils.showError(getActivity(), R.string.pm_pin_match_error_msg);
+                pinRepeat = new StringBuilder();
+                resetDots();
             }
         } else {
             if (mToolbarListener != null) {

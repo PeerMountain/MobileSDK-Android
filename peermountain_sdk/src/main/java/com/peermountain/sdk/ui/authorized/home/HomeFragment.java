@@ -11,15 +11,12 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.peermountain.core.model.guarded.PmJob;
-import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.views.PeerMountainTextView;
 import com.yuyakaido.android.cardstackview.CardStackView;
-import com.yuyakaido.android.cardstackview.SwipeDirection;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -117,7 +114,7 @@ public class HomeFragment extends HomeToolbarFragment {
         jobsAdapter = new JobsAdapter(getContext());
         jobsAdapter.addAll(jobs);
         cardStackView.setAdapter(jobsAdapter);
-        cardStackView.setCardEventListener(jobsEvents);
+        cardStackView.setCardEventListener(new CardsEventListener(jobs,jobsAdapter,cardStackView));//jobsEvents);
     }
 
     private void addStaticJobs() {
@@ -127,71 +124,71 @@ public class HomeFragment extends HomeToolbarFragment {
         jobs.add(new PmJob(true));
     }
 
-    CardStackView.CardEventListener jobsEvents = new CardStackView.CardEventListener() {
-        @Override
-        public void onCardDragging(float percentX, float percentY) {
-//            LogUtils.d("CardStackView", "onCardDragging");
-        }
-
-        @Override
-        public void onCardSwiped(SwipeDirection direction) {
-            LogUtils.d("CardStackView", "onCardSwiped: " + direction.toString());
-            LogUtils.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
-            if (cardStackView.getTopIndex() == jobsAdapter.getCount() - 3) {
-                LogUtils.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
-                addNewJobs();
-            } else {
-                setCardsBackground();
-            }
-        }
-
-        @Override
-        public void onCardReversed() {
-            LogUtils.d("CardStackView", "onCardReversed");
-        }
-
-        @Override
-        public void onCardMovedToOrigin() {
-            LogUtils.d("CardStackView", "onCardMovedToOrigin");
-        }
-
-        @Override
-        public void onCardClicked(int index) {
-            LogUtils.d("CardStackView", "onCardClicked: " + index);
-        }
-    };
-
-    public void setCardsBackground() {
-        View target = cardStackView.getTopView();
-        target.setBackgroundResource(R.drawable.pm_card_white);
-        View back = cardStackView.getChildAt(0);
-        if (back != null && !back.equals(target))
-            back.setBackgroundResource(R.drawable.pm_card);
-
-        View back1 = cardStackView.getChildAt(1);
-        if (back1 != null && !back1.equals(target))
-            back1.setBackgroundResource(R.drawable.pm_card);
-
-        View back2 = cardStackView.getChildAt(2);
-        if (back2 != null && !back2.equals(target))
-            back2.setBackgroundResource(R.drawable.pm_card);
-    }
-
-    private LinkedList<PmJob> extractRemainingJobs() {
-        LinkedList<PmJob> spots = new LinkedList<>();
-        for (int i = cardStackView.getTopIndex(); i < jobsAdapter.getCount(); i++) {
-            spots.add(jobsAdapter.getItem(i));
-        }
-        return spots;
-    }
-
-    private void addNewJobs() {
-        LinkedList<PmJob> jobs = extractRemainingJobs();
-        jobs.addAll(this.jobs);
-        jobsAdapter.clear();
-        jobsAdapter.addAll(jobs);
-        jobsAdapter.notifyDataSetChanged();
-    }
+//    CardStackView.CardEventListener jobsEvents = new CardStackView.CardEventListener() {
+//        @Override
+//        public void onCardDragging(float percentX, float percentY) {
+////            LogUtils.d("CardStackView", "onCardDragging");
+//        }
+//
+//        @Override
+//        public void onCardSwiped(SwipeDirection direction) {
+//            LogUtils.d("CardStackView", "onCardSwiped: " + direction.toString());
+//            LogUtils.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
+//            if (cardStackView.getTopIndex() == jobsAdapter.getCount() - 3) {
+//                LogUtils.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
+//                addNewJobs();
+//            } else {
+//                setCardsBackground();
+//            }
+//        }
+//
+//        @Override
+//        public void onCardReversed() {
+//            LogUtils.d("CardStackView", "onCardReversed");
+//        }
+//
+//        @Override
+//        public void onCardMovedToOrigin() {
+//            LogUtils.d("CardStackView", "onCardMovedToOrigin");
+//        }
+//
+//        @Override
+//        public void onCardClicked(int index) {
+//            LogUtils.d("CardStackView", "onCardClicked: " + index);
+//        }
+//    };
+//
+//    public void setCardsBackground() {
+//        View target = cardStackView.getTopView();
+//        target.setBackgroundResource(R.drawable.pm_card_white);
+//        View back = cardStackView.getChildAt(0);
+//        if (back != null && !back.equals(target))
+//            back.setBackgroundResource(R.drawable.pm_card);
+//
+//        View back1 = cardStackView.getChildAt(1);
+//        if (back1 != null && !back1.equals(target))
+//            back1.setBackgroundResource(R.drawable.pm_card);
+//
+//        View back2 = cardStackView.getChildAt(2);
+//        if (back2 != null && !back2.equals(target))
+//            back2.setBackgroundResource(R.drawable.pm_card);
+//    }
+//
+//    private LinkedList<PmJob> extractRemainingJobs() {
+//        LinkedList<PmJob> spots = new LinkedList<>();
+//        for (int i = cardStackView.getTopIndex(); i < jobsAdapter.getCount(); i++) {
+//            spots.add(jobsAdapter.getItem(i));
+//        }
+//        return spots;
+//    }
+//
+//    private void addNewJobs() {
+//        LinkedList<PmJob> jobs = extractRemainingJobs();
+//        jobs.addAll(this.jobs);
+//        jobsAdapter.clear();
+//        jobsAdapter.addAll(jobs);
+//        jobsAdapter.notifyDataSetChanged();
+//    }
 
     private void setListeners() {
         mTvTabActivity.setOnClickListener(tabClick);

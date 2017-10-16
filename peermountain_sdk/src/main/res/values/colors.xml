@@ -33,8 +33,9 @@
     <color name="pm_1st_card_border">#FF126B82</color>
     <color name="pm_line">#FFD8D8D8</color>
     <color name="pm_tab_text_color">#FFFFFF</color>
-    <color name="pm_tab_text_inactive">#66FFFFFF</color> <!--40%-->
+    <color name="pm_tab_text_inactive">#99FFFFFF</color> <!--40%-->
     <color name="pm_avatar_border">#FF126B82</color>
+    <color name="pm_qr_code">#FF126B82</color>
 </resources>
 
     <!-- Transparency HEX

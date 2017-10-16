@@ -16,13 +16,18 @@ import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.authorized.contacts.MyQrCodeFragment;
+import com.peermountain.sdk.ui.authorized.contacts.ScanQRFragment;
+import com.peermountain.sdk.ui.authorized.documents.DocumentsFragment;
 import com.peermountain.sdk.ui.authorized.home.HomeFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.ToolbarActivity;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
-public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener {
+public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
+        DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
+        ScanQRFragment.OnFragmentInteractionListener{
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
     private DrawerLayout drawer;
@@ -78,7 +83,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 10/14/2017 TBI
+                showMyQrCodeFragment();
             }
         };
     }
@@ -192,6 +197,18 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         fb.replace(ProfileSettingsFragment.newInstance(contact));
     }
 
+    private void showDocumentsFragment() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(false);
+        fb.replace(DocumentsFragment.newInstance());
+    }
+
+    private void showMyQrCodeFragment() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(true);
+        fb.replace(MyQrCodeFragment.newInstance());
+    }
+
     public void closeMenu() {
         drawer.closeDrawer(Gravity.LEFT);
     }
@@ -207,6 +224,9 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     @Override
     public void onMenuDocumentsClicked() {
         closeMenu();
+        if (topFragment == null || !(topFragment instanceof DocumentsFragment)) {
+            showDocumentsFragment();
+        }
     }
 
     @Override
@@ -220,6 +240,19 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     @Override
     public void onMenuContactsClicked() {
         closeMenu();
+    }
+
+    @Override
+    public void onContactScannedFromQR(Contact contact) {
+        new PmFragmentUtils.FragmentBuilder(this).pop();//remove qr fragment from stack
+        showContactProfileSettingsFragment(contact);
+    }
+
+    @Override
+    public void showQrReader() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(true);
+        fb.replace(ScanQRFragment.newInstance());
     }
 
 //    @Override

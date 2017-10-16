@@ -112,5 +112,8 @@
     <string name="pm_profile_settings_lbl_fb">Facebook</string>
     <string name="pm_profile_settings_lbl_ln">Linkedin</string>
     <string name="pm_settings_add_to_contacts">ADD TO CONTACTS</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--profile fragment end-->
 </resources>

@@ -8,6 +8,7 @@
 
     <com.peermountain.sdk.views.PeerMountainTextView
         android:id="@+id/pmToolbarTitle"
+        style="@style/pm_tv_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
