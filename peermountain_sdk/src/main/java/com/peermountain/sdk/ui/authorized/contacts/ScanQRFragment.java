@@ -62,7 +62,7 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return mainView = (FrameLayout) inflater.inflate(R.layout.fragment_scan_qr, container, false);
+        return mainView = (FrameLayout) inflater.inflate(R.layout.pm_fragment_scan_qr, container, false);
     }
 
     @Override

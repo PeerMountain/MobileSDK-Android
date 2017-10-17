@@ -20,6 +20,7 @@ import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
+import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
@@ -134,6 +135,25 @@ public class PeerMountainManager {
         return Cache.getInstance().getProfile();
     }
 
+    public static String shareObjectToJson(ShareObject shareObject) {
+        try {
+            return MyJsonParser.writeShareObject(shareObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static ShareObject parseSharedObject(String json) {
+        try {
+            return MyJsonParser.readShareObject(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static void savePin(String pin) {
         Cache.getInstance().setPin(pin);
         SharedPreferenceManager.savePin(pin);
@@ -176,6 +196,7 @@ public class PeerMountainManager {
         Cache.getInstance().clearCache();
         SharedPreferenceManager.logout();
     }
+
     /**
      * This method works in background and takes a few seconds
      * also needs network to verify license
@@ -208,7 +229,7 @@ public class PeerMountainManager {
         if (!AXTCaptureInterface.INSTANCE.sdkIsActivated()) {
             return false;
         } else {
-            startScanningId(activity,null, requestCode);
+            startScanningId(activity, null, requestCode);
             return true;
         }
     }
@@ -217,25 +238,25 @@ public class PeerMountainManager {
         if (!AXTCaptureInterface.INSTANCE.sdkIsActivated()) {
             return false;
         } else {
-            startScanningId(null,fragment, requestCode);
+            startScanningId(null, fragment, requestCode);
             return true;
         }
     }
 
     public static boolean isScanIdSDKReady() {
-       return AXTCaptureInterface.INSTANCE.sdkIsActivated();
+        return AXTCaptureInterface.INSTANCE.sdkIsActivated();
     }
 
 
     private static void startScanningId(Activity activity, Fragment fragment, int requestCode) {
-        if(activity==null && fragment==null) return;
+        if (activity == null && fragment == null) return;
         try {
             AXTSdkParams sdkParams = createAxtSdkParamsForID();
             final Intent intentSDK = AXTCaptureInterface.INSTANCE.
-                    getIntentCapture(activity!=null?activity:fragment.getContext(), sdkParams);
-            if(activity!=null) {
+                    getIntentCapture(activity != null ? activity : fragment.getContext(), sdkParams);
+            if (activity != null) {
                 activity.startActivityForResult(intentSDK, requestCode);
-            }else {
+            } else {
                 fragment.startActivityForResult(intentSDK, requestCode);
             }
         } catch (final CaptureApiException ex) {

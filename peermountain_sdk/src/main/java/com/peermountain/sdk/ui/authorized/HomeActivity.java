@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.peermountain.core.model.guarded.Contact;
+import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.share.ShareContactActivity;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.contacts.MyQrCodeFragment;
@@ -30,6 +32,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         ScanQRFragment.OnFragmentInteractionListener{
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
+    public static final int REQUEST_GET_NEAR_BY_CONTACT = 111;
     private DrawerLayout drawer;
 
     @Override
@@ -52,6 +55,14 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
                     finish();
                 } else {
                     setUpView();
+                }
+                break;
+            case REQUEST_GET_NEAR_BY_CONTACT:
+                if (resultCode == RESULT_OK && data!=null && checkUserIsValid()) {
+                    ShareObject shareObject = data.getParcelableExtra(ShareContactActivity.SHARE_DATA);
+                    if(shareObject!=null && shareObject.getContact()!=null){
+                        showContactProfileSettingsFragment(shareObject.getContact());
+                    }
                 }
                 break;
         }
@@ -204,9 +215,10 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     }
 
     private void showMyQrCodeFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(true);
-        fb.replace(MyQrCodeFragment.newInstance());
+//        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+//        fb.addToBackStack(true);
+//        fb.replace(MyQrCodeFragment.newInstance());
+        startActivityForResult(new Intent(this, ShareContactActivity.class), REQUEST_GET_NEAR_BY_CONTACT);
     }
 
     public void closeMenu() {

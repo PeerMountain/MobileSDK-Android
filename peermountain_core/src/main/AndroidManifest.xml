@@ -1,15 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.peermountain.core"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-          xmlns:android="http://schemas.android.com/apk/res/android"
->
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    
-    <application android:allowBackup="true"
-                 android:supportsRtl="true"
-    >
 
+    <!-- Required for Nearby Connections -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- Required for Nearby Connections END -->
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+        <activity android:name=".share.ShareContactActivity">
+        </activity>
     </application>
 
 </manifest>

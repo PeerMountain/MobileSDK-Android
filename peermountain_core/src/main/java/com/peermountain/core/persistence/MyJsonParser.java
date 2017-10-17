@@ -1,16 +1,17 @@
 package com.peermountain.core.persistence;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.JsonWriter;
 
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
+import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.Document;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
+import com.peermountain.core.model.guarded.ShareObject;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -25,38 +26,40 @@ import java.util.Date;
  */
 class MyJsonParser {
 
-    public static final String EMAIL_ADDRESS = "emailAddress";
-    public static final String FIRST_NAME = "firstName";
-    public static final String PICTURE_URL = "pictureUrl";
-    public static final String PHONE = "phone";
-    public static final String IMAGE_URI = "imageUri";
-    public static final String DOB = "dob";
-    public static final String POB = "pob";
-    public static final String FACEBOOK = "facebook";
-    public static final String LINKEDIN = "linkedin";
-    public static final String DOCUMENTS = "documents";
-    public static final String LAST_NAME = "lastName";
-    public static final String GANDER = "gander";
-    public static final String DOC_NUMBER = "docNumber";
-    public static final String EMIT_DATE = "emitDate";
-    public static final String MRZ_ID = "mrzID";
-    public static final String EXPIRATION_DATE = "expirationDate";
-    public static final String VALID = "valid";
-    public static final String ID = "id";
-    public static final String HEIGHT = "height";
-    public static final String WIDTH = "width";
-    public static final String IMAGE_FACE = "imageFace";
-    public static final String IMAGE_CROPPED_BACK = "imageCroppedBack";
-    public static final String IMAGE_CROPPED = "imageCropped";
-    public static final String IMAGE_SOURCE_BACK = "imageSourceBack";
-    public static final String IMAGE_SOURCE = "imageSource";
-    public static final String PUBLIC_PROFILES = "publicProfiles";
-    public static final String LOGIN_TYPE = "login_type";
-    public static final String COMPANY_TITLE = "company-title";
-    public static final String PUBLIC_PROFILE_URL = "publicProfileUrl";
-    public static final String COMPANY = "company";
-    public static final String COMPANY_START_DATE = "company_start_date";
-    public static final String COMPANY_END_DATE = "company_end_date";
+    private static final String EMAIL_ADDRESS = "emailAddress";
+    private static final String FIRST_NAME = "firstName";
+    private static final String PICTURE_URL = "pictureUrl";
+    private static final String PHONE = "phone";
+    private static final String IMAGE_URI = "imageUri";
+    private static final String DOB = "dob";
+    private static final String POB = "pob";
+    private static final String FACEBOOK = "facebook";
+    private static final String LINKEDIN = "linkedin";
+    private static final String DOCUMENTS = "documents";
+    private static final String LAST_NAME = "lastName";
+    private static final String GANDER = "gander";
+    private static final String DOC_NUMBER = "docNumber";
+    private static final String EMIT_DATE = "emitDate";
+    private static final String MRZ_ID = "mrzID";
+    private static final String EXPIRATION_DATE = "expirationDate";
+    private static final String VALID = "valid";
+    private static final String ID = "id";
+    private static final String HEIGHT = "height";
+    private static final String WIDTH = "width";
+    private static final String IMAGE_FACE = "imageFace";
+    private static final String IMAGE_CROPPED_BACK = "imageCroppedBack";
+    private static final String IMAGE_CROPPED = "imageCropped";
+    private static final String IMAGE_SOURCE_BACK = "imageSourceBack";
+    private static final String IMAGE_SOURCE = "imageSource";
+    private static final String PUBLIC_PROFILES = "publicProfiles";
+    private static final String LOGIN_TYPE = "login_type";
+    private static final String COMPANY_TITLE = "company-title";
+    private static final String PUBLIC_PROFILE_URL = "publicProfileUrl";
+    private static final String COMPANY = "company";
+    private static final String COMPANY_START_DATE = "company_start_date";
+    private static final String COMPANY_END_DATE = "company_end_date";
+    public static final String OPERATION = "operation";
+    public static final String CONTACT = "contact";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -103,14 +106,40 @@ class MyJsonParser {
     }
 
 
-    static String writeLoginProvider(Context ctx, String token, boolean isFB) throws IOException {
+    static String writeShareObject(ShareObject shareObject) throws IOException {
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
         writer.beginObject();
-        writer.name(isFB ? "sessionToken" : "accessToken").value(token);
+        writer.name(OPERATION).value(shareObject.getOperation());
+        writer.name(CONTACT);
+        writeContact(writer,shareObject.getContact(),null);
         writer.endObject();
         writer.close();
         return sw.toString();
+    }
+
+    static ShareObject readShareObject(String json) throws IOException {
+        if (json == null) return null;
+        String name;
+        ShareObject shareObject = new ShareObject();
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.beginObject();
+        while (reader.hasNext()) {
+            name = reader.nextName();
+            switch (name) {
+                case OPERATION:
+                    shareObject.setOperation(getString(reader));
+                    break;
+                case CONTACT:
+                    shareObject.setContact(readProfile(reader));
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        reader.close();
+        return shareObject;
     }
 
     private static final String DEBUG = "debug";
@@ -164,6 +193,56 @@ class MyJsonParser {
         String name = null;
         Profile profile = new Profile();
         JsonReader reader = new JsonReader(new StringReader(json));
+        return readProfile(reader);
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            name = reader.nextName();
+//            switch (name) {
+//                case EMAIL_ADDRESS:
+//                    profile.setMail(getString(reader));
+//                    break;
+//                case FIRST_NAME:
+//                    profile.setNames(getString(reader));
+//                    break;
+//                case PICTURE_URL:
+//                    profile.setPictureUrl(getString(reader));
+//                    break;
+//                case PHONE:
+//                    profile.setPhone(getString(reader));
+//                    break;
+//                case IMAGE_URI:
+//                    profile.setImageUri(getString(reader));
+//                    break;
+//                case DOB:
+//                    profile.setDob(getString(reader));
+//                    break;
+//                case POB:
+//                    profile.setPob(getString(reader));
+//                    break;
+//                case PUBLIC_PROFILES:
+//                    profile.setPublicProfiles(readPublicUsers(reader));
+//                    break;
+////                case FACEBOOK:
+////                    profile.setFbProfile(readPublicUser(reader));
+////                    break;
+////                case LINKEDIN:
+////                    profile.setLnProfile(readPublicUser(reader));
+////                    break;
+//                case DOCUMENTS:
+//                    profile.setDocuments(readDocuments(reader));
+//                    break;
+//                default:
+//                    reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//        reader.close();
+//        return profile;
+    }
+
+    static Profile readProfile(JsonReader reader) throws IOException {
+        String name = null;
+        Profile profile = new Profile();
         reader.beginObject();
         while (reader.hasNext()) {
             name = reader.nextName();
@@ -206,51 +285,87 @@ class MyJsonParser {
             }
         }
         reader.endObject();
-        reader.close();
         return profile;
     }
 
+
     static String writeProfile(Profile profile) throws IOException {
+        if (profile == null) return null;
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
-        writer.beginObject();
-        writer.name(EMAIL_ADDRESS).value(profile.getMail());
-        writer.name(FIRST_NAME).value(profile.getNames());
-        writer.name(PHONE).value(profile.getPhone());
-        writer.name(IMAGE_URI).value(profile.getImageUri());
-        writer.name(PICTURE_URL).value(profile.getPictureUrl());
-        writer.name(DOB).value(profile.getDob());
-        writer.name(POB).value(profile.getPob());
+        writeContact(writer,profile,profile);
+//        writer.beginObject();
+//        writer.name(EMAIL_ADDRESS).value(profile.getMail());
+//        writer.name(FIRST_NAME).value(profile.getNames());
+//        writer.name(PHONE).value(profile.getPhone());
+//        writer.name(IMAGE_URI).value(profile.getImageUri());
+//        writer.name(PICTURE_URL).value(profile.getPictureUrl());
+//        writer.name(DOB).value(profile.getDob());
+//        writer.name(POB).value(profile.getPob());
+//
+//        if (profile.getPublicProfiles() != null && profile.getPublicProfiles().size() > 0) {
+//            writer.name(PUBLIC_PROFILES);
+//            writer.beginArray();
+//            for (PublicUser publicUser : profile.getPublicProfiles()) {
+//                writePublicUser(writer, publicUser);
+//            }
+//            writer.endArray();
+//        }
+////        if(profile.getFbProfile()!=null) {
+////            writer.name(FACEBOOK);
+////            writePublicUser(writer, profile.getFbProfile());
+////        }
+////
+////        if(profile.getLnProfile()!=null) {
+////            writer.name(LINKEDIN);
+////            writePublicUser(writer, profile.getLnProfile());
+////        }
+//
+//        if (profile.getDocuments().size() > 0) {
+//            writer.name(DOCUMENTS);
+//            writer.beginArray();
+//            for (Document document : profile.getDocuments()) {
+//                writeDocument(writer, document);
+//            }
+//            writer.endArray();
+//        }
+//        writer.endObject();
+        writer.close();
+        return sw.toString();
+    }
 
-        if (profile.getPublicProfiles() != null && profile.getPublicProfiles().size() > 0) {
+    private static void writeContact(JsonWriter writer, Contact contact, Profile profile) throws IOException {
+        if (contact == null) return;
+        writer.beginObject();
+        writer.name(EMAIL_ADDRESS).value(contact.getMail());
+        writer.name(FIRST_NAME).value(contact.getNames());
+        writer.name(PHONE).value(contact.getPhone());
+        writer.name(IMAGE_URI).value(contact.getImageUri());
+        writer.name(PICTURE_URL).value(contact.getPictureUrl());
+        writer.name(DOB).value(contact.getDob());
+        writer.name(POB).value(contact.getPob());
+
+        if (contact.getPublicProfiles() != null && contact.getPublicProfiles().size() > 0) {
             writer.name(PUBLIC_PROFILES);
             writer.beginArray();
-            for (PublicUser publicUser : profile.getPublicProfiles()) {
+            for (PublicUser publicUser : contact.getPublicProfiles()) {
                 writePublicUser(writer, publicUser);
             }
             writer.endArray();
         }
-//        if(profile.getFbProfile()!=null) {
-//            writer.name(FACEBOOK);
-//            writePublicUser(writer, profile.getFbProfile());
-//        }
-//
-//        if(profile.getLnProfile()!=null) {
-//            writer.name(LINKEDIN);
-//            writePublicUser(writer, profile.getLnProfile());
-//        }
+        if (profile != null) writeProfileDocuments(writer, profile);
+        writer.endObject();
+    }
 
-        if (profile.getDocuments().size() > 0) {
+    private static void writeProfileDocuments(JsonWriter writer, Profile contact) throws IOException {
+        if (contact.getDocuments().size() > 0) {
             writer.name(DOCUMENTS);
             writer.beginArray();
-            for (Document document : profile.getDocuments()) {
+            for (Document document : contact.getDocuments()) {
                 writeDocument(writer, document);
             }
             writer.endArray();
         }
-        writer.endObject();
-        writer.close();
-        return sw.toString();
     }
 
     private static ArrayList<Document> readDocuments(JsonReader reader) throws IOException {

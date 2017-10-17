@@ -1,3 +1,4 @@
 <resources>
     <!--<string name="app_name">peermountain_core</string>-->
+    <string name="pm_error_missing_permissions">Without granted permissions this service is not available</string>
 </resources>
