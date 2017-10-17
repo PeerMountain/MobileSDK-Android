@@ -134,11 +134,11 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void setToolbarForContact() {
-        setToolbar(R.drawable.pm_ic_arrow_back_24dp, R.drawable.pm_ic_close_24dp, R.string.pm_other_profile_settings_title, homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null, homeToolbarEvents != null ? homeToolbarEvents.getOpenBarcodeListener() : null);
+        setToolbar(R.drawable.pm_ic_arrow_back_24dp,-1, R.string.pm_other_profile_settings_title, homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null, null);
     }
 
     public void setToolbarForMyProfile() {
-        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_edit_24dp, R.string.pm_profile_settings_title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_edit_24dp, R.string.pm_profile_settings_title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, null);
     }
 
     public void setUpAvatar() {

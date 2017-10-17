@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
-import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
@@ -28,6 +27,8 @@ class SharedPreferenceManager {
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
 
+    private static SecurePreferences preferencesSecure;
+
     /**
      * @return Application's {@code SharedPreferences}.
      */
@@ -39,37 +40,28 @@ class SharedPreferenceManager {
         return getPrefs(context).edit();
     }
 
-
-    static void savePublicUser(String user) {
-        if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
-        mEditor.putString(PREF_LI_USER, user);
-        mEditor.apply();
+    // TODO: 10/17/2017 change the logic to get the key from OS
+    private static SecurePreferences getSecurePrefs(Context context) {
+        if (preferencesSecure == null) {
+            preferencesSecure = new SecurePreferences(context, "peer_mountain_core_s",
+                    "key", true);
+        }
+        return preferencesSecure;
     }
 
-    static PublicUser getPublicUser() {
-        if (getContext() == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
-        try {
-            return MyJsonParser.readPublicUser(mSharedPreferences.getString(PREF_LI_USER, null));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private static SharedPreferences.Editor getSecureEditor(Context context) {
+        return getSecurePrefs(context).edit();
     }
 
     static void saveProfile(String profile) {
         if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
-        mEditor.putString(PREF_PROFILE, profile);
-        mEditor.apply();
+        putString(PREF_PROFILE, profile);
     }
 
     static Profile getProfile() {
         if (getContext() == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
         try {
-            return MyJsonParser.readProfile(mSharedPreferences.getString(PREF_PROFILE, null));
+            return MyJsonParser.readProfile(getString(PREF_PROFILE, null));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -79,55 +71,48 @@ class SharedPreferenceManager {
 
     static void savePin(String pin) {
         if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
-        mEditor.putString(PREF_PIN, pin);
-        mEditor.apply();
+        putString(PREF_PIN, pin);
     }
 
     static String getPin() {
         if (getContext() == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
-        return mSharedPreferences.getString(PREF_PIN, null);
+        return getString(PREF_PIN, null);
     }
 
     static void saveFingerprint(boolean enabled) {
         if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
+        SharedPreferences.Editor mEditor = getSecureEditor(getContext());
         mEditor.putBoolean(PREF_FINGERPRINT, enabled);
         mEditor.apply();
     }
 
     static boolean getFingerprint() {
         if (getContext() == null) return false;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
-        return mSharedPreferences.getBoolean(PREF_FINGERPRINT, false);
+        return getBoolean(PREF_FINGERPRINT, false);
     }
 
     static void saveKeywords(String keywords) {
         if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
-        mEditor.putString(PREF_KEYWORDS, keywords);
-        mEditor.apply();
+        putString(PREF_KEYWORDS, keywords);
     }
 
     static String getKeywords() {
         if (getContext() == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
-        return mSharedPreferences.getString(PREF_KEYWORDS, null);
+        return getString(PREF_KEYWORDS, null);
     }
 
     static void savePmAccessToken(PmAccessToken accessToken) {
         if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
-        mEditor.putString(PREF_LI_TOKEN, accessToken == null ? null : accessToken.getAccessTokenValue());
+        SharedPreferences.Editor mEditor = getSecureEditor(getContext());
+        putString(PREF_LI_TOKEN, accessToken == null ? null : accessToken.getAccessTokenValue());
         mEditor.putLong(PREF_LI_EXPIRES, accessToken == null ? 0 : accessToken.getExpiresOn());
         mEditor.apply();
     }
 
     static PmAccessToken getPmAccessToken() {
         if (getContext() == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
-        String token = mSharedPreferences.getString(PREF_LI_TOKEN, null);
+        SecurePreferences mSharedPreferences = getSecurePrefs(getContext());
+        String token = getString(PREF_LI_TOKEN, null);
         if (token == null)
             return null;
         long expiresOn = mSharedPreferences.getLong(PREF_LI_EXPIRES, 0);
@@ -136,7 +121,7 @@ class SharedPreferenceManager {
 
     static void logoutPublicProfile() {
         if (getContext() == null) return;
-        SharedPreferences prefs = getPrefs(getContext());
+        SecurePreferences prefs = getSecurePrefs(getContext());
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(PREF_LI_EXPIRES);
         editor.remove(PREF_LI_TOKEN);
@@ -149,7 +134,7 @@ class SharedPreferenceManager {
     static void logout() {
         if (getContext() == null) return;
         logoutPublicProfile();
-        SharedPreferences prefs = getPrefs(getContext());
+        SecurePreferences prefs = getSecurePrefs(getContext());
         SharedPreferences.Editor editor = prefs.edit();
         editor.remove(PREF_FINGERPRINT);
         editor.remove(PREF_PROFILE);
@@ -164,10 +149,9 @@ class SharedPreferenceManager {
 
     static void saveConfig(PeerMountainConfig config) {
         if (getContext() == null) return;
-        SharedPreferences.Editor mEditor = getEditor(getContext());
         try {
-            mEditor.putString(PREF_CONFIG, MyJsonParser.writeConfig(config));
-            mEditor.apply();
+            putString(PREF_CONFIG, MyJsonParser.writeConfig(config));
+//            mEditor.apply();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -178,9 +162,8 @@ class SharedPreferenceManager {
             context = getContext();
         }
         if (context == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(context);
         try {
-            return MyJsonParser.readConfig(mSharedPreferences.getString(PREF_CONFIG, null));
+            return MyJsonParser.readConfig(getString(context,PREF_CONFIG, null));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -189,15 +172,64 @@ class SharedPreferenceManager {
 
     static String getDeviceId() {
         if (getContext() == null) return null;
-        SharedPreferences mSharedPreferences = getPrefs(getContext());
-        String token = mSharedPreferences.getString("device", null);
+        String token = getString("device", null);
         if (token == null) {
             token = UUID.randomUUID().toString();
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putString("device", token);
-            editor.apply();
+            putString("device", token);
         }
         return token;
+    }
+
+    private static void putString(String key, String opt) {
+        if (getContext() == null) return;
+        SharedPreferences.Editor mEditor = getSecureEditor(getContext());
+//        try {
+            mEditor.putString(key, opt);
+//            mEditor.apply();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+    private static String getString(String key, String opt) {
+        return getString(getContext(),key,opt);
+    }
+
+    private static String getString(Context context,String key, String opt) {
+        SecurePreferences mSharedPreferences = getSecurePrefs(context);
+        String res = mSharedPreferences.getString(key, opt);
+        // TODO: 10/17/2017 remove after all users migrated in next versions
+        if (res == null || res.equals(opt)) {//check if is not in plain prefs
+            SharedPreferences shp = getPrefs(context);
+            res = shp.getString(key, opt);
+            if (res != null && !res.equals(opt)) {//migrate to secure prefs
+                SharedPreferences.Editor mEditor = getSecureEditor(context);
+                mEditor.putString(key, res);
+                //remove form plain prefs
+                SharedPreferences.Editor mEditorPlain = getEditor(context);
+                mEditorPlain.remove(key);
+                mEditorPlain.apply();
+            }
+        }
+        return res;
+    }
+
+    private static boolean getBoolean(String key, boolean opt) {
+        SecurePreferences mSharedPreferences = getSecurePrefs(getContext());
+        boolean res = mSharedPreferences.getBoolean(key, opt);
+        // TODO: 10/17/2017 remove after all users migrated in next versions
+        if (res == opt) {//check if is not in plain prefs
+            SharedPreferences shp = getPrefs(getContext());
+            res = shp.getBoolean(key, opt);
+            if (res != opt ) {//migrate to secure prefs
+                SharedPreferences.Editor mEditor = getSecureEditor(getContext());
+                mEditor.putBoolean(key, res);
+                //remove form plain prefs
+                SharedPreferences.Editor mEditorPlain = getEditor(getContext());
+                mEditorPlain.remove(key);
+                mEditorPlain.apply();
+            }
+        }
+        return res;
     }
 
     private static Context getContext() {

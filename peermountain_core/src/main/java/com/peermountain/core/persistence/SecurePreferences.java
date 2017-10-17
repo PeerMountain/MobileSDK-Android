@@ -127,6 +127,14 @@ public class SecurePreferences {
         }
     }
 
+    public void apply(String key, String value) {
+        if (value == null) {
+            preferences.edit().remove(toKey(key)).apply();
+        } else {
+            putValue(toKey(key), value);
+        }
+    }
+
     public boolean containsKey(String key) {
         return preferences.contains(toKey(key));
     }
@@ -141,6 +149,32 @@ public class SecurePreferences {
             return decrypt(securedEncodedValue);
         }
         return null;
+    }
+
+    public String getString(String key, String opt) throws SecurePreferencesException {
+        if (preferences.contains(toKey(key))) {
+            String securedEncodedValue = preferences.getString(toKey(key), opt);
+            return decrypt(securedEncodedValue);
+        }
+        return opt;
+    }
+
+    public boolean getBoolean(String key, boolean opt) throws SecurePreferencesException {
+        if (preferences.contains(toKey(key))) {
+            String securedEncodedValue = preferences.getString(toKey(key), Boolean.toString(opt));
+            String res = decrypt(securedEncodedValue);
+            return Boolean.parseBoolean(res);
+        }
+        return opt;
+    }
+
+    public long getLong(String key, long opt) throws SecurePreferencesException {
+        if (preferences.contains(toKey(key))) {
+            String securedEncodedValue = preferences.getString(toKey(key), Long.toString(opt));
+            String res = decrypt(securedEncodedValue);
+            return Long.parseLong(res);
+        }
+        return opt;
     }
 
     public void clear() {
@@ -191,11 +225,13 @@ public class SecurePreferences {
             throw new SecurePreferencesException(e);
         }
     }
-
-    SharedPreferences.Editor editor = new SharedPreferences.Editor() {
+public SharedPreferences.Editor edit(){
+    return editor;
+}
+   private SharedPreferences.Editor editor = new SharedPreferences.Editor() {
         @Override
         public SharedPreferences.Editor putString(String s, @Nullable String s1) {
-            put(s, s1);
+            SecurePreferences.this.apply(s, s1);
             return this;
         }
 
@@ -211,7 +247,8 @@ public class SecurePreferences {
 
         @Override
         public SharedPreferences.Editor putLong(String s, long l) {
-            return null;
+            SecurePreferences.this.apply(s, Long.toString(l));
+            return this;
         }
 
         @Override
@@ -221,17 +258,20 @@ public class SecurePreferences {
 
         @Override
         public SharedPreferences.Editor putBoolean(String s, boolean b) {
-            return null;
+            SecurePreferences.this.apply(s, Boolean.toString(b));
+            return this;
         }
 
         @Override
         public SharedPreferences.Editor remove(String s) {
-            return null;
+            removeValue(s);
+            return this;
         }
 
         @Override
         public SharedPreferences.Editor clear() {
-            return null;
+            SecurePreferences.this.clear();
+            return this;
         }
 
         @Override
