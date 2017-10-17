@@ -16,6 +16,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDataExtractionRequireme
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
+import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
@@ -24,6 +25,7 @@ import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 
 /**
@@ -152,6 +154,24 @@ public class PeerMountainManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void addContact(Contact contact) {
+        getContacts().add(contact);
+        // TODO: 10/17/2017 probably create contact.id and save each contact by key=id
+        SharedPreferenceManager.saveContacts(Cache.getInstance().getContacts());
+    }
+
+    public static void removeContact(Contact contact) {
+        getContacts().remove(contact);
+        // TODO: 10/17/2017 probably create contact.id and save each contact by key=id
+        SharedPreferenceManager.saveContacts(Cache.getInstance().getContacts());
+    }
+
+    public static HashSet<Contact> getContacts() {
+        if (Cache.getInstance().getContacts() == null)
+            Cache.getInstance().setContacts((HashSet<Contact>) SharedPreferenceManager.getContacts());
+        return Cache.getInstance().getContacts();
     }
 
     public static void savePin(String pin) {

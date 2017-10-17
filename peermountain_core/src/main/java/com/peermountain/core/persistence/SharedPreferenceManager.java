@@ -3,12 +3,14 @@ package com.peermountain.core.persistence;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -62,6 +64,25 @@ class SharedPreferenceManager {
         if (getContext() == null) return null;
         try {
             return MyJsonParser.readProfile(getString(PREF_PROFILE, null));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    static void saveContacts(Set<Contact> contacts) {
+        if (getContext() == null) return;
+        try {
+            putString(PREF_MY_CONTACTS, MyJsonParser.writeContacts(contacts));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static Set<Contact> getContacts() {
+        if (getContext() == null) return null;
+        try {
+            return MyJsonParser.readContacts(getString(PREF_MY_CONTACTS, null));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

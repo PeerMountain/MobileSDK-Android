@@ -73,6 +73,9 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
             if (otherContact != null) {
                 contact = otherContact;
                 isMe = false;
+                if(PeerMountainManager.getContacts().contains(contact)){
+                    toAdd=false;
+                }
             } else {
                 contact = PeerMountainManager.getProfile();
             }
@@ -92,6 +95,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         initView(view);
         setUpView();
         setListeners();
+        initBtn();
     }
 
     @Override
@@ -120,10 +124,10 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         if (isMe) {
             tvAddContact.setVisibility(View.GONE);
             setToolbarForMyProfile();
-        }else {
+        } else {
             setToolbarForContact();
         }
-        if(contact==null) return;
+        if (contact == null) return;
         etNames.setText(contact.getNames());
         etDob.setText(contact.getDob());
         etPob.setText(contact.getPob());
@@ -134,11 +138,17 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void setToolbarForContact() {
-        setToolbar(R.drawable.pm_ic_arrow_back_24dp,-1, R.string.pm_other_profile_settings_title, homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null, null);
+        setToolbar(R.drawable.pm_ic_arrow_back_24dp, -1, R.string.pm_other_profile_settings_title,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().onBackPressed();
+                    }
+                }, null);
     }
 
     public void setToolbarForMyProfile() {
-        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_edit_24dp, R.string.pm_profile_settings_title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, null);
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_edit_24dp, R.string.pm_profile_settings_title, homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null, null);
     }
 
     public void setUpAvatar() {
@@ -172,6 +182,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
     }
 
+    boolean toAdd = true;
+
     /**
      * type oclf to fast get new setOnClickListener, rr/rc/rs to set ripple
      */
@@ -180,14 +192,28 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
             tvAddContact.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // TODO: 10/14/2017 implement add contact
-//                    if (mListener != null)
-//                        mListener.;
+                    if (contact != null) {
+                        if (toAdd) {
+                            PeerMountainManager.addContact(contact);
+                        } else {
+                            PeerMountainManager.removeContact(contact);
+                        }
+                        toAdd = !toAdd;
+                        initBtn();
+                    }
                 }
             });
         }
         tvTabGeneral.setOnClickListener(tabClick);
         tvTabSocial.setOnClickListener(tabClick);
+    }
+
+    private void initBtn() {
+        if (toAdd) {
+            tvAddContact.setText(getString(R.string.pm_settings_add_to_contacts));
+        } else {
+            tvAddContact.setText(getString(R.string.pm_settings_remove_from_contacts));
+        }
     }
 
     private void initTabs() {

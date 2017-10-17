@@ -85,12 +85,12 @@ public class DocumentsFragment extends HomeToolbarFragment {
     }
 
     private void setUpView() {
-        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_plus_24dp, R.string.pm_title_home,
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_plus_24dp, R.string.pm_title_documents,
                 homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null,
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        // TODO: 10/17/2017 TBI add document
                     }
                 });
         setCardsView();

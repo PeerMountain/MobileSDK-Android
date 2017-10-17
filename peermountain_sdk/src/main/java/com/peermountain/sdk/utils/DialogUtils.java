@@ -170,15 +170,23 @@ public class DialogUtils {
 //    }
 
     public static void showSimpleDialog(Context ctx, int msg, DialogInterface.OnClickListener listener) {
-        showSimpleDialog(ctx, -1, msg, listener);
+        showSimpleDialog(ctx, -1, msg, null, listener);
     }
 
-    public static void showSimpleDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx,getDialogStyle());
+    public static void showSimpleDialog(Context ctx, String msg, DialogInterface.OnClickListener listener) {
+        showSimpleDialog(ctx, -1, -1, msg, listener);
+    }
+
+    public static void showSimpleDialog(Context ctx, int title, int msgRes, String msg, DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx, getDialogStyle());
         dialog.setCancelable(false);
         if (title != -1)
             dialog.setTitle(title);
-        dialog.setMessage(msg);
+        if (msgRes != -1) {
+            dialog.setMessage(msgRes);
+        } else {
+            dialog.setMessage(msg);
+        }
         if (listener == null)
             dialog.setPositiveButton(R.string.pm_btn_ok, new DialogInterface.OnClickListener() {
                 @Override
@@ -193,13 +201,14 @@ public class DialogUtils {
         alertDialog.show();
     }
 
-    private static int getDialogStyle(){
-        return Build.VERSION.SDK_INT>=22?android.R.style.Theme_DeviceDefault_Dialog_Alert:
+    private static int getDialogStyle() {
+        return Build.VERSION.SDK_INT >= 22 ? android.R.style.Theme_DeviceDefault_Dialog_Alert :
                 AlertDialog.THEME_DEVICE_DEFAULT_DARK;
     }
+
     public static void showChoiceDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener1
             , DialogInterface.OnClickListener listener2, int btnYes, int btnNo) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx,getDialogStyle());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ctx, getDialogStyle());
         dialog.setCancelable(false);
         if (title != -1)
             dialog.setTitle(title);

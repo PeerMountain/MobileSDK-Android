@@ -1,5 +1,6 @@
 package com.peermountain.sdk.ui.authorized;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,11 +26,14 @@ import com.peermountain.sdk.ui.authorized.home.HomeFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.ToolbarActivity;
+import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
+
+import java.util.HashSet;
 
 public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
         DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
-        ScanQRFragment.OnFragmentInteractionListener{
+        ScanQRFragment.OnFragmentInteractionListener {
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
     public static final int REQUEST_GET_NEAR_BY_CONTACT = 111;
@@ -58,9 +62,9 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
                 }
                 break;
             case REQUEST_GET_NEAR_BY_CONTACT:
-                if (resultCode == RESULT_OK && data!=null && checkUserIsValid()) {
+                if (resultCode == RESULT_OK && data != null && checkUserIsValid()) {
                     ShareObject shareObject = data.getParcelableExtra(ShareContactActivity.SHARE_DATA);
-                    if(shareObject!=null && shareObject.getContact()!=null){
+                    if (shareObject != null && shareObject.getContact() != null) {
                         showContactProfileSettingsFragment(shareObject.getContact());
                     }
                 }
@@ -114,6 +118,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
 
     NavigationView navigationView;
     LinearLayout llContentView;
+
     private void initDrawer() {
         navigationView = findViewById(R.id.navigationView);
         llContentView = findViewById(R.id.llContentView);
@@ -125,7 +130,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
                     public void onDrawerSlide(View drawer, float slideOffset) {
 //                        LogUtils.d("slideOffset",""+slideOffset);
                         pmIvLogout.setAlpha(slideOffset);
-                        pmIvLogout.setEnabled(slideOffset>0.8);
+                        pmIvLogout.setEnabled(slideOffset > 0.8);
                         pmIvLogout.setVisibility(slideOffset > 0 ? View.VISIBLE : View.GONE);
                         llContentView.setX(navigationView.getWidth() * slideOffset);
                         FrameLayout.LayoutParams lp =
@@ -148,8 +153,9 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
 
     private MenuFragment menuFragment;
     private boolean isViewSet = false;
+
     private void setUpView() {
-        if(!isViewSet) {
+        if (!isViewSet) {
             isViewSet = true;
             showHomeFragment();
             setListeners();
@@ -252,6 +258,21 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     @Override
     public void onMenuContactsClicked() {
         closeMenu();
+        HashSet<Contact> contacts = PeerMountainManager.getContacts();
+        StringBuilder sb = new StringBuilder("Contacts (" + contacts.size() + ") :\n");
+        Contact contact1 = null;
+        for (Contact contact : contacts) {
+            if (contact1 == null) contact1 = contact;
+            sb.append(contact.getNames());
+            sb.append("\n");
+        }
+        final Contact finalContact = contact1;
+        DialogUtils.showSimpleDialog(this, sb.toString(), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(finalContact!=null) showContactProfileSettingsFragment(finalContact);
+            }
+        });
     }
 
     @Override

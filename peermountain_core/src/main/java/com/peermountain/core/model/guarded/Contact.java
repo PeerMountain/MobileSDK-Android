@@ -4,12 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Galeen on 10/13/2017.
  */
 
 public class Contact implements Parcelable {
+    private String id;
     private String mail, phone, names, dob, pob, imageUri, pictureUrl, position, placeOfWork;
     private ArrayList<PublicUser> publicProfiles = new ArrayList<>();
 
@@ -93,6 +95,14 @@ public class Contact implements Parcelable {
         this.publicProfiles = publicProfiles;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     @Override
     public int describeContents() {
@@ -101,6 +111,7 @@ public class Contact implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
         dest.writeString(this.mail);
         dest.writeString(this.phone);
         dest.writeString(this.names);
@@ -114,9 +125,11 @@ public class Contact implements Parcelable {
     }
 
     public Contact() {
+        id = UUID.randomUUID().toString();
     }
 
     protected Contact(Parcel in) {
+        this.id = in.readString();
         this.mail = in.readString();
         this.phone = in.readString();
         this.names = in.readString();
@@ -129,7 +142,7 @@ public class Contact implements Parcelable {
         this.publicProfiles = in.createTypedArrayList(PublicUser.CREATOR);
     }
 
-    public static final Parcelable.Creator<Contact> CREATOR = new Parcelable.Creator<Contact>() {
+    public static final Creator<Contact> CREATOR = new Creator<Contact>() {
         @Override
         public Contact createFromParcel(Parcel source) {
             return new Contact(source);

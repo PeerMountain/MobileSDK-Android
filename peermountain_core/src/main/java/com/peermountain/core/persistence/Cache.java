@@ -3,10 +3,13 @@ package com.peermountain.core.persistence;
 
 import android.support.annotation.RestrictTo;
 
+import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
+
+import java.util.HashSet;
 
 
 /**
@@ -23,6 +26,7 @@ class Cache {
     private PeerMountainConfig config;
     private String pin;
     private long lastTimeLogin;
+    private HashSet<Contact> contacts = null;
 
     private Cache() {
     }
@@ -96,6 +100,14 @@ class Cache {
 
     public void setLastTimeLogin(long lastTimeLogin) {
         this.lastTimeLogin = lastTimeLogin;
+    }
+
+    public HashSet<Contact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(HashSet<Contact> contacts) {
+        this.contacts = contacts;
     }
 }
 

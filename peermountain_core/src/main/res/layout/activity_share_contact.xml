@@ -24,14 +24,17 @@
         android:id="@+id/tvCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
+        android:textColor="#FF0000"
         android:textSize="32sp"
         tools:text="78585"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#000000"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:text="or"/>
 
     <TextView
         android:id="@+id/tvMsgConnect"
@@ -45,11 +48,13 @@
 
     <EditText
         android:id="@+id/etCode"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Code here"
+        android:gravity="center"
+        android:inputType="numberSigned"
+        android:hint="Contact Code Here"
         android:textColor="#000000"
-        android:textSize="32sp"/>
+        android:textSize="22sp"/>
 
     <Button
         android:id="@+id/btnConnect"

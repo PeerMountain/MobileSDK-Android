@@ -161,6 +161,7 @@ public class ShareContactActivity extends ConnectionsActivity {
 
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
+        LogUtils.d("onConnectionFailed",endpoint.toString());
         // Let's try someone else.
 //        if (getState() == DISCOVERING && !getDiscoveredEndpoints().isEmpty()) {
 //            connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));

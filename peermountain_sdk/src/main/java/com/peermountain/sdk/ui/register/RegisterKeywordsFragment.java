@@ -140,17 +140,18 @@ public class RegisterKeywordsFragment extends ToolbarFragment {
     boolean isShowingKeywordsResult = false;
     String keywords = null;
 
+    String space = " ";//","
     private void prepareKeywords() {
         StringBuilder sb = new StringBuilder();
         StringBuilder sbToShow = new StringBuilder();
-        String[] words = pmEtKeywords.getText().toString().split(",");
+        String[] words = pmEtKeywords.getText().toString().split(space);
         for (int i = 0; i < words.length; i++) {
             String word = words[i].trim();
             if (word.length() > 0) {//not empty
                 sb.append(word);
                 sbToShow.append(word);
                 if (i < words.length - 1) {
-                    sb.append(",");
+                    sb.append(space);
                     sbToShow.append(", ");
                 }
             } else {
@@ -199,7 +200,7 @@ public class RegisterKeywordsFragment extends ToolbarFragment {
 
     private void checkWords() {
         if (pmEtKeywords.getText().length() > 0) {
-            String[] words = pmEtKeywords.getText().toString().split(",");
+            String[] words = pmEtKeywords.getText().toString().split(space);
             int emptyWordsCount = 0;
             for (int i = words.length - 1; i >= 0; i--) {
                 if (words[i].trim().length() == 0) emptyWordsCount++;//check for blank as ", ,"
