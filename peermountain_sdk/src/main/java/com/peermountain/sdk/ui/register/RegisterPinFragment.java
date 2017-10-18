@@ -1,10 +1,15 @@
 package com.peermountain.sdk.ui.register;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,15 +107,17 @@ public class RegisterPinFragment extends ToolbarFragment {
 
     private void setUpView() {
         fastLoginHelper = new FastLoginHelper(getActivity(), "key", true);
-        if (isLogin ) {
-            if(!PeerMountainManager.getFingerprint()) {
+        if (isLogin) {
+            if (!PeerMountainManager.getFingerprint()) {
                 kbKeyFingerprint.setVisibility(View.GONE);
-            }else {
+            } else {
                 showFastLoginDialog();
             }
-        }else{
+        } else {
             resetProfile();
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){//not available
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                    || (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED
+                    || !((FingerprintManager) getActivity().getSystemService(Activity.FINGERPRINT_SERVICE)).isHardwareDetected())) {//not available
                 kbKeyFingerprint.setVisibility(View.GONE);
             }
         }
