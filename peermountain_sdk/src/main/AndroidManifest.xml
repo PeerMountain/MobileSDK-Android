@@ -35,6 +35,7 @@
         </activity>
         <activity
             android:name=".ui.authorized.HomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/PmSdkTheme">
         </activity>
     </application>

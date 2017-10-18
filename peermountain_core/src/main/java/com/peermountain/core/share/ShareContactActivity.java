@@ -2,11 +2,12 @@ package com.peermountain.core.share;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,11 +21,17 @@ import com.peermountain.core.BuildConfig;
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.FileUtils;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PeerMountainCoreConstants;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Random;
 
 public class ShareContactActivity extends ConnectionsActivity {
+    private static final String ENDPOINT_ID_EXTRA = "endpointId";
+    private static final int READ_REQUEST_CODE = 42;
     /**
      * This service id lets us find other nearby devices that are interested in the same thing. Our
      * sample does exactly one thing, so we hardcode the ID.
@@ -71,9 +78,11 @@ public class ShareContactActivity extends ConnectionsActivity {
             @Override
             public void onClick(View view) {
                 setState(DISCOVERING);
-                progressBar.setVisibility(View.VISIBLE);
+//                progressBar.setVisibility(View.VISIBLE);
             }
         });
+        mBtnConnect.setEnabled(false);
+        showImageChooser("");
     }
 
     @Override
@@ -91,6 +100,18 @@ public class ShareContactActivity extends ConnectionsActivity {
         super.onBackPressed();
     }
 
+    Uri uri = null;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (resultData != null) {
+                // The URI of the file selected by the user.
+                uri = resultData.getData();
+            }
+        }
+    }
+
     /**
      * We've connected to Nearby Connections. We can now start calling {@link #startDiscovering()} and
      * {@link #startAdvertising()}.
@@ -99,6 +120,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     public void onConnected(@Nullable Bundle bundle) {
         super.onConnected(bundle);
         setState(ADVERTISING);
+        mBtnConnect.setEnabled(true);
     }
 
     /**
@@ -131,7 +153,7 @@ public class ShareContactActivity extends ConnectionsActivity {
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The user canceled, so we should reject the connection.
-                       rejectConnection(endpoint);
+                        rejectConnection(endpoint);
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -141,7 +163,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointConnected(Endpoint endpoint) {
         Toast.makeText(
-                this, "Connected" + endpoint.getName(), Toast.LENGTH_SHORT)
+                this, "Exchanging data with " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
         setState(CONNECTED);
     }
@@ -149,7 +171,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Toast.makeText(
-                this, "Disconnected" + endpoint.getName(), Toast.LENGTH_SHORT)
+                this, "Disconnected from " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
 
         // If we lost all our endpoints, then we should reset the state of our app and go back
@@ -161,44 +183,82 @@ public class ShareContactActivity extends ConnectionsActivity {
 
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
-        LogUtils.d("onConnectionFailed",endpoint.toString());
+        LogUtils.d("onConnectionFailed", endpoint.toString());
+        setState(ADVERTISING);
+        progressBar.setVisibility(View.GONE);
         // Let's try someone else.
 //        if (getState() == DISCOVERING && !getDiscoveredEndpoints().isEmpty()) {
 //            connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));
 //        }
     }
 
-    /** {@see ConnectionsActivity#onReceive(Endpoint, Payload)} */
+    /**
+     * {@see ConnectionsActivity#onReceive(Endpoint, Payload)}
+     */
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
-        if (payload.getType() == Payload.Type.BYTES) {
-            String json = new String(payload.asBytes());
-            LogUtils.d("payload",json);
-            ShareObject shareObject = PeerMountainManager.parseSharedObject(json);
-            handleMessage(shareObject);
+        ShareObject shareObject = null;
+        switch (payload.getType()) {
+            case Payload.Type.BYTES:
+                String json = new String(payload.asBytes());
+                LogUtils.d("payload msg", json);
+                shareObject = PeerMountainManager.parseSharedObject(json);
 //            Toast.makeText(this, endpoint.getName()+" says : "+msg, Toast.LENGTH_SHORT).show();
+                break;
+            case Payload.Type.FILE:
+                java.io.File payloadFile = payload.asFile().asJavaFile();
+                LogUtils.d("payload file", payloadFile.toString());
+                shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONTACT_IMAGE_FILE, payloadFile);
+                break;
         }
+        handleMessage(shareObject);
     }
 
-    private void handleMessage(ShareObject shareObject) {
-        if(shareObject!=null){
-            switch (shareObject.getOperation()){
+    private ShareObject shareObject = new ShareObject();
+
+    private void handleMessage(ShareObject receivedShareObject) {
+        if (receivedShareObject != null) {
+            switch (receivedShareObject.getOperation()) {
+                case ShareObject.OPERATION_SHARE_FINISH:// the other side is done sending,I have it all
+                    sendConfirmFinish();//confirm I have nothing to send any more
+                    break;
+                case ShareObject.OPERATION_SHARE_CONFIRM_FINISH:// the other side is done sending and has received my data "OPERATION_SHARE_FINISH"
+                    returnResult();
+                    break;
                 case ShareObject.OPERATION_SHARE_CONTACT_DATA:
-                    if(shareObject.getContact()!=null
-                            && !TextUtils.isEmpty(shareObject.getContact().getImageUri())){
-                        //we have to wait for image
-                    }else{
-                        returnResult(shareObject);
+                    shareObject.setContact(receivedShareObject.getContact());
+                    break;
+                case ShareObject.OPERATION_SHARE_CONTACT_IMAGE_FILE:
+                    if (shareObject.getContact() != null
+                            && receivedShareObject.getReceivedFile() != null
+                            && receivedShareObject.getReceivedFile().exists()) {
+                        java.io.File payloadFile = receivedShareObject.getReceivedFile();
+                        // Rename the file.
+//                        payloadFile.renameTo(new File(payloadFile.getParentFile(),
+//                                payloadFile.getName()+".jpg"));
+//                        java.io.File localPayloadFile = new File(payloadFile.getParentFile(),
+//                                payloadFile.getName()+".jpg");
+
+                        java.io.File localPayloadFile = new File(getFilesDir()
+                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR,
+                                payloadFile.getName()+".jpg");
+                        LogUtils.d("local payload file", localPayloadFile.toString());
+//                        java.io.File dir = new File(getFilesDir()
+//                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
+//                        dir.delete();
+                        FileUtils.copyFileAsync(payloadFile, localPayloadFile,true,null);
+                        // TODO: 10/18/2017 resize image and rotate , check ProfileSettings.loadAvatar
+                        shareObject.getContact().setImageUri(Uri.fromFile(localPayloadFile).toString());
                     }
                     break;
             }
         }
     }
 
-    private void returnResult(ShareObject shareObject) {
+    private void returnResult() {
         Intent data = new Intent();
         data.putExtra(SHARE_DATA, shareObject);
-        setResult(RESULT_OK,data);
+        setResult(RESULT_OK, data);
         finish();
     }
 
@@ -217,6 +277,80 @@ public class ShareContactActivity extends ConnectionsActivity {
         mState = state;
         logD("State set to " + getStateName());
         onStateChanged(oldState, state);
+    }
+
+    /**
+     * State has changed.
+     *
+     * @param oldState The previous state we were in. Clean up anything related to this state.
+     * @param newState The new state we're now in. Prepare the UI for this state.
+     */
+    private void onStateChanged(int oldState, int newState) {
+        // Update Nearby Connections to the new state.
+        switch (newState) {
+            case DISCOVERING:
+                progressBar.setVisibility(View.VISIBLE);
+                if (isAdvertising()) {
+                    stopAdvertising();
+                }
+                disconnectFromAllEndpoints();
+                startDiscovering();
+                break;
+            case ADVERTISING:
+                progressBar.setVisibility(View.GONE);
+                if (isDiscovering()) {
+                    stopDiscovering();
+                }
+                disconnectFromAllEndpoints();
+                startAdvertising();
+                break;
+            case CONNECTED:
+                if (isDiscovering()) {
+                    stopDiscovering();
+                } else if (isAdvertising()) {//start receiving data
+//                    stopAdvertising();
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+                sendContact();
+                sendFile();//test
+                sendFinish();
+                break;
+            default:
+                // no-op
+                break;
+        }
+        updateUiForState(oldState, newState);
+    }
+
+    private void sendContact() {
+        ShareObject shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONTACT_DATA);
+        shareObject.setContact(PeerMountainManager.getProfile());
+        send(Payload.fromBytes(PeerMountainManager.shareObjectToJson(shareObject).getBytes()));
+    }
+
+    private void sendFinish() {
+        ShareObject shareObject = new ShareObject(ShareObject.OPERATION_SHARE_FINISH);
+        send(Payload.fromBytes(PeerMountainManager.shareObjectToJson(shareObject).getBytes()));
+    }
+
+    private void sendConfirmFinish() {
+        ShareObject shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONFIRM_FINISH);
+        send(Payload.fromBytes(PeerMountainManager.shareObjectToJson(shareObject).getBytes()));
+    }
+
+    private void sendFile() {
+        if (uri == null) return;
+        // Open the ParcelFileDescriptor for this URI with read access.
+        ParcelFileDescriptor pfd = null;
+        try {
+            pfd = getContentResolver().openFileDescriptor(uri, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (pfd != null) {
+            Payload filePayload = Payload.fromFile(pfd);
+            send(filePayload);
+        }
     }
 
     /**
@@ -245,51 +379,15 @@ public class ShareContactActivity extends ConnectionsActivity {
     }
 
     /**
-     * State has changed.
-     *
-     * @param oldState The previous state we were in. Clean up anything related to this state.
-     * @param newState The new state we're now in. Prepare the UI for this state.
+     * Fires an intent to spin up the file chooser UI and select an image for
+     * sending to endpointId.
      */
-    private void onStateChanged(int oldState, int newState) {
-        // Update Nearby Connections to the new state.
-        switch (newState) {
-            case DISCOVERING:
-                if (isAdvertising()) {
-                    stopAdvertising();
-                }
-                disconnectFromAllEndpoints();
-                startDiscovering();
-                break;
-            case ADVERTISING:
-                progressBar.setVisibility(View.GONE);
-                if (isDiscovering()) {
-                    stopDiscovering();
-                }
-                disconnectFromAllEndpoints();
-                startAdvertising();
-                break;
-            case CONNECTED:
-                if (isDiscovering()) {
-                    stopDiscovering();
-//                    send(Payload.fromBytes("Hello advertiser!".getBytes()));
-                } else if (isAdvertising()) {
-//                    stopAdvertising();
-//                    send(Payload.fromBytes("Hello requester!".getBytes()));
-                }
-                sendContact();
-                progressBar.setVisibility(View.GONE);
-                break;
-            default:
-                // no-op
-                break;
-        }
-        updateUiForState(oldState, newState);
-    }
-
-    private void sendContact(){
-        ShareObject shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONTACT_DATA);
-        shareObject.setContact(PeerMountainManager.getProfile());
-        send(Payload.fromBytes(PeerMountainManager.shareObjectToJson(shareObject).getBytes()));
+    private void showImageChooser(String endpointId) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        intent.putExtra(ENDPOINT_ID_EXTRA, endpointId);
+        startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
     private void updateUiForState(int oldState, int newState) {

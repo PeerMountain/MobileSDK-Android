@@ -23,6 +23,8 @@ public class PeerMountainCoreConstants {
     public static final String TIME_FORMAT = "h'H'mm a";
 
     public static final String DEEP_LINK_USER_ID = "user_id";
+
+    public static final String LOCAL_IMAGE_DIR = "/images";
 }
 
 

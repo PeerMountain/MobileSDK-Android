@@ -113,8 +113,10 @@ class MyJsonParser {
         JsonWriter writer = new JsonWriter(sw);
         writer.beginObject();
         writer.name(OPERATION).value(shareObject.getOperation());
-        writer.name(CONTACT);
-        writeContact(writer, shareObject.getContact());
+        if(shareObject.getContact()!=null) {
+            writer.name(CONTACT);
+            writeContact(writer, shareObject.getContact(), true);
+        }
         writer.endObject();
         writer.close();
         return sw.toString();
@@ -243,6 +245,10 @@ class MyJsonParser {
     }
 
     static Profile readProfile(JsonReader reader) throws IOException {
+        if (reader.peek() == JsonToken.NULL) {
+            reader.skipValue();
+            return null;
+        }
         String name = null;
         Profile profile = new Profile();
         reader.beginObject();
@@ -298,7 +304,7 @@ class MyJsonParser {
         if (profile == null) return null;
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
-        writeContact(writer, profile);
+        writeContact(writer, profile,false);
 //        writer.beginObject();
 //        writer.name(EMAIL_ADDRESS).value(profile.getMail());
 //        writer.name(FIRST_NAME).value(profile.getNames());
@@ -339,8 +345,11 @@ class MyJsonParser {
         return sw.toString();
     }
 
-    private static void writeContact(JsonWriter writer, Contact contact) throws IOException {
-        if (contact == null) return;
+    private static void writeContact(JsonWriter writer, Contact contact, boolean justContact) throws IOException {
+        if (contact == null) {
+            writer.nullValue();
+            return;
+        }
         writer.beginObject();
         writer.name(ID).value(contact.getId());
         writer.name(EMAIL_ADDRESS).value(contact.getMail());
@@ -359,7 +368,7 @@ class MyJsonParser {
             }
             writer.endArray();
         }
-        if (contact instanceof Profile) {
+        if (!justContact && contact instanceof Profile) {
             writeProfileDocuments(writer, (Profile) contact);
         }
         writer.endObject();
@@ -382,7 +391,7 @@ class MyJsonParser {
         JsonWriter writer = new JsonWriter(sw);
         writer.beginArray();
         for (Contact contact : contacts) {
-            writeContact(writer, contact);
+            writeContact(writer, contact, false);
         }
         writer.endArray();
         writer.close();
@@ -477,7 +486,10 @@ class MyJsonParser {
     }
 
     private static void writeDocument(JsonWriter writer, Document document) throws IOException {
-        if (document == null) return;
+        if (document == null) {
+            writer.nullValue();
+            return;
+        }
         writer.beginObject();
         writer.name(GANDER).value(document.getGender());
         writer.name(FIRST_NAME).value(document.getFirstName());

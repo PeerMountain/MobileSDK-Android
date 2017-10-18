@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <!-- Required for Nearby Connections -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -16,8 +18,11 @@
     <!-- Required for Nearby Connections END -->
     <application
         android:allowBackup="true"
-        android:supportsRtl="true">
-        <activity android:name=".share.ShareContactActivity">
+        android:supportsRtl="true"
+        android:theme="@style/PmCoreTheme" >
+        <activity android:name=".share.ShareContactActivity"
+                  android:theme="@style/PmCoreTheme"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

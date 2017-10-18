@@ -58,6 +58,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
                     Manifest.permission.ACCESS_WIFI_STATE,
                     Manifest.permission.CHANGE_WIFI_STATE,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
             };
 
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
@@ -90,6 +91,11 @@ public abstract class ConnectionsActivity extends AppCompatActivity
      */
     private final Map<String, Endpoint> mEstablishedConnections = new HashMap<>();
 
+    /**
+     * Keep current incoming File payloads so we can retrieve the payload later, when
+     * is completely received.
+     */
+    private final Map<Long, Payload> incomingPayloads = new HashMap<>();
     /**
      * True if we are asking a discovered device to connect to us. While we ask, we cannot ask another
      * device.
@@ -158,14 +164,25 @@ public abstract class ConnectionsActivity extends AppCompatActivity
                 @Override
                 public void onPayloadReceived(String endpointId, Payload payload) {
                     logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, payload));
-                    onReceive(mEstablishedConnections.get(endpointId), payload);
+                    if (payload.getType() == Payload.Type.FILE) {
+                        // Add this to our tracking map, so that we can retrieve the payload later.
+                        incomingPayloads.put(payload.getId(), payload);
+                    }else {
+                        onReceive(mEstablishedConnections.get(endpointId), payload);
+                    }
                 }
 
                 @Override
                 public void onPayloadTransferUpdate(String endpointId, PayloadTransferUpdate update) {
-                    logD(
-                            String.format(
-                                    "onPayloadTransferUpdate(endpointId=%s, update=%s)", endpointId, update));
+                    logD(String.format(
+                                    "onPayloadTransferUpdate(endpointId=%s, update=%d)", endpointId, 100/(update.getTotalBytes()/update.getBytesTransferred())));
+
+                    if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
+                        Payload payload = incomingPayloads.remove(update.getPayloadId());
+                        if (payload!=null && payload.getType() == Payload.Type.FILE) {
+                            onReceive(mEstablishedConnections.get(endpointId), payload);
+                        }
+                    }
                 }
             };
 
@@ -335,6 +352,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
                                     logW(
                                             String.format(
                                                     "acceptConnection failed. %s", ConnectionsActivity.toString(status)));
+                                    onConnectionFailed(endpoint);
                                 }
                             }
                         });
@@ -364,6 +382,9 @@ public abstract class ConnectionsActivity extends AppCompatActivity
      * found out if we successfully entered this mode.
      */
     protected void startDiscovering() {
+        if(!mGoogleApiClient.isConnected()){
+            Toast.makeText(this, "GoogleApiClient not connected yet!", Toast.LENGTH_SHORT).show();
+        }
         mIsDiscovering = true;
         mDiscoveredEndpoints.clear();
         Nearby.Connections.startDiscovery(
@@ -506,6 +527,10 @@ public abstract class ConnectionsActivity extends AppCompatActivity
         onEndpointDisconnected(endpoint);
     }
 
+    public boolean hasMoreIncomingPayloads(){
+        return !incomingPayloads.isEmpty();
+    }
+
     /**
      * A connection with this endpoint has failed. Override this method to act on the event.
      */
@@ -558,13 +583,15 @@ public abstract class ConnectionsActivity extends AppCompatActivity
                             @Override
                             public void onResult(@NonNull Status status) {
                                 if (!status.isSuccess()) {
-                                    logW(
-                                            String.format(
+                                    logW(String.format(
                                                     "sendUnreliablePayload failed. %s",
                                                     ConnectionsActivity.toString(status)));
                                 }
                             }
                         });
+    }
+
+    protected void onFinishSending() {
     }
 
     /**

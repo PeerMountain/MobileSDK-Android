@@ -1,7 +1,10 @@
 package com.peermountain.sdk.ui.authorized.settings;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -10,16 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.FileUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.views.PeerMountainTextView;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 public class ProfileSettingsFragment extends HomeToolbarFragment {
     private static final String ARG_CONTACT = "param1";
@@ -73,8 +80,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
             if (otherContact != null) {
                 contact = otherContact;
                 isMe = false;
-                if(PeerMountainManager.getContacts().contains(contact)){
-                    toAdd=false;
+                if (PeerMountainManager.getContacts().contains(contact)) {
+                    toAdd = false;
                 }
             } else {
                 contact = PeerMountainManager.getProfile();
@@ -152,15 +159,60 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void setUpAvatar() {
+        loadAvatar(getContext(), contact, pmIvAvatar);
+    }
+
+    public static void loadAvatar(Context context, Contact contact, ImageView iv) {
+        String uri = null;
         if (!TextUtils.isEmpty(contact.getImageUri())) {
-            pmIvAvatar.setImageURI(Uri.parse(contact.getImageUri()));
+//            iv.setImageURI(Uri.parse(contact.getImageUri()));
+            if(Build.VERSION.SDK_INT>=24) {
+                uri = contact.getImageUri();
+            }else {
+                File file = FileUtils.getFile(context, Uri.parse(contact.getImageUri()));
+                int size = context.getResources().getDimensionPixelSize(R.dimen.pm_avatar_size);
+                iv.setImageBitmap(decodeSampledBitmapFromFile(file.getPath(),size,size));
+            }
         } else if (!TextUtils.isEmpty(contact.getPictureUrl())) {
-            Picasso.with(getContext())
-                    .load(contact.getPictureUrl())
+            uri = contact.getPictureUrl();
+        }
+        if (uri != null) {
+            Picasso.with(context)
+                    .load(uri)
                     .placeholder(R.drawable.pm_profil_white)
                     .error(R.color.pm_error_loading_avatar)
-                    .into(pmIvAvatar);
+                    .into(iv);
         }
+    }
+
+    public static Bitmap decodeSampledBitmapFromFile(String path,
+                                                     int reqWidth, int reqHeight) { // BEST QUALITY MATCH
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+
+        // Calculate inSampleSize
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        int inSampleSize = 1;
+
+        if (height > reqHeight) {
+            inSampleSize = Math.round((float)height / (float)reqHeight);
+        }
+
+        int expectedWidth = width / inSampleSize;
+        if (expectedWidth > reqWidth) {
+            //if(Math.round((float)width / (float)reqWidth) > inSampleSize) // If bigger SampSize..
+            inSampleSize = Math.round((float)width / (float)reqWidth);
+        }
+        options.inSampleSize = inSampleSize;
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeFile(path, options);
     }
 
     public void setUpPublicProfiles() {
