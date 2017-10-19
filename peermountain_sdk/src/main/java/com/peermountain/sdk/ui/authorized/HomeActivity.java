@@ -1,6 +1,5 @@
 package com.peermountain.sdk.ui.authorized;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.share.ShareContactActivity;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.authorized.contacts.ContactsFragment;
 import com.peermountain.sdk.ui.authorized.contacts.MyQrCodeFragment;
 import com.peermountain.sdk.ui.authorized.contacts.ScanQRFragment;
 import com.peermountain.sdk.ui.authorized.documents.DocumentsFragment;
@@ -26,14 +26,11 @@ import com.peermountain.sdk.ui.authorized.home.HomeFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.ToolbarActivity;
-import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
-
-import java.util.HashSet;
 
 public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
         DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
-        ScanQRFragment.OnFragmentInteractionListener {
+        ScanQRFragment.OnFragmentInteractionListener, ContactsFragment.OnListFragmentInteractionListener {
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
     public static final int REQUEST_GET_NEAR_BY_CONTACT = 111;
@@ -207,6 +204,12 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         fb.addToBackStack(false);
         fb.replace(ProfileSettingsFragment.newInstance(null));
     }
+    private void showMyContactsFragment() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(false);
+        fb.replace(ContactsFragment.newInstance(1));
+    }
+
 
     private void showContactProfileSettingsFragment(Contact contact) {
         PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
@@ -258,21 +261,22 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     @Override
     public void onMenuContactsClicked() {
         closeMenu();
-        HashSet<Contact> contacts = PeerMountainManager.getContacts();
-        StringBuilder sb = new StringBuilder("Contacts (" + contacts.size() + ") :\n");
-        Contact contact1 = null;
-        for (Contact contact : contacts) {
-            if (contact1 == null) contact1 = contact;
-            sb.append(contact.getNames());
-            sb.append("\n");
-        }
-        final Contact finalContact = contact1;
-        DialogUtils.showSimpleDialog(this, sb.toString(), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(finalContact!=null) showContactProfileSettingsFragment(finalContact);
-            }
-        });
+        showMyContactsFragment();
+//        HashSet<Contact> contacts = PeerMountainManager.getContacts();
+//        StringBuilder sb = new StringBuilder("Contacts (" + contacts.size() + ") :\n");
+//        Contact contact1 = null;
+//        for (Contact contact : contacts) {
+//            if (contact1 == null) contact1 = contact;
+//            sb.append(contact.getNames());
+//            sb.append("\n");
+//        }
+//        final Contact finalContact = contact1;
+//        DialogUtils.showSimpleDialog(this, sb.toString(), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                if(finalContact!=null) showContactProfileSettingsFragment(finalContact);
+//            }
+//        });
     }
 
     @Override
@@ -286,6 +290,11 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
         fb.addToBackStack(true);
         fb.replace(ScanQRFragment.newInstance());
+    }
+
+    @Override
+    public void onContactSelected(Contact contact) {
+        showContactProfileSettingsFragment(contact);
     }
 
 //    @Override

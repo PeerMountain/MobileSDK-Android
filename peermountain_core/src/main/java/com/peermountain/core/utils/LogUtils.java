@@ -19,6 +19,40 @@ import java.util.Map;
  * Created by Galeen on 22.7.2016 г..
  */
 public class LogUtils {
+
+    public static class Logger {
+        public String TAG = "LogUtils";
+
+        public Logger(String TAG) {
+            this.TAG = TAG;
+        }
+
+        public void d(String msg) {
+            LogUtils.d(TAG, prettyJson(msg));
+        }
+
+        public void v(String tag, String msg) {
+            LogUtils.v(TAG, prettyJson(msg));
+        }
+
+        public void w(String msg) {
+            LogUtils.w(TAG, prettyJson(msg));
+        }
+
+        public void d(HashMap<String, String> postDataParams) {
+            LogUtils.d(TAG, postDataParams);
+        }
+
+        public void e(String msg) {
+            LogUtils.e(TAG, prettyJson(msg));
+        }
+
+        public void i(String msg) {
+            LogUtils.i(TAG, prettyJson(msg));
+        }
+    }
+
+
     private static boolean isDebug() {
         return PeerMountainManager.getPeerMountainConfig() != null && PeerMountainManager.getPeerMountainConfig().isDebug();
     }
@@ -26,6 +60,16 @@ public class LogUtils {
     public static void d(String tag, String msg) {
         if (isDebug())
             Log.d(tag, prettyJson(msg));
+    }
+
+    public static void v(String tag, String msg) {
+        if (isDebug())
+            Log.v(tag, prettyJson(msg));
+    }
+
+    public static void w(String tag, String msg) {
+        if (isDebug())
+            Log.w(tag, prettyJson(msg));
     }
 
     public static void d(String tag, HashMap<String, String> postDataParams) {

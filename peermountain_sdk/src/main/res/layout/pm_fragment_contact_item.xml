@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:background="@color/transparent"
+             tools:background="@drawable/pm_bkg"
+             android:padding="@dimen/pm_margin_small">
+
+    <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@color/pm_contact_item_bkg"
+                  android:orientation="horizontal"
+                  android:padding="@dimen/pm_margin_small">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/ivAvatar"
+            style="@style/pm_avatar_image"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/pm_margin_normal"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/pm_margin_normal">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pm_margin_normal"
+                android:textColor="@color/pm_contact_item_text"
+                android:textSize="16sp"
+                tools:text="Name"/>
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pm_contact_item_text_light"
+                android:textSize="14sp"
+                tools:text="Content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

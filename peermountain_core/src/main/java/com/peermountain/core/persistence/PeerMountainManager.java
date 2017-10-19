@@ -155,6 +155,13 @@ public class PeerMountainManager {
             return null;
         }
     }
+    public static void saveTutoSeen() {
+        SharedPreferenceManager.saveTutoSeen();
+    }
+
+    public static boolean isTutoSeen() {
+       return SharedPreferenceManager.isTutoSeen();
+    }
 
     public static void addContact(Contact contact) {
         getContacts().add(contact);

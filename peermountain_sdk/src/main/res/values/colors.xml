@@ -3,6 +3,8 @@
     <color name="colorPrimary">#FF126B82</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#49C5DE</color>
+    <color name="pm_ad_btn_bkg">#49C5DE</color>
+    <color name="pm_ad_text">#FFFFFF</color>
     <color name="pm_error_loading_avatar">#49C5DE</color>
     <color name="pm_text_color">#FFFFFF</color>
     <color name="pm_text_accent">#FF126B82</color>
@@ -20,6 +22,9 @@
     <color name="pm_theme_light_bkg">#FFFFFF</color>
     <color name="pm_keyword_bkg">#33FFFFFF</color><!--20%-->
     <color name="pm_keyword_text">#80FFFFFF</color><!--50%-->
+    <color name="pm_contact_item_bkg">#33FFFFFF</color><!--20%-->
+    <color name="pm_contact_item_text_light">#80FFFFFF</color><!--50%-->
+    <color name="pm_contact_item_text">#FFFFFF</color><!--100%-->
     <color name="pm_square_btn_selected">#FF126B82</color>
     <color name="pm_square_btn_deselected">#33126B82</color>
     <color name="pm_circle_btn">#FF126B82</color>

@@ -28,6 +28,7 @@ class SharedPreferenceManager {
     private static final String PREF_PROFILE = "PREF_PROFILE";
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
+    public static final String PREF_TUTO = "tuto";
 
     private static SecurePreferences preferencesSecure;
 
@@ -191,6 +192,15 @@ class SharedPreferenceManager {
         }
     }
 
+    static void saveTutoSeen() {
+        if (getContext() == null) return;
+        getPrefs(getContext()).edit().putBoolean(PREF_TUTO,true).apply();
+    }
+
+    static boolean isTutoSeen() {
+        if (getContext() == null) return false;
+        return  getPrefs(getContext()).getBoolean(PREF_TUTO,false);
+    }
     static String getDeviceId() {
         if (getContext() == null) return null;
         String token = getString("device", null);

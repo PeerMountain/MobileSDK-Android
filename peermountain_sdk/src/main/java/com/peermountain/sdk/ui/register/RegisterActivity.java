@@ -17,7 +17,7 @@ import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
 public class RegisterActivity extends ToolbarActivity implements RegisterPinFragment.OnFragmentInteractionListener,
-        RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener {
+        RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener {
     @IdRes
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
@@ -29,7 +29,11 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pm_activity_register,R.id.llMainView);
         fb = PmFragmentUtils.init(this, containerId);
-        showPinFragment();
+        if(PeerMountainManager.isTutoSeen()) {
+            showPinFragment();
+        }else{
+            showTutorialFragment();
+        }
         setResult(Activity.RESULT_CANCELED);
     }
 
@@ -79,6 +83,10 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
         fb.replace(RegisterPinFragment.newInstance(false));
     }
 
+    private void showTutorialFragment() {
+        fb.addToBackStack(false);
+        fb.replace(new IntroFragment());
+    }
     private void showKeywordsFragment() {
         fb.addToBackStack(true);
         fb.replace(RegisterKeywordsFragment.newInstance());
@@ -155,5 +163,10 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
     public void onProfileRegistered() {
         setResult(Activity.RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void onTutoEnd() {
+        showPinFragment();
     }
 }

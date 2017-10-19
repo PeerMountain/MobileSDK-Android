@@ -1,4 +1,12 @@
 <resources>
     <!--<string name="app_name">peermountain_core</string>-->
     <string name="pm_error_missing_permissions">Without granted permissions this service is not available</string>
+    <string name="pm_share_connect">Connect</string>
+    <string name="pm_share_hint">Contact Code Here</string>
+    <string name="pm_share_msg_other_code">Add your friend\'s code bellow and connect</string>
+    <string name="pm_share_or">or</string>
+    <string name="pm_share_accept_dialog_title">Accept connection to %s</string>
+    <string name="pm_share_accept_dialog_msg">Confirm if the code %s is also displayed on the other device</string>
+    <string name="pm_share_accept_dialog_btn_accept">Accept</string>
+    <string name="pm_share_accept_dialog_btn_cancel">Cancel</string>
 </resources>

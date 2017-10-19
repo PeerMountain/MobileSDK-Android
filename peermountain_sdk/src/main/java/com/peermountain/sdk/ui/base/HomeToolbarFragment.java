@@ -1,7 +1,10 @@
 package com.peermountain.sdk.ui.base;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.view.View;
+
+import com.peermountain.sdk.R;
 
 /**
  * Created by Galeen on 10/12/2017.
@@ -25,6 +28,12 @@ public abstract class HomeToolbarFragment extends ToolbarFragment {
     public void onDetach() {
         super.onDetach();
         homeToolbarEvents = null;
+    }
+
+
+
+    public void setHomeToolbar(@StringRes int title){
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_qrcode, title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
     }
 
     public interface HomeToolbarEvents{

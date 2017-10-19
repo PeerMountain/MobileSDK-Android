@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llAdvertise"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:background="@drawable/pm_bkg"
+    tools:showIn="@layout/pm_fragment_intro">
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvTutoAdTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pm_margin_normal"
+        android:gravity="left"
+        android:text="@string/pm_ad_title"
+        android:textColor="@color/pm_ad_text"
+        android:textSize="30sp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_margin="@dimen/pm_margin_normal"
+        android:src="@drawable/cards"/>
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvTutoAdMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pm_margin_normal"
+        android:gravity="left"
+        android:text="@string/pm_ad_msg"
+        android:textColor="@color/pm_ad_text"
+        android:textSize="16sp"/>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/btnGetCard"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/pm_ad_btn_bkg"
+        android:textColor="@color/pm_ad_text"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:text="@string/pm_ad_get_the_card"/>
+</LinearLayout>

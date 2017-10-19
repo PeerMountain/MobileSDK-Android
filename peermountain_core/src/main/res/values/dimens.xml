@@ -1,0 +1,11 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="pm_margin_normal">16dp</dimen>
+    <dimen name="pm_margin_small">8dp</dimen>
+    <dimen name="pm_margin_big">24dp</dimen>
+    <dimen name="pm_margin_xbig">40dp</dimen>
+    <dimen name="pm_margin_micro">4dp</dimen>
+
+    <dimen name="pm_corners">6dp</dimen>
+    <dimen name="pm_avatar_size">70dp</dimen>
+</resources>

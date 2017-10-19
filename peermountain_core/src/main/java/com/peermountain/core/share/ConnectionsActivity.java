@@ -32,6 +32,7 @@ import com.google.android.gms.nearby.connection.PayloadCallback;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 import com.peermountain.core.R;
+import com.peermountain.core.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +150,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
                 @Override
                 public void onDisconnected(String endpointId) {
                     if (!mEstablishedConnections.containsKey(endpointId)) {
-                        logW("Unexpected disconnection from endpoint " + endpointId);
+                        logD("Unexpected disconnection from endpoint " + endpointId);
                         return;
                     }
                     disconnectedFromEndpoint(mEstablishedConnections.get(endpointId));
@@ -175,7 +176,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
                 @Override
                 public void onPayloadTransferUpdate(String endpointId, PayloadTransferUpdate update) {
                     logD(String.format(
-                                    "onPayloadTransferUpdate(endpointId=%s, update=%d)", endpointId, 100/(update.getTotalBytes()/update.getBytesTransferred())));
+                                    "onPayloadTransferUpdate(endpointId=%s, update=%d)", endpointId, update.getBytesTransferred()));
 
                     if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
                         Payload payload = incomingPayloads.remove(update.getPayloadId());
@@ -670,17 +671,17 @@ public abstract class ConnectionsActivity extends AppCompatActivity
 
     @CallSuper
     protected void logV(String msg) {
-        Log.v(TAG, msg);
+        LogUtils.v(TAG, msg);
     }
 
     @CallSuper
     protected void logD(String msg) {
-        Log.d(TAG, msg);
+        LogUtils.d(TAG, msg);
     }
 
     @CallSuper
     protected void logW(String msg) {
-        Log.w(TAG, msg);
+        LogUtils.w(TAG, msg);
     }
 
     @CallSuper

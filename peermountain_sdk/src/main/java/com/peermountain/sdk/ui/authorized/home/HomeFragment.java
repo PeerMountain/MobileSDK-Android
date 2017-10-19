@@ -90,7 +90,7 @@ public class HomeFragment extends HomeToolbarFragment {
     }
 
     private void setUpView() {
-        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_qrcode, R.string.pm_title_home, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
+        setHomeToolbar(R.string.pm_title_home);
         setCardsView();
     }
 

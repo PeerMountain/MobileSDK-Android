@@ -1,74 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context="com.peermountain.core.share.ShareContactActivity">
+    android:background="@drawable/pm_bkg"
+    android:padding="@dimen/pm_margin_big">
 
-    <TextView
-        android:id="@+id/tvMsg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:gravity="center"
-        android:text="Your private code for others to connect :"
-        android:textColor="#000000"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:id="@+id/tvCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FF0000"
-        android:textSize="32sp"
-        tools:text="78585"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:text="or"/>
-
-    <TextView
-        android:id="@+id/tvMsgConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:gravity="center"
-        android:text="Add your friend's code bellow and connect"
-        android:textColor="#000000"
-        android:textSize="20sp"/>
-
-    <EditText
-        android:id="@+id/etCode"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/pm_share_card_white"
         android:gravity="center"
-        android:inputType="numberSigned"
-        android:hint="Contact Code Here"
-        android:textColor="#000000"
-        android:textSize="22sp"/>
+        android:orientation="vertical"
+        android:padding="@dimen/pm_margin_normal"
+        tools:context="com.peermountain.core.share.ShareContactActivity">
 
-    <Button
-        android:id="@+id/btnConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Connect"
-        android:textSize="22sp"/>
 
-    <ProgressBar android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:visibility="gone"/>
-</LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/pm_margin_normal"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvMsg"
+            style="@style/pm_share_text"
+            android:layout_marginTop="0dp"
+            android:text="Your private code for others to connect :"/>
+
+        <TextView
+            android:id="@+id/tvCode"
+            style="@style/pm_share_text"
+            android:textColor="@color/pm_share_text_accent"
+            android:textSize="32sp"
+            tools:text="78585"/>
+
+        <TextView
+            style="@style/pm_share_text"
+            android:text="@string/pm_share_or"/>
+
+        <TextView
+            android:id="@+id/tvMsgConnect"
+            style="@style/pm_share_text"
+            android:text="@string/pm_share_msg_other_code"/>
+
+        <EditText
+            android:id="@+id/etCode"
+            style="@style/pm_share_text"
+            android:hint="@string/pm_share_hint"
+            android:inputType="numberSigned"
+            android:textColorHint="@color/pm_share_et_hint"
+            android:textSize="22sp"/>
+
+        <TextView
+            android:id="@+id/btnConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:padding="@dimen/pm_margin_small"
+            android:layout_marginTop="@dimen/pm_margin_normal"
+            android:background="@drawable/pm_share_card_white"
+            android:text="@string/pm_share_connect"
+            android:textColor="@color/pm_share_text"
+            android:textAllCaps="false"
+            android:gravity="center"
+            android:textSize="22sp"/>
+    </LinearLayout>
+</FrameLayout>

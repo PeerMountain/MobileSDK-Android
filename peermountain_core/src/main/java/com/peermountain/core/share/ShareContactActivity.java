@@ -2,6 +2,7 @@ package com.peermountain.core.share;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -9,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,7 +21,7 @@ import com.peermountain.core.BuildConfig;
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.core.utils.FileUtils;
+import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PeerMountainCoreConstants;
 
@@ -61,13 +61,14 @@ public class ShareContactActivity extends ConnectionsActivity {
     private TextView mTvCode;
     private TextView mTvMsgConnect;
     private EditText mEtCode;
-    private Button mBtnConnect;
+    private TextView mBtnConnect;
     private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_contact);
+        setResult(RESULT_CANCELED);
         initView();
 
         mName = PeerMountainManager.getProfile().getNames();
@@ -77,7 +78,8 @@ public class ShareContactActivity extends ConnectionsActivity {
         mBtnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setState(DISCOVERING);
+                if (mEtCode.getText().length() >= 5)
+                    setState(DISCOVERING);
 //                progressBar.setVisibility(View.VISIBLE);
             }
         });
@@ -142,15 +144,15 @@ public class ShareContactActivity extends ConnectionsActivity {
     protected void onConnectionInitiated(final Endpoint endpoint, ConnectionInfo connectionInfo) {
         // A connection to another device has been initiated! We can accept the connection immediately, but better ask
         new AlertDialog.Builder(this)
-                .setTitle("Accept connection to " + connectionInfo.getEndpointName())
-                .setMessage("Confirm if the code " + connectionInfo.getAuthenticationToken() + " is also displayed on the other device")
-                .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                .setTitle(getString(R.string.pm_share_accept_dialog_title, connectionInfo.getEndpointName()))
+                .setMessage(getString(R.string.pm_share_accept_dialog_msg, connectionInfo.getAuthenticationToken()))
+                .setPositiveButton(R.string.pm_share_accept_dialog_btn_accept, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The user confirmed, so we can accept the connection.
                         acceptConnection(endpoint);
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.pm_share_accept_dialog_btn_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The user canceled, so we should reject the connection.
                         rejectConnection(endpoint);
@@ -183,6 +185,9 @@ public class ShareContactActivity extends ConnectionsActivity {
 
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
+        Toast.makeText(
+                this, "Connection with " + endpoint.getName() + " failed. Please try again.", Toast.LENGTH_SHORT)
+                .show();
         LogUtils.d("onConnectionFailed", endpoint.toString());
         setState(ADVERTISING);
         progressBar.setVisibility(View.GONE);
@@ -206,6 +211,7 @@ public class ShareContactActivity extends ConnectionsActivity {
 //            Toast.makeText(this, endpoint.getName()+" says : "+msg, Toast.LENGTH_SHORT).show();
                 break;
             case Payload.Type.FILE:
+                fileSaved = false;
                 java.io.File payloadFile = payload.asFile().asJavaFile();
                 LogUtils.d("payload file", payloadFile.toString());
                 shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONTACT_IMAGE_FILE, payloadFile);
@@ -215,14 +221,20 @@ public class ShareContactActivity extends ConnectionsActivity {
     }
 
     private ShareObject shareObject = new ShareObject();
+    private boolean confirmedFinish = false, needToConfirmFinish = false;
 
     private void handleMessage(ShareObject receivedShareObject) {
         if (receivedShareObject != null) {
             switch (receivedShareObject.getOperation()) {
                 case ShareObject.OPERATION_SHARE_FINISH:// the other side is done sending,I have it all
-                    sendConfirmFinish();//confirm I have nothing to send any more
+                    if (fileSaved) {
+                        sendConfirmFinish();//confirm I have nothing to send any more and ready to finish
+                    } else {
+                        needToConfirmFinish = true;
+                    }
                     break;
                 case ShareObject.OPERATION_SHARE_CONFIRM_FINISH:// the other side is done sending and has received my data "OPERATION_SHARE_FINISH"
+                    confirmedFinish = true;
                     returnResult();
                     break;
                 case ShareObject.OPERATION_SHARE_CONTACT_DATA:
@@ -241,13 +253,27 @@ public class ShareContactActivity extends ConnectionsActivity {
 
                         java.io.File localPayloadFile = new File(getFilesDir()
                                 + PeerMountainCoreConstants.LOCAL_IMAGE_DIR,
-                                payloadFile.getName()+".jpg");
+                                payloadFile.getName() + ".jpg");
                         LogUtils.d("local payload file", localPayloadFile.toString());
 //                        java.io.File dir = new File(getFilesDir()
 //                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
 //                        dir.delete();
-                        FileUtils.copyFileAsync(payloadFile, localPayloadFile,true,null);
-                        // TODO: 10/18/2017 resize image and rotate , check ProfileSettings.loadAvatar
+//                        FileUtils.copyFileAsync(payloadFile, localPayloadFile,true,null);
+                        // resize image and rotate
+                        int size = getResources().getDimensionPixelSize(R.dimen.pm_avatar_size);
+                        ImageUtils.rotateAndResizeImageAsync(payloadFile, localPayloadFile, size,
+                                size, true, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
+                                    @Override
+                                    public void onImageCompressed(Bitmap bitmap, Uri uri) {
+                                        onFileSaved();
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        onFileSaved();
+                                    }
+                                }
+                        );
                         shareObject.getContact().setImageUri(Uri.fromFile(localPayloadFile).toString());
                     }
                     break;
@@ -255,7 +281,19 @@ public class ShareContactActivity extends ConnectionsActivity {
         }
     }
 
+    public void onFileSaved() {
+        fileSaved = true;
+        if (needToConfirmFinish) {
+            sendConfirmFinish();
+        }
+        returnResult();
+
+    }
+
+    private boolean fileSaved = true;
+
     private void returnResult() {
+        if (!fileSaved || !confirmedFinish) return;
         Intent data = new Intent();
         data.putExtra(SHARE_DATA, shareObject);
         setResult(RESULT_OK, data);
@@ -334,6 +372,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     }
 
     private void sendConfirmFinish() {
+        needToConfirmFinish = false;
         ShareObject shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONFIRM_FINISH);
         send(Payload.fromBytes(PeerMountainManager.shareObjectToJson(shareObject).getBytes()));
     }
@@ -383,11 +422,25 @@ public class ShareContactActivity extends ConnectionsActivity {
      * sending to endpointId.
      */
     private void showImageChooser(String endpointId) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        intent.putExtra(ENDPOINT_ID_EXTRA, endpointId);
-        startActivityForResult(intent, READ_REQUEST_CODE);
+        new AlertDialog.Builder(this)
+                .setTitle("Select image")
+                .setMessage("If you want your avatar image on the other device to be different than your current, please point which one you want to send.")
+                .setPositiveButton("Select", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, READ_REQUEST_CODE);
+                    }
+                })
+                .setNegativeButton("Use current", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
     }
 
     private void updateUiForState(int oldState, int newState) {
@@ -496,7 +549,7 @@ public class ShareContactActivity extends ConnectionsActivity {
         mTvCode = (TextView) findViewById(R.id.tvCode);
         mTvMsgConnect = (TextView) findViewById(R.id.tvMsgConnect);
         mEtCode = (EditText) findViewById(R.id.etCode);
-        mBtnConnect = (Button) findViewById(R.id.btnConnect);
+        mBtnConnect = findViewById(R.id.btnConnect);
         progressBar = findViewById(R.id.progressBar);
     }
 }

@@ -17,7 +17,8 @@
         android:allowBackup="true"
         android:supportsRtl="true"
         android:largeHeap="true"
-        android:theme="@style/PmSdkTheme"        >
+        android:theme="@style/PmSdkTheme"
+        tools:replace="android:theme">
 
         <!-- android:theme="@style/SdkTheme" -->
 

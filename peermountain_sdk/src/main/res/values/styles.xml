@@ -146,4 +146,17 @@
         <item name="android:padding">@dimen/pm_margin_normal</item>
         <item name="android:textSize">@dimen/pm_regular_text</item>
     </style>
+
+    <style name="pm_tuto_image">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">200dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="pm_dot_tuto">
+        <item name="android:layout_width">@dimen/pm_tuto_dot_size</item>
+        <item name="android:layout_height">@dimen/pm_tuto_dot_size</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:background">@drawable/pm_white_dot</item>
+    </style>
 </resources>
