@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/pm_toolbar_height"
+    android:id="@+id/toolbar"
     tools:showIn="@layout/pm_content_home">
 
     <com.peermountain.sdk.views.PeerMountainTextView

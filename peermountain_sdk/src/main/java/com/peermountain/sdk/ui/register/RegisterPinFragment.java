@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
@@ -91,6 +92,7 @@ public class RegisterPinFragment extends ToolbarFragment {
 
     @Override
     public void onDetach() {
+        stopTimer();
         super.onDetach();
         mListener = null;
     }
@@ -105,9 +107,18 @@ public class RegisterPinFragment extends ToolbarFragment {
         PeerMountainManager.saveFingerprint(false);
     }
 
+    public void stopTimer() {
+        if(timer!=null) {
+            timer.cancel();
+            timer=null;
+        }
+    }
+
     private void setUpView() {
         fastLoginHelper = new FastLoginHelper(getActivity(), "key", true);
         if (isLogin) {
+            pmTvMessage2.setVisibility(View.GONE);
+            pmTvMessage.setText(R.string.pm_login_msg);
             if (!PeerMountainManager.getFingerprint()) {
                 kbKeyFingerprint.setVisibility(View.GONE);
             } else {
@@ -120,6 +131,7 @@ public class RegisterPinFragment extends ToolbarFragment {
                     || !((FingerprintManager) getActivity().getSystemService(Activity.FINGERPRINT_SERVICE)).isHardwareDetected())) {//not available
                 kbKeyFingerprint.setVisibility(View.GONE);
             }
+            setViewForEnterPin();
         }
     }
 
@@ -130,12 +142,16 @@ public class RegisterPinFragment extends ToolbarFragment {
                 onMenuBtnClick();
             }
         });
+
+        hideToolbar();
     }
 
     ImageView[] dots = new ImageView[6];
-    TextView pmTvRecover, pmTvMessage;
+    TextView pmTvRecover, pmTvMessage, pmTvMessage2;
     LinearLayout kbKeyDelete, kbKeyFingerprint;
     LinearLayout[] keys = new LinearLayout[10];
+    LinearLayout llPin;
+    ImageView ivCheck;
 
     /**
      * type ff to fast get new views
@@ -161,6 +177,9 @@ public class RegisterPinFragment extends ToolbarFragment {
         keys[0] = view.findViewById(R.id.kbKey0);
         pmTvRecover = view.findViewById(R.id.pmTvRecover);
         pmTvMessage = view.findViewById(R.id.pmTvMessage);
+        pmTvMessage2 = view.findViewById(R.id.pmTvMessage2);
+        llPin = view.findViewById(R.id.llPin);
+        ivCheck = view.findViewById(R.id.ivCheck);
     }
 
 
@@ -200,17 +219,25 @@ public class RegisterPinFragment extends ToolbarFragment {
     public boolean onMenuBtnClick() {
         if (isLogin) {
             if (mListener != null) mListener.onLoginCanceled();
-        } else if (isRepeating) {
-            isRepeating = false;
-            pmTvMessage.setText(R.string.pm_please_enter_a_6_digits_pin_code);
-            pin = new StringBuilder();
-            pinRepeat = new StringBuilder();
-            resetDots();
-            if (mToolbarListener != null) {
-                mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_logo);
-            }
+        } else if (isRepeating || timer!=null) {
+            setViewForEnterPin();
+            return true;
         }
-        return isRepeating;
+        return false;
+    }
+
+    public void setViewForEnterPin() {
+        isRepeating = false;
+        stopTimer();
+        pmTvMessage.setText(R.string.pm_please_enter_a_6_digits_pin_code);
+        pin = new StringBuilder();
+        pinRepeat = new StringBuilder();
+        resetDots();
+        llPin.setVisibility(View.VISIBLE);
+        ivCheck.setVisibility(View.GONE);
+        if (mToolbarListener != null) {
+            mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_logo);
+        }
     }
 
     private void onKeyboardDeleteBtnClick() {
@@ -257,22 +284,51 @@ public class RegisterPinFragment extends ToolbarFragment {
         } else if (isRepeating) {
             if (pin.toString().equalsIgnoreCase(pinRepeat.toString())) {
                 PeerMountainManager.savePin(pin.toString());
-                if (mListener != null) {
-                    mListener.goToRegisterKeyWords();
-                }
+                onPinConfirmed();
             } else {
                 DialogUtils.showError(getActivity(), R.string.pm_pin_match_error_msg);
                 pinRepeat = new StringBuilder();
                 resetDots();
             }
         } else {
-            if (mToolbarListener != null) {
-                mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_arrow_back_24dp);
-            }
-            pmTvMessage.setText(R.string.pm_please_confirm_your_pin_code);
-            isRepeating = true;
-            resetDots();
+            setViewToConfirm();
         }
+    }
+
+    private void setViewToConfirm() {
+        if (mToolbarListener != null) {
+            mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_arrow_back_24dp);
+        }
+        hideToolbar();
+        pmTvMessage.setText(R.string.pm_please_confirm_your_pin_code);
+        isRepeating = true;
+        resetDots();
+    }
+    CountDownTimer timer =null;
+    private void onPinConfirmed() {
+        pmTvMessage.setText(R.string.pm_pin_confirm_title);
+        pmTvMessage2.setText(R.string.pm_pin_confirm_msg2);
+        llPin.setVisibility(View.GONE);
+        ivCheck.setVisibility(View.VISIBLE);
+
+        if (mToolbarListener != null) {
+            mToolbarListener.setMenuLeftIcon(ToolbarFragment.MENU_HIDE);
+        }
+        hideToolbar();
+        timer = new CountDownTimer(2000,2000) {
+            @Override
+            public void onTick(long l) {
+            }
+
+            @Override
+            public void onFinish() {
+                timer = null;
+                if (mListener != null) {
+                    mListener.goToRegisterKeyWords();
+                }
+            }
+        };
+        timer.start();
     }
 
     private void resetDots() {
@@ -308,9 +364,7 @@ public class RegisterPinFragment extends ToolbarFragment {
             }
         } else {
             PeerMountainManager.saveFingerprint(true);
-            if (mListener != null) {
-                mListener.goToRegisterKeyWords();
-            }
+            onPinConfirmed();
             DialogUtils.showInfoSnackbar(getActivity(), R.string.pm_message_fast_login_enabled);
         }
     }

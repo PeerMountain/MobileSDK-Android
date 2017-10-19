@@ -22,8 +22,12 @@
     <!-- login fragment  end-->
 
     <!-- register fragment -->
-    <string name="pm_please_enter_a_6_digits_pin_code">Please enter a 6 digits PIN Code</string>
-    <string name="pm_please_confirm_your_pin_code">Please confirm your PIN Code</string>
+    <string name="pm_please_enter_a_6_digits_pin_code">Set your security PIN</string>
+    <string name="pm_please_confirm_your_pin_code">Confirm your security PIN</string>
+    <string name="pm_login_msg">Enter your security PIN</string>
+    <string name="pm_pin_msg2">Your pin will be used to unlock your wallet.</string>
+    <string name="pm_pin_confirm_title">Your pin will be used to unlock your wallet.</string>
+    <string name="pm_pin_confirm_msg2">Your pin will be used to unlock your wallet.</string>
     <string name="pm_don_t_remember_your_code">Don\'t remember your code?</string>
     <string name="pm_recover_here">Recover here.</string>
     <string name="pm_register_title">Sign Up</string>

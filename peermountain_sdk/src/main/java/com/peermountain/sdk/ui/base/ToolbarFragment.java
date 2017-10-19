@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.peermountain.sdk.R;
-
 /**
  * Created by Galeen on 10/9/17.
  */
@@ -66,6 +64,11 @@ public abstract class ToolbarFragment extends Fragment {
         mToolbarListener.setToolbarTheme(theme);
     }
 
+    public void hideToolbar(){
+        if (mToolbarListener == null) return;
+        mToolbarListener.hideToolbar();
+    }
+
     public static final int THEME_DARK = 1;
     public static final int THEME_LIGHT = 2;
 
@@ -84,6 +87,7 @@ public abstract class ToolbarFragment extends Fragment {
         void setRightMenuButtonEvent(View.OnClickListener listener);
         void setMenuRightIcon(int res);
         void setToolbarTheme(int theme);
+        void hideToolbar();
         void setTopFragment(ToolbarFragment topFragment);
     }
 }

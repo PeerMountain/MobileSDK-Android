@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,9 +17,10 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
-public class IntroFragment extends Fragment implements View.OnTouchListener {
+public class IntroFragment extends ToolbarFragment implements View.OnTouchListener {
     SharedPreferences prefs;
     ViewFlipper vf;
     private float downXValue;
@@ -72,7 +72,7 @@ public class IntroFragment extends Fragment implements View.OnTouchListener {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        hideToolbar();
 //        Timer timer = new Timer();
 //        timer.schedule(new TimerTask() {
 //            public void run() {
@@ -233,6 +233,8 @@ public class IntroFragment extends Fragment implements View.OnTouchListener {
     public void skipIntro(View view) {
 //        vf.stopFlipping();
 //        vf.setDisplayedChild(vf.getChildCount() - 1);
+
+        // TODO: 10/19/2017 uncomment when test is done
         //        PeerMountainManager.saveTutoSeen();
         if (mListener != null) {
             mListener.onTutoEnd();

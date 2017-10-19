@@ -87,10 +87,12 @@ public class RegisterKeywordsFragment extends ToolbarFragment {
 
     private void setToolbarForKeywords() {
         setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
+        hideToolbar();
     }
 
     private void setToolbarForKeywordsResult() {
         setToolbar(ToolbarFragment.MENU_HIDE,R.string.pm_show_keywords_title,null);
+        hideToolbar();
     }
 
     private void initView(View view) {

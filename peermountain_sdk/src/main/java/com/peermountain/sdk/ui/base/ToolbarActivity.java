@@ -38,17 +38,24 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     public ImageView pmMenuLeft, pmMenuRight;
     public TextView pmToolbarTitle;
-    public View llMainView;//we need main view to change the background of it
+    public View llMainView,toolbar;//we need main view to change the background of it
 
     private void getViews() {
         pmMenuLeft = findViewById(R.id.pmMenuLeft);
         pmMenuRight = findViewById(R.id.pmMenuRight);
         pmToolbarTitle = findViewById(R.id.pmToolbarTitle);
+        toolbar = findViewById(R.id.toolbar);
 //        RippleUtils.setRippleEffectSquare(pmMenuLeft);
     }
 
     @Override
+    public void hideToolbar() {
+        toolbar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void setToolbarTitle(int resTitle, String title) {
+        toolbar.setVisibility(View.VISIBLE);
         if (resTitle != ToolbarFragment.MENU_HIDE) {
             pmToolbarTitle.setText(resTitle);
         } else {
@@ -58,6 +65,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setLeftMenuButtonEvent(final View.OnClickListener listener) {
+        toolbar.setVisibility(View.VISIBLE);
         if (listener != null) {
             pmMenuLeft.setOnClickListener(new RippleOnClickListener() {
                 @Override
@@ -72,6 +80,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setMenuLeftIcon(int res) {
+        toolbar.setVisibility(View.VISIBLE);
         if (res == ToolbarFragment.MENU_HIDE) {
             pmMenuLeft.setImageResource(android.R.color.transparent);
         } else {
@@ -83,6 +92,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setToolbarTheme(int theme) {
+        toolbar.setVisibility(View.VISIBLE);
         if (currentTheme == theme) return;
         switch (theme) {
             case ToolbarFragment.THEME_LIGHT:
@@ -111,6 +121,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setMenuRightIcon(int res) {
+        toolbar.setVisibility(View.VISIBLE);
         if (res == ToolbarFragment.MENU_HIDE) {
             pmMenuRight.setImageResource(android.R.color.transparent);
         } else {
@@ -120,6 +131,7 @@ public abstract class ToolbarActivity extends AppCompatActivity implements
 
     @Override
     public void setRightMenuButtonEvent(final View.OnClickListener listener) {
+        toolbar.setVisibility(View.VISIBLE);
         if (listener != null) {
             pmMenuRight.setOnClickListener(new RippleOnClickListener() {
                 @Override
