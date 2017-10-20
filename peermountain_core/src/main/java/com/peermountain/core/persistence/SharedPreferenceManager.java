@@ -3,10 +3,12 @@ package com.peermountain.core.persistence;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
+import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ class SharedPreferenceManager {
     private static final String PREF_LI_EXPIRES = "PREF_LI_EXPIRES";
     private static final String PREF_CONFIG = "config";
     private static final String PREF_KEYWORDS = "PREF_Keywords";
+    private static final String PREF_KEYWORDS_OBJECT = "PREF_KEYWORDS_OBJECT";
     private static final String PREF_PROFILE = "PREF_PROFILE";
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
@@ -123,6 +126,16 @@ class SharedPreferenceManager {
         return getString(PREF_KEYWORDS, null);
     }
 
+    static void saveKeywords(Keywords keywords) {
+        if (getContext() == null) return;
+        putString(PREF_KEYWORDS_OBJECT, new Gson().toJson(keywords));
+    }
+
+    static Keywords getKeywordsAsObject() {
+        if (getContext() == null) return null;
+        return new Gson().fromJson(getString(PREF_KEYWORDS_OBJECT, null), Keywords.class);
+    }
+
     static void savePmAccessToken(PmAccessToken accessToken) {
         if (getContext() == null) return;
         SharedPreferences.Editor mEditor = getSecureEditor(getContext());
@@ -162,6 +175,8 @@ class SharedPreferenceManager {
         editor.remove(PREF_PROFILE);
         editor.remove(PREF_KEYWORDS);
         editor.remove(PREF_PIN);
+        editor.remove(PREF_KEYWORDS_OBJECT);
+        editor.remove(PREF_MY_CONTACTS);
 //        editor.remove(PREF_CONFIG);//keep config file not related to profile
         editor.commit();
     }
@@ -185,7 +200,7 @@ class SharedPreferenceManager {
         }
         if (context == null) return null;
         try {
-            return MyJsonParser.readConfig(getString(context,PREF_CONFIG, null));
+            return MyJsonParser.readConfig(getString(context, PREF_CONFIG, null));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -194,13 +209,14 @@ class SharedPreferenceManager {
 
     static void saveTutoSeen() {
         if (getContext() == null) return;
-        getPrefs(getContext()).edit().putBoolean(PREF_TUTO,true).apply();
+        getPrefs(getContext()).edit().putBoolean(PREF_TUTO, true).apply();
     }
 
     static boolean isTutoSeen() {
         if (getContext() == null) return false;
-        return  getPrefs(getContext()).getBoolean(PREF_TUTO,false);
+        return getPrefs(getContext()).getBoolean(PREF_TUTO, false);
     }
+
     static String getDeviceId() {
         if (getContext() == null) return null;
         String token = getString("device", null);
@@ -215,17 +231,18 @@ class SharedPreferenceManager {
         if (getContext() == null) return;
         SharedPreferences.Editor mEditor = getSecureEditor(getContext());
 //        try {
-            mEditor.putString(key, opt);
+        mEditor.putString(key, opt);
 //            mEditor.apply();
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
     }
+
     private static String getString(String key, String opt) {
-        return getString(getContext(),key,opt);
+        return getString(getContext(), key, opt);
     }
 
-    private static String getString(Context context,String key, String opt) {
+    private static String getString(Context context, String key, String opt) {
         SecurePreferences mSharedPreferences = getSecurePrefs(context);
         String res = mSharedPreferences.getString(key, opt);
         // TODO: 10/17/2017 remove after all users migrated in next versions
@@ -251,7 +268,7 @@ class SharedPreferenceManager {
         if (res == opt) {//check if is not in plain prefs
             SharedPreferences shp = getPrefs(getContext());
             res = shp.getBoolean(key, opt);
-            if (res != opt ) {//migrate to secure prefs
+            if (res != opt) {//migrate to secure prefs
                 SharedPreferences.Editor mEditor = getSecureEditor(getContext());
                 mEditor.putBoolean(key, res);
                 //remove form plain prefs

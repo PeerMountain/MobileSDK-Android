@@ -60,8 +60,12 @@
     <string name="pm_keywords_message">Please enter your keywords</string>
     <string name="pm_keywords">Keywords</string>
     <string name="pm_hint_register_keywords">keyword, keyword, keyword, keyword</string>
-    <string name="pm_saved_keywords_message">Store your recovery keywords\nsomewhere safe. You\'ll need them in\ncase your forget your PIN Code.</string>
-    <string name="pm_show_keywords_title">Keywords</string>
+    <string name="pm_saved_keywords_message">To make sure, you noted down all\nkeywords correctly, we ask you to\nchoose 6 keywords of your offline key.</string>
+    <string name="pm_show_keywords_title">Keywords verification</string>
+
+    <string name="pm_keywords_select_message">Write down every keyword and\nstore them somewere safe.\nYou\'ll need them in case you forget\nyour PIN Code</string>
+    <string name="pm_keywords_skip">Skip this time</string>
+    <string name="pm_keywords_save">I\'ve written it down</string>
     <!--register keywords end-->
 
     <!--scan id fragment-->

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
@@ -234,8 +235,7 @@ public class IntroFragment extends ToolbarFragment implements View.OnTouchListen
 //        vf.stopFlipping();
 //        vf.setDisplayedChild(vf.getChildCount() - 1);
 
-        // TODO: 10/19/2017 uncomment when test is done
-        //        PeerMountainManager.saveTutoSeen();
+        PeerMountainManager.saveTutoSeen();
         if (mListener != null) {
             mListener.onTutoEnd();
         }

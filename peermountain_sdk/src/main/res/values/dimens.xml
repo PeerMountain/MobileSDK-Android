@@ -28,6 +28,7 @@
     <dimen name="pm_circle_btn_size">50dp</dimen>
 
     <dimen name="pm_corners">6dp</dimen>
+    <dimen name="pm_corners_keywords">20dp</dimen>
     <dimen name="pm_shadow">0dp</dimen>
     <integer name="pm_tv_shadow_dx">5</integer>
     <integer name="pm_tv_shadow_dy">5</integer>

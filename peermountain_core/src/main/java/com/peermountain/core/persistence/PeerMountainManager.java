@@ -22,6 +22,7 @@ import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
@@ -217,6 +218,22 @@ public class PeerMountainManager {
 
     public static String getKeywords() {
         return SharedPreferenceManager.getKeywords();
+    }
+
+    public static void saveKeywordsObject(Keywords keywords) {
+        SharedPreferenceManager.saveKeywords(keywords);
+    }
+
+    public static Keywords getSavedKeywordsObject() {
+        return SharedPreferenceManager.getKeywordsAsObject();
+    }
+
+    public static Keywords getRandomKeywords(Context context) {
+        return KeywordsHelper.getRandomKeywords(context);
+    }
+
+    public static Keywords getRandomKeywordsWithSavedIncluded(Context context) {
+        return KeywordsHelper.getRandomKeywordsWithSavedIncluded(context);
     }
 
     public static void resetProfile() {

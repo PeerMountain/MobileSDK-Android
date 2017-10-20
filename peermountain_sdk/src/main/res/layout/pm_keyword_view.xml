@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.peermountain.sdk.views.PeerMountainTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:grid="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="70dp"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:layout_margin="@dimen/pm_margin_micro"
+    android:background="@drawable/pm_keywords_selector"
+    android:textColor="@color/pm_text_color"
+    tools:text="Text"
+    grid:layout_columnWeight="1"
+    grid:layout_gravity="fill_horizontal">
+
+</com.peermountain.sdk.views.PeerMountainTextView>

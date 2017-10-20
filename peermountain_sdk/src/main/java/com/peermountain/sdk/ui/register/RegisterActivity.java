@@ -17,7 +17,7 @@ import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
 public class RegisterActivity extends ToolbarActivity implements RegisterPinFragment.OnFragmentInteractionListener,
-        RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener {
+        RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener {
     @IdRes
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
@@ -89,7 +89,7 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
     }
     private void showKeywordsFragment() {
         fb.addToBackStack(true);
-        fb.replace(RegisterKeywordsFragment.newInstance());
+        fb.replace(RegisterSelectKeywordsFragment.newInstance(false));
     }
 
     private void showScanIdFragment() {

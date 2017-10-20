@@ -32,6 +32,8 @@
     <color name="pm_keyboard_btn_pressed">#49C5DE</color>
     <color name="pm_keyboard_text_color">#000000</color>
     <color name="pm_keyboard_text_hint_color">#69747A</color>
+    <color name="pm_keyword_deselected_bkg">#80FFFFFF</color><!--50%-->
+    <color name="pm_keyword_selected_bkg">#49C5DE</color>
     <color name="pm_card_bkg">#80FFFFFF</color><!--50%-->
     <color name="pm_card_border">#80126B82</color><!--50%-->
     <color name="pm_1st_card_bkg">#FFFFFF</color>

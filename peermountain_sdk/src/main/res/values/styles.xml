@@ -61,7 +61,7 @@
     <style name="pm_square_btn">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/pm_confirm_btn_size</item>
-        <item name="android:background">@drawable/pm_keywords_btn_selector</item>
+        <item name="android:background">@drawable/pm_square_btn_selector</item>
         <item name="android:padding">@dimen/pm_margin_normal</item>
     </style>
 

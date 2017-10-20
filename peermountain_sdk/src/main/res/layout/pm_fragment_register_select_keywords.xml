@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:background="@drawable/pm_bkg"
+              tools:context="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pm_margin_big"
+        android:gravity="center"
+        android:text="@string/pm_show_keywords_title"
+        android:textColor="@color/pm_text_color"
+        android:textSize="@dimen/pm_big_text"
+        android:textStyle="bold"/>
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/pm_margin_normal"
+        android:layout_marginRight="@dimen/pm_margin_normal"
+        android:gravity="center"
+        android:text="@string/pm_keywords_select_message"
+        android:textColor="@color/pm_text_color"
+        android:textSize="@dimen/pm_regular_text"
+        android:visibility="visible"/>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/pm_margin_normal">
+
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/gridKeywords"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:alignmentMode="alignBounds"
+            app:columnCount="4"
+            app:columnOrderPreserved="true"
+            app:orientation="horizontal"
+            />
+    </FrameLayout>
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvSkip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/pm_margin_normal"
+        android:gravity="center"
+        android:text="@string/pm_keywords_skip"
+        android:textColor="@color/pm_text_color"
+        android:textSize="@dimen/pm_regular_text"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <FrameLayout android:id="@+id/flNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivNext"
+            style="@style/pm_square_btn"
+            android:rotation="180"
+            android:visibility="gone"
+            app:srcCompat="@drawable/pm_ic_arrow_back_24dp"/>
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvNext"
+            style="@style/pm_square_btn"
+            android:gravity="center"
+            android:text="@string/pm_keywords_save"
+            android:textColor="@color/pm_text_color"/>
+    </FrameLayout>
+</LinearLayout>
