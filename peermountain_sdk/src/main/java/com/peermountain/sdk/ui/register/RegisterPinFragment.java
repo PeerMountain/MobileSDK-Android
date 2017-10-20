@@ -238,6 +238,7 @@ public class RegisterPinFragment extends ToolbarFragment {
         if (mToolbarListener != null) {
             mToolbarListener.setMenuLeftIcon(R.drawable.pm_ic_logo);
         }
+        hideToolbar();
     }
 
     private void onKeyboardDeleteBtnClick() {

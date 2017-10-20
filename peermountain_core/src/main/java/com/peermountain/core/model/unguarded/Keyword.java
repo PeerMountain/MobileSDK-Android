@@ -27,4 +27,20 @@ public class Keyword {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Keyword)) return false;
+
+        Keyword keyword = (Keyword) o;
+
+        return value.equals(keyword.value);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

@@ -105,7 +105,7 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
     }
 
     private void showRegisterProfileFragment(Document document) {
-        fb.addToBackStack(true);
+        fb.addToBackStack(false);
         fb.replace(RegisterProfileFragment.newInstance(document));
     }
 

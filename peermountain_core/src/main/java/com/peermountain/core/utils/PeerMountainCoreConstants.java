@@ -27,6 +27,7 @@ public class PeerMountainCoreConstants {
     public static final String LOCAL_IMAGE_DIR = "/images";
 
     public static final int KEYWORDS_SHOW_COUNT = 20;
+    public static final int KEYWORDS_SHOW_TO_VALIDATE_COUNT = 28;
     public static final int MIN_KEYWORDS_SAVE = 6;
 }
 

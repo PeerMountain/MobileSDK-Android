@@ -40,6 +40,7 @@ import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.DocumentUtils;
+import com.peermountain.sdk.utils.PmFragmentUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.squareup.picasso.Picasso;
@@ -101,8 +102,20 @@ public class RegisterProfileFragment extends ToolbarFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getViews(view);
+        initToolbar();
         setView();
         setListeners();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        new PmFragmentUtils.FragmentBuilder(getActivity()).remove(this);
+        return super.onBackPressed();
+    }
+
+    private void initToolbar() {
+        setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
+        setTheme(ToolbarFragment.THEME_LIGHT);
     }
 
     @Override

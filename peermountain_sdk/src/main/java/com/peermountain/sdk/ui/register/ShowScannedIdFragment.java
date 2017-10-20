@@ -86,11 +86,15 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(view);
-        setListeners();
-        getScannedData(scannedData);
-        setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
-        setTheme(ToolbarFragment.THEME_LIGHT);
+//        initView(view);
+//        setListeners();
+//        getScannedData(scannedData);
+//        setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
+//        setTheme(ToolbarFragment.THEME_LIGHT);
+        if(mListener!=null){
+            document = DocumentUtils.getScannedData(scannedData);
+            mListener.onScannedIdDataAccepted(document);
+        }
     }
 
     @Override

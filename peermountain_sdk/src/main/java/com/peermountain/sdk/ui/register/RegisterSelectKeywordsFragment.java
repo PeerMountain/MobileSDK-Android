@@ -3,22 +3,30 @@ package com.peermountain.sdk.ui.register;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.peermountain.core.model.unguarded.Keyword;
+import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.sdk.views.PeerMountainTextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
+import static com.peermountain.core.utils.PeerMountainCoreConstants.MIN_KEYWORDS_SAVE;
 
 public class RegisterSelectKeywordsFragment extends ToolbarFragment {
 
@@ -27,11 +35,11 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
     private PeerMountainTextView mTvTitle;
     private PeerMountainTextView mTvMsg;
     private GridLayout mGridKeywords;
-    private PeerMountainTextView mTvSkip;
+    private View mTvSkip;
     private ImageView mIvNext;
     private PeerMountainTextView mTvNext;
 
-    private boolean isValidate = false;
+    private boolean isReset = false;
 
     public RegisterSelectKeywordsFragment() {
         // Required empty public constructor
@@ -40,7 +48,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
     public static RegisterSelectKeywordsFragment newInstance(boolean validate) {
         RegisterSelectKeywordsFragment fragment = new RegisterSelectKeywordsFragment();
         Bundle args = new Bundle();
-        args.putBoolean(ARG_VALIDATE,validate);
+        args.putBoolean(ARG_VALIDATE, validate);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,7 +69,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isValidate = getArguments().getBoolean(ARG_VALIDATE,false);
+            isReset = getArguments().getBoolean(ARG_VALIDATE, false);
         }
     }
 
@@ -77,54 +85,154 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         super.onViewCreated(view, savedInstanceState);
         PeerMountainManager.saveKeywordsObject(null);//remove current
         initView(view);
+        setListeners();
         setUpView();
     }
 
     @Override
+    public boolean onBackPressed() {
+        if(timer != null) return true;//still going on
+        if (!isJustShowing) {
+            setUpView();
+            return true;
+        }
+        return super.onBackPressed();
+    }
+
+    @Override
     public void onDetach() {
+        stopTimer();
         super.onDetach();
         mListener = null;
     }
 
+    private void onKeywordsConfirmed() {
+        mTvTitle.setText(R.string.pm_confirmed_keywords_title);
+        mTvMsg.setText(R.string.pm_keywords_confirmed_message);
+        mTvSkip.setVisibility(View.GONE);
+        mTvNext.setVisibility(View.GONE);
+        btnRipple.setVisibility(View.GONE);
+        mGridKeywords.setVisibility(View.GONE);
+        ivCheck.setVisibility(View.VISIBLE);
+        timer = new CountDownTimer(2000, 2000) {
+            @Override
+            public void onTick(long l) {
+            }
+
+            @Override
+            public void onFinish() {
+                timer = null;
+                PeerMountainManager.saveKeywordsObject(getSelectedKeywords());
+                if (mListener != null) {
+                    mListener.onKeywordsSaved();
+                }
+            }
+        };
+        timer.start();
+    }
+
+    CountDownTimer timer = null;
+
+    public void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
     public void setUpView() {
-        if(isValidate){
-            setViewForValidate();
-        }else{
+        ivCheck.setVisibility(View.GONE);
+        if (isReset) {
+            setViewForReset();
+        } else {
             setViewForRegister();
         }
     }
 
+    boolean isJustShowing = true;
     ArrayList<View> keywordViews = new ArrayList<>();
+
     public void setViewForRegister() {
         setToolbarForKeywords();
+        isJustShowing = true;
         mTvTitle.setText(R.string.pm_keywords);
         mTvMsg.setText(R.string.pm_keywords_select_message);
         mTvSkip.setVisibility(View.VISIBLE);
         mTvNext.setVisibility(View.VISIBLE);
         mIvNext.setVisibility(View.GONE);
-        ArrayList<Keyword> keywords = PeerMountainManager.getRandomKeywords(getActivity()).getKeywords();
+        btnRipple.setVisibility(View.VISIBLE);
+        mGridKeywords.setVisibility(View.VISIBLE);
+        ivCheck.setVisibility(View.GONE);
+        enableButton(true);
+//        if(myKeywords!=null && myKeywords.getKeywords()!=null){
+//            generateKeywords(myKeywords.getKeywords());
+//        }else {
+            ArrayList<Keyword> keywords = PeerMountainManager.getRandomKeywords(getActivity()).getKeywords();
+            generateKeywords(keywords);
+            myKeywords = new Keywords();
+            myKeywords.setKeywords(keywords);
+            PeerMountainManager.saveKeywordsObject(myKeywords);
+//        }
+    }
+
+    private void generateKeywords(final ArrayList<Keyword> keywords) {
         if (keywords != null) {
-            int textColor = ContextCompat.getColor(getActivity(),R.color.pm_text_color);
-            for (Keyword type : keywords) {
+            mGridKeywords.removeAllViews();
+            keywordViews.clear();
+            int textColor = ContextCompat.getColor(getActivity(), R.color.pm_text_color);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            for (Keyword keyword : keywords) {
 //                PeerMountainTextView view = new PeerMountainTextView(getActivity());
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                TextView view = (TextView) inflater.inflate(R.layout.pm_keyword_view, mGridKeywords,false);
-                view.setTag(type);
+                TextView view = (TextView) inflater.inflate(R.layout.pm_keyword_view, mGridKeywords, false);
+                view.setTag(keyword);
 //                view.setBackgroundResource(R.drawable.pm_keywords_selector);
-                view.setText(type.getValue());
-                view.setSelected(type.isSelected());
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Keyword keyword = (Keyword) view.getTag();
-                        keyword.setSelected(!keyword.isSelected());
-                        view.setSelected(keyword.isSelected());
-                    }
-                });
+                view.setText(keyword.getValue() + (keyword.isSelected() ? "*" : ""));
+//                view.setSelected(keyword.isSelected());
+                if (!isJustShowing) {
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Keyword keyword = (Keyword) view.getTag();
+//                            keyword.setSelected(!keyword.isSelected());
+                            view.setSelected(!view.isSelected());
+                            checkKeywordsCount();
+                        }
+                    });
+                }
                 mGridKeywords.addView(view);
                 keywordViews.add(view);
             }
         }
+    }
+
+    Keywords myKeywords = null;
+
+    private void checkKeywordsCount() {
+        if (myKeywords == null || myKeywords.getKeywords() == null) return;
+        int count = 0;
+        for (View keywordView : keywordViews) {
+            if (keywordView.isSelected()) {
+                Keyword key = (Keyword) keywordView.getTag();
+                if (myKeywords.getKeywords().contains(key)) {
+                    count++;
+                } else {//wrong selected word
+                    count = 0;
+                    break;
+                }
+            }
+        }
+        enableButton(count >= MIN_KEYWORDS_SAVE);
+    }
+
+    private Keywords getSelectedKeywords() {
+        HashSet<Keyword> kws = new HashSet<>();
+        for (View keywordView : keywordViews) {
+            Keyword key = (Keyword) keywordView.getTag();
+            if (key.isSelected()) {
+                kws.add(key);
+            }
+        }
+        return new Keywords(kws);
     }
 
     public void setViewForValidate() {
@@ -134,6 +242,27 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         mTvSkip.setVisibility(View.GONE);
         mTvNext.setVisibility(View.GONE);
         mIvNext.setVisibility(View.VISIBLE);
+        enableButton(false);
+        ArrayList<Keyword> keywords = PeerMountainManager.getRandomKeywordsWithSavedIncluded(getActivity()).getKeywords();
+//        myKeywords = PeerMountainManager.getSavedKeywordsObject();
+        generateKeywords(keywords);
+    }
+
+    private void enableButton(boolean isEnabled) {
+        btnRipple.setEnabled(isEnabled);
+        flNext.setEnabled(isEnabled);
+        mIvNext.setEnabled(isEnabled);
+    }
+
+    public void setViewForReset() {
+        setToolbarForKeywords();
+        mTvTitle.setText(R.string.pm_show_keywords_title);
+        mTvMsg.setText(R.string.pm_saved_keywords_message);
+        mTvSkip.setVisibility(View.GONE);
+        mTvNext.setVisibility(View.GONE);
+        mIvNext.setVisibility(View.VISIBLE);
+        ArrayList<Keyword> keywords = PeerMountainManager.getRandomKeywordsWithSavedIncluded(getActivity()).getKeywords();
+        generateKeywords(keywords);
     }
 
     private void setToolbarForKeywords() {
@@ -141,13 +270,35 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         hideToolbar();
     }
 
+    FrameLayout flNext;
+    MaterialRippleLayout btnRipple;
+    ImageView ivCheck;
+
     private void initView(View view) {
         mTvTitle = (PeerMountainTextView) view.findViewById(R.id.tvTitle);
         mTvMsg = (PeerMountainTextView) view.findViewById(R.id.tvMsg);
         mGridKeywords = (GridLayout) view.findViewById(R.id.gridKeywords);
-        mTvSkip = (PeerMountainTextView) view.findViewById(R.id.tvSkip);
+        mTvSkip = view.findViewById(R.id.tvSkip);
         mIvNext = (ImageView) view.findViewById(R.id.ivNext);
         mTvNext = (PeerMountainTextView) view.findViewById(R.id.tvNext);
+        flNext = view.findViewById(R.id.flNext);
+        ivCheck = view.findViewById(R.id.ivCheck);
+    }
+
+    private void setListeners() {
+        flNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isJustShowing) {
+                    isJustShowing = false;
+                    setViewForValidate();
+                } else {
+                    onKeywordsConfirmed();
+                }
+            }
+        });
+
+        btnRipple = RippleUtils.setRippleEffectSquare(flNext);
     }
 
     public interface OnFragmentInteractionListener {

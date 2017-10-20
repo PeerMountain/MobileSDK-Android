@@ -94,7 +94,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/pm_margin_normal"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <com.peermountain.sdk.views.PeerMountainTextView
                 android:layout_width="wrap_content"
@@ -296,12 +297,6 @@
     </LinearLayout>
     <ImageView
         android:id="@+id/ivCheck"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:src="@drawable/pm_ic_check"
-        android:scaleType="centerInside"
-        android:background="@drawable/pm_ic_sonar"
-        android:visibility="gone"/>
+        style="@style/pm_sonar"/>
 </FrameLayout>
 </LinearLayout>

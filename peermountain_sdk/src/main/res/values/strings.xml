@@ -66,10 +66,15 @@
     <string name="pm_keywords_select_message">Write down every keyword and\nstore them somewere safe.\nYou\'ll need them in case you forget\nyour PIN Code</string>
     <string name="pm_keywords_skip">Skip this time</string>
     <string name="pm_keywords_save">I\'ve written it down</string>
+
+    <string name="pm_confirmed_keywords_title">Your account has been set up</string>
+
+    <string name="pm_keywords_confirmed_message">Start building your dossier</string>
     <!--register keywords end-->
 
     <!--scan id fragment-->
-    <string name="pm_btn_scan_id_msg">Scan your ID or Passport.\nPlease prepare your document for scan from MRZ side first!</string>
+    <string name="pm_btn_scan_id_msg">Scan your ID or Passport.</string>
+    <string name="pm_btn_scan_id_msg2">Please prepare your ID or PASSPORT to scan it trough camera or NFC</string>
     <string name="pm_btn_ask_for_permission_again">OK</string>
     <string name="pm_lbl_loading_sdk">Loading&#8230;</string>
     <string name="btn_refuse_permission">Refuse</string>

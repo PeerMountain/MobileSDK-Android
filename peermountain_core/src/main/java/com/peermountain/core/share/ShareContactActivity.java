@@ -84,7 +84,7 @@ public class ShareContactActivity extends ConnectionsActivity {
             }
         });
         mBtnConnect.setEnabled(false);
-        showImageChooser("");
+//        showImageChooser("");
     }
 
     @Override

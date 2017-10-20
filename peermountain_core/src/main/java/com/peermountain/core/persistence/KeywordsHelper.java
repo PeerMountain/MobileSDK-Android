@@ -26,7 +26,7 @@ class KeywordsHelper {
         loadAssetList(context, all, "kycwords.txt");
         HashSet<Keyword> random = new HashSet<>();
         Random rnd = new Random();
-        while (random.size()< PeerMountainCoreConstants.KEYWORDS_SHOW_COUNT){
+        while (random.size() < PeerMountainCoreConstants.KEYWORDS_SHOW_COUNT) {
             random.add(all.get(rnd.nextInt(all.size())));
         }
         return new Keywords(random);
@@ -35,13 +35,23 @@ class KeywordsHelper {
     public static Keywords getRandomKeywordsWithSavedIncluded(Context context) {
         ArrayList<Keyword> all = new ArrayList<>();
         loadAssetList(context, all, "kycwords.txt");
-        Keywords saved = PeerMountainManager.getSavedKeywordsObject();
-        HashSet<Keyword> random = new HashSet<>(saved.getKeywords());
+        Keywords savedKeywordsObject = PeerMountainManager.getSavedKeywordsObject();
         Random rnd = new Random();
-        while (random.size()<PeerMountainCoreConstants.KEYWORDS_SHOW_COUNT){
-            random.add(all.get(rnd.nextInt(all.size())));
+        HashSet<Keyword> random6Set = new HashSet<>();
+        if (savedKeywordsObject != null && savedKeywordsObject.getKeywords() != null) {
+            while (random6Set.size() < PeerMountainCoreConstants.MIN_KEYWORDS_SAVE) {
+                Keyword keyword = savedKeywordsObject.getKeywords().get(rnd.nextInt(savedKeywordsObject.getKeywords().size()));
+                keyword.setSelected(true);
+                random6Set.add(keyword);
+            }
         }
-        return new Keywords(random);
+        HashSet<Keyword> randomAllSet = new HashSet<>(random6Set);
+        while (randomAllSet.size() < PeerMountainCoreConstants.KEYWORDS_SHOW_TO_VALIDATE_COUNT) {
+            Keyword kwr = all.get(rnd.nextInt(all.size()));
+            if (!randomAllSet.contains(kwr))
+                randomAllSet.add(kwr);
+        }
+        return new Keywords(randomAllSet);
     }
 
     private static void loadAssetList(Context context, ArrayList<Keyword> list, String file) {

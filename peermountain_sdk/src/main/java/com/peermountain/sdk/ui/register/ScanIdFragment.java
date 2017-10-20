@@ -82,6 +82,7 @@ public class ScanIdFragment extends ToolbarFragment {
         setListeners();
         setToolbar(R.drawable.pm_ic_logo, R.string.pm_register_title, null);
         setTheme(ToolbarFragment.THEME_DARK);
+        hideToolbar();
 
         if(mListener != null) {
             if (mListener.isScanSDKReady()) {
@@ -104,6 +105,7 @@ public class ScanIdFragment extends ToolbarFragment {
                         || PeerMountainSdkConstants.isFake) {
                     if (mListener != null) mListener.onIdScanned(data);
                 } else {
+//                    if (mListener != null) mListener.onIdScanned(data);
                     onNextClickListener.resetConsumed();
                     Toast.makeText(getActivity(), R.string.pm_err_msg_scan_data, Toast.LENGTH_SHORT).show();
                 }
