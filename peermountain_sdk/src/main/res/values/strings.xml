@@ -134,6 +134,8 @@
 
     <!--documents fragment-->
     <string name="pm_title_documents">Documents</string>
+    <string name="pm_document_item_empty">Locked</string>
+    <string name="pm_document_item_id_title">ID</string>
     <!--documents fragment end-->
 
     <!--contacts fragment-->
@@ -162,5 +164,6 @@
     <string name="pm_share_using_google_nearby">Using Google NearBy</string>
     <string name="pm_share_using_qr_code">Using QR Code</string>
     <string name="pm_share_title">Add contact</string>
+    <string name="pm_douments_item_btn_update">Update</string>
     <!--Share fragment end-->
 </resources>

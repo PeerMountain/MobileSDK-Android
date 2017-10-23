@@ -8,16 +8,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.peermountain.core.model.guarded.FileDocument;
+import com.peermountain.core.model.guarded.AppDocument;
+import com.peermountain.core.model.guarded.Document;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Galeen on 10/12/2017.
  */
 
-public class DocumentsAdapter extends ArrayAdapter<FileDocument> {
+public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
 
     public DocumentsAdapter(Context context) {
         super(context, 0);
@@ -58,15 +60,16 @@ public class DocumentsAdapter extends ArrayAdapter<FileDocument> {
 
     private static class ViewHolder {
         final View parent, btnRipple;
-        final TextView tvMsg;
-        final ImageView btn, ivDocument;
-        FileDocument fileDocument;
+        final TextView tvMsg,btn;
+        final ImageView ivDocumentBack, ivDocument;
+        AppDocument appDocument;
 
         ViewHolder(View view) {
             parent = view;
-            tvMsg = (TextView) view.findViewById(R.id.tvJobMsg);
-            btn = (ImageView) view.findViewById(R.id.pmIvDoJob);
-            ivDocument = view.findViewById(R.id.ivDocument);
+            tvMsg = (TextView) view.findViewById(R.id.tvMsg);
+            ivDocumentBack = (ImageView) view.findViewById(R.id.ivPmFullImageBack);
+            ivDocument = view.findViewById(R.id.ivPmFullImage);
+            btn = view.findViewById(R.id.pmTvUpdate);
             btnRipple = RippleUtils.setRippleEffectSquare(btn);
             btn.setOnClickListener(new RippleOnClickListener() {
                 @Override
@@ -76,17 +79,44 @@ public class DocumentsAdapter extends ArrayAdapter<FileDocument> {
             });
         }
 
-        void bind(FileDocument document, boolean isActivity) {
-            fileDocument = document;
-            if (fileDocument == null) return;
-            if (fileDocument.file!=null) {
+        void bind(AppDocument document, boolean isActivity) {
+            appDocument = document;
+            if (appDocument == null) return;
+            if (!appDocument.isEmpty) {
                 btnRipple.setEnabled(true);
                 btn.setEnabled(true);
+                tvMsg.setText(R.string.pm_document_item_id_title);
+                Document id;
+                if(appDocument.getDocuments().size()>0
+                        && (id = appDocument.getDocuments().get(0))!=null) {
+                    String uri = id.getImageCropped().getImageUri();
+                    loadImage(uri, ivDocument);
+                    String uriBack = id.getImageCroppedBack().getImageUri();
+                    loadImage(uriBack, ivDocumentBack);
+                }else{
+                    ivDocument.setVisibility(View.GONE);
+                    ivDocumentBack.setVisibility(View.GONE);
+                }
             } else {
                 btn.setEnabled(false);
                 btnRipple.setEnabled(false);
+                ivDocument.setVisibility(View.GONE);
+                ivDocumentBack.setVisibility(View.GONE);
+                tvMsg.setText(R.string.pm_document_item_empty);
             }
-            tvMsg.setText(fileDocument.getUri());
+        }
+
+        private void loadImage(String uri, ImageView iv) {
+            if (uri != null) {
+                iv.setVisibility(View.VISIBLE);
+                Picasso.with(parent.getContext())
+                        .load(uri)
+//                        .placeholder(R.drawable.pm_profil_white)
+                        .error(R.color.pm_error_loading_avatar)
+                        .into(iv);
+            }else{
+                iv.setVisibility(View.GONE);
+            }
         }
     }
 }

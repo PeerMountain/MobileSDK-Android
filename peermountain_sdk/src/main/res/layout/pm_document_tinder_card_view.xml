@@ -9,36 +9,39 @@
               android:orientation="vertical">
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5">
-
-        <ImageView android:id="@+id/ivDocument"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <com.peermountain.sdk.views.PeerMountainTextView
-            android:id="@+id/tvJobMsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/pm_margin_normal"
-            android:textColor="@color/pm_text_color_dark"
-            android:textSize="@dimen/pm_regular_text"
-            tools:text="Job showActivity"/>
-    </FrameLayout>
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/pm_margin_normal"
+        android:textColor="@color/pm_text_color_dark"
+        android:textSize="@dimen/pm_big_text"
+        tools:text="Job showActivity"/>
 
     <ImageView
-        android:id="@+id/pmIvDoJob"
+        android:id="@+id/ivPmFullImage"
+        style="@style/pm_id_iv"
+        android:layout_marginLeft="@dimen/pm_margin_normal"
+        android:layout_marginRight="@dimen/pm_margin_normal"/>
+
+    <ImageView
+        android:id="@+id/ivPmFullImageBack"
+        style="@style/pm_id_iv"
+        android:layout_marginLeft="@dimen/pm_margin_normal"
+        android:layout_marginRight="@dimen/pm_margin_normal"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/pmTvUpdate"
         style="@style/pm_square_btn"
-        android:rotation="180"
-        app:srcCompat="@drawable/pm_ic_arrow_back_24dp"/>
+        android:layout_marginTop="@dimen/pm_margin_normal"
+        android:gravity="center"
+        android:text="@string/pm_douments_item_btn_update"
+        android:textColor="@color/pm_text_color"/>
 </LinearLayout>

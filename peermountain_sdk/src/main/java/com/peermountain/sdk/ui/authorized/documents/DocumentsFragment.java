@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.peermountain.core.model.guarded.FileDocument;
+import com.peermountain.core.model.guarded.AppDocument;
+import com.peermountain.core.model.guarded.Profile;
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.home.CardsEventListener;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
@@ -107,7 +109,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
 
     }
 
-    List<FileDocument> documents = new ArrayList<FileDocument>();
+    List<AppDocument> documents = new ArrayList<AppDocument>();
     DocumentsAdapter documentsAdapter;
 
     private void setCards() {
@@ -120,10 +122,15 @@ public class DocumentsFragment extends HomeToolbarFragment {
     }
 
     private void addStaticJobs() {
-//        documents.add(new PmJob("Upload Passport", "Scan your ID or Passport"));
-//        documents.add(new PmJob(true));
-//        documents.add(new PmJob(true));
-//        documents.add(new PmJob(true));
+        AppDocument myID = new AppDocument();
+        Profile me = PeerMountainManager.getProfile();
+        if(me!=null && me.getDocuments().size()>0){
+            myID.getDocuments().add(me.getDocuments().get(0));
+        }
+        documents.add(myID);
+        documents.add(new AppDocument(true));
+        documents.add(new AppDocument(true));
+        documents.add(new AppDocument(true));
     }
 
 

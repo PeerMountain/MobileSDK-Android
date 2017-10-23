@@ -108,10 +108,12 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-//        if we have removed the contact of ours than remove the image from app memory
-        if (!PeerMountainManager.getContacts().contains(contact) && !TextUtils.isEmpty(contact.getImageUri())) {
-           File avatar = FileUtils.getFile(getContext(),Uri.parse(contact.getImageUri()));
-            if(avatar!=null && avatar.exists()){
+//        if we have removed the contact from ours than remove the image from app memory
+        if (!isMe
+                && !PeerMountainManager.getContacts().contains(contact)
+                && !TextUtils.isEmpty(contact.getImageUri())) {
+            File avatar = FileUtils.getFile(getContext(), Uri.parse(contact.getImageUri()));
+            if (avatar != null && avatar.exists()) {
                 avatar.delete();
             }
         }
@@ -172,9 +174,9 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         String uri = null;
         if (!TextUtils.isEmpty(contact.getImageUri())) {
 //            iv.setImageURI(Uri.parse(contact.getImageUri()));
-            if(Build.VERSION.SDK_INT>=24) {
+            if (Build.VERSION.SDK_INT >= 24) {
                 uri = contact.getImageUri();
-            }else {
+            } else {
                 File file = FileUtils.getFile(context, Uri.parse(contact.getImageUri()));
 //                int size = context.getResources().getDimensionPixelSize(R.dimen.pm_avatar_size);
                 iv.setImageBitmap(BitmapFactory.decodeFile(file.getPath()));//decodeSampledBitmapFromFile(file.getPath(),size,size));
@@ -183,6 +185,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
             uri = contact.getPictureUrl();
         }
         if (uri != null) {
+//            File file = new File(URI.create(uri));
+
             Picasso.with(context)
                     .load(uri)
                     .placeholder(R.drawable.pm_profil_white)

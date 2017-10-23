@@ -84,6 +84,9 @@ public class ShareContactActivity extends ConnectionsActivity {
             }
         });
         mBtnConnect.setEnabled(false);
+        if(PeerMountainManager.getProfile().getImageUri()!=null) {
+            uri = Uri.parse(PeerMountainManager.getProfile().getImageUri());
+        }
 //        showImageChooser("");
     }
 

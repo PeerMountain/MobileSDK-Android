@@ -2,11 +2,9 @@ package com.peermountain.sdk.ui.authorized.menu;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +15,11 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.HomeActivity;
+import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.sdk.views.PeerMountainTextView;
-import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -141,15 +139,16 @@ public class MenuFragment extends Fragment {
         Profile profile = PeerMountainManager.getProfile();
         if (profile != null) {
             mTvUsername.setText(profile.getNames());
-            if (!TextUtils.isEmpty(profile.getImageUri())) {
-                mPmIvAvatar.setImageURI(Uri.parse(profile.getImageUri()));
-            } else if (!TextUtils.isEmpty(profile.getPictureUrl())) {
-                Picasso.with(getContext())
-                        .load(profile.getPictureUrl())
-                        .placeholder(R.drawable.pm_profil_white)
-                        .error(R.color.pm_error_loading_avatar)
-                        .into(mPmIvAvatar);
-            }
+            ProfileSettingsFragment.loadAvatar(getContext(),profile,mPmIvAvatar);
+//            if (!TextUtils.isEmpty(profile.getImageUri())) {
+//                mPmIvAvatar.setImageURI(Uri.parse(profile.getImageUri()));
+//            } else if (!TextUtils.isEmpty(profile.getPictureUrl())) {
+//                Picasso.with(getContext())
+//                        .load(profile.getPictureUrl())
+//                        .placeholder(R.drawable.pm_profil_white)
+//                        .error(R.color.pm_error_loading_avatar)
+//                        .into(mPmIvAvatar);
+//            }
         }
     }
 
