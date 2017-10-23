@@ -89,10 +89,14 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
                 Document id;
                 if(appDocument.getDocuments().size()>0
                         && (id = appDocument.getDocuments().get(0))!=null) {
-                    String uri = id.getImageCropped().getImageUri();
-                    loadImage(uri, ivDocument);
-                    String uriBack = id.getImageCroppedBack().getImageUri();
-                    loadImage(uriBack, ivDocumentBack);
+                    if(id.getImageCropped()!=null) {
+                        String uri = id.getImageCropped().getImageUri();
+                        loadImage(uri, ivDocument);
+                    }
+                    if(id.getImageCroppedBack()!=null) {
+                        String uriBack = id.getImageCroppedBack().getImageUri();
+                        loadImage(uriBack, ivDocumentBack);
+                    }
                 }else{
                     ivDocument.setVisibility(View.GONE);
                     ivDocumentBack.setVisibility(View.GONE);

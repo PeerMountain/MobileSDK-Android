@@ -99,7 +99,7 @@
     <string name="pm_lbl_ln">LINKEDIN ACCOUNT</string>
     <string name="pm_register_btn_connect">Connect</string>
     <string name="pm_register_btn_disconnect">Disconnect</string>
-    <string name="pm_lbl_confirm_title">Gratulations!</string>
+    <string name="pm_lbl_confirm_title">Congratulations!</string>
     <string name="pm_lbl_confirm_msg">Your identity\nhas been verified.</string>
     <!--register profile fragment end-->
 
@@ -136,7 +136,7 @@
     <!--documents fragment-->
     <string name="pm_title_documents">Documents</string>
     <string name="pm_document_item_empty">Locked</string>
-    <string name="pm_document_item_id_title">ID</string>
+    <string name="pm_document_item_id_title">Identity Document</string>
     <!--documents fragment end-->
 
     <!--contacts fragment-->

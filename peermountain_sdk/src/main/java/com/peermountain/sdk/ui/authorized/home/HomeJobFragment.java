@@ -1,18 +1,15 @@
 package com.peermountain.sdk.ui.authorized.home;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
@@ -30,7 +27,7 @@ public class HomeJobFragment extends HomeToolbarFragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case EVENT_PROGRESS_FINISHED:
-                    mListener.onJobFinished();
+                    if(mListener!=null) mListener.onJobFinished();
                     break;
             }
         }
@@ -101,7 +98,13 @@ public class HomeJobFragment extends HomeToolbarFragment {
     }
 
     private void setUpView() {
-        setHomeToolbar(R.string.pm_title_application);
+//        setHomeToolbar(R.string.pm_title_application);
+        setToolbar(R.drawable.pm_ic_arrow_back_24dp, R.string.pm_title_application, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mListener!=null) mListener.onJobFinished();
+            }
+        });
         llHomeJobProgress.setVisibility(View.GONE);
     }
 
