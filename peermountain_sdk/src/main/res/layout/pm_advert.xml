@@ -21,6 +21,7 @@
         android:id="@+id/tvTutoAdTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/pm_tv_shadow"
         android:layout_margin="@dimen/pm_margin_normal"
         android:gravity="left"
         android:text="@string/pm_ad_title"
@@ -28,8 +29,8 @@
         android:textSize="30sp"/>
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/pm_margin_normal"
         android:src="@drawable/pm_cards"/>
 
@@ -37,6 +38,7 @@
         android:id="@+id/tvTutoAdMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/pm_tv_shadow"
         android:layout_margin="@dimen/pm_margin_normal"
         android:gravity="left"
         android:text="@string/pm_ad_msg"

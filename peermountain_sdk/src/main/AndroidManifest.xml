@@ -20,7 +20,6 @@
         android:theme="@style/PmSdkTheme"
         tools:replace="android:theme">
 
-        <!-- android:theme="@style/SdkTheme" -->
 
         <activity
             android:name=".ui.LoginActivity"

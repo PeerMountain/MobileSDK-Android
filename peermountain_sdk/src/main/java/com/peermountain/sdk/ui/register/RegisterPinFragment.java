@@ -22,6 +22,7 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
+import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 import com.peermountain.sdk.utils.fingerprint.FastLoginHelper;
 import com.peermountain.sdk.utils.fingerprint.FingerprintHandler;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
@@ -316,7 +317,7 @@ public class RegisterPinFragment extends ToolbarFragment {
             mToolbarListener.setMenuLeftIcon(ToolbarFragment.MENU_HIDE);
         }
         hideToolbar();
-        timer = new CountDownTimer(2000,2000) {
+        timer = new CountDownTimer(PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD,PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD) {
             @Override
             public void onTick(long l) {
             }

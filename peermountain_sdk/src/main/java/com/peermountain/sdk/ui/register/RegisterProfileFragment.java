@@ -1,10 +1,19 @@
 package com.peermountain.sdk.ui.register;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,12 +56,15 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 
 public class RegisterProfileFragment extends ToolbarFragment {
     private static final String ARG_PARAM1 = "param1";
+    public static final int REQUEST_IMAGE_CAPTURE = 111;
+    public static final int REQUEST_CODE_WRITE_PERMISSION = 123;
 
     private OnFragmentInteractionListener mListener;
     private Document document;
@@ -114,7 +126,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     }
 
     private void initToolbar() {
-        setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
+        setToolbar(R.drawable.pm_ic_logo, R.string.pm_register_title, null);
         setTheme(ToolbarFragment.THEME_LIGHT);
     }
 
@@ -129,6 +141,40 @@ public class RegisterProfileFragment extends ToolbarFragment {
         super.onActivityResult(requestCode, resultCode, data);
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
+            if(data!=null && data.getData()!=null) {
+                imageUri = data.getData();
+                saveProfile();
+            }else{
+                if(avatarFile!=null && avatarFile.exists()) {
+                    imageUri = Uri.fromFile(avatarFile);
+                    saveProfile();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isDone)
+            if (mListener != null)
+                mListener.onProfileRegistered();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_CODE_WRITE_PERMISSION :
+                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED){
+                    requestCapture();
+                }else{
+                    // TODO: 10/23/17 show exp dialog
+                }
+                break;
+        }
     }
 
     boolean foundEmptyField = false;
@@ -175,7 +221,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     ImageView pmIvAvatar, pmIvNext;
     EditText pmEtNames, pmEtDob, pmEtPob, pmEtMail, pmEtPhone;
-    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect;
+    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect, tvNext;
 
     /**
      * type ff to fast get new views
@@ -192,19 +238,25 @@ public class RegisterProfileFragment extends ToolbarFragment {
         pmTvLN = view.findViewById(R.id.pmTvLN);
         pmTvLNConnect = view.findViewById(R.id.pmTvLNConnect);
         pmIvNext = view.findViewById(R.id.pmIvNext);
+        tvNext = view.findViewById(R.id.tvNext);
     }
+
+    private File avatarFile = null;
 
     /**
      * type oclf to fast get new setOnClickListener, rr/rc/rs to set ripple
      */
     private void setListeners() {
-        pmIvNext.setOnClickListener(new RippleOnClickListener() {
+        tvNext.setOnClickListener(new RippleOnClickListener() {
             @Override
             public void onClickListener(View view) {
-                saveProfile();
-                //nothing is mandatory
-                if (mListener != null)
-                    mListener.onProfileRegistered();
+                requestCapture();
+            }
+        });
+        pmIvAvatar.setOnClickListener(new RippleOnClickListener() {
+            @Override
+            public void onClickListener(View view) {
+                requestCapture();
             }
         });
         pmTvFBConnect.setOnClickListener(new RippleOnClickListener() {
@@ -233,10 +285,20 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 }
             }
         });
-        RippleUtils.setRippleEffectSquare(pmIvNext, pmTvFBConnect, pmTvLNConnect);
+        RippleUtils.setRippleEffectSquare(tvNext, pmTvFBConnect, pmTvLNConnect);
     }
 
-    String pictureUrl =null;
+    private void requestCapture() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_PERMISSION);
+        }else{
+        avatarFile = dispatchTakePictureIntent(getActivity(),RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);}
+    }
+
+    String pictureUrl = null;
+    boolean isDone = false;
     private void saveProfile() {
         Profile profile = new Profile();
         profile.getDocuments().add(document);
@@ -249,13 +311,15 @@ public class RegisterProfileFragment extends ToolbarFragment {
             profile.setImageUri(imageUri.toString());
         }
         profile.setPictureUrl(pictureUrl);
-        if(liUser!=null) {
+        if (liUser != null) {
             profile.getPublicProfiles().add(liUser);
         }
-        if(fbUser!=null) {
+        if (fbUser != null) {
             profile.getPublicProfiles().add(fbUser);
         }
         PeerMountainManager.saveProfile(profile);
+        //nothing is mandatory
+        isDone = true;
     }
 
     private Context getApplicationContext() {
@@ -294,7 +358,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
             public void onApiSuccess(ApiResponse s) {
                 LogUtils.d("getLiUser", s.toString());
                 liUser = PeerMountainManager.readPublicUser(s.getResponseDataAsString());
-                if(imageUri==null && liUser.getPictureUrl()!=null){
+                if (imageUri == null && liUser.getPictureUrl() != null) {
                     pictureUrl = liUser.getPictureUrl();
                     loadAvatarFromPublicProfileUrl();
                 }
@@ -353,7 +417,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 @Override
                 public void onCompleted(JSONObject userJ, GraphResponse response) {
                     fbUser = parseFbUser(userJ);
-                    if(imageUri==null && fbUser.getPictureUrl()!=null){
+                    if (imageUri == null && fbUser.getPictureUrl() != null) {
                         pictureUrl = fbUser.getPictureUrl();
                         loadAvatarFromPublicProfileUrl();
                     }
@@ -386,12 +450,41 @@ public class RegisterProfileFragment extends ToolbarFragment {
                     }
                 }
                 publicUser = new PublicUser(id, email, name, lastName, picture);
-                pmTvFB.setText(TextUtils.isEmpty(email)?name:email);
+                pmTvFB.setText(TextUtils.isEmpty(email) ? name : email);
                 pmTvFBConnect.setText(R.string.pm_register_btn_disconnect);
 //                Toast.makeText(getContext(), "FB logged", Toast.LENGTH_LONG).show();
             }
         }
         return publicUser;
+    }
+
+    public static File dispatchTakePictureIntent(Activity atv,Fragment fragment, int REQUEST_IMAGE_CAPTURE) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(atv.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File imagePath = new File(atv.getFilesDir(), PeerMountainCoreConstants.PUBLIC_IMAGE_DIR);
+            imagePath.mkdirs();
+            File photoFile = new File(imagePath,
+                    System.currentTimeMillis() + ".jpg");
+//            File photoFile = new File(
+//                    Environment.getExternalStoragePublicDirectory(
+//                    Environment.DIRECTORY_PICTURES),//+"/PM",
+//                    System.currentTimeMillis() + ".jpg");
+
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri uri = FileProvider.getUriForFile(atv,
+                        atv.getPackageName()+".provider",
+                        photoFile);
+
+//                Uri uri =      Uri.fromFile(photoFile);
+                takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                atv.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                return photoFile;
+            }
+        }
+        return null;
     }
 
     public interface OnFragmentInteractionListener {

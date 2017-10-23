@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.zxing.Result;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.utils.LogUtils;
@@ -117,7 +116,19 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
         final String qrcode =rawResult.getText().toString();
         Log.i("",""+qrcode);
         if (rawResult.getText().length() > 0) {
-            Contact contact = new Gson().fromJson(qrcode,Contact.class);
+//            Contact contact = new Gson().fromJson(qrcode,Contact.class);
+            Contact contact = new Contact();
+            String[] data = qrcode.split("@#@");
+            if(data.length>0)
+            contact.setNames(data[0].trim());
+            if(data.length>1)
+            contact.setDob(data[1].trim());
+            if(data.length>2)
+            contact.setPob(data[2].trim());
+            if(data.length>3)
+            contact.setPhone(data[3].trim());
+            if(data.length>4)
+            contact.setMail(data[4].trim());
             if(mListener!=null){
                 mListener.onContactScannedFromQR(contact);
             }

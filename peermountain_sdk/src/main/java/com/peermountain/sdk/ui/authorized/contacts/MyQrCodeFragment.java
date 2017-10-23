@@ -15,7 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -124,17 +123,27 @@ public class MyQrCodeFragment extends HomeToolbarFragment {
 
         @Override
         protected Bitmap doInBackground(Contact... contacts) {
+            int qrColor = ContextCompat.getColor(getContext(), R.color.pm_qr_code);
             QRCodeWriter writer = new QRCodeWriter();
-            String contentContact = new Gson().toJson(contacts[0]);
+//            String contentContact = new Gson().toJson(contacts[0]);
+            Contact contact = contacts[0];
+            StringBuilder data = new StringBuilder();
+            String divider = "@#@";
+            data.append(contact.getNames()).append(divider);
+            data.append(contact.getDob()).append(divider);
+            data.append(contact.getPob()).append(divider);
+            data.append(contact.getMail()).append(divider);
+            data.append(contact.getPhone());//.append(d);
+//            data.append(c.getPictureUrl());
             int size = getResources().getDimensionPixelSize(R.dimen.pm_qr_icon_size);
             try {
-                BitMatrix bitMatrix = writer.encode(contentContact, BarcodeFormat.QR_CODE, size, size);
+                BitMatrix bitMatrix = writer.encode(data.toString(), BarcodeFormat.QR_CODE, size, size);
 
                 Bitmap bmp = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
                 for (int x = 0; x < size; x++) {
                     for (int y = 0; y < size; y++) {
                         if (bitMatrix.get(x, y))
-                            bmp.setPixel(x, y, ContextCompat.getColor(getContext(), R.color.pm_qr_code));
+                            bmp.setPixel(x, y, qrColor);
                         else
                             bmp.setPixel(x, y, Color.WHITE);
                     }

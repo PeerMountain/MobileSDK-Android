@@ -23,13 +23,13 @@
             <ImageView
                 android:id="@+id/imageView"
                 style="@style/pm_tuto_image"
-                android:src="@drawable/pm_ic_logo"/>
+                app:srcCompat="@drawable/pm_ic_tuto1"/>
 
 
             <ImageView
                 android:id="@+id/imageView2"
                 style="@style/pm_tuto_image"
-                android:src="@drawable/pm_ic_logo"/>
+                app:srcCompat="@drawable/pm_ic_tuto2"/>
 
             <ImageView
                 android:id="@+id/imageView3"

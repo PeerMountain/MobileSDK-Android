@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/pm_margin_normal"
+              tools:background="@drawable/pm_bkg"
+              tools:context="com.peermountain.sdk.ui.authorized.contacts.ShareFragment">
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pm_share_using_google_nearby"
+        android:textColor="@color/pm_text_color"
+        android:textSize="@dimen/pm_regular_text"/>
+
+    <FrameLayout android:id="@+id/flNB"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/pm_ic_wifi"/>
+    </FrameLayout>
+
+
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pm_share_using_qr_code"
+        android:textColor="@color/pm_text_color"
+        android:textSize="@dimen/pm_regular_text"/>
+
+    <FrameLayout android:id="@+id/flQR"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/pm_ic_qr"/>
+    </FrameLayout>
+</LinearLayout>

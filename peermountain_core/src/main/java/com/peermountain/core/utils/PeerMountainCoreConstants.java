@@ -25,6 +25,7 @@ public class PeerMountainCoreConstants {
     public static final String DEEP_LINK_USER_ID = "user_id";
 
     public static final String LOCAL_IMAGE_DIR = "/images";
+    public static final String PUBLIC_IMAGE_DIR = "/images";
 
     public static final int KEYWORDS_SHOW_COUNT = 20;
     public static final int KEYWORDS_SHOW_TO_VALIDATE_COUNT = 28;

@@ -33,7 +33,7 @@ public abstract class HomeToolbarFragment extends ToolbarFragment {
 
 
     public void setHomeToolbar(@StringRes int title){
-        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_qrcode, title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
+        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_qr, title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
     }
 
     public interface HomeToolbarEvents{
