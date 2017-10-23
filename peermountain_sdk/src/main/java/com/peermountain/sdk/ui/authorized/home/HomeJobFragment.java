@@ -101,7 +101,7 @@ public class HomeJobFragment extends HomeToolbarFragment {
     }
 
     private void setUpView() {
-        //setHomeToolbar(R.string.pm_title_application);
+        setHomeToolbar(R.string.pm_title_application);
         llHomeJobProgress.setVisibility(View.GONE);
     }
 
