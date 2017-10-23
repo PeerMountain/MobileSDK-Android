@@ -111,7 +111,12 @@ public class HomeFragment extends HomeToolbarFragment {
     private void setCards() {
         addStaticJobs();
         if (jobs == null) return;
-        jobsAdapter = new JobsAdapter(getContext());
+        jobsAdapter = new JobsAdapter(getContext(), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onHomeJobedClicked();
+            }
+        });
         jobsAdapter.addAll(jobs);
         cardStackView.setAdapter(jobsAdapter);
         cardStackView.setCardEventListener(new CardsEventListener(jobs,jobsAdapter,cardStackView));//jobsEvents);
@@ -226,5 +231,6 @@ public class HomeFragment extends HomeToolbarFragment {
     };
 
     public interface OnFragmentInteractionListener {
+        void onHomeJobedClicked();
     }
 }

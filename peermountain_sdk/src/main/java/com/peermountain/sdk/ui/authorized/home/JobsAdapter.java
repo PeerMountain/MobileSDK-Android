@@ -19,10 +19,10 @@ import com.peermountain.sdk.utils.ripple.RippleUtils;
  */
 
 public class JobsAdapter extends ArrayAdapter<PmJob> {
-
-    public JobsAdapter(Context context) {
+    View.OnClickListener clickListener;
+    public JobsAdapter(Context context, View.OnClickListener clickListener) {
         super(context, 0);
-
+        this.clickListener = clickListener;
     }
 
     private boolean showActivity = true;
@@ -40,7 +40,7 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
         if (contentView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             contentView = inflater.inflate(R.layout.pm_job_tinder_card_view, parent, false);
-            holder = new ViewHolder(contentView);
+            holder = new ViewHolder(contentView, clickListener);
             contentView.setTag(holder);
         } else {
             holder = (ViewHolder) contentView.getTag();
@@ -63,7 +63,7 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
         final ImageView btn;
         PmJob job;
 
-        ViewHolder(View view) {
+        ViewHolder(View view, final View.OnClickListener clickListener) {
             parent = view;
             tvMsg = (TextView) view.findViewById(R.id.tvJobMsg);
             btn = (ImageView) view.findViewById(R.id.pmIvDoJob);
@@ -72,6 +72,7 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
                 @Override
                 public void onClickListener(View clickedView) {
                     LogUtils.d("jobsAdapter","click on fake job :"+ job.isFake());
+                    clickListener.onClick(clickedView);
                 }
             });
         }

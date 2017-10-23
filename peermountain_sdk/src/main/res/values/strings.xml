@@ -101,6 +101,7 @@
 
     <!--home fragment-->
     <string name="pm_title_home">Home</string>
+    <string name="pm_title_application">Application</string>
     <string name="pm_tab_home_activity">ACTIVITY</string>
     <string name="pm_tab_home_information">INFORMATION</string>
     <!--home fragment end-->
@@ -152,5 +153,13 @@
     <string name="pm_ad_title">SWISS MILES &amp; MORE CLASSIC CARD DUO</string>
     <string name="pm_ad_msg">swiss miles &amp; more classic card duo</string>
     <string name="pm_ad_get_the_card">Get the card</string>
+
+    <string name="pm_btn_agree">Agree</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--tutorial fragment end-->
+
+    <!-- home jobs fragment -->
+    <string name="pm_job_finished">You completed your application!\nThe authentication should only take a moment...</string>
 </resources>

@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.peermountain.sdk.ui.authorized.home.HomeJobFragment">
+
+    <ImageView
+        android:id="@+id/ivHomeJob"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:src="@drawable/pm_documents_to_sign_1"
+        android:scaleType="centerInside"/>
+
+    <FrameLayout
+        android:id="@+id/flBtnAgree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvBtnAgree"
+            style="@style/pm_square_btn"
+            android:gravity="center"
+            android:text="@string/pm_btn_agree"
+            android:textColor="@color/pm_text_color"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/llHomeJobProgress"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:orientation="vertical"
+        android:background="@color/pm_keyword_bkg"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="100dp">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_margin_normal"
+            android:text="@string/pm_job_finished"
+            android:textColor="@color/pm_text_color"
+            android:textSize="@dimen/pm_big_text"
+            android:lineSpacingExtra="10dp"
+            android:gravity="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="50dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"/>
+    </LinearLayout>
+</LinearLayout>
