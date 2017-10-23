@@ -93,10 +93,14 @@
     <string name="pm_lbl_pob">PLACE OF BIRTH</string>
     <string name="pm_lbl_mail">EMAIL</string>
     <string name="pm_lbl_phone">PHONE</string>
+    <string name="pm_btn_selfie">Take a selfie</string>
+    <string name="pm_lbl_selfie">Take a live selfie to continue</string>
     <string name="pm_lbl_fb">FACEBOOK ACCOUNT</string>
     <string name="pm_lbl_ln">LINKEDIN ACCOUNT</string>
     <string name="pm_register_btn_connect">Connect</string>
     <string name="pm_register_btn_disconnect">Disconnect</string>
+    <string name="pm_lbl_confirm_title">Gratulations!</string>
+    <string name="pm_lbl_confirm_msg">Your identity\nhas been verified.</string>
     <!--register profile fragment end-->
 
     <!--home fragment-->
@@ -137,20 +141,23 @@
     <!--contacts fragment end-->
 
     <!--tutorial fragment-->
-    <string name="pm_tuto1_title">Title 1</string>
-    <string name="pm_tuto2_title">Title 2</string>
-    <string name="pm_tuto3_title">Title 3</string>
-    <string name="pm_tuto1_msg">Message 1.1</string>
-    <string name="pm_tuto2_msg">Message 2.1</string>
-    <string name="pm_tuto3_msg">Message 3.1</string>
-    <string name="pm_tuto1_msg2">Message 1.2</string>
-    <string name="pm_tuto2_msg2">Message 2.2</string>
-    <string name="pm_tuto3_msg2">Message 3.2</string>
+    <string name="pm_tuto1_title">Peermountain is secure.</string>
+    <string name="pm_tuto2_title">Peermountain is …</string>
+    <string name="pm_tuto3_title">You control your dossier.</string>
+    <string name="pm_tuto1_msg">You can apply to millions of offers from\n\nworldwide leaders invarious markets with\n\njust one click.</string>
+    <string name="pm_tuto2_msg">You can build a personal dossier and be in\n\ncontrol of how and with whom you\'re\n\nsharing it.</string>
+    <string name="pm_tuto3_msg">You can build a personal dossier and be in\n\ncontrol of how and with whom you\'re\n\nsharing it.</string>
+    <string name="pm_tuto1_msg2">Just scan the code to apply.</string>
+    <string name="pm_tuto2_msg2">You set the trust and sharing levels.</string>
+    <string name="pm_tuto3_msg2">You set the trust and sharing levels.</string>
     <string name="pm_tuto_next">NEXT</string>
     <string name="pm_tuto_skip">SKIP</string>
     <string name="pm_tuto_start">Start</string>
     <string name="pm_ad_title">SWISS MILES &amp; MORE CLASSIC CARD DUO</string>
     <string name="pm_ad_msg">swiss miles &amp; more classic card duo</string>
     <string name="pm_ad_get_the_card">Get the card</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--tutorial fragment end-->
 </resources>

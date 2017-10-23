@@ -17,7 +17,8 @@ import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
 public class RegisterActivity extends ToolbarActivity implements RegisterPinFragment.OnFragmentInteractionListener,
-        RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener {
+        RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
+ConfirmationAccountFragment.OnFragmentInteractionListener{
     @IdRes
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
@@ -54,23 +55,25 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        final boolean permissionsAllowed =
-                AXTCaptureInterface.INSTANCE.verifyPermissions(requestCode, permissions, grantResults);
-        if (permissionsAllowed) {
-            initScanIdSDK();
-        } else {
-            DialogUtils.showChoiceDialog(this, -1, R.string.pm_err_msg_permission_scan_id,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            initScanIdSDK();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
+        if(requestCode==1) {
+            final boolean permissionsAllowed =
+                    AXTCaptureInterface.INSTANCE.verifyPermissions(requestCode, permissions, grantResults);
+            if (permissionsAllowed) {
+                initScanIdSDK();
+            } else {
+                DialogUtils.showChoiceDialog(this, -1, R.string.pm_err_msg_permission_scan_id,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                initScanIdSDK();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
+            }
         }
     }
 
@@ -88,6 +91,7 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
         fb.replace(new IntroFragment());
     }
     private void showKeywordsFragment() {
+//        showRegisterProfileFragment(null);
         fb.addToBackStack(true);
         fb.replace(RegisterSelectKeywordsFragment.newInstance(false));
     }
@@ -108,7 +112,10 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
         fb.addToBackStack(false);
         fb.replace(RegisterProfileFragment.newInstance(document));
     }
-
+    private void showConfirmationFragment() {
+        fb.addToBackStack(true);
+        fb.replace(new ConfirmationAccountFragment());
+    }
     @Override
     public void goToRegisterKeyWords() {
         showKeywordsFragment();
@@ -161,12 +168,17 @@ public class RegisterActivity extends ToolbarActivity implements RegisterPinFrag
 
     @Override
     public void onProfileRegistered() {
-        setResult(Activity.RESULT_OK);
-        finish();
+        showConfirmationFragment();
     }
 
     @Override
     public void onTutoEnd() {
         showPinFragment();
+    }
+
+    @Override
+    public void onAccountCreated() {
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 }

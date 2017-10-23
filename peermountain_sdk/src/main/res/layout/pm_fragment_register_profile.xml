@@ -16,14 +16,24 @@
         style="@style/pm_square_btn"
         android:layout_gravity="bottom"
         android:rotation="180"
-        app:srcCompat="@drawable/pm_ic_arrow_back_24dp"/>
+        app:srcCompat="@drawable/pm_ic_arrow_back_24dp"
+        android:visibility="gone"/>
 
-    <ScrollView
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/tvNext"
+        style="@style/pm_square_btn"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:text="@string/pm_btn_selfie"
+        android:textColor="@color/pm_text_color"/>
+
+    <ScrollView android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/pm_confirm_btn_size"
         android:fillViewport="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,6 +57,15 @@
                     android:layout_gravity="center"
                     android:src="@drawable/pm_ic_camera"/>
             </FrameLayout>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/pm_margin_small"
+                android:textSize="17sp"
+                android:text="@string/pm_lbl_selfie"
+                android:textColor="@color/pm_text_accent"/>
 
             <com.peermountain.sdk.views.PeerMountainTextView
                 style="@style/pm_reg_profile_lbl"
