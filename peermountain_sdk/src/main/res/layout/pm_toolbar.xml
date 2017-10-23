@@ -21,7 +21,7 @@
         android:id="@+id/pmMenuRight"
         android:layout_width="@dimen/pm_inner_icon_size"
         android:layout_height="@dimen/pm_inner_icon_size"
-        tools:src="@drawable/pm_ic_qrcode"
+        tools:src="@drawable/pm_ic_qr"
         android:layout_gravity="center_vertical|right"
         android:padding="10dp"
         android:layout_marginRight="@dimen/pm_margin_normal"

@@ -20,6 +20,7 @@ import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.sdk.views.PeerMountainTextView;
 
@@ -114,7 +115,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         btnRipple.setVisibility(View.GONE);
         mGridKeywords.setVisibility(View.GONE);
         ivCheck.setVisibility(View.VISIBLE);
-        timer = new CountDownTimer(2000, 2000) {
+        timer = new CountDownTimer(PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD, PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD) {
             @Override
             public void onTick(long l) {
             }

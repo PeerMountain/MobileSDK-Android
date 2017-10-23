@@ -238,6 +238,9 @@ public class ShareContactActivity extends ConnectionsActivity {
                     returnResult();
                     break;
                 case ShareObject.OPERATION_SHARE_CONTACT_DATA:
+                    if(receivedShareObject.getContact()!=null) {
+                        receivedShareObject.getContact().setImageUri(null);
+                    }
                     shareObject.setContact(receivedShareObject.getContact());
                     break;
                 case ShareObject.OPERATION_SHARE_CONTACT_IMAGE_FILE:

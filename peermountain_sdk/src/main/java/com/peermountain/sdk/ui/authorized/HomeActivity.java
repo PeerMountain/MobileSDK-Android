@@ -21,6 +21,7 @@ import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.contacts.ContactsFragment;
 import com.peermountain.sdk.ui.authorized.contacts.MyQrCodeFragment;
 import com.peermountain.sdk.ui.authorized.contacts.ScanQRFragment;
+import com.peermountain.sdk.ui.authorized.contacts.ShareFragment;
 import com.peermountain.sdk.ui.authorized.documents.DocumentsFragment;
 import com.peermountain.sdk.ui.authorized.home.HomeFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
@@ -30,7 +31,8 @@ import com.peermountain.sdk.utils.PmFragmentUtils;
 
 public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
         DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
-        ScanQRFragment.OnFragmentInteractionListener, ContactsFragment.OnListFragmentInteractionListener {
+        ScanQRFragment.OnFragmentInteractionListener, ContactsFragment.OnListFragmentInteractionListener,
+        ShareFragment.OnFragmentInteractionListener {
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
     public static final int REQUEST_GET_NEAR_BY_CONTACT = 111;
@@ -62,6 +64,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
                 if (resultCode == RESULT_OK && data != null && checkUserIsValid()) {
                     ShareObject shareObject = data.getParcelableExtra(ShareContactActivity.SHARE_DATA);
                     if (shareObject != null && shareObject.getContact() != null) {
+//                        new PmFragmentUtils.FragmentBuilder(this).pop();//remove shareFragment
                         showContactProfileSettingsFragment(shareObject.getContact());
                     }
                 }
@@ -95,7 +98,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMyQrCodeFragment();
+                showMyShareFragment();
             }
         };
     }
@@ -204,6 +207,7 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         fb.addToBackStack(false);
         fb.replace(ProfileSettingsFragment.newInstance(null));
     }
+
     private void showMyContactsFragment() {
         PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
         fb.addToBackStack(false);
@@ -224,10 +228,19 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     }
 
     private void showMyQrCodeFragment() {
-//        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-//        fb.addToBackStack(true);
-//        fb.replace(MyQrCodeFragment.newInstance());
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(true);
+        fb.replace(MyQrCodeFragment.newInstance());
+    }
+
+    private void showShareWithNearBy() {
         startActivityForResult(new Intent(this, ShareContactActivity.class), REQUEST_GET_NEAR_BY_CONTACT);
+    }
+
+    private void showMyShareFragment() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(true);
+        fb.replace(new ShareFragment());
     }
 
     public void closeMenu() {
@@ -281,7 +294,10 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
 
     @Override
     public void onContactScannedFromQR(Contact contact) {
-        new PmFragmentUtils.FragmentBuilder(this).pop();//remove qr fragment from stack
+        PmFragmentUtils.FragmentBuilder builder = new PmFragmentUtils.FragmentBuilder(this);
+        builder.pop();//remove scan qr fragment from stack
+        builder.pop();//remove qr code fragment from stack back to share
+//        builder.pop();//remove share fragment from stack
         showContactProfileSettingsFragment(contact);
     }
 
@@ -295,6 +311,21 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     @Override
     public void onContactSelected(Contact contact) {
         showContactProfileSettingsFragment(contact);
+    }
+
+    @Override
+    public void onShareRefused() {
+        new PmFragmentUtils.FragmentBuilder(this).pop();//return
+    }
+
+    @Override
+    public void onRequestShareByQRCode() {
+        showMyQrCodeFragment();
+    }
+
+    @Override
+    public void onRequestShareByNearBy() {
+        showShareWithNearBy();
     }
 
 //    @Override

@@ -156,8 +156,11 @@
     <string name="pm_ad_title">SWISS MILES &amp; MORE CLASSIC CARD DUO</string>
     <string name="pm_ad_msg">In the 1st year CHF 60- instead of CHF 120\nannual fee as of 2nd year.\nAs a welcome gift I will receive 20,000 award miles instead of 2,000.\n\n\nThe annual interest is 12%</string>
     <string name="pm_ad_get_the_card">Get the card</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--tutorial fragment end-->
+
+    <!--Share fragment -->
+    <string name="pm_share_using_google_nearby">Using Google NearBy</string>
+    <string name="pm_share_using_qr_code">Using QR Code</string>
+    <string name="pm_share_title">Add contact</string>
+    <!--Share fragment end-->
 </resources>

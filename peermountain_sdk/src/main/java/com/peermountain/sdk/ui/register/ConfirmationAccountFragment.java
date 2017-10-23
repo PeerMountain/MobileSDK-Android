@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 
 
 public class ConfirmationAccountFragment extends ToolbarFragment {
@@ -43,7 +44,7 @@ public class ConfirmationAccountFragment extends ToolbarFragment {
         super.onViewCreated(view, savedInstanceState);
         setTheme(ToolbarFragment.THEME_DARK);
         hideToolbar();
-        CountDownTimer timer = new CountDownTimer(2000,2000) {
+        CountDownTimer timer = new CountDownTimer(PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD,PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD) {
             @Override
             public void onTick(long l) {
 

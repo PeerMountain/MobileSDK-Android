@@ -142,7 +142,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
-            if(data!=null) {
+            if(data!=null && data.getData()!=null) {
                 imageUri = data.getData();
                 saveProfile();
             }else{
