@@ -24,12 +24,13 @@ import com.peermountain.sdk.ui.authorized.contacts.ScanQRFragment;
 import com.peermountain.sdk.ui.authorized.contacts.ShareFragment;
 import com.peermountain.sdk.ui.authorized.documents.DocumentsFragment;
 import com.peermountain.sdk.ui.authorized.home.HomeFragment;
+import com.peermountain.sdk.ui.authorized.home.HomeJobFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.ToolbarActivity;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
-public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
+public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
         DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
         ScanQRFragment.OnFragmentInteractionListener, ContactsFragment.OnListFragmentInteractionListener,
         ShareFragment.OnFragmentInteractionListener {
@@ -227,6 +228,12 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
         fb.replace(DocumentsFragment.newInstance());
     }
 
+    private void showHomeJobFragment() {
+        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
+        fb.addToBackStack(true);
+        fb.replace(HomeJobFragment.newInstance());
+    }
+
     private void showMyQrCodeFragment() {
         PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
         fb.addToBackStack(true);
@@ -314,6 +321,15 @@ public class HomeActivity extends ToolbarActivity implements HomeFragment.OnFrag
     }
 
     @Override
+    public void onHomeJobedClicked() {
+        showHomeJobFragment();
+    }
+
+    @Override
+    public void onJobFinished() {
+        new PmFragmentUtils.FragmentBuilder(this).pop();
+    }
+
     public void onShareRefused() {
         new PmFragmentUtils.FragmentBuilder(this).pop();//return
     }
