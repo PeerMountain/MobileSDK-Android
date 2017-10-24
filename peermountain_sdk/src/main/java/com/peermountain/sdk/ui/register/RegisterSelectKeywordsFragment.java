@@ -114,6 +114,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         btnRipple.setVisibility(View.GONE);
         mGridKeywords.setVisibility(View.GONE);
         ivCheck.setVisibility(View.VISIBLE);
+        mLlTvWhy.setVisibility(View.GONE);
         timer = new CountDownTimer(PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD, PeerMountainSdkConstants.CONFIRMATION_TIMER_PERIOD) {
             @Override
             public void onTick(long l) {
@@ -161,6 +162,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         mIvNext.setVisibility(View.GONE);
         btnRipple.setVisibility(View.VISIBLE);
         mGridKeywords.setVisibility(View.VISIBLE);
+        mLlTvWhy.setVisibility(View.VISIBLE);
         ivCheck.setVisibility(View.GONE);
         enableButton(true);
 //        if(myKeywords!=null && myKeywords.getKeywords()!=null){

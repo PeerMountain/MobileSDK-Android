@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -43,6 +44,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
 
     Contact contact = null;
     private RoundedImageView pmIvAvatar;
+    private ImageView ivValidated;
+    private FrameLayout flValidate;
     private PeerMountainTextView tvTabGeneral;
     private PeerMountainTextView tvTabSocial, tvAddContact, tvValidateContact;
     private LinearLayout llGeneralData;
@@ -181,12 +184,15 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         etLn = (EditText) view.findViewById(R.id.etLn);
         tvAddContact = view.findViewById(R.id.tvAddContact);
         tvValidateContact = view.findViewById(R.id.tvValidateContact);
+        flValidate = view.findViewById(R.id.flValidate);
+        ivValidated = view.findViewById(R.id.ivValidated);
     }
 
     public void setUpView() {
         if (isMe) {
             tvAddContact.setVisibility(View.GONE);
-            tvValidateContact.setVisibility(View.GONE);
+            flValidate.setVisibility(View.GONE);
+            ivValidated.setVisibility(View.GONE);
             setToolbarForMyProfile();
         } else {
             setToolbarForContact();
@@ -300,7 +306,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     private void initBtn() {
         if (toAdd) {
             tvAddContact.setText(getString(R.string.pm_settings_add_to_contacts));
-            tvValidateContact.setVisibility(View.GONE);
+            flValidate.setVisibility(View.GONE);
+            ivValidated.setVisibility(View.GONE);
         } else {
             tvAddContact.setText(getString(R.string.pm_settings_remove_from_contacts));
             initValidateBtn();
@@ -309,13 +316,15 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
 
     private void initValidateBtn() {
         if (!isMe && contact!=null) {
-            tvValidateContact.setVisibility(View.VISIBLE);
+            ivValidated.setVisibility(View.VISIBLE);
             if(contact.isValidated()) {
-                tvValidateContact.setText(R.string.pm_contact_btn_validated);
-                tvValidateContact.setTextColor(ContextCompat.getColor(getContext(),R.color.pm_contact_validated));
+                flValidate.setVisibility(View.GONE);
+                ivValidated.setImageResource(R.drawable.pm_ic_shield_on);
+                pmIvAvatar.setBorderColor(ContextCompat.getColor(getContext(),R.color.pm_contact_validated));
             }else{
-                tvValidateContact.setText(R.string.pm_contact_btn_not_validated);
-                tvValidateContact.setTextColor(ContextCompat.getColor(getContext(),R.color.pm_contact_not_validated));
+                flValidate.setVisibility(View.VISIBLE);
+                ivValidated.setImageResource(R.drawable.pm_shield_off);
+                pmIvAvatar.setBorderColor(ContextCompat.getColor(getContext(),R.color.pm_contact_not_validated));
             }
         }
     }

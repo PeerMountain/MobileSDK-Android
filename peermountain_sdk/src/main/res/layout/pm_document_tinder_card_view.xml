@@ -1,47 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/pm_card"
-              android:elevation="@dimen/pm_shadow"
-              android:orientation="vertical">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/pm_card"
+             android:elevation="@dimen/pm_shadow"
+             android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/pm_confirm_btn_size"
+        android:orientation="vertical">
 
-    <com.peermountain.sdk.views.PeerMountainTextView
-        android:id="@+id/tvMsg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:padding="@dimen/pm_margin_normal"
-        android:textColor="@color/pm_text_color_dark"
-        android:textSize="@dimen/pm_big_text"
-        tools:text="Job showActivity"/>
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/pm_margin_normal"
+            android:textColor="@color/pm_text_color_dark"
+            android:textSize="@dimen/pm_big_text"
+            tools:text="Job showActivity"/>
 
-    <ImageView
-        android:id="@+id/ivPmFullImage"
-        style="@style/pm_id_iv"
-        android:layout_marginLeft="@dimen/pm_margin_normal"
-        android:layout_marginRight="@dimen/pm_margin_normal"/>
+        <ImageView
+            android:id="@+id/ivPmFullImage"
+            style="@style/pm_id_iv"
+            android:layout_marginLeft="@dimen/pm_margin_normal"
+            android:layout_marginRight="@dimen/pm_margin_normal"/>
 
-    <ImageView
-        android:id="@+id/ivPmFullImageBack"
-        style="@style/pm_id_iv"
-        android:layout_marginLeft="@dimen/pm_margin_normal"
-        android:layout_marginRight="@dimen/pm_margin_normal"/>
+        <ImageView
+            android:id="@+id/ivPmFullImageBack"
+            style="@style/pm_id_iv"
+            android:layout_marginLeft="@dimen/pm_margin_normal"
+            android:layout_marginRight="@dimen/pm_margin_normal"/>
+        <ImageView android:id="@+id/ivFullImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/pm_margin_normal"/>
+    </LinearLayout>
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 
     <com.peermountain.sdk.views.PeerMountainTextView
         android:id="@+id/pmTvUpdate"
         style="@style/pm_square_btn"
+        android:layout_gravity="bottom"
         android:layout_marginTop="@dimen/pm_margin_normal"
         android:gravity="center"
         android:text="@string/pm_documents_item_btn_update"
         android:textColor="@color/pm_text_color"/>
-</LinearLayout>
+</FrameLayout>

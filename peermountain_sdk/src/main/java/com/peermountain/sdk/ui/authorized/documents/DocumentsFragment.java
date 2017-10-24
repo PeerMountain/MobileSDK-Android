@@ -128,9 +128,9 @@ public class DocumentsFragment extends HomeToolbarFragment {
             myID.getDocuments().add(me.getDocuments().get(0));
         }
         documents.add(myID);
-        documents.add(new AppDocument(true));
-        documents.add(new AppDocument(true));
-        documents.add(new AppDocument(true));
+        documents.add(new AppDocument(R.drawable.pm_birther, "Birth Certificate"));
+        documents.add(new AppDocument(R.drawable.pm_employment_contract,"Employment Contract"));
+        documents.add(new AppDocument(R.drawable.pm_income_tax,"Tax Return"));
     }
 
 

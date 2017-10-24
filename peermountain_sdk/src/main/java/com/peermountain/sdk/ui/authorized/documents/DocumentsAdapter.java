@@ -61,7 +61,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
     private static class ViewHolder {
         final View parent, btnRipple;
         final TextView tvMsg,btn;
-        final ImageView ivDocumentBack, ivDocument;
+        final ImageView ivDocumentBack, ivDocument, ivFullImage;
         AppDocument appDocument;
 
         ViewHolder(View view) {
@@ -69,6 +69,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
             tvMsg = (TextView) view.findViewById(R.id.tvMsg);
             ivDocumentBack = (ImageView) view.findViewById(R.id.ivPmFullImageBack);
             ivDocument = view.findViewById(R.id.ivPmFullImage);
+            ivFullImage = view.findViewById(R.id.ivFullImage);
             btn = view.findViewById(R.id.pmTvUpdate);
             btnRipple = RippleUtils.setRippleEffectSquare(btn);
             btn.setOnClickListener(new RippleOnClickListener() {
@@ -82,31 +83,52 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
         void bind(AppDocument document, boolean isActivity) {
             appDocument = document;
             if (appDocument == null) return;
-            if (!appDocument.isEmpty) {
-                btnRipple.setEnabled(true);
-                btn.setEnabled(true);
-                tvMsg.setText(R.string.pm_document_item_id_title);
-                Document id;
-                if(appDocument.getDocuments().size()>0
-                        && (id = appDocument.getDocuments().get(0))!=null) {
-                    if(id.getImageCropped()!=null) {
-                        String uri = id.getImageCropped().getImageUri();
-                        loadImage(uri, ivDocument);
-                    }
-                    if(id.getImageCroppedBack()!=null) {
-                        String uriBack = id.getImageCroppedBack().getImageUri();
-                        loadImage(uriBack, ivDocumentBack);
-                    }
-                }else{
-                    ivDocument.setVisibility(View.GONE);
-                    ivDocumentBack.setVisibility(View.GONE);
-                }
+            if (!appDocument.isEmpty()) {
+                setViewAsOpen();
             } else {
-                btn.setEnabled(false);
-                btnRipple.setEnabled(false);
+                setViewAsLocked();
+            }
+        }
+
+        private void setViewAsOpen() {
+            btnRipple.setEnabled(true);
+            btn.setEnabled(true);
+            Document id;
+            if(appDocument.getDocuments().size()>0
+                    && (id = appDocument.getDocuments().get(0))!=null) {
+                tvMsg.setText(R.string.pm_document_item_id_title);
+                ivFullImage.setVisibility(View.GONE);
+                loadIdImages(id);
+            }else{
+                tvMsg.setText(appDocument.getTitle());
                 ivDocument.setVisibility(View.GONE);
                 ivDocumentBack.setVisibility(View.GONE);
-                tvMsg.setText(R.string.pm_document_item_empty);
+                if(appDocument.getRes()!=0){
+                    ivFullImage.setVisibility(View.VISIBLE);
+                    ivFullImage.setImageResource(appDocument.getRes());
+                }else {
+                    ivFullImage.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        private void setViewAsLocked() {
+            btn.setEnabled(false);
+            btnRipple.setEnabled(false);
+            ivFullImage.setVisibility(View.GONE);
+            ivDocument.setVisibility(View.GONE);
+            ivDocumentBack.setVisibility(View.GONE);
+            tvMsg.setText(R.string.pm_document_item_empty);
+        }
+
+        private void loadIdImages(Document id) {
+            if(id.getImageCropped()!=null) {
+                String uri = id.getImageCropped().getImageUri();
+                loadImage(uri, ivDocument);
+            }
+            if(id.getImageCroppedBack()!=null) {
+                String uriBack = id.getImageCroppedBack().getImageUri();
+                loadImage(uriBack, ivDocumentBack);
             }
         }
 

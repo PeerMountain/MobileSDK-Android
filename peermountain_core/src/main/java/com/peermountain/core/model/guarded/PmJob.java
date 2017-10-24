@@ -5,8 +5,14 @@ package com.peermountain.core.model.guarded;
  */
 
 public class PmJob {
+    public static final int TYPE_CARD = 580;
+    public static final int TYPE_ELITE_CARD = 260;
+    public static final int TYPE_WORLD_CARD = 856;
+    public static final int TYPE_SV_CARD = 43;
+
     private String activity, information;
-    private boolean fake;
+    private int type = TYPE_CARD;
+    private boolean open;
 
     public PmJob() {
     }
@@ -14,10 +20,17 @@ public class PmJob {
     public PmJob(String activity, String information) {
         this.activity = activity;
         this.information = information;
+        open = true;
     }
 
-    public PmJob(boolean fake) {
-        this.fake = fake;
+    public PmJob(String activity, int type) {
+        this.activity = activity;
+        this.type = type;
+        open = false;
+    }
+
+    public PmJob(boolean open) {
+        this.open = open;
         activity = "Locked";
         information = "Locked Information";
     }
@@ -30,12 +43,12 @@ public class PmJob {
         this.activity = activity;
     }
 
-    public boolean isFake() {
-        return fake;
+    public boolean isOpen() {
+        return open;
     }
 
-    public void setFake(boolean fake) {
-        this.fake = fake;
+    public void setOpen(boolean open) {
+        this.open = open;
     }
 
     public String getInformation() {
@@ -44,5 +57,9 @@ public class PmJob {
 
     public void setInformation(String information) {
         this.information = information;
+    }
+
+    public int getType() {
+        return type;
     }
 }

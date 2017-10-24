@@ -12,8 +12,8 @@
     <color name="pm_text_color_dark">#FF1D1D26</color>
     <color name="pm_text_color_dark_lbl">#801D1D26</color><!--50%-->
     <color name="pm_text_shadow">#000000</color>
-    <color name="pm_contact_validated">#FFFFFF</color>
-    <color name="pm_contact_not_validated">#49C5DE</color>
+    <color name="pm_contact_validated">#49C5DE</color>
+    <color name="pm_contact_not_validated">#e0e0e0</color>
     <color name="pm_toolbar_title">#FFFFFF</color>
     <color name="pm_dot_white">#FFFFFF</color>
     <color name="pm_dot_accent">#49C5DE</color>

@@ -1,11 +1,14 @@
 package com.peermountain.sdk.ui.register;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterface;
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
@@ -62,7 +65,8 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==1) {
             final boolean permissionsAllowed =
-                    AXTCaptureInterface.INSTANCE.verifyPermissions(requestCode, permissions, grantResults);
+                    AXTCaptureInterface.INSTANCE.verifyPermissions(requestCode, permissions, grantResults) && ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.READ_PHONE_STATE)== PackageManager.PERMISSION_GRANTED;
             if (permissionsAllowed) {
                 initScanIdSDK();
             } else {

@@ -123,10 +123,10 @@ public class HomeFragment extends HomeToolbarFragment {
     }
 
     private void addStaticJobs() {
-        jobs.add(new PmJob("Upload Passport", "Scan your ID or Passport"));
-        jobs.add(new PmJob(true));
-        jobs.add(new PmJob(true));
-        jobs.add(new PmJob(true));
+        jobs.add(new PmJob("Miles & More Card", "Scan your ID or Passport"));
+        jobs.add(new PmJob("World Card", PmJob.TYPE_WORLD_CARD));
+        jobs.add(new PmJob("World Elite Card", PmJob.TYPE_ELITE_CARD));
+        jobs.add(new PmJob("Silicon Valley Bank Card", PmJob.TYPE_SV_CARD));//fake
     }
 
 //    CardStackView.CardEventListener jobsEvents = new CardStackView.CardEventListener() {

@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -144,13 +143,7 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                         pmIvLogout.setEnabled(slideOffset > 0.8);
                         pmIvLogout.setVisibility(slideOffset > 0 ? View.VISIBLE : View.GONE);
                         shadowView.setAlpha(slideOffset);
-                        llContentView.setX(navigationView.getWidth() * slideOffset);
-                        FrameLayout.LayoutParams lp =
-                                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
-                        lp.height = drawer.getHeight() -
-                                (int) (drawer.getHeight() * slideOffset * 0.3f);
-                        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
-                        llContentView.setLayoutParams(lp);
+                        scaleAndTranslateMainContent(drawer, slideOffset);
                     }
 
                     @Override
@@ -162,6 +155,28 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                     }
                 }
         );
+    }
+
+    public void scaleAndTranslateMainContent(View drawer, float slideOffset) {
+        // Scale the View based on current slide offset
+        final float diffScaledOffset = slideOffset * 0.3f;
+        final float offsetScale = 1 - diffScaledOffset;
+        llContentView.setScaleX(offsetScale);
+        llContentView.setScaleY(offsetScale);
+
+        // Translate the View, accounting for the scaled width
+        final float xOffset = drawer.getWidth() * slideOffset;
+        final float xOffsetDiff = llContentView.getWidth() * diffScaledOffset / 2;
+        final float xTranslation = xOffset - xOffsetDiff;
+        llContentView.setTranslationX(xTranslation);
+
+//                        llContentView.setX(navigationView.getWidth() * slideOffset);
+//                        FrameLayout.LayoutParams lp =
+//                                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
+//                        lp.height = drawer.getHeight() -
+//                                (int) (drawer.getHeight() * slideOffset * 0.3f);
+//                        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
+//                        llContentView.setLayoutParams(lp);
     }
 
     private MenuFragment menuFragment;

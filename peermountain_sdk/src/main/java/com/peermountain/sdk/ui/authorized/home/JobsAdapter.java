@@ -117,32 +117,52 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
         void bind(PmJob pmJob, boolean isActivity) {
             job = pmJob;
             if (job == null) return;
-            if (!job.isFake()) {
-                setViewForLockedJob();
-            } else {
+            setImage();
+            if (job.isOpen()) {
                 setViewForOpenJob();
+            } else {
+                setViewForLockedJob();
             }
             tvJobMsg.setText(isActivity ? job.getActivity() : job.getInformation());
         }
 
         private void setViewForOpenJob() {
-            btn.setEnabled(false);
-            btnRipple.setEnabled(false);
-            ivPmFullImage.setVisibility(View.GONE);
-            llBtn1.setVisibility(View.GONE);
-            llBtn2.setVisibility(View.GONE);
-            llBtn3.setVisibility(View.GONE);
-            llBtn4.setVisibility(View.GONE);
+            btnRipple.setEnabled(true);
+            btn.setEnabled(true);
+//            showViews(true);
+//            setImage();
+        }
+
+        private void setImage() {
+            switch (job.getType()){
+                case PmJob.TYPE_CARD:
+                    ivPmFullImage.setImageResource(R.drawable.pm_platinum);
+                    break;
+                case PmJob.TYPE_ELITE_CARD:
+                    ivPmFullImage.setImageResource(R.drawable.pm_elite_card);
+                    break;
+                case PmJob.TYPE_WORLD_CARD:
+                    ivPmFullImage.setImageResource(R.drawable.pm_card_world);
+                    break;
+                case PmJob.TYPE_SV_CARD:
+                    ivPmFullImage.setImageResource(R.drawable.pm_card_sv);
+                    break;
+            }
         }
 
         private void setViewForLockedJob() {
-            btnRipple.setEnabled(true);
-            btn.setEnabled(true);
-            ivPmFullImage.setVisibility(View.VISIBLE);
-            llBtn1.setVisibility(View.VISIBLE);
-            llBtn2.setVisibility(View.VISIBLE);
-            llBtn3.setVisibility(View.VISIBLE);
-            llBtn4.setVisibility(View.VISIBLE);
+            btn.setEnabled(false);
+            btnRipple.setEnabled(false);
+//            showViews(false);
+        }
+
+        private void showViews(boolean show) {
+            int status = show?View.VISIBLE:View.GONE;
+            ivPmFullImage.setVisibility(status);
+            llBtn1.setVisibility(status);
+            llBtn2.setVisibility(status);
+            llBtn3.setVisibility(status);
+            llBtn4.setVisibility(status);
         }
     }
 }
