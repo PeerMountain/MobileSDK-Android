@@ -52,13 +52,16 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        boolean handled = false;
         switch (requestCode) {
             case REQUEST_LOGIN:
             case REQUEST_REGISTER:
                 if (resultCode != RESULT_OK || !checkUserIsValid()) {
                     finish();
+                    return;
                 } else {
                     setUpView();
+                 handled = true;
                 }
                 break;
             case REQUEST_GET_NEAR_BY_CONTACT:
@@ -67,9 +70,14 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                     if (shareObject != null && shareObject.getContact() != null) {
 //                        new PmFragmentUtils.FragmentBuilder(this).pop();//remove shareFragment
                         showContactProfileSettingsFragment(shareObject.getContact());
+                        handled = true;
                     }
                 }
                 break;
+        }
+
+        if(!handled && topFragment!=null){
+            topFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -119,12 +127,14 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
 
     NavigationView navigationView;
     LinearLayout llContentView;
-
+    View shadowView;
     private void initDrawer() {
         navigationView = findViewById(R.id.navigationView);
         llContentView = findViewById(R.id.llContentView);
+        shadowView = findViewById(R.id.shadowView);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.setScrimColor(Color.TRANSPARENT);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
         drawer.addDrawerListener(
                 new DrawerLayout.SimpleDrawerListener() {
                     @Override
@@ -133,6 +143,7 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                         pmIvLogout.setAlpha(slideOffset);
                         pmIvLogout.setEnabled(slideOffset > 0.8);
                         pmIvLogout.setVisibility(slideOffset > 0 ? View.VISIBLE : View.GONE);
+                        shadowView.setAlpha(slideOffset);
                         llContentView.setX(navigationView.getWidth() * slideOffset);
                         FrameLayout.LayoutParams lp =
                                 (FrameLayout.LayoutParams) llContentView.getLayoutParams();
@@ -145,6 +156,7 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                     @Override
                     public void onDrawerClosed(View drawerView) {
                         pmIvLogout.setVisibility(View.GONE);
+                        shadowView.setAlpha(0);
 //                        pmIvLogout.setAlpha(0f);
 //                        pmIvLogout.setEnabled(false);
                     }
@@ -342,6 +354,11 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
     @Override
     public void onRequestShareByNearBy() {
         showShareWithNearBy();
+    }
+
+    @Override
+    public void lockMenu(boolean lock) {
+//        drawer.setDrawerLockMode(lock?DrawerLayout.LOCK_MODE_LOCKED_CLOSED:DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
     }
 
 //    @Override

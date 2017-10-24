@@ -23,6 +23,7 @@ ConfirmationAccountFragment.OnFragmentInteractionListener{
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
     ScanIdFragment scanIdFragment;
+    Document scannedDocument = null;
 
 
     @Override
@@ -30,12 +31,16 @@ ConfirmationAccountFragment.OnFragmentInteractionListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pm_activity_register,R.id.llMainView);
         fb = PmFragmentUtils.init(this, containerId);
-        if(PeerMountainManager.isTutoSeen()) {
-            showPinFragment();
-        }else{
-            showTutorialFragment();
+        if(savedInstanceState!=null && scannedDocument!=null){
+            showRegisterProfileFragment(scannedDocument);
+        }else {
+            if (PeerMountainManager.isTutoSeen()) {
+                showPinFragment();
+            } else {
+                showTutorialFragment();
+            }
+            setResult(Activity.RESULT_CANCELED);
         }
-        setResult(Activity.RESULT_CANCELED);
     }
 
     @Override
@@ -180,5 +185,10 @@ ConfirmationAccountFragment.OnFragmentInteractionListener{
     public void onAccountCreated() {
         setResult(Activity.RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void lockMenu(boolean lock) {
+
     }
 }

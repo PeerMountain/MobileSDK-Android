@@ -68,12 +68,12 @@ public final class DocumentUtils {
 //            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
 //            document.setImageCroppedBack(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO));
 //            document.setImageFace(scannedResult.getMapImageFace().get(AXTSdkResult.FACE_CROPPED));
-            document.setLastName("FakeLastName");
-            document.setFirstName("FakeLFirstName");
+            document.setLastName("fLastName");
+            document.setFirstName("fFirstName");
             document.setBirthday("01/04/1990");
 
-            document.setDocNumber("FakeNumber");
-            document.setCountry("FakeCountry");
+            document.setDocNumber("fNumber");
+            document.setCountry("fCountry");
             document.setEmitDate("01/04/1990");
             document.setMrzID("kjhsdcaui67yasch");
             document.setValid(true);

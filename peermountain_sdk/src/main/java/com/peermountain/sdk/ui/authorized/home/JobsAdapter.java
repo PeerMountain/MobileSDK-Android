@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.peermountain.core.model.guarded.PmJob;
-import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.sdk.views.PeerMountainTextView;
 
 /**
  * Created by Galeen on 10/12/2017.
@@ -20,6 +20,8 @@ import com.peermountain.sdk.utils.ripple.RippleUtils;
 
 public class JobsAdapter extends ArrayAdapter<PmJob> {
     View.OnClickListener clickListener;
+
+
     public JobsAdapter(Context context, View.OnClickListener clickListener) {
         super(context, 0);
         this.clickListener = clickListener;
@@ -27,6 +29,7 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
 
     private boolean showActivity = true;
     private boolean setAsFirst = true;
+
     public void setShowActivity(boolean showActivity) {
         this.showActivity = showActivity;
         setAsFirst = true;
@@ -58,20 +61,54 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
     }
 
     private static class ViewHolder {
+        final PeerMountainTextView tvJobMsg;
+        final ImageView ivPmFullImage;
+        final LinearLayout llBtn1;
+        final PeerMountainTextView tvBtn1Title;
+        final PeerMountainTextView tvBtn1Msg;
+        final ImageView ivBtn1;
+        final LinearLayout llBtn2;
+        final PeerMountainTextView tvBtn2Title;
+        final PeerMountainTextView tvBtn2Msg;
+        final ImageView ivBtn2;
+        final LinearLayout llBtn3;
+        final PeerMountainTextView tvBtn3Title;
+        final PeerMountainTextView tvBtn3Msg;
+        final ImageView ivBtn3;
+        final LinearLayout llBtn4;
+        final PeerMountainTextView tvBtn4Title;
+        final PeerMountainTextView tvBtn4Msg;
+        final ImageView ivBtn4;
         final View parent, btnRipple;
-        final TextView tvMsg;
         final ImageView btn;
         PmJob job;
 
         ViewHolder(View view, final View.OnClickListener clickListener) {
             parent = view;
-            tvMsg = (TextView) view.findViewById(R.id.tvJobMsg);
+            tvJobMsg = (PeerMountainTextView) view.findViewById(R.id.tvJobMsg);
+            ivPmFullImage = (ImageView) view.findViewById(R.id.ivPmFullImage);
+            llBtn1 = (LinearLayout) view.findViewById(R.id.llBtn1);
+            tvBtn1Title = (PeerMountainTextView) view.findViewById(R.id.tvBtn1Title);
+            tvBtn1Msg = (PeerMountainTextView) view.findViewById(R.id.tvBtn1Msg);
+            ivBtn1 = (ImageView) view.findViewById(R.id.ivBtn1);
+            llBtn2 = (LinearLayout) view.findViewById(R.id.llBtn2);
+            tvBtn2Title = (PeerMountainTextView) view.findViewById(R.id.tvBtn2Title);
+            tvBtn2Msg = (PeerMountainTextView) view.findViewById(R.id.tvBtn2Msg);
+            ivBtn2 = (ImageView) view.findViewById(R.id.ivBtn2);
+            llBtn3 = (LinearLayout) view.findViewById(R.id.llBtn3);
+            tvBtn3Title = (PeerMountainTextView) view.findViewById(R.id.tvBtn3Title);
+            tvBtn3Msg = (PeerMountainTextView) view.findViewById(R.id.tvBtn3Msg);
+            ivBtn3 = (ImageView) view.findViewById(R.id.ivBtn3);
+            llBtn4 = (LinearLayout) view.findViewById(R.id.llBtn4);
+            tvBtn4Title = (PeerMountainTextView) view.findViewById(R.id.tvBtn4Title);
+            tvBtn4Msg = (PeerMountainTextView) view.findViewById(R.id.tvBtn4Msg);
+            ivBtn4 = (ImageView) view.findViewById(R.id.ivBtn4);
+
             btn = (ImageView) view.findViewById(R.id.pmIvDoJob);
             btnRipple = RippleUtils.setRippleEffectSquare(btn);
             btn.setOnClickListener(new RippleOnClickListener() {
                 @Override
                 public void onClickListener(View clickedView) {
-                    LogUtils.d("jobsAdapter","click on fake job :"+ job.isFake());
                     clickListener.onClick(clickedView);
                 }
             });
@@ -81,13 +118,31 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
             job = pmJob;
             if (job == null) return;
             if (!job.isFake()) {
-                btnRipple.setEnabled(true);
-                btn.setEnabled(true);
+                setViewForLockedJob();
             } else {
-                btn.setEnabled(false);
-                btnRipple.setEnabled(false);
+                setViewForOpenJob();
             }
-            tvMsg.setText(isActivity?job.getActivity():job.getInformation());
+            tvJobMsg.setText(isActivity ? job.getActivity() : job.getInformation());
+        }
+
+        private void setViewForOpenJob() {
+            btn.setEnabled(false);
+            btnRipple.setEnabled(false);
+            ivPmFullImage.setVisibility(View.GONE);
+            llBtn1.setVisibility(View.GONE);
+            llBtn2.setVisibility(View.GONE);
+            llBtn3.setVisibility(View.GONE);
+            llBtn4.setVisibility(View.GONE);
+        }
+
+        private void setViewForLockedJob() {
+            btnRipple.setEnabled(true);
+            btn.setEnabled(true);
+            ivPmFullImage.setVisibility(View.VISIBLE);
+            llBtn1.setVisibility(View.VISIBLE);
+            llBtn2.setVisibility(View.VISIBLE);
+            llBtn3.setVisibility(View.VISIBLE);
+            llBtn4.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -1,41 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/pm_card"
-              android:elevation="@dimen/pm_shadow">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/pm_card"
+             android:elevation="@dimen/pm_shadow"
+             android:orientation="vertical">
 
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.5">
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <com.peermountain.sdk.views.PeerMountainTextView
-                android:id="@+id/tvJobMsg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="@dimen/pm_margin_normal"
-                tools:text="Job showActivity"
-                android:textColor="@color/pm_text_color_dark"
-                android:textSize="@dimen/pm_regular_text"/>
-        </FrameLayout>
 
     <ImageView
         android:id="@+id/pmIvDoJob"
         style="@style/pm_square_btn"
+        android:layout_gravity="bottom"
         android:rotation="180"
         app:srcCompat="@drawable/pm_ic_arrow_back_24dp"/>
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/pm_confirm_btn_size"
+        android:orientation="vertical"
+        android:padding="@dimen/pm_margin_normal">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvJobMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/pm_text_color_dark"
+            android:textSize="@dimen/pm_regular_text"
+            tools:text="Job showActivity"/>
+
+        <ImageView
+            android:id="@+id/ivPmFullImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pm_scanned_id_image_height"
+            android:src="@drawable/pm_platinum"
+            tools:visibility="visible"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_margin_small"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/llBtn1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/pm_job_btn_border"
+                android:orientation="vertical">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn1Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn1_title"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_title_text"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn1Msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn1_msg"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_msg_text"/>
+
+                <ImageView
+                    android:id="@+id/ivBtn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pm_margin_normal"
+                    app:srcCompat="@drawable/pm_btn_success"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBtn2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pm_margin_small"
+                android:layout_weight="1"
+                android:background="@drawable/pm_job_btn_border"
+                android:orientation="vertical">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn2Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn2_title"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_title_text"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn2Msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn2_msg"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_msg_text"/>
+
+                <ImageView
+                    android:id="@+id/ivBtn2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pm_margin_normal"
+                    app:srcCompat="@drawable/pm_btn_success"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_margin_small"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/llBtn3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/pm_job_btn_border"
+                android:orientation="vertical">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn3Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn3_title"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_title_text"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn3Msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn3_msg"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_msg_text"/>
+
+                <ImageView
+                    android:id="@+id/ivBtn3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pm_margin_normal"
+                    app:srcCompat="@drawable/pm_btn_success"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llBtn4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/pm_margin_small"
+                android:layout_weight="1"
+                android:background="@drawable/pm_job_btn_border"
+                android:orientation="vertical">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn4Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn4_title"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_title_text"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/tvBtn4Msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pm_margin_small"
+                    android:text="@string/pm_job_item_btn4_msg"
+                    android:textColor="@color/pm_job_item_btn_text"
+                    android:textSize="@dimen/pm_job_item_msg_text"/>
+
+                <ImageView
+                    android:id="@+id/ivBtn4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pm_margin_normal"
+                    app:srcCompat="@drawable/pm_btn_success"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

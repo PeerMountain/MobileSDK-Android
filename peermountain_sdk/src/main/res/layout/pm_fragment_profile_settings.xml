@@ -6,11 +6,25 @@
               tools:background="@drawable/pm_bkg"
               tools:context="com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/pmIvAvatar"
-        style="@style/pm_avatar_image"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="@dimen/pm_margin_normal"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/pmIvAvatar"
+            style="@style/pm_avatar_image"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/pm_margin_normal"/>
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/tvValidateContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/pm_text_color"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="@dimen/pm_margin_normal"
+            android:text="@string/pm_contact_btn_not_validated"/>
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

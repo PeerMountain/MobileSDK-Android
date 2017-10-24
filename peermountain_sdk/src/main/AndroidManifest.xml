@@ -24,6 +24,7 @@
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/PmSdkTheme">
         </activity>
         <activity
@@ -33,12 +34,14 @@
         <activity
             android:name=".ui.register.RegisterActivity"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/PmSdkTheme"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".ui.authorized.HomeActivity"
             android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@style/PmSdkTheme">
         </activity>
     </application>

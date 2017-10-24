@@ -40,7 +40,7 @@ public class HomeJobFragment extends HomeToolbarFragment {
     public void setHomeToolbar(@StringRes int title){
         setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_qrcode, title, homeToolbarEvents!=null?homeToolbarEvents.getOpenMenuListener():null, homeToolbarEvents!=null?homeToolbarEvents.getOpenBarcodeListener():null);
     }
-    // TODO: Rename and change types and number of parameters
+
     public static HomeJobFragment newInstance() {
         HomeJobFragment fragment = new HomeJobFragment();
         return fragment;

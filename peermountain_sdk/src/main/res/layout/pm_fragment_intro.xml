@@ -9,7 +9,8 @@
     tools:background="@drawable/pm_bkg"
     android:orientation="horizontal">
 
-    <include layout="@layout/pm_advert"/>
+    <include layout="@layout/pm_advert"
+        android:visibility="visible"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -34,7 +35,7 @@
             <ImageView
                 android:id="@+id/imageView3"
                 style="@style/pm_tuto_image"
-                android:src="@drawable/pm_ic_logo"/>
+                app:srcCompat="@drawable/pm_ic_tuto3"/>
 
 
         </ViewFlipper>
@@ -50,6 +51,7 @@
 
             <com.peermountain.sdk.views.PeerMountainTextView
                 android:id="@+id/tvTutoTitle"
+                style="@style/pm_tv_shadow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
@@ -62,6 +64,7 @@
                 android:id="@+id/tvTutoMsg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/pm_tv_shadow"
                 android:layout_marginTop="@dimen/pm_margin_normal"
                 android:gravity="center"
                 android:text="msg"
@@ -75,6 +78,7 @@
 
             <com.peermountain.sdk.views.PeerMountainTextView
                 android:id="@+id/tvTutoMsg2"
+                style="@style/pm_tv_shadow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/pm_margin_xbig"

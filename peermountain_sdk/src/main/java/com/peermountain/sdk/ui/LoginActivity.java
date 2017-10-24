@@ -47,4 +47,8 @@ public class LoginActivity extends ToolbarActivity implements RegisterPinFragmen
         finish();
     }
 
+    @Override
+    public void lockMenu(boolean lock) {
+
+    }
 }

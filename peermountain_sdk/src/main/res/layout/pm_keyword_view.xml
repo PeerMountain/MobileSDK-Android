@@ -3,8 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:grid="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="70dp"
-    android:layout_height="30dp"
     android:layout_gravity="center"
     android:gravity="center"
     android:layout_margin="@dimen/pm_margin_micro"
@@ -12,6 +10,6 @@
     android:textColor="@color/pm_text_color"
     tools:text="Text"
     grid:layout_columnWeight="1"
-    grid:layout_gravity="fill_horizontal">
+    grid:layout_gravity="fill">
 
 </com.peermountain.sdk.views.PeerMountainTextView>

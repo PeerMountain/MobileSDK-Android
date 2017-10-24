@@ -69,6 +69,11 @@ public abstract class ToolbarFragment extends Fragment {
         mToolbarListener.hideToolbar();
     }
 
+    public void lockMenu(boolean lock){
+        if (mToolbarListener == null) return;
+        mToolbarListener.lockMenu(lock);
+    }
+
     public static final int THEME_DARK = 1;
     public static final int THEME_LIGHT = 2;
 
@@ -89,5 +94,6 @@ public abstract class ToolbarFragment extends Fragment {
         void setToolbarTheme(int theme);
         void hideToolbar();
         void setTopFragment(ToolbarFragment topFragment);
+        void lockMenu(boolean lock);
     }
 }

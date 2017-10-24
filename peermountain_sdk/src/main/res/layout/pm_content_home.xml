@@ -10,10 +10,17 @@
     android:orientation="vertical"
     tools:context="com.peermountain.sdk.ui.authorized.HomeActivity">
 
+    <View android:id="@+id/shadowView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pm_menu_bkg"
+        android:alpha="0"/>
+
     <LinearLayout
         android:id="@+id/llContentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/transparent"
         android:orientation="vertical">
 
         <include layout="@layout/pm_toolbar"/>

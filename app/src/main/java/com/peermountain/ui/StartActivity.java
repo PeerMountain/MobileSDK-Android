@@ -38,7 +38,6 @@ public class StartActivity extends AppCompatActivity {
 //        PeerMountainManager.init(config); // must implement ui in the app
 
 //        PeerMountainSDK.logout();//to test login again
-
         showSplash();
     }
 

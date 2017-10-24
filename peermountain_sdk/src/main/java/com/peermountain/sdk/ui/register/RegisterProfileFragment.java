@@ -480,6 +480,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 //                Uri uri =      Uri.fromFile(photoFile);
                 takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                 atv.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 return photoFile;
             }

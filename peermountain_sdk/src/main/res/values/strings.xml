@@ -110,6 +110,17 @@
     <string name="pm_tab_home_information">INFORMATION</string>
     <!--home fragment end-->
 
+    <!--home fragment job cards-->
+    <string name="pm_job_item_btn1_title">Personal Profile</string>
+    <string name="pm_job_item_btn1_msg">ID, Passport</string>
+    <string name="pm_job_item_btn2_title">Work Details</string>
+    <string name="pm_job_item_btn2_msg">Employment Contact</string>
+    <string name="pm_job_item_btn3_title">Income Details</string>
+    <string name="pm_job_item_btn3_msg">Tax Returns</string>
+    <string name="pm_job_item_btn4_title">Other Details</string>
+    <string name="pm_job_item_btn4_msg">Other Information</string>
+    <!--home fragment job cards end-->
+
     <!--menu fragment-->
     <string name="pm_menu_home">Home</string>
     <string name="pm_menu_documents">Documents</string>
@@ -131,6 +142,8 @@
     <string name="pm_profile_settings_lbl_ln">Linkedin</string>
     <string name="pm_settings_add_to_contacts">ADD TO CONTACTS</string>
     <string name="pm_settings_remove_from_contacts">REMOVE FROM CONTACTS</string>
+    <string name="pm_contact_btn_not_validated">Validate</string>
+    <string name="pm_contact_btn_validated">Validated</string>
     <!--profile fragment end-->
 
     <!--documents fragment-->
@@ -161,9 +174,6 @@
     <string name="pm_ad_get_the_card">Get the card</string>
 
     <string name="pm_btn_agree">Agree</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--tutorial fragment end-->
 
 
@@ -175,7 +185,7 @@
     <string name="pm_share_using_google_nearby">Using Google NearBy</string>
     <string name="pm_share_using_qr_code">Using QR Code</string>
     <string name="pm_share_title">Add contact</string>
-    <string name="pm_douments_item_btn_update">Update</string>
+    <string name="pm_documents_item_btn_update">Update</string>
     <!--Share fragment end-->
 
 </resources>

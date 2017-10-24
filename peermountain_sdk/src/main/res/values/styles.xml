@@ -91,7 +91,7 @@
         <item name="android:layout_marginBottom">@dimen/pm_spacing_profile</item>
     </style>
 
-    <style name="pm_menu_text" parent="pm_tv_shadow">
+    <style name="pm_menu_text" ><!--parent="pm_tv_shadow"-->
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/pm_menu_item_height</item>
         <item name="android:gravity">center_vertical</item>

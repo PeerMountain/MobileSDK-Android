@@ -12,6 +12,8 @@
     <color name="pm_text_color_dark">#FF1D1D26</color>
     <color name="pm_text_color_dark_lbl">#801D1D26</color><!--50%-->
     <color name="pm_text_shadow">#000000</color>
+    <color name="pm_contact_validated">#FFFFFF</color>
+    <color name="pm_contact_not_validated">#49C5DE</color>
     <color name="pm_toolbar_title">#FFFFFF</color>
     <color name="pm_dot_white">#FFFFFF</color>
     <color name="pm_dot_accent">#49C5DE</color>
@@ -43,6 +45,9 @@
     <color name="pm_tab_text_inactive">#99FFFFFF</color> <!--40%-->
     <color name="pm_avatar_border">#FF126B82</color>
     <color name="pm_qr_code">#FF126B82</color>
+    <color name="pm_job_item_btn_border">#4D979797</color>
+    <color name="pm_job_item_btn_text">#FF126B82</color>
+    <color name="pm_menu_bkg">#66000000</color>
 </resources>
 
     <!-- Transparency HEX

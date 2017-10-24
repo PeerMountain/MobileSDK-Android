@@ -46,4 +46,6 @@
     <dimen name="pm_scanned_id_image_height">130dp</dimen>
     <dimen name="pm_qr_icon_size">300dp</dimen>
     <dimen name="pm_tuto_dot_size">10dp</dimen>
+    <dimen name="pm_job_item_title_text">12sp</dimen>
+    <dimen name="pm_job_item_msg_text">10sp</dimen>
 </resources>

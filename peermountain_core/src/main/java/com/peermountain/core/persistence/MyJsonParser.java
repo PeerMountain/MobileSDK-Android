@@ -62,6 +62,8 @@ class MyJsonParser {
     private static final String COMPANY_END_DATE = "company_end_date";
     public static final String OPERATION = "operation";
     public static final String CONTACT = "contact";
+    public static final String VALIDATED = "validated";
+    public static final String VALIDATED_IMAGE_URI = "validated_image_uri";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -258,6 +260,12 @@ class MyJsonParser {
                 case ID:
                     profile.setId(getString(reader));
                     break;
+                case VALIDATED_IMAGE_URI:
+                    profile.setValidatedImageUri(getString(reader));
+                    break;
+                case VALIDATED:
+                    profile.setValidated(getBoolean(reader));
+                    break;
                 case EMAIL_ADDRESS:
                     profile.setMail(getString(reader));
                     break;
@@ -352,6 +360,8 @@ class MyJsonParser {
         }
         writer.beginObject();
         writer.name(ID).value(contact.getId());
+        writer.name(VALIDATED_IMAGE_URI).value(contact.getValidatedImageUri());
+        writer.name(VALIDATED).value(contact.isValidated());
         writer.name(EMAIL_ADDRESS).value(contact.getMail());
         writer.name(FIRST_NAME).value(contact.getNames());
         writer.name(PHONE).value(contact.getPhone());

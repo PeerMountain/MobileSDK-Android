@@ -1,10 +1,15 @@
 package com.peermountain.sdk.ui.authorized.settings;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -22,6 +27,7 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.FileUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
+import com.peermountain.sdk.ui.register.RegisterProfileFragment;
 import com.peermountain.sdk.views.PeerMountainTextView;
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +35,8 @@ import java.io.File;
 
 public class ProfileSettingsFragment extends HomeToolbarFragment {
     private static final String ARG_CONTACT = "param1";
+    public static final int REQUEST_IMAGE_CAPTURE = 711;
+    public static final int REQUEST_CODE_WRITE_PERMISSION = 723;
 
 
     private OnFragmentInteractionListener mListener;
@@ -36,7 +44,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     Contact contact = null;
     private RoundedImageView pmIvAvatar;
     private PeerMountainTextView tvTabGeneral;
-    private PeerMountainTextView tvTabSocial, tvAddContact;
+    private PeerMountainTextView tvTabSocial, tvAddContact, tvValidateContact;
     private LinearLayout llGeneralData;
     private EditText etNames;
     private EditText etDob;
@@ -119,6 +127,45 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case REQUEST_CODE_WRITE_PERMISSION :
+                if(checkPermissions()){
+                    requestCapture();
+                }else{
+                    // TODO: 10/23/17 show exp dialog
+                }
+                break;
+        }
+    }
+    Uri imageUri = null;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
+            if(data!=null && data.getData()!=null) {
+                imageUri = data.getData();
+                saveProfile();
+            }else{
+                if(avatarFile!=null && avatarFile.exists()) {
+                    imageUri = Uri.fromFile(avatarFile);
+                    saveProfile();
+                }
+            }
+        }
+    }
+
+    private void saveProfile(){
+        if(contact!=null && imageUri!=null){
+            contact.setValidated(true);
+            contact.setValidatedImageUri(imageUri.toString());
+            PeerMountainManager.updateContact(contact);
+            initValidateBtn();
+        }
+    }
+
     private void initView(View view) {
         pmIvAvatar = (RoundedImageView) view.findViewById(R.id.pmIvAvatar);
         tvTabGeneral = (PeerMountainTextView) view.findViewById(R.id.tvTabGeneral);
@@ -133,11 +180,13 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         etFb = (EditText) view.findViewById(R.id.etFb);
         etLn = (EditText) view.findViewById(R.id.etLn);
         tvAddContact = view.findViewById(R.id.tvAddContact);
+        tvValidateContact = view.findViewById(R.id.tvValidateContact);
     }
 
     public void setUpView() {
         if (isMe) {
             tvAddContact.setVisibility(View.GONE);
+            tvValidateContact.setVisibility(View.GONE);
             setToolbarForMyProfile();
         } else {
             setToolbarForContact();
@@ -235,6 +284,14 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                     }
                 }
             });
+            tvValidateContact.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (contact != null && !contact.isValidated()) {
+                        requestCapture();
+                    }
+                }
+            });
         }
         tvTabGeneral.setOnClickListener(tabClick);
         tvTabSocial.setOnClickListener(tabClick);
@@ -243,8 +300,23 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     private void initBtn() {
         if (toAdd) {
             tvAddContact.setText(getString(R.string.pm_settings_add_to_contacts));
+            tvValidateContact.setVisibility(View.GONE);
         } else {
             tvAddContact.setText(getString(R.string.pm_settings_remove_from_contacts));
+            initValidateBtn();
+        }
+    }
+
+    private void initValidateBtn() {
+        if (!isMe && contact!=null) {
+            tvValidateContact.setVisibility(View.VISIBLE);
+            if(contact.isValidated()) {
+                tvValidateContact.setText(R.string.pm_contact_btn_validated);
+                tvValidateContact.setTextColor(ContextCompat.getColor(getContext(),R.color.pm_contact_validated));
+            }else{
+                tvValidateContact.setText(R.string.pm_contact_btn_not_validated);
+                tvValidateContact.setTextColor(ContextCompat.getColor(getContext(),R.color.pm_contact_not_validated));
+            }
         }
     }
 
@@ -274,6 +346,24 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
             }
         }
     };
+
+    private File avatarFile = null;
+
+    private void requestCapture() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !checkPermissions()) {
+            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA}, REQUEST_CODE_WRITE_PERMISSION);
+        }else{
+            avatarFile = RegisterProfileFragment.dispatchTakePictureIntent(getActivity(),ProfileSettingsFragment.this, REQUEST_IMAGE_CAPTURE);}
+    }
+
+    private boolean checkPermissions(){
+        return ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
+    }
 
     public interface OnFragmentInteractionListener {
 

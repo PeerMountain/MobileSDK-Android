@@ -12,8 +12,13 @@ import java.util.UUID;
 
 public class Contact implements Parcelable {
     private String id;
-    private String mail, phone, names, dob, pob, imageUri, pictureUrl, position, placeOfWork;
+    private String mail, phone, names, dob, pob, imageUri, pictureUrl, position, placeOfWork, validatedImageUri;
     private ArrayList<PublicUser> publicProfiles = new ArrayList<>();
+    private boolean validated;
+
+    public Contact() {
+        id = UUID.randomUUID().toString();
+    }
 
     public String getMail() {
         return mail;
@@ -103,6 +108,21 @@ public class Contact implements Parcelable {
         this.id = id;
     }
 
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
+    public String getValidatedImageUri() {
+        return validatedImageUri;
+    }
+
+    public void setValidatedImageUri(String validatedImageUri) {
+        this.validatedImageUri = validatedImageUri;
+    }
 
     @Override
     public int describeContents() {
@@ -121,11 +141,9 @@ public class Contact implements Parcelable {
         dest.writeString(this.pictureUrl);
         dest.writeString(this.position);
         dest.writeString(this.placeOfWork);
+        dest.writeString(this.validatedImageUri);
         dest.writeTypedList(this.publicProfiles);
-    }
-
-    public Contact() {
-        id = UUID.randomUUID().toString();
+        dest.writeByte(this.validated ? (byte) 1 : (byte) 0);
     }
 
     protected Contact(Parcel in) {
@@ -139,7 +157,9 @@ public class Contact implements Parcelable {
         this.pictureUrl = in.readString();
         this.position = in.readString();
         this.placeOfWork = in.readString();
+        this.validatedImageUri = in.readString();
         this.publicProfiles = in.createTypedArrayList(PublicUser.CREATOR);
+        this.validated = in.readByte() != 0;
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {

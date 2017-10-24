@@ -170,6 +170,13 @@ public class PeerMountainManager {
         SharedPreferenceManager.saveContacts(Cache.getInstance().getContacts());
     }
 
+    public static void updateContact(Contact contact) {
+        getContacts().remove(contact);
+        getContacts().add(contact);
+        // TODO: 10/17/2017 probably create contact.id and save each contact by key=id
+        SharedPreferenceManager.saveContacts(Cache.getInstance().getContacts());
+    }
+
     public static void removeContact(Contact contact) {
         getContacts().remove(contact);
         // TODO: 10/17/2017 probably create contact.id and save each contact by key=id
