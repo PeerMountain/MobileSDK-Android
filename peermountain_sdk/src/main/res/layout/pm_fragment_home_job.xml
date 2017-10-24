@@ -6,12 +6,12 @@
     tools:context="com.peermountain.sdk.ui.authorized.home.HomeJobFragment">
 
     <ImageView
-        android:id="@+id/ivHomeJob"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:src="@drawable/pm_documents_to_sign_1"
-        android:scaleType="centerInside"/>
+    android:id="@+id/ivHomeJob"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:src="@drawable/pm_documents_to_sign_1"
+    android:scaleType="centerInside"/>
 
     <FrameLayout
         android:id="@+id/flBtnAgree"

@@ -36,7 +36,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
     private PeerMountainTextView mTvTitle;
     private PeerMountainTextView mTvMsg;
     private GridLayout mGridKeywords;
-    private View mTvSkip;
+    private View mLlTvWhy;
     private ImageView mIvNext;
     private PeerMountainTextView mTvNext;
 
@@ -110,7 +110,6 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
     private void onKeywordsConfirmed() {
         mTvTitle.setText(R.string.pm_confirmed_keywords_title);
         mTvMsg.setText(R.string.pm_keywords_confirmed_message);
-        mTvSkip.setVisibility(View.GONE);
         mTvNext.setVisibility(View.GONE);
         btnRipple.setVisibility(View.GONE);
         mGridKeywords.setVisibility(View.GONE);
@@ -158,7 +157,6 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         isJustShowing = true;
         mTvTitle.setText(R.string.pm_keywords);
         mTvMsg.setText(R.string.pm_keywords_select_message);
-        mTvSkip.setVisibility(View.VISIBLE);
         mTvNext.setVisibility(View.VISIBLE);
         mIvNext.setVisibility(View.GONE);
         btnRipple.setVisibility(View.VISIBLE);
@@ -240,7 +238,6 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         setToolbarForKeywords();
         mTvTitle.setText(R.string.pm_show_keywords_title);
         mTvMsg.setText(R.string.pm_saved_keywords_message);
-        mTvSkip.setVisibility(View.GONE);
         mTvNext.setVisibility(View.GONE);
         mIvNext.setVisibility(View.VISIBLE);
         enableButton(false);
@@ -259,7 +256,6 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         setToolbarForKeywords();
         mTvTitle.setText(R.string.pm_show_keywords_title);
         mTvMsg.setText(R.string.pm_saved_keywords_message);
-        mTvSkip.setVisibility(View.GONE);
         mTvNext.setVisibility(View.GONE);
         mIvNext.setVisibility(View.VISIBLE);
         ArrayList<Keyword> keywords = PeerMountainManager.getRandomKeywordsWithSavedIncluded(getActivity()).getKeywords();
@@ -279,7 +275,7 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
         mTvTitle = (PeerMountainTextView) view.findViewById(R.id.tvTitle);
         mTvMsg = (PeerMountainTextView) view.findViewById(R.id.tvMsg);
         mGridKeywords = (GridLayout) view.findViewById(R.id.gridKeywords);
-        mTvSkip = view.findViewById(R.id.tvSkip);
+        mLlTvWhy = view.findViewById(R.id.llTvWhy);
         mIvNext = (ImageView) view.findViewById(R.id.ivNext);
         mTvNext = (PeerMountainTextView) view.findViewById(R.id.tvNext);
         flNext = view.findViewById(R.id.flNext);
@@ -299,10 +295,20 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
             }
         });
 
+        mLlTvWhy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mListener!=null){
+                    mListener.onWhy();
+                }
+            }
+        });
+
         btnRipple = RippleUtils.setRippleEffectSquare(flNext);
     }
 
     public interface OnFragmentInteractionListener {
         void onKeywordsSaved();
+        void onWhy();
     }
 }

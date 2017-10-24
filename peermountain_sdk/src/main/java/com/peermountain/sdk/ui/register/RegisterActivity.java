@@ -18,7 +18,7 @@ import com.peermountain.sdk.utils.PmFragmentUtils;
 
 public class RegisterActivity extends ToolbarActivity implements RegisterPinFragment.OnFragmentInteractionListener,
         RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
-ConfirmationAccountFragment.OnFragmentInteractionListener{
+ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragment.OnFragmentInteractionListener{
     @IdRes
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
@@ -121,6 +121,10 @@ ConfirmationAccountFragment.OnFragmentInteractionListener{
         fb.addToBackStack(true);
         fb.replace(new ConfirmationAccountFragment());
     }
+    private void showSecurityTutorialFragment() {
+        fb.addToBackStack(true);
+        fb.replace(new SecurityTutorialFragment());
+    }
     @Override
     public void goToRegisterKeyWords() {
         showKeywordsFragment();
@@ -139,6 +143,11 @@ ConfirmationAccountFragment.OnFragmentInteractionListener{
     @Override
     public void onKeywordsSaved() {
         showScanIdFragment();
+    }
+
+    @Override
+    public void onWhy() {
+        showSecurityTutorialFragment();
     }
 
     @Override
@@ -179,6 +188,11 @@ ConfirmationAccountFragment.OnFragmentInteractionListener{
     @Override
     public void onTutoEnd() {
         showPinFragment();
+    }
+
+    @Override
+    public void onSecurityTutorialEnd() {
+        fb.pop();
     }
 
     @Override
