@@ -55,14 +55,13 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/tvSkip"
+        android:id="@+id/llTvWhy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/pm_margin_normal"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
         tools:visibility="visible">
 
         <com.peermountain.sdk.views.PeerMountainTextView
@@ -70,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/pm_keywords_skip"
+            android:text="@string/pm_keywords_why"
             android:textColor="@color/pm_text_color"
             android:textSize="@dimen/pm_regular_text"/>
 

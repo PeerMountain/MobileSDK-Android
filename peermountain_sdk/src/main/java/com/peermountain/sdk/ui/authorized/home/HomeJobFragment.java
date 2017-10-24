@@ -54,7 +54,7 @@ public class HomeJobFragment extends HomeToolbarFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_home_job, container, false);
+        View rootView =  inflater.inflate(R.layout.pm_fragment_home_job, container, false);
         return rootView;
     }
 

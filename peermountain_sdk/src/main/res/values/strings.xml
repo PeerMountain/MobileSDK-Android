@@ -65,6 +65,7 @@
 
     <string name="pm_keywords_select_message">Write down every keyword and\nstore them somewere safe.\nYou\'ll need them in case you forget\nyour PIN Code</string>
     <string name="pm_keywords_skip">Skip this time</string>
+    <string name="pm_keywords_why">Why do I need this?</string>
     <string name="pm_keywords_save">I\'ve written it down</string>
 
     <string name="pm_confirmed_keywords_title">Your account has been set up</string>
@@ -166,6 +167,23 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--tutorial fragment end-->
 
+    <!--security_tutorial fragment-->
+    <string name="pm_security_tutorial_title_1">Screenshots are not secure.</string>
+    <string name="pm_security_tutorial_title_2">Are you being watched?</string>
+    <string name="pm_security_tutorial_title_3">No backup. No profile.</string>
+
+    <string name="pm_security_tutorial_msg1_1">If you take a screenshot, your backup may be viewed by other apps. You can make a safe backup with physical paper and pen.</string>
+    <string name="pm_security_tutorial_msg1_2">Now is the perfect time to assess your surroundings. Nearby windows? Hidden cameras? Shoulder - spies?</string>
+    <string name="pm_security_tutorial_msg1_3">Since only you control your profile, you’ll need to save your backup phrase in case this app is deleted.</string>
+
+    <string name="pm_security_tutorial_msg2_1"></string>
+    <string name="pm_security_tutorial_msg2_2">Anyone with your backupphrase can access and use your dossier.</string>
+    <string name="pm_security_tutorial_msg2_3">Your profile is never saved to the cloud storage or standard device backup.</string>
+
+    <string name="pm_security_tutorial_next_1">I understand</string>
+    <string name="pm_security_tutorial_next_2">Got it</string>
+    <string name="pm_security_tutorial_next_3">I understand</string>
+    <!--security_tutorial fragment end-->
 
     <!-- HomeJobs fragment -->
     <string name="pm_job_finished">You completed your application!\nThe authentication should only take a moment...</string>
