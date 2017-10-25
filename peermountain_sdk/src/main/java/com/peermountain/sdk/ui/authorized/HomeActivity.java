@@ -27,10 +27,10 @@ import com.peermountain.sdk.ui.authorized.home.HomeFragment;
 import com.peermountain.sdk.ui.authorized.home.HomeJobFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
-import com.peermountain.sdk.ui.base.ToolbarActivity;
+import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
-public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
+public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
         DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
         ScanQRFragment.OnFragmentInteractionListener, ContactsFragment.OnListFragmentInteractionListener,
         ShareFragment.OnFragmentInteractionListener {

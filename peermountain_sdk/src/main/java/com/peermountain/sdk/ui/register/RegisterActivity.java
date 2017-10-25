@@ -15,11 +15,11 @@ import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
 import com.peermountain.core.model.guarded.Document;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarActivity;
+import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
-public class RegisterActivity extends ToolbarActivity implements RegisterPinFragment.OnFragmentInteractionListener,
+public class RegisterActivity extends SecureActivity implements RegisterPinFragment.OnFragmentInteractionListener,
         RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
 ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragment.OnFragmentInteractionListener{
     @IdRes

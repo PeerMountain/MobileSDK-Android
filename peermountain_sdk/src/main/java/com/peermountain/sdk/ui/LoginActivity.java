@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarActivity;
+import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.ui.register.RegisterPinFragment;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
 
-public class LoginActivity extends ToolbarActivity implements RegisterPinFragment.OnFragmentInteractionListener{
+public class LoginActivity extends SecureActivity implements RegisterPinFragment.OnFragmentInteractionListener{
 
     public static void show(Activity activity, int requestCode) {
         Intent starter = new Intent(activity, LoginActivity.class);

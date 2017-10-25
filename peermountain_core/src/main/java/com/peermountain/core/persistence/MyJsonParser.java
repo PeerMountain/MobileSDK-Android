@@ -50,7 +50,9 @@ class MyJsonParser {
     private static final String WIDTH = "width";
     private static final String IMAGE_FACE = "imageFace";
     private static final String IMAGE_CROPPED_BACK = "imageCroppedBack";
+    private static final String IMAGE_CROPPED_BACK_SMALL = "imageCroppedBackSmall";
     private static final String IMAGE_CROPPED = "imageCropped";
+    private static final String IMAGE_CROPPED_SMALL = "imageCroppedSmall";
     private static final String IMAGE_SOURCE_BACK = "imageSourceBack";
     private static final String IMAGE_SOURCE = "imageSource";
     private static final String PUBLIC_PROFILES = "publicProfiles";
@@ -481,8 +483,14 @@ class MyJsonParser {
                 case IMAGE_CROPPED:
                     document.setImageCropped(readAXTImageResult(reader));
                     break;
+                case IMAGE_CROPPED_SMALL:
+                    document.setImageCroppedSmall(readAXTImageResult(reader));
+                    break;
                 case IMAGE_CROPPED_BACK:
                     document.setImageCroppedBack(readAXTImageResult(reader));
+                    break;
+                case IMAGE_CROPPED_BACK_SMALL:
+                    document.setImageCroppedBackSmall(readAXTImageResult(reader));
                     break;
                 case IMAGE_FACE:
                     document.setImageFace(readAXTImageResult(reader));
@@ -522,9 +530,17 @@ class MyJsonParser {
             writer.name(IMAGE_CROPPED);
             writeAXTImage(writer, document.getImageCropped());
         }
+        if (checkDocumentImageNotEmpty(document.getImageCroppedSmall())) {
+            writer.name(IMAGE_CROPPED_SMALL);
+            writeAXTImage(writer, document.getImageCroppedSmall());
+        }
         if (checkDocumentImageNotEmpty(document.getImageCroppedBack())) {
             writer.name(IMAGE_CROPPED_BACK);
             writeAXTImage(writer, document.getImageCroppedBack());
+        }
+        if (checkDocumentImageNotEmpty(document.getImageCroppedBackSmall())) {
+            writer.name(IMAGE_CROPPED_BACK_SMALL);
+            writeAXTImage(writer, document.getImageCroppedBackSmall());
         }
         if (checkDocumentImageNotEmpty(document.getImageFace())) {
             writer.name(IMAGE_FACE);

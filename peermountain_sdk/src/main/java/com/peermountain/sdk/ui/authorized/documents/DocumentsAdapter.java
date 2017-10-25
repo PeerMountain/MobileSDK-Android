@@ -28,6 +28,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
 
     private boolean showActivity = true;
     private boolean setAsFirst = true;
+
     public void setShowActivity(boolean showActivity) {
         this.showActivity = showActivity;
         setAsFirst = true;
@@ -60,7 +61,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
 
     private static class ViewHolder {
         final View parent, btnRipple;
-        final TextView tvMsg,btn;
+        final TextView tvMsg, btn;
         final ImageView ivDocumentBack, ivDocument, ivFullImage;
         AppDocument appDocument;
 
@@ -94,19 +95,19 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
             btnRipple.setEnabled(true);
             btn.setEnabled(true);
             Document id;
-            if(appDocument.getDocuments().size()>0
-                    && (id = appDocument.getDocuments().get(0))!=null) {
+            if (appDocument.getDocuments().size() > 0
+                    && (id = appDocument.getDocuments().get(0)) != null) {
                 tvMsg.setText(R.string.pm_document_item_id_title);
                 ivFullImage.setVisibility(View.GONE);
                 loadIdImages(id);
-            }else{
+            } else {
                 tvMsg.setText(appDocument.getTitle());
                 ivDocument.setVisibility(View.GONE);
                 ivDocumentBack.setVisibility(View.GONE);
-                if(appDocument.getRes()!=0){
+                if (appDocument.getRes() != 0) {
                     ivFullImage.setVisibility(View.VISIBLE);
                     ivFullImage.setImageResource(appDocument.getRes());
-                }else {
+                } else {
                     ivFullImage.setVisibility(View.GONE);
                 }
             }
@@ -122,11 +123,17 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
         }
 
         private void loadIdImages(Document id) {
-            if(id.getImageCropped()!=null) {
+            if (id.getImageCroppedSmall() != null) {
+                String uri = id.getImageCroppedSmall().getImageUri();
+                loadImage(uri, ivDocument);
+            } else if (id.getImageCropped() != null) {
                 String uri = id.getImageCropped().getImageUri();
                 loadImage(uri, ivDocument);
             }
-            if(id.getImageCroppedBack()!=null) {
+            if (id.getImageCroppedBackSmall() != null) {
+                String uriBack = id.getImageCroppedBackSmall().getImageUri();
+                loadImage(uriBack, ivDocumentBack);
+            }else if (id.getImageCroppedBack() != null) {
                 String uriBack = id.getImageCroppedBack().getImageUri();
                 loadImage(uriBack, ivDocumentBack);
             }
@@ -140,7 +147,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
 //                        .placeholder(R.drawable.pm_profil_white)
                         .error(R.color.pm_error_loading_avatar)
                         .into(iv);
-            }else{
+            } else {
                 iv.setVisibility(View.GONE);
             }
         }

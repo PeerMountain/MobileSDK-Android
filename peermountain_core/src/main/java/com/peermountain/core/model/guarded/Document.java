@@ -12,7 +12,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 public class Document implements Parcelable {
     private String lastName, firstName, gender, birthday, docNumber, country, emitDate,
             mrzID, expirationDate;
-    private AXTImageResult imageSource,imageSourceBack,imageCropped, imageCroppedBack,imageFace;
+    private AXTImageResult imageSource,imageSourceBack,imageCropped, imageCroppedBack,imageFace,imageCroppedSmall, imageCroppedBackSmall;
     private boolean valid;
 
 
@@ -136,6 +136,21 @@ public class Document implements Parcelable {
         this.valid = valid;
     }
 
+    public AXTImageResult getImageCroppedSmall() {
+        return imageCroppedSmall;
+    }
+
+    public void setImageCroppedSmall(AXTImageResult imageCroppedSmall) {
+        this.imageCroppedSmall = imageCroppedSmall;
+    }
+
+    public AXTImageResult getImageCroppedBackSmall() {
+        return imageCroppedBackSmall;
+    }
+
+    public void setImageCroppedBackSmall(AXTImageResult imageCroppedBackSmall) {
+        this.imageCroppedBackSmall = imageCroppedBackSmall;
+    }
 
     @Override
     public int describeContents() {
@@ -158,6 +173,8 @@ public class Document implements Parcelable {
         dest.writeSerializable(this.imageCropped);
         dest.writeSerializable(this.imageCroppedBack);
         dest.writeSerializable(this.imageFace);
+        dest.writeSerializable(this.imageCroppedSmall);
+        dest.writeSerializable(this.imageCroppedBackSmall);
         dest.writeByte(this.valid ? (byte) 1 : (byte) 0);
     }
 
@@ -179,10 +196,12 @@ public class Document implements Parcelable {
         this.imageCropped = (AXTImageResult) in.readSerializable();
         this.imageCroppedBack = (AXTImageResult) in.readSerializable();
         this.imageFace = (AXTImageResult) in.readSerializable();
+        this.imageCroppedSmall = (AXTImageResult) in.readSerializable();
+        this.imageCroppedBackSmall = (AXTImageResult) in.readSerializable();
         this.valid = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<Document> CREATOR = new Parcelable.Creator<Document>() {
+    public static final Creator<Document> CREATOR = new Creator<Document>() {
         @Override
         public Document createFromParcel(Parcel source) {
             return new Document(source);

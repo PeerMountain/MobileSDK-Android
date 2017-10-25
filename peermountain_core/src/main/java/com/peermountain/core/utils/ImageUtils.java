@@ -181,8 +181,15 @@ public class ImageUtils {
         return filePath;
     }
 
-    public static void rotateAndResizeImageAsync(File fileSrc, File fileDest, int reqWidth, int reqHeight,boolean shouldDeleteSource, ConvertImageTask.ImageCompressorListener imageCompressorListener){
-        new ConvertImageTask(fileSrc,fileDest,reqWidth,reqHeight,shouldDeleteSource,imageCompressorListener).execute();
+    public static void rotateAndResizeImageAsync(File fileSrc, File fileDest, int reqWidth, int reqHeight, boolean shouldDeleteSource, ConvertImageTask.ImageCompressorListener imageCompressorListener) {
+        rotateAndResizeImageAsync(fileSrc, fileDest, reqWidth, reqHeight, shouldDeleteSource, true, imageCompressorListener);
+//        new ConvertImageTask(fileSrc,fileDest,reqWidth,reqHeight,shouldDeleteSource,imageCompressorListener).execute();
+    }
+
+    public static void rotateAndResizeImageAsync(File fileSrc, File fileDest, int reqWidth, int reqHeight, boolean shouldDeleteSource, boolean shouldRotate, ConvertImageTask.ImageCompressorListener imageCompressorListener) {
+        ConvertImageTask task = new ConvertImageTask(fileSrc, fileDest, reqWidth, reqHeight, shouldDeleteSource, imageCompressorListener);
+        task.setRotation(shouldRotate);
+        task.execute();
     }
 
     public static class ConvertImageTask extends AsyncTask<Void, ConvertImageTask.Response, ConvertImageTask.Response> {
@@ -204,7 +211,7 @@ public class ImageUtils {
             this.imageCompressorListener = imageCompressorListener;
         }
 
-        public ConvertImageTask(File file, File newFile, int reqWidth, int reqHeight,boolean shouldDeleteSource, ImageCompressorListener imageCompressorListener) {
+        public ConvertImageTask(File file, File newFile, int reqWidth, int reqHeight, boolean shouldDeleteSource, ImageCompressorListener imageCompressorListener) {
             this.file = file;
             this.newFile = newFile;
             this.reqWidth = reqWidth;
@@ -261,7 +268,7 @@ public class ImageUtils {
 
                     File fileToSaveImage = newFile == null ? file : newFile;
                     saveBitmap(fileToSaveImage.getPath(), pickImg);
-                    if(shouldDeleteSource && newFile!=null) file.delete();
+                    if (shouldDeleteSource && newFile != null) file.delete();
                     return new Response(pickImg, Uri.fromFile(fileToSaveImage));
                 } catch (OutOfMemoryError e) {
                     e.printStackTrace();
@@ -290,7 +297,7 @@ public class ImageUtils {
                 pickImg = Bitmap.createScaledBitmap(pickImg, width, height, true);
             }
 //            else {
-                pickImg = Bitmap.createBitmap(pickImg, 0, 0, pickImg.getWidth(), pickImg.getHeight(), matrix, true); // rotating bitmap
+            pickImg = Bitmap.createBitmap(pickImg, 0, 0, pickImg.getWidth(), pickImg.getHeight(), matrix, true); // rotating bitmap
 //            }
             return pickImg;
         }

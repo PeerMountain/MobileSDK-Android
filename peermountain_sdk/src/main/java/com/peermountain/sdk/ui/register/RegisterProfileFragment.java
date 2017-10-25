@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -43,6 +45,7 @@ import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
@@ -100,6 +103,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         callbackManager = CallbackManager.Factory.create();
         if (getArguments() != null) {
             document = getArguments().getParcelable(ARG_PARAM1);
+            resizeIdImages();
         }
     }
 
@@ -142,11 +146,11 @@ public class RegisterProfileFragment extends ToolbarFragment {
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
-            if(data!=null && data.getData()!=null) {
+            if (data != null && data.getData() != null) {
                 imageUri = data.getData();
                 saveProfile();
-            }else{
-                if(avatarFile!=null && avatarFile.exists()) {
+            } else {
+                if (avatarFile != null && avatarFile.exists()) {
                     imageUri = Uri.fromFile(avatarFile);
                     saveProfile();
                 }
@@ -157,7 +161,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(isDone)
+        if (isDone)
             if (mListener != null)
                 mListener.onProfileRegistered();
     }
@@ -165,12 +169,12 @@ public class RegisterProfileFragment extends ToolbarFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case REQUEST_CODE_WRITE_PERMISSION :
-                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        == PackageManager.PERMISSION_GRANTED){
+        switch (requestCode) {
+            case REQUEST_CODE_WRITE_PERMISSION:
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
                     requestCapture();
-                }else{
+                } else {
                     // TODO: 10/23/17 show exp dialog
                 }
                 break;
@@ -292,13 +296,15 @@ public class RegisterProfileFragment extends ToolbarFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_PERMISSION);
-        }else{
-        avatarFile = dispatchTakePictureIntent(getActivity(),RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);}
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_PERMISSION);
+        } else {
+            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
     String pictureUrl = null;
     boolean isDone = false;
+
     private void saveProfile() {
         Profile profile = new Profile();
         profile.getDocuments().add(document);
@@ -458,11 +464,72 @@ public class RegisterProfileFragment extends ToolbarFragment {
         return publicUser;
     }
 
-    public static File dispatchTakePictureIntent(Activity atv,Fragment fragment, int REQUEST_IMAGE_CAPTURE) {
+    private void resizeIdImages() {
+        int size = getResources().getDimensionPixelSize(R.dimen.pm_id_size);
+        if (document != null && document.getImageCropped() != null
+                && document.getImageCropped().getWidth() > size) {
+            resizeImage(document.getImageCropped().getImageUri(),
+                    new SizeImageEvent() {
+                        @Override
+                        public void onSized(AXTImageResult image) {
+                            document.setImageCroppedSmall(image);
+                            LogUtils.d("onSized", "image : " + image.getImageUri());
+                        }
+                    }, System.currentTimeMillis() + "");
+        }
+        if (document != null && document.getImageCroppedBack() != null
+                && document.getImageCroppedBack().getWidth() > size) {
+            resizeImage(document.getImageCroppedBack().getImageUri(),
+                    new SizeImageEvent() {
+                        @Override
+                        public void onSized(AXTImageResult image) {
+                            document.setImageCroppedBackSmall(image);
+                            LogUtils.d("onSized", "image back : " + image.getImageUri());
+                        }
+                    }, System.currentTimeMillis() + 1 + "");
+        }
+    }
+
+    private void resizeImage(String uri, final SizeImageEvent callback, String name) {
+        File originalImage = new File(Uri.parse(uri).getPath());
+        File imagePath = new File(getContext().getFilesDir(), PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
+        imagePath.mkdirs();
+        File newSmallerImage = new File(imagePath,
+                name + ".jpg");
+//                        java.io.File dir = new File(getFilesDir()
+//                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
+//                        dir.delete();
+//                        FileUtils.copyFileAsync(payloadFile, localPayloadFile,true,null);
+        // resize image and rotate
+        int size = getResources().getDimensionPixelSize(R.dimen.pm_id_size);
+        ImageUtils.rotateAndResizeImageAsync(originalImage, newSmallerImage, size,
+                size / 2, false, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
+                    @Override
+                    public void onImageCompressed(Bitmap bitmap, Uri uri) {
+                        if (callback != null) {
+                            AXTImageResult image = new AXTImageResult();
+                            image.setImageUri(uri.toString());
+                            callback.onSized(image);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        LogUtils.d("onSized", "error");
+                    }
+                }
+        );
+    }
+
+    private interface SizeImageEvent {
+        void onSized(AXTImageResult image);
+    }
+
+    public static File dispatchTakePictureIntent(Activity atv, Fragment fragment, int REQUEST_IMAGE_CAPTURE) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(atv.getPackageManager()) != null) {
             // Create the File where the photo should go
-            File imagePath = new File(atv.getFilesDir(), PeerMountainCoreConstants.PUBLIC_IMAGE_DIR);
+            File imagePath = new File(atv.getFilesDir(), PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
             imagePath.mkdirs();
             File photoFile = new File(imagePath,
                     System.currentTimeMillis() + ".jpg");
@@ -474,7 +541,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(atv,
-                        atv.getPackageName()+".provider",
+                        atv.getPackageName() + ".provider",
                         photoFile);
 
 //                Uri uri =      Uri.fromFile(photoFile);

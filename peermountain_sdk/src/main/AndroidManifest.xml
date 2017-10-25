@@ -28,10 +28,6 @@
             android:theme="@style/PmSdkTheme">
         </activity>
         <activity
-            android:name=".ui.ScanIdActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
             android:name=".ui.register.RegisterActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"
