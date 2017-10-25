@@ -37,6 +37,7 @@
         android:layout_weight="1"
         android:padding="@dimen/pm_margin_normal">
 
+        <!--TODO change with recycler view-->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -46,7 +47,6 @@
                 android:id="@+id/gridKeywords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 app:alignmentMode="alignBounds"
                 app:columnCount="4"
                 app:columnOrderPreserved="true"

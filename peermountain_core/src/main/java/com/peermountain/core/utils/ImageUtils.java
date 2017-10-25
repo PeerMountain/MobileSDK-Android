@@ -182,7 +182,7 @@ public class ImageUtils {
     }
 
     public static void rotateAndResizeImageAsync(File fileSrc, File fileDest, int reqWidth, int reqHeight,boolean shouldDeleteSource, ConvertImageTask.ImageCompressorListener imageCompressorListener){
-        new ConvertImageTask(fileSrc,fileDest,reqWidth,reqWidth,shouldDeleteSource,imageCompressorListener).execute();
+        new ConvertImageTask(fileSrc,fileDest,reqWidth,reqHeight,shouldDeleteSource,imageCompressorListener).execute();
     }
 
     public static class ConvertImageTask extends AsyncTask<Void, ConvertImageTask.Response, ConvertImageTask.Response> {

@@ -46,12 +46,15 @@ class KeywordsHelper {
             }
         }
         HashSet<Keyword> randomAllSet = new HashSet<>(random6Set);
+        ArrayList<Keyword> list = new ArrayList<>(random6Set);
         while (randomAllSet.size() < PeerMountainCoreConstants.KEYWORDS_SHOW_TO_VALIDATE_COUNT) {
             Keyword kwr = all.get(rnd.nextInt(all.size()));
-            if (!randomAllSet.contains(kwr))
+            if (!randomAllSet.contains(kwr)) {
                 randomAllSet.add(kwr);
+                list.add(kwr);
+            }
         }
-        return new Keywords(randomAllSet);
+        return new Keywords(list);
     }
 
     private static void loadAssetList(Context context, ArrayList<Keyword> list, String file) {

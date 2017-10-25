@@ -8,6 +8,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -60,7 +61,7 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                     return;
                 } else {
                     setUpView();
-                 handled = true;
+                    handled = true;
                 }
                 break;
             case REQUEST_GET_NEAR_BY_CONTACT:
@@ -75,7 +76,7 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
                 break;
         }
 
-        if(!handled && topFragment!=null){
+        if (!handled && topFragment != null) {
             topFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -127,6 +128,7 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
     NavigationView navigationView;
     LinearLayout llContentView;
     View shadowView;
+
     private void initDrawer() {
         navigationView = findViewById(R.id.navigationView);
         llContentView = findViewById(R.id.llContentView);
@@ -158,25 +160,25 @@ public class HomeActivity extends ToolbarActivity implements HomeJobFragment.OnF
     }
 
     public void scaleAndTranslateMainContent(View drawer, float slideOffset) {
-        // Scale the View based on current slide offset
-        final float diffScaledOffset = slideOffset * 0.3f;
-        final float offsetScale = 1 - diffScaledOffset;
-        llContentView.setScaleX(offsetScale);
-        llContentView.setScaleY(offsetScale);
+//        // Scale the View based on current slide offset
+//        final float diffScaledOffset = slideOffset * 0.3f;
+//        final float offsetScale = 1 - diffScaledOffset;
+//        llContentView.setScaleX(offsetScale);
+//        llContentView.setScaleY(offsetScale);
+//
+//        // Translate the View, accounting for the scaled width
+//        final float xOffset = drawer.getWidth() * slideOffset;
+//        final float xOffsetDiff = llContentView.getWidth() * diffScaledOffset / 2;
+//        final float xTranslation = xOffset - xOffsetDiff;
+//        llContentView.setTranslationX(xTranslation);
 
-        // Translate the View, accounting for the scaled width
-        final float xOffset = drawer.getWidth() * slideOffset;
-        final float xOffsetDiff = llContentView.getWidth() * diffScaledOffset / 2;
-        final float xTranslation = xOffset - xOffsetDiff;
-        llContentView.setTranslationX(xTranslation);
-
-//                        llContentView.setX(navigationView.getWidth() * slideOffset);
-//                        FrameLayout.LayoutParams lp =
-//                                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
-//                        lp.height = drawer.getHeight() -
-//                                (int) (drawer.getHeight() * slideOffset * 0.3f);
-//                        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
-//                        llContentView.setLayoutParams(lp);
+        llContentView.setX(navigationView.getWidth() * slideOffset);
+        FrameLayout.LayoutParams lp =
+                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
+        lp.height = drawer.getHeight() -
+                (int) (drawer.getHeight() * slideOffset * 0.3f);
+        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
+        llContentView.setLayoutParams(lp);
     }
 
     private MenuFragment menuFragment;

@@ -2,31 +2,25 @@ package com.peermountain.sdk.ui.register;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
 
 public class SecurityTutorialFragment extends ToolbarFragment implements View.OnTouchListener {
     ViewFlipper vf;
     private float downXValue;
     private OnFragmentInteractionListener mListener;
     View view;
-    LinearLayout layMain;
+    View layMain;
     TextView tvCurrentPageTitle, tvCurrentPageMessage1, tvCurrentPageMessage2, tvCurrentPageNext;
     View btnNext;
     AlertDialog tosDialog;

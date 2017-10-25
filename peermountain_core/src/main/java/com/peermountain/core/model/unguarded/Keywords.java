@@ -17,6 +17,10 @@ public class Keywords {
         this.keywords = new ArrayList<>(keywords);
     }
 
+    public Keywords(ArrayList<Keyword> keywords) {
+        this.keywords = keywords;
+    }
+
     public ArrayList<Keyword> getKeywords() {
         return keywords;
     }
