@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
@@ -12,6 +13,7 @@ import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +32,7 @@ class SharedPreferenceManager {
     private static final String PREF_KEYWORDS_OBJECT = "PREF_KEYWORDS_OBJECT";
     private static final String PREF_PROFILE = "PREF_PROFILE";
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
+    public static final String PREF_MY_DOCUMENTS = "PREF_MY_DOCUMENTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
     public static final String PREF_TUTO = "tuto";
 
@@ -74,6 +77,44 @@ class SharedPreferenceManager {
         }
     }
 
+    static void saveDocument(AppDocument document) {
+        DaoDocument.saveDocument(document);
+    }
+
+    static void addDocument(AppDocument document) {
+        DaoDocument.addDocument(document);
+    }
+    static ArrayList<AppDocument> getDocuments(){
+        return DaoDocument.getDocuments();
+    }
+    static void saveDocuments(ArrayList<AppDocument> documents) {
+        DaoDocument.saveDocuments(documents);
+    }
+
+    static void removeDocument(String id) {
+        DaoDocument.removeDocument(id);
+    }
+
+
+    static void saveContact(Contact contact) {
+        if (getContext() == null) return;
+        try { //todo remove all contacts from logout
+            putString(contact.getId(), MyJsonParser.writeContact(contact));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static Contact getContact(String id) {
+        if (getContext() == null) return null;
+        try {
+            return MyJsonParser.readProfile(getString(id, null));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     static void saveContacts(Set<Contact> contacts) {
         if (getContext() == null) return;
         try {
@@ -85,7 +126,7 @@ class SharedPreferenceManager {
 
     static Set<Contact> getContacts() {
         if (getContext() == null) return null;
-        try {
+        try { // TODO: 10/26/2017 get from here ids and take them one by one with getContact(id)
             return MyJsonParser.readContacts(getString(PREF_MY_CONTACTS, null));
         } catch (IOException e) {
             e.printStackTrace();
@@ -177,6 +218,7 @@ class SharedPreferenceManager {
         editor.remove(PREF_PIN);
         editor.remove(PREF_KEYWORDS_OBJECT);
         editor.remove(PREF_MY_CONTACTS);
+        editor.remove(PREF_MY_DOCUMENTS);
 //        editor.remove(PREF_CONFIG);//keep config file not related to profile
         editor.commit();
     }
@@ -227,22 +269,22 @@ class SharedPreferenceManager {
         return token;
     }
 
-    private static void putString(String key, String opt) {
+     static void putString(String key, String value) {
         if (getContext() == null) return;
         SharedPreferences.Editor mEditor = getSecureEditor(getContext());
 //        try {
-        mEditor.putString(key, opt);
+        mEditor.putString(key, value);
 //            mEditor.apply();
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
     }
 
-    private static String getString(String key, String opt) {
+     static String getString(String key, String opt) {
         return getString(getContext(), key, opt);
     }
 
-    private static String getString(Context context, String key, String opt) {
+     static String getString(Context context, String key, String opt) {
         SecurePreferences mSharedPreferences = getSecurePrefs(context);
         String res = mSharedPreferences.getString(key, opt);
         // TODO: 10/17/2017 remove after all users migrated in next versions
@@ -261,7 +303,7 @@ class SharedPreferenceManager {
         return res;
     }
 
-    private static boolean getBoolean(String key, boolean opt) {
+     static boolean getBoolean(String key, boolean opt) {
         SecurePreferences mSharedPreferences = getSecurePrefs(getContext());
         boolean res = mSharedPreferences.getBoolean(key, opt);
         // TODO: 10/17/2017 remove after all users migrated in next versions
@@ -280,7 +322,7 @@ class SharedPreferenceManager {
         return res;
     }
 
-    private static Context getContext() {
+     static Context getContext() {
         if (PeerMountainManager.applicationContext == null) {
             LogUtils.e("SharedPreferenceManager", "No Context!");
         }

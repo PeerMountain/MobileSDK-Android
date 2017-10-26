@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -342,8 +343,16 @@ public class FileUtils {
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
-
         return null;
+    }
+
+    public static boolean checkMimeType(Context context, Uri uri,String mimeTypeFilter) {
+        ContentResolver resolver = context.getContentResolver();
+
+        String[] openableMimeTypes = resolver.getStreamTypes(uri, mimeTypeFilter);
+
+        return !(openableMimeTypes == null ||
+                openableMimeTypes.length < 1) ;
     }
 
     /**
@@ -595,9 +604,42 @@ public class FileUtils {
             }
         }
     }
+    public static void copyFile(ParcelFileDescriptor pfd,File destFile) throws IOException {
+        if (!destFile.getParentFile().exists())
+            destFile.getParentFile().mkdirs();
 
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        try {
+                if(pfd!=null) {
+                    source = new FileInputStream(pfd.getFileDescriptor()).getChannel();
+                }else return;
+//            }else return;
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+        } finally {
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+            if (pfd != null) {
+                pfd.close();
+            }
+        }
+    }
     public static void copyFileAsync(File sourceFile, File destFile, boolean deleteSource, CopyFileEvents callback){
         new CopyFiles(sourceFile, destFile, callback,deleteSource).execute();
+    }
+
+    public static void copyFileAsync(ParcelFileDescriptor pfd, File destFile, CopyFileEvents callback){
+        new CopyFiles(pfd, destFile, callback).execute();
     }
 
     public interface CopyFileEvents{
@@ -606,6 +648,7 @@ public class FileUtils {
 
     private static class CopyFiles extends AsyncTask<Void,Void, Boolean>{
         File sourceFile,  destFile;
+        ParcelFileDescriptor pfd;
         CopyFileEvents callback;
         boolean deleteSource = false;
 
@@ -615,11 +658,20 @@ public class FileUtils {
             this.callback = callback;
             this.deleteSource = deleteSource;
         }
+        private CopyFiles(ParcelFileDescriptor pfd, File destFile, CopyFileEvents callback) {
+            this.pfd = pfd;
+            this.destFile = destFile;
+            this.callback = callback;
+        }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                copyFile(sourceFile,destFile);
+                if(sourceFile!=null) {
+                    copyFile(sourceFile, destFile);
+                }else if(pfd!=null){
+                    copyFile(pfd,destFile);
+                }
                 if(deleteSource) sourceFile.delete();
                 return true;
             } catch (IOException e) {

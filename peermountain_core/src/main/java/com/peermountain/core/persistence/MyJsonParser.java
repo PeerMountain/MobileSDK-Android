@@ -6,8 +6,10 @@ import android.util.JsonToken;
 import android.util.JsonWriter;
 
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
+import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
-import com.peermountain.core.model.guarded.Document;
+import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
@@ -66,6 +68,12 @@ class MyJsonParser {
     public static final String CONTACT = "contact";
     public static final String VALIDATED = "validated";
     public static final String VALIDATED_IMAGE_URI = "validated_image_uri";
+    public static final String RES = "res";
+    public static final String TITLE = "title";
+    public static final String IS_EMPTY = "isEmpty";
+    public static final String URI = "uri";
+    public static final String TYPE = "type";
+    public static final String FILE_DOCUMENTS = "fileDocuments";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -381,20 +389,121 @@ class MyJsonParser {
             writer.endArray();
         }
         if (!justContact && contact instanceof Profile) {
-            writeProfileDocuments(writer, (Profile) contact);
+            writeDocumentsID(writer, ((Profile) contact).getDocuments());
         }
         writer.endObject();
     }
 
-    private static void writeProfileDocuments(JsonWriter writer, Profile contact) throws IOException {
-        if (contact.getDocuments().size() > 0) {
+    private static void writeDocumentsID(JsonWriter writer, ArrayList<DocumentID> documents) throws IOException {
+        if (documents.size() > 0) {
             writer.name(DOCUMENTS);
             writer.beginArray();
-            for (Document document : contact.getDocuments()) {
+            for (DocumentID document : documents) {
                 writeDocument(writer, document);
             }
             writer.endArray();
         }
+    }
+
+    static String writeAppDocument(AppDocument appDocument) throws IOException {
+        if (appDocument == null) return null;
+        StringWriter sw = new StringWriter();
+        JsonWriter writer = new JsonWriter(sw);
+        writer.beginObject();
+        writer.name(ID).value(appDocument.getId());
+        writer.name(RES).value(appDocument.getRes());
+        writer.name(TITLE).value(appDocument.getTitle());
+        writer.name(IS_EMPTY).value(appDocument.isEmpty());
+        writeDocumentsID(writer,appDocument.getDocuments());
+        writeFileDocuments(writer,appDocument.getFileDocuments());
+        writer.endObject();
+        writer.close();
+        return sw.toString();
+    }
+    private static void writeFileDocuments(JsonWriter writer, ArrayList<FileDocument> documents) throws IOException {
+        if (documents.size() > 0) {
+            writer.name(FILE_DOCUMENTS);
+            writer.beginArray();
+            for (FileDocument document : documents) {
+                writeFileDocument(writer, document);
+            }
+            writer.endArray();
+        }
+    }
+
+    private static void writeFileDocument(JsonWriter writer, FileDocument file) throws IOException {
+        writer.beginObject();
+        writer.name(URI).value(file.getUri());
+        writer.name(TYPE).value(file.getType());
+        writer.endObject();
+    }
+
+    public static AppDocument readAppDocument(String json) throws IOException {
+        if (json == null) return null;
+        JsonReader reader = new JsonReader(new StringReader(json));
+        String name = null;
+        AppDocument document = new AppDocument();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            name = reader.nextName();
+            switch (name) {
+                case ID:
+                    document.setId(getString(reader));
+                    break;
+                case TITLE:
+                    document.setTitle(getString(reader));
+                    break;
+                case RES:
+                    document.setRes(getInt(reader));
+                    break;
+                case IS_EMPTY:
+                    document.setEmpty(getBoolean(reader));
+                    break;
+                case DOCUMENTS:
+                    document.setDocuments(readDocuments(reader));
+                    break;
+                case FILE_DOCUMENTS:
+                    document.setFileDocuments(readFileDocuments(reader));
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return document;
+    }
+
+    static ArrayList<FileDocument> readFileDocuments(JsonReader reader) throws IOException {
+        ArrayList<FileDocument> contacts = new ArrayList<>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            FileDocument document = readFileDocument(reader);
+            if (document != null) contacts.add(document);
+        }
+        reader.endArray();
+        return contacts;
+    }
+
+    private static FileDocument readFileDocument(JsonReader reader) throws IOException {
+        String name = null;
+        FileDocument fileDocument = null;
+        reader.beginObject();
+        while (reader.hasNext()) {
+            if (fileDocument == null) fileDocument = new FileDocument();
+            name = reader.nextName();
+            switch (name) {
+                case URI:
+                    fileDocument.setUri(getString(reader));
+                    break;
+                case TYPE:
+                    fileDocument.setType(getString(reader));
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return fileDocument;
     }
 
     static String writeContacts(Set<Contact> contacts) throws IOException {
@@ -406,6 +515,14 @@ class MyJsonParser {
             writeContact(writer, contact, false);
         }
         writer.endArray();
+        writer.close();
+        return sw.toString();
+    }
+    static String writeContact(Contact contact) throws IOException {
+        if (contact == null) return null;
+        StringWriter sw = new StringWriter();
+        JsonWriter writer = new JsonWriter(sw);
+            writeContact(writer, contact, false);
         writer.close();
         return sw.toString();
     }
@@ -425,23 +542,23 @@ class MyJsonParser {
     }
 
 
-    private static ArrayList<Document> readDocuments(JsonReader reader) throws IOException {
-        ArrayList<Document> documents = new ArrayList<Document>();
+    private static ArrayList<DocumentID> readDocuments(JsonReader reader) throws IOException {
+        ArrayList<DocumentID> documents = new ArrayList<DocumentID>();
         reader.beginArray();
         while (reader.hasNext()) {
-            Document document = readDocument(reader);
+            DocumentID document = readDocument(reader);
             if (document != null) documents.add(document);
         }
         reader.endArray();
         return documents;
     }
 
-    private static Document readDocument(JsonReader reader) throws IOException {
-        Document document = null;
+    private static DocumentID readDocument(JsonReader reader) throws IOException {
+        DocumentID document = null;
         String name;
         reader.beginObject();
         while (reader.hasNext()) {
-            if (document == null) document = new Document();
+            if (document == null) document = new DocumentID();
             name = reader.nextName();
             switch (name) {
                 case GANDER:
@@ -503,7 +620,7 @@ class MyJsonParser {
         return document;
     }
 
-    private static void writeDocument(JsonWriter writer, Document document) throws IOException {
+    private static void writeDocument(JsonWriter writer, DocumentID document) throws IOException {
         if (document == null) {
             writer.nullValue();
             return;

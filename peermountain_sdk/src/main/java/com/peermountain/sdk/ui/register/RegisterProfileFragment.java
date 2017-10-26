@@ -40,14 +40,15 @@ import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
 import com.linkedin.platform.utils.Scope;
-import com.peermountain.core.model.guarded.Document;
+import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PeerMountainCoreConstants;
+import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
@@ -70,7 +71,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     public static final int REQUEST_CODE_WRITE_PERMISSION = 123;
 
     private OnFragmentInteractionListener mListener;
-    private Document document;
+    private DocumentID document;
     private CallbackManager callbackManager;
     private LoginManager manager;
 
@@ -78,7 +79,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         // Required empty public constructor
     }
 
-    public static RegisterProfileFragment newInstance(Document document) {
+    public static RegisterProfileFragment newInstance(DocumentID document) {
         RegisterProfileFragment fragment = new RegisterProfileFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM1, document);
@@ -359,7 +360,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     private void getLiUser() {
         APIHelper apiHelper = APIHelper.getInstance(getApplicationContext());
-        apiHelper.getRequest(getContext(), PeerMountainCoreConstants.GET_LI_PROFILE, new ApiListener() {
+        apiHelper.getRequest(getContext(), PmCoreConstants.GET_LI_PROFILE, new ApiListener() {
             @Override
             public void onApiSuccess(ApiResponse s) {
                 LogUtils.d("getLiUser", s.toString());
@@ -492,10 +493,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     private void resizeImage(String uri, final SizeImageEvent callback, String name) {
         File originalImage = new File(Uri.parse(uri).getPath());
-        File imagePath = new File(getContext().getFilesDir(), PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
-        imagePath.mkdirs();
-        File newSmallerImage = new File(imagePath,
-                name + ".jpg");
+        File newSmallerImage = PmCoreUtils.createLocalFile(getContext(),PmCoreConstants.FILE_TYPE_IMAGES);
 //                        java.io.File dir = new File(getFilesDir()
 //                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
 //                        dir.delete();
@@ -529,10 +527,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(atv.getPackageManager()) != null) {
             // Create the File where the photo should go
-            File imagePath = new File(atv.getFilesDir(), PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
-            imagePath.mkdirs();
-            File photoFile = new File(imagePath,
-                    System.currentTimeMillis() + ".jpg");
+            File photoFile = PmCoreUtils.createLocalFile(atv,PmCoreConstants.FILE_TYPE_IMAGES);
 //            File photoFile = new File(
 //                    Environment.getExternalStoragePublicDirectory(
 //                    Environment.DIRECTORY_PICTURES),//+"/PM",

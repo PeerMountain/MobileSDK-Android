@@ -9,7 +9,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
  * Created by Galeen on 10/11/2017.
  */
 
-public class Document implements Parcelable {
+public class DocumentID implements Parcelable {
     private String lastName, firstName, gender, birthday, docNumber, country, emitDate,
             mrzID, expirationDate;
     private AXTImageResult imageSource,imageSourceBack,imageCropped, imageCroppedBack,imageFace,imageCroppedSmall, imageCroppedBackSmall;
@@ -178,10 +178,10 @@ public class Document implements Parcelable {
         dest.writeByte(this.valid ? (byte) 1 : (byte) 0);
     }
 
-    public Document() {
+    public DocumentID() {
     }
 
-    protected Document(Parcel in) {
+    protected DocumentID(Parcel in) {
         this.lastName = in.readString();
         this.firstName = in.readString();
         this.gender = in.readString();
@@ -201,15 +201,15 @@ public class Document implements Parcelable {
         this.valid = in.readByte() != 0;
     }
 
-    public static final Creator<Document> CREATOR = new Creator<Document>() {
+    public static final Creator<DocumentID> CREATOR = new Creator<DocumentID>() {
         @Override
-        public Document createFromParcel(Parcel source) {
-            return new Document(source);
+        public DocumentID createFromParcel(Parcel source) {
+            return new DocumentID(source);
         }
 
         @Override
-        public Document[] newArray(int size) {
-            return new Document[size];
+        public DocumentID[] newArray(int size) {
+            return new DocumentID[size];
         }
     };
 }

@@ -23,9 +23,9 @@ import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PeerMountainCoreConstants;
+import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.PmCoreUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
@@ -257,9 +257,8 @@ public class ShareContactActivity extends ConnectionsActivity {
 //                        java.io.File localPayloadFile = new File(payloadFile.getParentFile(),
 //                                payloadFile.getName()+".jpg");
 
-                        java.io.File localPayloadFile = new File(getFilesDir()
-                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR,
-                                payloadFile.getName() + ".jpg");
+                        java.io.File localPayloadFile = PmCoreUtils.createLocalFile(this,payloadFile.getName(),PmCoreConstants.FILE_TYPE_IMAGES);
+
                         LogUtils.d("local payload file", localPayloadFile.toString());
 //                        java.io.File dir = new File(getFilesDir()
 //                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR);

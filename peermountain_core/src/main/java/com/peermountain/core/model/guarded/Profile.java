@@ -7,12 +7,12 @@ import java.util.ArrayList;
  */
 
 public class Profile extends Contact{
-    private ArrayList<Document> documents = new ArrayList<>();
-    public ArrayList<Document> getDocuments() {
+    private ArrayList<DocumentID> documents = new ArrayList<>();
+    public ArrayList<DocumentID> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(ArrayList<Document> documents) {
+    public void setDocuments(ArrayList<DocumentID> documents) {
         this.documents = documents;
     }
 }

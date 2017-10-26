@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.peermountain.core.model.unguarded.Keyword;
 import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PeerMountainCoreConstants;
+import com.peermountain.core.utils.PmCoreConstants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +26,7 @@ class KeywordsHelper {
         loadAssetList(context, all, "kycwords.txt");
         HashSet<Keyword> random = new HashSet<>();
         Random rnd = new Random();
-        while (random.size() < PeerMountainCoreConstants.KEYWORDS_SHOW_COUNT) {
+        while (random.size() < PmCoreConstants.KEYWORDS_SHOW_COUNT) {
             random.add(all.get(rnd.nextInt(all.size())));
         }
         return new Keywords(random);
@@ -39,7 +39,7 @@ class KeywordsHelper {
         Random rnd = new Random();
         HashSet<Keyword> random6Set = new HashSet<>();
         if (savedKeywordsObject != null && savedKeywordsObject.getKeywords() != null) {
-            while (random6Set.size() < PeerMountainCoreConstants.MIN_KEYWORDS_SAVE) {
+            while (random6Set.size() < PmCoreConstants.MIN_KEYWORDS_SAVE) {
                 Keyword keyword = savedKeywordsObject.getKeywords().get(rnd.nextInt(savedKeywordsObject.getKeywords().size()));
                 keyword.setSelected(true);
                 random6Set.add(keyword);
@@ -47,7 +47,7 @@ class KeywordsHelper {
         }
         HashSet<Keyword> randomAllSet = new HashSet<>(random6Set);
         ArrayList<Keyword> list = new ArrayList<>(random6Set);
-        while (randomAllSet.size() < PeerMountainCoreConstants.KEYWORDS_SHOW_TO_VALIDATE_COUNT) {
+        while (randomAllSet.size() < PmCoreConstants.KEYWORDS_SHOW_TO_VALIDATE_COUNT) {
             Keyword kwr = all.get(rnd.nextInt(all.size()));
             if (!randomAllSet.contains(kwr)) {
                 randomAllSet.add(kwr);

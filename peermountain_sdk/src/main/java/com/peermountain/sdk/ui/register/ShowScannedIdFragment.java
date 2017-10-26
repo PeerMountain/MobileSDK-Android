@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.peermountain.core.model.guarded.Document;
+import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
@@ -162,13 +162,13 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         }
     };
 
-    Document document;
+    DocumentID document;
     private void getScannedData(Intent scannedData) {
         document = DocumentUtils.getScannedData(scannedData);
         setDataInView(document);
     }
 
-    private void setDataInView(Document document) {
+    private void setDataInView(DocumentID document) {
         if(document==null) return;
         StringBuilder sb = new StringBuilder();
 
@@ -180,7 +180,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
 //        mTvPmError.setVisibility(View.GONE);
     }
 
-    private void showExtraInfo(Document document, StringBuilder sb) {
+    private void showExtraInfo(DocumentID document, StringBuilder sb) {
         DocumentUtils.setImage(mIvPmFaceImage, document.getImageFace(), "\nno face image", sb);
         DocumentUtils.setText(mTvPmNumber, "# ", document.getDocNumber(), "\nno number", sb);
         DocumentUtils.setText(mTvPmFirstName, "First name : ", document.getFirstName(), "\nno first name", sb);
@@ -198,6 +198,6 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onScannedIdDataAccepted(Document scannedDocument);
+        void onScannedIdDataAccepted(DocumentID scannedDocument);
     }
 }

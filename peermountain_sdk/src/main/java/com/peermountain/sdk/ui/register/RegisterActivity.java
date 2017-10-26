@@ -12,7 +12,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterface;
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
-import com.peermountain.core.model.guarded.Document;
+import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
@@ -26,7 +26,7 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
     ScanIdFragment scanIdFragment;
-    Document scannedDocument = null;
+    DocumentID scannedDocument = null;
 
 
     @Override
@@ -117,7 +117,7 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
         fb.replace(ShowScannedIdFragment.newInstance(scannedData));
     }
 
-    private void showRegisterProfileFragment(Document document) {
+    private void showRegisterProfileFragment(DocumentID document) {
         fb.addToBackStack(false);
         fb.replace(RegisterProfileFragment.newInstance(document));
     }
@@ -180,7 +180,7 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
     }
 
     @Override
-    public void onScannedIdDataAccepted(Document scannedDocument) {
+    public void onScannedIdDataAccepted(DocumentID scannedDocument) {
         showRegisterProfileFragment(scannedDocument);
     }
 

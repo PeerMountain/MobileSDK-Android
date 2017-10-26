@@ -16,6 +16,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDataExtractionRequireme
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
+import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
@@ -26,6 +27,7 @@ import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 
@@ -156,12 +158,13 @@ public class PeerMountainManager {
             return null;
         }
     }
+
     public static void saveTutoSeen() {
         SharedPreferenceManager.saveTutoSeen();
     }
 
     public static boolean isTutoSeen() {
-       return SharedPreferenceManager.isTutoSeen();
+        return SharedPreferenceManager.isTutoSeen();
     }
 
     public static void addContact(Contact contact) {
@@ -187,6 +190,35 @@ public class PeerMountainManager {
         if (Cache.getInstance().getContacts() == null)
             Cache.getInstance().setContacts((HashSet<Contact>) SharedPreferenceManager.getContacts());
         return Cache.getInstance().getContacts();
+    }
+
+
+    public static void addDocument(AppDocument document) {
+        getDocuments().add(document);
+        SharedPreferenceManager.addDocument(document);
+    }
+
+    public static void updateDocument(AppDocument document) {
+        getDocuments().remove(document);
+        getDocuments().add(document);
+
+        SharedPreferenceManager.saveDocument(document);
+    }
+
+    public static void removeDocument(AppDocument document) {
+        getDocuments().remove(document);
+        SharedPreferenceManager.removeDocument(document.getId());
+    }
+
+    public static ArrayList<AppDocument> getDocuments() {
+        if (Cache.getInstance().getDocuments() == null)
+            Cache.getInstance().setDocuments( SharedPreferenceManager.getDocuments());
+        return Cache.getInstance().getDocuments();
+    }
+
+    public static void saveDocuments(ArrayList<AppDocument> documents) {
+        Cache.getInstance().setDocuments(documents);
+        SharedPreferenceManager.saveDocuments(documents);
     }
 
     public static void savePin(String pin) {

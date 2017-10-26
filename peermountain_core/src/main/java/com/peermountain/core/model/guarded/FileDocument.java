@@ -8,7 +8,7 @@ import java.io.File;
 
 public class FileDocument {
     public static final String TYPE_IMAGE = "image/*";
-    public static final String TYPE_PDF = "image/*";
+    public static final String TYPE_PDF = "application/pdf";
     private String uri;
     public File file;
     private String type;// = TYPE_IMAGE;

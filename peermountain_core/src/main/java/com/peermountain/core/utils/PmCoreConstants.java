@@ -6,7 +6,7 @@ package com.peermountain.core.utils;
  * Constants related to peermountain_core
  */
 
-public class PeerMountainCoreConstants {
+public class PmCoreConstants {
     private static final String hostLI = "api.linkedin.com";
     //linked in
     public static final String GET_LI_PROFILE = "https://" + hostLI + "/v1/people/~:(id,first-name,last-name," +
@@ -25,7 +25,10 @@ public class PeerMountainCoreConstants {
     public static final String DEEP_LINK_USER_ID = "user_id";
 
     public static final String LOCAL_IMAGE_DIR = "/images";
+    public static final String LOCAL_DOCUMENTS_DIR = "/documents";
     public static final String PUBLIC_IMAGE_DIR = "/images";
+    public static final int FILE_TYPE_IMAGES = 0;
+    public static final int FILE_TYPE_DOCUMENTS = 1;
 
     public static final int KEYWORDS_SHOW_COUNT = 20;
     public static final int KEYWORDS_SHOW_TO_VALIDATE_COUNT = 28;

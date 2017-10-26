@@ -15,7 +15,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentIdentity;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentValidityResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
-import com.peermountain.core.model.guarded.Document;
+import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.utils.LogUtils;
 
 /**
@@ -24,12 +24,12 @@ import com.peermountain.core.utils.LogUtils;
 
 public final class DocumentUtils {
 
-    public static Document getScannedData(Intent scannedData) {
+    public static DocumentID getScannedData(Intent scannedData) {
         if(PeerMountainSdkConstants.isFake) return getFakeScannedData();
         if(scannedData==null) return null;
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);
-            Document document = new Document();
+            DocumentID document = new DocumentID();
             document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
             document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
             document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
@@ -61,8 +61,8 @@ public final class DocumentUtils {
         }
     }
 
-    private static Document getFakeScannedData() {
-            Document document = new Document();
+    private static DocumentID getFakeScannedData() {
+            DocumentID document = new DocumentID();
 //            document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
 //            document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
 //            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
