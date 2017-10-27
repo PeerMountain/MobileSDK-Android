@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
              tools:background="@drawable/pm_bkg"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:context="com.peermountain.sdk.ui.authorized.documents.DocumentsFragment">
+             tools:activity="com.peermountain.sdk.ui.authorized.documents.DocumentsFragment">
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/pm_documents_card_stack_view"

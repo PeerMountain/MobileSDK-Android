@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.peermountain.sdk.ui.authorized.home.HomeJobFragment">
+    tools:activity="com.peermountain.sdk.ui.authorized.home.HomeJobFragment">
 
     <ImageView
     android:id="@+id/ivHomeJob"

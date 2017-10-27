@@ -9,16 +9,17 @@ import java.io.File;
 public class FileDocument {
     public static final String TYPE_IMAGE = "image/*";
     public static final String TYPE_PDF = "application/pdf";
-    private String uri;
+    private String imageUri;
+    private String fileUri;
     public File file;
     private String type;// = TYPE_IMAGE;
 
-    public String getUri() {
-        return uri;
+    public String getImageUri() {
+        return imageUri;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     public String getType() {
@@ -27,5 +28,13 @@ public class FileDocument {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getFileUri() {
+        return fileUri;
+    }
+
+    public void setFileUri(String fileUri) {
+        this.fileUri = fileUri;
     }
 }

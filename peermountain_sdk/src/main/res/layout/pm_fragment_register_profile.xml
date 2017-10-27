@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:background="@color/pm_theme_light_bkg"
-             tools:context="com.peermountain.sdk.ui.register.RegisterProfileFragment">
+             tools:activity="com.peermountain.sdk.ui.register.RegisterProfileFragment">
 
     <View
         android:layout_width="match_parent"

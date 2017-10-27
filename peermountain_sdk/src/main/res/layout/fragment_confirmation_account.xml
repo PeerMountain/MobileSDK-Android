@@ -5,7 +5,7 @@
               android:orientation="vertical"
               android:gravity="center"
              tools:background="@drawable/pm_bkg"
-             tools:context="com.peermountain.sdk.ui.register.ConfirmationAccountFragment">
+             tools:activity="com.peermountain.sdk.ui.register.ConfirmationAccountFragment">
 
     <ImageView
         android:id="@+id/ivCheck"

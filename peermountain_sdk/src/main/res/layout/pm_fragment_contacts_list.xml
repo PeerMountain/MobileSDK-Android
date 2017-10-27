@@ -10,5 +10,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.peermountain.sdk.ui.authorized.contacts.ContactsFragment"
+    tools:activity="com.peermountain.sdk.ui.authorized.contacts.ContactsFragment"
     tools:listitem="@layout/pm_fragment_contact_item"/>

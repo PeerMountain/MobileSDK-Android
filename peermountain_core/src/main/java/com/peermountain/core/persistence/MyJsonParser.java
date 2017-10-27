@@ -74,6 +74,7 @@ class MyJsonParser {
     public static final String URI = "uri";
     public static final String TYPE = "type";
     public static final String FILE_DOCUMENTS = "fileDocuments";
+    public static final String FILE_URI = "file_uri";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -433,7 +434,12 @@ class MyJsonParser {
 
     private static void writeFileDocument(JsonWriter writer, FileDocument file) throws IOException {
         writer.beginObject();
-        writer.name(URI).value(file.getUri());
+        if(!TextUtils.isEmpty(file.getImageUri())) {
+            writer.name(URI).value(file.getImageUri());
+        }
+        if(!TextUtils.isEmpty(file.getFileUri())) {
+            writer.name(FILE_URI).value(file.getFileUri());
+        }
         writer.name(TYPE).value(file.getType());
         writer.endObject();
     }
@@ -493,7 +499,10 @@ class MyJsonParser {
             name = reader.nextName();
             switch (name) {
                 case URI:
-                    fileDocument.setUri(getString(reader));
+                    fileDocument.setImageUri(getString(reader));
+                    break;
+                case FILE_URI:
+                    fileDocument.setFileUri(getString(reader));
                     break;
                 case TYPE:
                     fileDocument.setType(getString(reader));

@@ -120,8 +120,8 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
                 FileDocument file;
                 if(appDocument.getFileDocuments().size() > 0
                         && (file = appDocument.getFileDocuments().get(0)) != null
-                        && !TextUtils.isEmpty(file.getUri())){
-                    loadImage(file.getUri(),ivFullImage);
+                        && !TextUtils.isEmpty(file.getImageUri())){
+                    loadImage(file.getImageUri(),ivFullImage);
                 }else {
                     if (appDocument.getRes() != 0) {
                         ivFullImage.setVisibility(View.VISIBLE);

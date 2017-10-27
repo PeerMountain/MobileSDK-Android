@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               tools:background="@drawable/pm_bkg"
-              tools:context="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
+              tools:activity="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
 
     <com.peermountain.sdk.views.PeerMountainTextView
         android:id="@+id/tvTitle"

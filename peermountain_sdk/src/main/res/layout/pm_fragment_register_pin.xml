@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               tools:background="@drawable/pm_bkg"
-              tools:context="com.peermountain.sdk.ui.register.RegisterPinFragment"
+              tools:activity="com.peermountain.sdk.ui.register.RegisterPinFragment"
               tools:paddingTop="@dimen/pm_margin_big"
     >
 

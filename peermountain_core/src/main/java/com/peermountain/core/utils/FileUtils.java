@@ -355,6 +355,12 @@ public class FileUtils {
                 openableMimeTypes.length < 1) ;
     }
 
+    public static String[] getMimeTypes(Context context, Uri uri) {
+        ContentResolver resolver = context.getContentResolver();
+
+        return resolver.getStreamTypes(uri, "*/*");
+    }
+
     /**
      * Convert Uri into File, if possible.
      *

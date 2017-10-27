@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               tools:background="@drawable/pm_bkg"
-              tools:context="com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment">
+              tools:activity="com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment">
 
     <FrameLayout
         android:layout_width="wrap_content"

@@ -96,7 +96,7 @@ public class ImageUtils {
         return rotate;
     }
 
-    public static void saveBitmap(String filename, Bitmap bitmap) {
+    public static boolean saveBitmap(String filename, Bitmap bitmap) {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(filename);
@@ -104,6 +104,7 @@ public class ImageUtils {
             // PNG is a lossless format, the compression factor (100) is ignored
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
             try {
                 if (out != null) {
@@ -111,8 +112,10 @@ public class ImageUtils {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
         }
+        return true;
     }
 
 
@@ -179,6 +182,37 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return filePath;
+    }
+
+    public static void saveImageAsync(File file, Bitmap bitmap, SaveImageEvents callback){
+        new SaveBitmapToFile(file, bitmap, callback).execute();
+    }
+
+    private static class SaveBitmapToFile extends AsyncTask<Void,Void,Boolean>{
+        private File file;
+        private Bitmap bitmap;
+        private SaveImageEvents callback;
+
+        public SaveBitmapToFile(File file, Bitmap bitmap, SaveImageEvents callback) {
+            this.file = file;
+            this.bitmap = bitmap;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return saveBitmap(file.getPath(),bitmap);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if(callback!=null) callback.onFinish(aBoolean);
+        }
+    }
+
+    public interface SaveImageEvents{
+        void onFinish(boolean isSuccess);
     }
 
     public static void rotateAndResizeImageAsync(File fileSrc, File fileDest, int reqWidth, int reqHeight, boolean shouldDeleteSource, ConvertImageTask.ImageCompressorListener imageCompressorListener) {

@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              tools:background="@drawable/pm_bkg"
-             tools:context="com.peermountain.sdk.ui.register.ScanIdFragment">
+             tools:activity="com.peermountain.sdk.ui.register.ScanIdFragment">
 
     <!--   <FrameLayout
            android:layout_width="match_parent"

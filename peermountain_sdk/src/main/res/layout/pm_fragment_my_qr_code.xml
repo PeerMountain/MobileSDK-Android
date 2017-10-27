@@ -6,7 +6,7 @@
              android:layout_marginRight="@dimen/pm_margin_normal"
              android:layout_marginBottom="@dimen/pm_margin_normal"
              android:background="@android:color/white"
-             tools:context="com.peermountain.sdk.ui.authorized.contacts.MyQrCodeFragment">
+             tools:activity="com.peermountain.sdk.ui.authorized.contacts.MyQrCodeFragment">
 
     <ImageView
         android:id="@+id/ivQrCode"

@@ -16,7 +16,7 @@ import java.io.File;
 public class PmCoreUtils {
     /**
      * @param context Context
-     * @param type    PmCoreConstants.FILE_TYPE_DOCUMENTS is for document , other is for images
+     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document , other is for images
      * @return new empty file
      */
     public static File createLocalFile(Context context, int type) {
@@ -25,14 +25,14 @@ public class PmCoreUtils {
 
     /**
      * @param context Context
-     * @param type    PmCoreConstants.FILE_TYPE_DOCUMENTS is for document , other is for images
+     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document , other is for images
      * @param name    File name without extension
      * @return new empty file
      */
     public static File createLocalFile(Context context, String name, int type) {
         String dir, ext;
         switch (type) {
-            case PmCoreConstants.FILE_TYPE_DOCUMENTS:
+            case PmCoreConstants.FILE_TYPE_PDF:
                 dir = PmCoreConstants.LOCAL_DOCUMENTS_DIR;
                 ext = ".pdf";
                 break;

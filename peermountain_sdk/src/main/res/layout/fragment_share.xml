@@ -6,7 +6,7 @@
               android:orientation="vertical"
               android:padding="@dimen/pm_margin_normal"
               tools:background="@drawable/pm_bkg"
-              tools:context="com.peermountain.sdk.ui.authorized.contacts.ShareFragment">
+              tools:activity="com.peermountain.sdk.ui.authorized.contacts.ShareFragment">
 
     <com.peermountain.sdk.views.PeerMountainTextView
         android:layout_width="wrap_content"

@@ -5,7 +5,7 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:orientation="vertical"
              tools:background="@color/pm_theme_light_bkg"
-             tools:context="com.peermountain.sdk.ui.register.ShowScannedIdFragment">
+             tools:activity="com.peermountain.sdk.ui.register.ShowScannedIdFragment">
 
     <View
         android:layout_width="match_parent"

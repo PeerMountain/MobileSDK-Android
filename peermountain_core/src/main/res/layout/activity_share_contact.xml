@@ -15,7 +15,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/pm_margin_normal"
-        tools:context="com.peermountain.core.share.ShareContactActivity">
+        tools:activity="com.peermountain.core.share.ShareContactActivity">
 
 
         <ProgressBar

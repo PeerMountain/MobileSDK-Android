@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/llMain"
     android:background="@drawable/pm_bkg"
-    tools:context="com.peermountain.sdk.ui.LoginActivity">
+    tools:activity="com.peermountain.sdk.ui.LoginActivity">
 
     <include layout="@layout/pm_toolbar"/>
 
