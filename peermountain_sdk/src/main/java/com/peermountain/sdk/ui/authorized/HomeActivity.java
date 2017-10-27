@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -80,6 +81,15 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
             topFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (topFragment != null) {
+            topFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 
     @Override
     public void onBackPressed() {

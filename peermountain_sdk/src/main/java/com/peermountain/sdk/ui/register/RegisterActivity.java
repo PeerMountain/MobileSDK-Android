@@ -1,27 +1,24 @@
 package com.peermountain.sdk.ui.register;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 
-import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterface;
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.authorized.documents.DocumentsHelper;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
 public class RegisterActivity extends SecureActivity implements RegisterPinFragment.OnFragmentInteractionListener,
         RegisterKeywordsFragment.OnFragmentInteractionListener, ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
-ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragment.OnFragmentInteractionListener{
+        ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragment.OnFragmentInteractionListener {
     @IdRes
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fb;
@@ -32,11 +29,11 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pm_activity_register,R.id.llMainView);
+        setContentView(R.layout.pm_activity_register, R.id.llMainView);
         fb = PmFragmentUtils.init(this, containerId);
-        if(savedInstanceState!=null && scannedDocument!=null){
+        if (savedInstanceState != null && scannedDocument != null) {
             showRegisterProfileFragment(scannedDocument);
-        }else {
+        } else {
             if (PeerMountainManager.isTutoSeen()) {
                 showPinFragment();
             } else {
@@ -53,9 +50,9 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(topFragment!=null && topFragment instanceof RegisterProfileFragment){
+        if (topFragment != null && topFragment instanceof RegisterProfileFragment) {
             topFragment.onActivityResult(requestCode, resultCode, data);
-        }else{
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -63,27 +60,26 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==1) {
-            final boolean permissionsAllowed =
-                    AXTCaptureInterface.INSTANCE.verifyPermissions(requestCode, permissions, grantResults) && ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.READ_PHONE_STATE)== PackageManager.PERMISSION_GRANTED;
-            if (permissionsAllowed) {
-                initScanIdSDK();
-            } else {
-                DialogUtils.showChoiceDialog(this, -1, R.string.pm_err_msg_permission_scan_id,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                initScanIdSDK();
-                            }
-                        }, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }
-                        }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
-            }
+        Boolean permissionsForScan = DocumentsHelper.checkPermissionsForScanId(this, requestCode, permissions, grantResults);
+        if (permissionsForScan == null) {//it wasn't meant for it
+
+        } else if (permissionsForScan) {
+            initScanIdSDK();
+        } else {
+            DialogUtils.showChoiceDialog(this, -1, R.string.pm_err_msg_permission_scan_id,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            initScanIdSDK();
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
         }
+
     }
 
     private boolean handleOnBack() {
@@ -99,6 +95,7 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
         fb.addToBackStack(false);
         fb.replace(new IntroFragment());
     }
+
     private void showKeywordsFragment() {
 //        showRegisterProfileFragment(null);
         fb.addToBackStack(true);
@@ -121,14 +118,17 @@ ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragm
         fb.addToBackStack(false);
         fb.replace(RegisterProfileFragment.newInstance(document));
     }
+
     private void showConfirmationFragment() {
         fb.addToBackStack(true);
         fb.replace(new ConfirmationAccountFragment());
     }
+
     private void showSecurityTutorialFragment() {
         fb.addToBackStack(true);
         fb.replace(new SecurityTutorialFragment());
     }
+
     @Override
     public void goToRegisterKeyWords() {
         showKeywordsFragment();

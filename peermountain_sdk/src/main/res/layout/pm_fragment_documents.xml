@@ -23,5 +23,17 @@
         app:elevationEnabled="true"
         app:swipeEnabled="true"
         app:swipeDirection="freedom"/>
-
+    <com.peermountain.sdk.views.PeerMountainTextView
+        android:id="@+id/pmTvLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:padding="@dimen/pm_margin_normal"
+        android:text="@string/pm_lbl_loading_sdk"
+        android:textColor="@color/pm_text_accent"
+        android:textSize="@dimen/pm_regular_text"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </FrameLayout>

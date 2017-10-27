@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.utils.LogUtils;
@@ -24,7 +27,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
     private static final String ARG_PARAM2 = "param2";
 
     private OnFragmentInteractionListener mListener;
-    DocumentsFragmentHelper documentsHelper;
+    DocumentsHelper documentsHelper;
 
     public DocumentsFragment() {
         // Required empty public constructor
@@ -55,7 +58,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        documentsHelper = new DocumentsFragmentHelper(new DocumentsFragmentHelper.Events() {
+        documentsHelper = new DocumentsHelper(new DocumentsHelper.Events() {
             @Override
             public void refreshAdapter() {
                 if(documentsAdapter!=null){
@@ -68,6 +71,18 @@ public class DocumentsFragment extends HomeToolbarFragment {
             public Activity getActivity() {
                 return DocumentsFragment.this.getActivity();
             }
+
+            @Override
+            public Fragment getFragment() {
+                return DocumentsFragment.this;
+            }
+
+            @Override
+            public void onScanSDKLoading(boolean loading) {
+                if(pmTvLoading!=null)
+                pmTvLoading.setVisibility(!loading ?View.GONE:View.VISIBLE);
+            }
+
         });
     }
 
@@ -98,13 +113,20 @@ public class DocumentsFragment extends HomeToolbarFragment {
         documentsHelper.onActivityResult(requestCode, resultCode, data);
     }
 
-    CardStackView documentCardsView;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        documentsHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
+    CardStackView documentCardsView;
+TextView pmTvLoading;
     /**
      * type ff to fast get new views
      */
     private void getViews(View view) {
         documentCardsView = view.findViewById(R.id.pm_documents_card_stack_view);
+        pmTvLoading = view.findViewById(R.id.pmTvLoading);
     }
 
     private void setUpView() {
@@ -138,6 +160,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
         documentsAdapter = new DocumentsAdapter(getContext(), new DocumentsAdapter.DocumentEvents() {
             @Override
             public void onUpdateDocumentClick(AppDocument document) {
+                if(pmTvLoading.getVisibility()==View.VISIBLE) return;//it is loading already
                 LogUtils.d("onUpdateDocumentClick", document.getTitle());
                 documentsHelper.updateDocument(document);
             }

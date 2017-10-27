@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -45,11 +43,11 @@ import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.authorized.documents.DocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.DocumentUtils;
@@ -104,7 +102,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         callbackManager = CallbackManager.Factory.create();
         if (getArguments() != null) {
             document = getArguments().getParcelable(ARG_PARAM1);
-            resizeIdImages();
+            DocumentsHelper.resizeIdImages(getActivity(), document, null,null);
         }
     }
 
@@ -465,69 +463,12 @@ public class RegisterProfileFragment extends ToolbarFragment {
         return publicUser;
     }
 
-    private void resizeIdImages() {
-        int size = getResources().getDimensionPixelSize(R.dimen.pm_id_size);
-        if (document != null && document.getImageCropped() != null
-                && document.getImageCropped().getWidth() > size) {
-            resizeImage(document.getImageCropped().getImageUri(),
-                    new SizeImageEvent() {
-                        @Override
-                        public void onSized(AXTImageResult image) {
-                            document.setImageCroppedSmall(image);
-                            LogUtils.d("onSized", "image : " + image.getImageUri());
-                        }
-                    }, System.currentTimeMillis() + "");
-        }
-        if (document != null && document.getImageCroppedBack() != null
-                && document.getImageCroppedBack().getWidth() > size) {
-            resizeImage(document.getImageCroppedBack().getImageUri(),
-                    new SizeImageEvent() {
-                        @Override
-                        public void onSized(AXTImageResult image) {
-                            document.setImageCroppedBackSmall(image);
-                            LogUtils.d("onSized", "image back : " + image.getImageUri());
-                        }
-                    }, System.currentTimeMillis() + 1 + "");
-        }
-    }
-
-    private void resizeImage(String uri, final SizeImageEvent callback, String name) {
-        File originalImage = new File(Uri.parse(uri).getPath());
-        File newSmallerImage = PmCoreUtils.createLocalFile(getContext(),PmCoreConstants.FILE_TYPE_IMAGES);
-//                        java.io.File dir = new File(getFilesDir()
-//                                + PeerMountainCoreConstants.LOCAL_IMAGE_DIR);
-//                        dir.delete();
-//                        FileUtils.copyFileAsync(payloadFile, localPayloadFile,true,null);
-        // resize image and rotate
-        int size = getResources().getDimensionPixelSize(R.dimen.pm_id_size);
-        ImageUtils.rotateAndResizeImageAsync(originalImage, newSmallerImage, size,
-                size / 2, false, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
-                    @Override
-                    public void onImageCompressed(Bitmap bitmap, Uri uri) {
-                        if (callback != null) {
-                            AXTImageResult image = new AXTImageResult();
-                            image.setImageUri(uri.toString());
-                            callback.onSized(image);
-                        }
-                    }
-
-                    @Override
-                    public void onError() {
-                        LogUtils.d("onSized", "error");
-                    }
-                }
-        );
-    }
-
-    private interface SizeImageEvent {
-        void onSized(AXTImageResult image);
-    }
 
     public static File dispatchTakePictureIntent(Activity atv, Fragment fragment, int REQUEST_IMAGE_CAPTURE) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(atv.getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = PmCoreUtils.createLocalFile(atv,PmCoreConstants.FILE_TYPE_IMAGES);
+            File photoFile = PmCoreUtils.createLocalFile(atv, PmCoreConstants.FILE_TYPE_IMAGES);
 //            File photoFile = new File(
 //                    Environment.getExternalStoragePublicDirectory(
 //                    Environment.DIRECTORY_PICTURES),//+"/PM",
