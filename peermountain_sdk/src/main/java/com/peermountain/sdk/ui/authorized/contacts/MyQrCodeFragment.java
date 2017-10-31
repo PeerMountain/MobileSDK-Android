@@ -2,12 +2,10 @@ package com.peermountain.sdk.ui.authorized.contacts;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
@@ -124,35 +118,36 @@ public class MyQrCodeFragment extends HomeToolbarFragment {
         @Override
         protected Bitmap doInBackground(Contact... contacts) {
             int qrColor = ContextCompat.getColor(getContext(), R.color.pm_qr_code);
-            QRCodeWriter writer = new QRCodeWriter();
-//            String contentContact = new Gson().toJson(contacts[0]);
-            Contact contact = contacts[0];
-            StringBuilder data = new StringBuilder();
-            String divider = "@#@";
-            data.append(contact.getNames()).append(divider);
-            data.append(contact.getDob()).append(divider);
-            data.append(contact.getPob()).append(divider);
-            data.append(contact.getMail()).append(divider);
-            data.append(contact.getPhone());//.append(d);
-//            data.append(c.getPictureUrl());
             int size = getResources().getDimensionPixelSize(R.dimen.pm_qr_icon_size);
-            try {
-                BitMatrix bitMatrix = writer.encode(data.toString(), BarcodeFormat.QR_CODE, size, size);
-
-                Bitmap bmp = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
-                for (int x = 0; x < size; x++) {
-                    for (int y = 0; y < size; y++) {
-                        if (bitMatrix.get(x, y))
-                            bmp.setPixel(x, y, qrColor);
-                        else
-                            bmp.setPixel(x, y, Color.WHITE);
-                    }
-                }
-                return bmp;
-            } catch (WriterException e) {
-                Log.e("QR ERROR", "" + e);
-            }
-            return null;
+            return PeerMountainManager.getQrCode(contacts[0],size,qrColor);
+//            QRCodeWriter writer = new QRCodeWriter();
+////            String contentContact = new Gson().toJson(contacts[0]);
+//            Contact contact = contacts[0];
+//            StringBuilder data = new StringBuilder();
+//            String divider = "@#@";
+//            data.append(contact.getNames()).append(divider);
+//            data.append(contact.getDob()).append(divider);
+//            data.append(contact.getPob()).append(divider);
+//            data.append(contact.getMail()).append(divider);
+//            data.append(contact.getPhone());//.append(d);
+////            data.append(c.getPictureUrl());
+//            try {
+//                BitMatrix bitMatrix = writer.encode(data.toString(), BarcodeFormat.QR_CODE, size, size);
+//
+//                Bitmap bmp = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565);
+//                for (int x = 0; x < size; x++) {
+//                    for (int y = 0; y < size; y++) {
+//                        if (bitMatrix.get(x, y))
+//                            bmp.setPixel(x, y, qrColor);
+//                        else
+//                            bmp.setPixel(x, y, Color.WHITE);
+//                    }
+//                }
+//                return bmp;
+//            } catch (WriterException e) {
+//                Log.e("QR ERROR", "" + e);
+//            }
+//            return null;
         }
 
         @Override

@@ -3,8 +3,10 @@ package com.peermountain.core.persistence;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.WorkerThread;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
@@ -16,6 +18,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDataExtractionRequireme
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
+import com.google.zxing.Result;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
@@ -361,5 +364,14 @@ public class PeerMountainManager {
         sdkParams.addParameters(AXTSdkParameters.DATA_EXTRACTION_REQUIREMENT,
                 AXTDataExtractionRequirement.MRZ_FOUND);
         return sdkParams;
+    }
+
+    @WorkerThread
+    public static Bitmap getQrCode(Contact contact, int imageSize, int qrColor) {
+        return ShareHelper.getQrCode(contact, imageSize, qrColor);
+    }
+
+    public static Contact handleQrScannResult(Result rawResult) {
+        return ShareHelper.handleResult(rawResult);
     }
 }

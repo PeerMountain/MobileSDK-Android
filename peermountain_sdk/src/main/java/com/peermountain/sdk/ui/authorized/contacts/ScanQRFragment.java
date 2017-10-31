@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.peermountain.core.model.guarded.Contact;
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
@@ -113,27 +113,29 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
 
     @Override
     public void handleResult(Result rawResult) {
-        final String qrcode =rawResult.getText().toString();
-        Log.i("",""+qrcode);
-        if (rawResult.getText().length() > 0) {
-//            Contact contact = new Gson().fromJson(qrcode,Contact.class);
-            Contact contact = new Contact();
-            String[] data = qrcode.split("@#@");
-            if(data.length>0)
-            contact.setNames(data[0].trim());
-            if(data.length>1)
-            contact.setDob(data[1].trim());
-            if(data.length>2)
-            contact.setPob(data[2].trim());
-            if(data.length>3)
-            contact.setPhone(data[3].trim());
-            if(data.length>4)
-            contact.setMail(data[4].trim());
-            if(mListener!=null){
-                mListener.onContactScannedFromQR(contact);
-            }
+        if(mListener!=null){
+            mListener.onContactScannedFromQR(PeerMountainManager.handleQrScannResult(rawResult));
         }
-
+//        final String qrcode =rawResult.getText().toString();
+//        Log.i("",""+qrcode);
+//        if (rawResult.getText().length() > 0) {
+////            Contact contact = new Gson().fromJson(qrcode,Contact.class);
+//            Contact contact = new Contact();
+//            String[] data = qrcode.split("@#@");
+//            if(data.length>0)
+//            contact.setNames(data[0].trim());
+//            if(data.length>1)
+//            contact.setDob(data[1].trim());
+//            if(data.length>2)
+//            contact.setPob(data[2].trim());
+//            if(data.length>3)
+//            contact.setPhone(data[3].trim());
+//            if(data.length>4)
+//            contact.setMail(data[4].trim());
+//            if(mListener!=null){
+//                mListener.onContactScannedFromQR(contact);
+//            }
+//        }
     }
 
     private void setToolbarForQrReader() {
