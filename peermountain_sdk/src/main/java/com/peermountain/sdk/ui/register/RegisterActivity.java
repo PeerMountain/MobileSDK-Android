@@ -11,7 +11,7 @@ import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.authorized.documents.PmDocumentsHelper;
+import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;

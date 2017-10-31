@@ -16,9 +16,9 @@ import android.widget.Toast;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
-import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
@@ -102,7 +102,7 @@ public class ScanIdFragment extends ToolbarFragment {
 //                this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 pmTvLoading.setVisibility(View.GONE);
                 if (resultCode == Activity.RESULT_OK
-                        || PeerMountainSdkConstants.isFake) {
+                        || PeerMountainCoreConstants.isFake) {
                     if (mListener != null) mListener.onIdScanned(data);
                 } else {
 //                    if (mListener != null) mListener.onIdScanned(data);

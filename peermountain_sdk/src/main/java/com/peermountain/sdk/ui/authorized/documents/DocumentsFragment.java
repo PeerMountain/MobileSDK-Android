@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.home.CardsEventListener;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
@@ -217,6 +218,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
         btnMenuScanID.setOnClickListener(new RippleOnClickListener() {
             @Override
             public void onClickListener(View view) {
+                llMenuDocuments.setVisibility(View.GONE);
 //                AppDocument doc = new AppDocument(true,true);
 //                onMenuClicked(doc);
             }

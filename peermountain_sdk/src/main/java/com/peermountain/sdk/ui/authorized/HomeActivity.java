@@ -200,6 +200,10 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
             showHomeFragment();
             setListeners();
         }
+        refreshMenu();
+    }
+
+    private void refreshMenu() {
         if (menuFragment == null) {
             menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentById(R.id.menuFragment);
         }
@@ -386,6 +390,11 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     @Override
     public void lockMenu(boolean lock) {
 //        drawer.setDrawerLockMode(lock?DrawerLayout.LOCK_MODE_LOCKED_CLOSED:DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
+    }
+
+    @Override
+    public void onMyProfileUpdated() {
+        refreshMenu();
     }
 
 //    @Override

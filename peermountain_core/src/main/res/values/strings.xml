@@ -9,4 +9,11 @@
     <string name="pm_share_accept_dialog_msg">Confirm if the code %s is also displayed on the other device</string>
     <string name="pm_share_accept_dialog_btn_accept">Accept</string>
     <string name="pm_share_accept_dialog_btn_cancel">Cancel</string>
+
+
+    <string name="pm_document_item_id_title">Identity Document</string>
+    <string name="btn_refuse_permission">Refuse</string>
+    <string name="pm_btn_ask_for_permission_again">OK</string>
+    <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
+    <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
 </resources>

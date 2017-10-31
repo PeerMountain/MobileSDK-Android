@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.sdk.utils.SystemHelper;
+import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 
 
@@ -133,7 +133,7 @@ public class FastLoginHelper {
 //                else
 //                    refuseFastLogin(disableFlag);
 
-                SystemHelper.hideKeyboard(activity, etFastCode);
+                PmSystemHelper.hideKeyboard(activity, etFastCode);
                 dialogFastLogin.dismiss();
             }
         });

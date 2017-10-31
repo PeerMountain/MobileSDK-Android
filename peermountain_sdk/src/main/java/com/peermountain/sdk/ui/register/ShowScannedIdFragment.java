@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.authorized.documents.PmDocumentsHelper;
+import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DocumentUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;

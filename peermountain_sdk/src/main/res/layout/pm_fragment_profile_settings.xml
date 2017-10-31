@@ -79,6 +79,7 @@
                     <EditText
                         android:id="@+id/etNames"
                         style="@style/pm_settings_profile_et"
+                        android:inputType="textCapWords"
                         tools:text="@string/pm_profile_settings_lbl_name"/>
                 </LinearLayout>
 
@@ -94,6 +95,7 @@
                     <EditText
                         android:id="@+id/etDob"
                         style="@style/pm_settings_profile_et"
+                        android:inputType="date"
                         tools:text="@string/pm_profile_settings_lbl_dob"/>
                 </LinearLayout>
 
@@ -110,6 +112,7 @@
                     <EditText
                         android:id="@+id/etPob"
                         style="@style/pm_settings_profile_et"
+                        android:inputType="textCapWords"
                         tools:text="@string/pm_profile_settings_lbl_pob"/>
                 </LinearLayout>
 
@@ -126,6 +129,7 @@
                     <EditText
                         android:id="@+id/etEmail"
                         style="@style/pm_settings_profile_et"
+                        android:inputType="textEmailAddress"
                         tools:text="@string/pm_profile_settings_lbl_mail"/>
                 </LinearLayout>
 
@@ -142,6 +146,7 @@
                     <EditText
                         android:id="@+id/etPhone"
                         style="@style/pm_settings_profile_et"
+                        android:inputType="phone"
                         tools:text="@string/pm_profile_settings_lbl_phone"/>
                 </LinearLayout>
             </LinearLayout>

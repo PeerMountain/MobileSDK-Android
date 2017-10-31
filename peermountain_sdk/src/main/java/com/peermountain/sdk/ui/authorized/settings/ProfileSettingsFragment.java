@@ -23,9 +23,11 @@ import android.widget.LinearLayout;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.peermountain.core.model.guarded.Contact;
+import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.FileUtils;
+import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.ui.register.RegisterProfileFragment;
@@ -133,26 +135,28 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case REQUEST_CODE_WRITE_PERMISSION :
-                if(checkPermissions()){
+        switch (requestCode) {
+            case REQUEST_CODE_WRITE_PERMISSION:
+                if (checkPermissions()) {
                     requestCapture();
-                }else{
+                } else {
                     // TODO: 10/23/17 show exp dialog
                 }
                 break;
         }
     }
+
     Uri imageUri = null;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
-            if(data!=null && data.getData()!=null) {
+            if (data != null && data.getData() != null) {
                 imageUri = data.getData();
                 saveProfile();
-            }else{
-                if(avatarFile!=null && avatarFile.exists()) {
+            } else {
+                if (avatarFile != null && avatarFile.exists()) {
                     imageUri = Uri.fromFile(avatarFile);
                     saveProfile();
                 }
@@ -160,13 +164,28 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
     }
 
-    private void saveProfile(){
-        if(contact!=null && imageUri!=null){
-            contact.setValidated(true);
-            contact.setValidatedImageUri(imageUri.toString());
-            PeerMountainManager.updateContact(contact);
-            initValidateBtn();
+    private void saveProfile() {
+        if (contact != null) {
+            if (imageUri != null) {
+                contact.setValidated(true);
+                contact.setValidatedImageUri(imageUri.toString());
+                PeerMountainManager.updateContact(contact);
+                initValidateBtn();
+            }
+            if (isMe) {
+                saveMyProfile();
+            }
         }
+    }
+
+    private void saveMyProfile() {
+        contact.setNames(etNames.getText().toString());
+        contact.setDob(etDob.getText().toString());
+        contact.setPob(etPob.getText().toString());
+        contact.setPhone(etPhone.getText().toString());
+        contact.setMail(etEmail.getText().toString());
+        PeerMountainManager.saveProfile((Profile) contact);
+        if(mListener!=null) mListener.onMyProfileUpdated();
     }
 
     private void initView(View view) {
@@ -188,12 +207,11 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         ivValidated = view.findViewById(R.id.ivValidated);
     }
 
+    private boolean canEdit = false;
+
     public void setUpView() {
         if (isMe) {
-            tvAddContact.setVisibility(View.GONE);
-            flValidate.setVisibility(View.GONE);
-            ivValidated.setVisibility(View.GONE);
-            setToolbarForMyProfile();
+            setViewForMyContact();
         } else {
             setToolbarForContact();
         }
@@ -207,6 +225,19 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         setUpAvatar();
     }
 
+    public void setViewForMyContact() {
+        tvAddContact.setVisibility(View.GONE);
+        flValidate.setVisibility(View.GONE);
+        ivValidated.setVisibility(View.GONE);
+        setToolbarForMyProfile();
+        etNames.setEnabled(canEdit);
+        etDob.setEnabled(canEdit);
+        etPob.setEnabled(canEdit);
+        etPhone.setEnabled(canEdit);
+        etEmail.setEnabled(canEdit);
+        if(canEdit) PmSystemHelper.showKeyboard(getActivity(),etNames);
+    }
+
     public void setToolbarForContact() {
         setToolbar(R.drawable.pm_ic_arrow_back_24dp, -1, R.string.pm_other_profile_settings_title,
                 new View.OnClickListener() {
@@ -218,7 +249,18 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void setToolbarForMyProfile() {
-        setToolbar(R.drawable.pm_ic_logo_white, R.drawable.pm_ic_edit_24dp, R.string.pm_profile_settings_title, homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null, null);
+        setToolbar(R.drawable.pm_ic_logo_white,
+                !canEdit ? R.drawable.pm_ic_edit_24dp : R.drawable.pm_ic_check_24dp,
+                R.string.pm_profile_settings_title,
+                homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        if (canEdit) saveProfile();
+//                        canEdit = !canEdit;
+//                        setUpView();
+                    }
+                });
     }
 
     public void setUpAvatar() {
@@ -315,16 +357,16 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     private void initValidateBtn() {
-        if (!isMe && contact!=null) {
+        if (!isMe && contact != null) {
             ivValidated.setVisibility(View.VISIBLE);
-            if(contact.isValidated()) {
+            if (contact.isValidated()) {
                 flValidate.setVisibility(View.GONE);
                 ivValidated.setImageResource(R.drawable.pm_ic_shield_on);
-                pmIvAvatar.setBorderColor(ContextCompat.getColor(getContext(),R.color.pm_contact_validated));
-            }else{
+                pmIvAvatar.setBorderColor(ContextCompat.getColor(getContext(), R.color.pm_contact_validated));
+            } else {
                 flValidate.setVisibility(View.VISIBLE);
                 ivValidated.setImageResource(R.drawable.pm_shield_off);
-                pmIvAvatar.setBorderColor(ContextCompat.getColor(getContext(),R.color.pm_contact_not_validated));
+                pmIvAvatar.setBorderColor(ContextCompat.getColor(getContext(), R.color.pm_contact_not_validated));
             }
         }
     }
@@ -361,20 +403,21 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     private void requestCapture() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && !checkPermissions()) {
-            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA}, REQUEST_CODE_WRITE_PERMISSION);
-        }else{
-            avatarFile = RegisterProfileFragment.dispatchTakePictureIntent(getActivity(),ProfileSettingsFragment.this, REQUEST_IMAGE_CAPTURE);}
+        } else {
+            avatarFile = RegisterProfileFragment.dispatchTakePictureIntent(getActivity(), ProfileSettingsFragment.this, REQUEST_IMAGE_CAPTURE);
+        }
     }
 
-    private boolean checkPermissions(){
+    private boolean checkPermissions() {
         return ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED;
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     public interface OnFragmentInteractionListener {
-
+        void onMyProfileUpdated();
     }
 }

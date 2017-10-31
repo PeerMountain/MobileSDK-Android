@@ -17,6 +17,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PeerMountainCoreConstants;
 
 /**
  * Created by Galeen on 10/11/2017.
@@ -26,7 +27,7 @@ import com.peermountain.core.utils.LogUtils;
 public final class DocumentUtils {
 
     public static DocumentID getScannedData(Intent scannedData) {
-        if(PeerMountainSdkConstants.isFake) return getFakeScannedData();
+        if(PeerMountainCoreConstants.isFake) return getFakeScannedData();
         if(scannedData==null) return null;
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);

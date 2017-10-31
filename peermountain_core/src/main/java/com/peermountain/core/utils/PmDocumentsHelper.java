@@ -1,4 +1,4 @@
-package com.peermountain.sdk.ui.authorized.documents;
+package com.peermountain.core.utils;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,20 +30,12 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentIdentity;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentValidityResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
+import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.core.utils.FileUtils;
-import com.peermountain.core.utils.ImageUtils;
-import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PmCoreConstants;
-import com.peermountain.core.utils.PmCoreUtils;
-import com.peermountain.sdk.R;
-import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.sdk.utils.PeerMountainSdkConstants;
-import com.peermountain.sdk.utils.SystemHelper;
 import com.shockwave.pdfium.PdfDocument;
 import com.shockwave.pdfium.PdfiumCore;
 
@@ -152,7 +146,7 @@ public class PmDocumentsHelper {
             case REQUEST_SCAN_ID:
                 if(callback!=null) callback.onScanSDKLoading(false);
                 if (resultCode == Activity.RESULT_OK
-                        || PeerMountainSdkConstants.isFake) {
+                        || PeerMountainCoreConstants.isFake) {
                     handleIdDocumentData(data);
                 } else {
                     Toast.makeText(getActivity(), R.string.pm_err_msg_scan_data, Toast.LENGTH_SHORT).show();
@@ -168,18 +162,39 @@ public class PmDocumentsHelper {
         if (PmDocumentsHelper.checkPermissionsForScanId(getActivity(), requestCode, permissions, grantResults)) {
             initScanIdSDK();
         } else {
-            DialogUtils.showChoiceDialog(getActivity(), -1, R.string.pm_err_msg_permission_scan_id,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            initScanIdSDK();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), Build.VERSION.SDK_INT >= 22 ? android.R.style.Theme_DeviceDefault_Dialog_Alert :
+                    android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+            dialog.setCancelable(false);
+                dialog.setMessage(R.string.pm_err_msg_permission_scan_id);
+                dialog.setPositiveButton(R.string.pm_btn_ask_for_permission_again, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        initScanIdSDK();
+                    }
+                });
+                dialog.setNegativeButton(R.string.btn_refuse_permission, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+            AlertDialog alertDialog = dialog.create();
+//        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
+            alertDialog.show();
+//            DialogUtils.showChoiceDialog(getActivity(), -1, R.string.pm_err_msg_permission_scan_id,
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            initScanIdSDK();
+//                        }
+//                    }, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            dialogInterface.dismiss();
+//                        }
+//                    },
+//                    R.string.pm_btn_ask_for_permission_again,
+//                    R.string.btn_refuse_permission);
         }
 
     }
@@ -359,8 +374,9 @@ public class PmDocumentsHelper {
             }
         });
         dialog.setView(view);
-        nameDialog = dialog.show();
-        SystemHelper.showKeyboard(callback.getActivity(),etDocName);
+        nameDialog = dialog.create();
+        nameDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        nameDialog.show();
     }
 
     private int sidesDone;
@@ -570,7 +586,7 @@ public class PmDocumentsHelper {
     }
 
     public static DocumentID getScannedData(Intent scannedData) {
-        if(PeerMountainSdkConstants.isFake) return getFakeScannedData();
+        if(PeerMountainCoreConstants.isFake) return getFakeScannedData();
         if(scannedData==null) return null;
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);

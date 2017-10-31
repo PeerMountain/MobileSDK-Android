@@ -48,7 +48,7 @@ import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.authorized.documents.PmDocumentsHelper;
+import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;

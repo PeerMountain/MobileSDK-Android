@@ -152,7 +152,6 @@
     <string name="pm_document_item_empty">Add new file</string>
     <string name="pm_add_new_file_from_card">Add</string>
     <string name="pm_documents_item_btn_update">Update</string>
-    <string name="pm_document_item_id_title">Identity Document</string>
     <string name="pm_upload_doc_menu">Upload Doc.</string>
     <string name="pm_scan_id_menu">Scan ID</string>
     <!--documents fragment end-->

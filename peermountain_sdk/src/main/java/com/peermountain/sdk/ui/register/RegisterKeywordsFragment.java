@@ -17,7 +17,7 @@ import com.balysv.materialripple.MaterialRippleLayout;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
-import com.peermountain.sdk.utils.SystemHelper;
+import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.sdk.views.PeerMountainTextView;
@@ -168,7 +168,7 @@ public class RegisterKeywordsFragment extends ToolbarFragment {
     }
 
     private void showKeywords(String keywords) {
-        SystemHelper.hideKeyboard(getActivity(), pmEtKeywords);
+        PmSystemHelper.hideKeyboard(getActivity(), pmEtKeywords);
         pmLlAddKeywords.setVisibility(View.GONE);
         pmTvMessageKeywords.setVisibility(View.GONE);
 
@@ -192,7 +192,7 @@ public class RegisterKeywordsFragment extends ToolbarFragment {
         pmLlAddKeywords.setVisibility(View.VISIBLE);
         pmTvMessageKeywords.setVisibility(View.VISIBLE);
         pmEtKeywords.requestFocus();
-        SystemHelper.showKeyboard(getActivity(), pmEtKeywords);
+        PmSystemHelper.showKeyboard(getActivity(), pmEtKeywords);
 
         pmTVSavedKeywordsHint.setVisibility(View.GONE);
         pmTVSavedKeywords.setVisibility(View.GONE);
