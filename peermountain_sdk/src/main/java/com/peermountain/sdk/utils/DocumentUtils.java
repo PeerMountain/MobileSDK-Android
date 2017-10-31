@@ -22,6 +22,7 @@ import com.peermountain.core.utils.LogUtils;
  * Created by Galeen on 10/11/2017.
  */
 
+@Deprecated
 public final class DocumentUtils {
 
     public static DocumentID getScannedData(Intent scannedData) {

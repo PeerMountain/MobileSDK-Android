@@ -50,7 +50,6 @@ import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.documents.DocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.sdk.utils.DocumentUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
@@ -185,15 +184,15 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     private void setView() {
         if (document != null) {
-            if (DocumentUtils.checkDocumentImageNotEmpty(document.getImageFace())) {
+            if (DocumentsHelper.checkDocumentImageNotEmpty(document.getImageFace())) {
                 imageUri = Uri.parse(document.getImageFace().getImageUri());
                 setImage();
             }
             String names = null;
-            if (DocumentUtils.checkDocumentTextNotEmpty(document.getFirstName())) {
+            if (DocumentsHelper.checkDocumentTextNotEmpty(document.getFirstName())) {
                 names = document.getFirstName();
             }
-            if (DocumentUtils.checkDocumentTextNotEmpty(document.getLastName())) {
+            if (DocumentsHelper.checkDocumentTextNotEmpty(document.getLastName())) {
                 if (names != null) {
                     names = names + " " + document.getLastName();
                 } else {
@@ -214,7 +213,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     }
 
     private void setText(EditText et, String value) {
-        if (DocumentUtils.checkDocumentTextNotEmpty(value)) {
+        if (DocumentsHelper.checkDocumentTextNotEmpty(value)) {
             et.setText(value);
         } else if (!foundEmptyField) {
             foundEmptyField = true;
