@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -47,7 +48,7 @@ import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.authorized.documents.DocumentsHelper;
+import com.peermountain.sdk.ui.authorized.documents.PmDocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
@@ -101,8 +102,15 @@ public class RegisterProfileFragment extends ToolbarFragment {
         callbackManager = CallbackManager.Factory.create();
         if (getArguments() != null) {
             document = getArguments().getParcelable(ARG_PARAM1);
-            DocumentsHelper.resizeIdImages(getActivity(), document, null,null,
-                    null,null);
+            if(document==null) return;
+            imageSidesDone = 4;
+//            if (document.getImageCropped() != null) imageSidesDone+=2;//first make a smaller image, then copy and delete the original
+//            if (document.getImageCroppedBack() != null) imageSidesDone+=2;
+            PmDocumentsHelper.resizeIdImages(getActivity(),  document,
+                    new SizeImageEventCallback(true,false),
+                    new SizeImageEventCallback(false,false),
+                    new SizeImageEventCallback(true,true),
+                    new SizeImageEventCallback(false,true));
         }
     }
 
@@ -160,7 +168,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (isDone)
+        if (isDone && imageSidesDone == 0)
             if (mListener != null)
                 mListener.onProfileRegistered();
     }
@@ -185,15 +193,15 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     private void setView() {
         if (document != null) {
-            if (DocumentsHelper.checkDocumentImageNotEmpty(document.getImageFace())) {
+            if (PmDocumentsHelper.checkDocumentImageNotEmpty(document.getImageFace())) {
                 imageUri = Uri.parse(document.getImageFace().getImageUri());
                 setImage();
             }
             String names = null;
-            if (DocumentsHelper.checkDocumentTextNotEmpty(document.getFirstName())) {
+            if (PmDocumentsHelper.checkDocumentTextNotEmpty(document.getFirstName())) {
                 names = document.getFirstName();
             }
-            if (DocumentsHelper.checkDocumentTextNotEmpty(document.getLastName())) {
+            if (PmDocumentsHelper.checkDocumentTextNotEmpty(document.getLastName())) {
                 if (names != null) {
                     names = names + " " + document.getLastName();
                 } else {
@@ -214,7 +222,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     }
 
     private void setText(EditText et, String value) {
-        if (DocumentsHelper.checkDocumentTextNotEmpty(value)) {
+        if (PmDocumentsHelper.checkDocumentTextNotEmpty(value)) {
             et.setText(value);
         } else if (!foundEmptyField) {
             foundEmptyField = true;
@@ -489,6 +497,46 @@ public class RegisterProfileFragment extends ToolbarFragment {
             }
         }
         return null;
+    }
+
+    int imageSidesDone = 0;
+    private void onIdDocumentImageHandled() {
+        imageSidesDone--;
+        if (imageSidesDone == 0 && isDone && mListener!=null) {
+            mListener.onProfileRegistered();
+        }
+    }
+
+    private class SizeImageEventCallback implements PmDocumentsHelper.SizeImageEvent {
+        private Boolean isFront,isMoving;
+
+        public SizeImageEventCallback(Boolean isFront, Boolean isMoving) {
+            this.isFront = isFront;
+            this.isMoving = isMoving;
+        }
+
+        @Override
+        public void onSized(AXTImageResult image) {
+            if(!isMoving) {
+                if (isFront) {
+                    document.setImageCroppedSmall(image);
+                } else {
+                    document.setImageCroppedBackSmall(image);
+                }
+            }else{
+                if (isFront) {
+                    document.setImageCropped(image);
+                } else {
+                    document.setImageCroppedBack(image);
+                }
+            }
+            onIdDocumentImageHandled();
+        }
+
+        @Override
+        public void onError() {
+            onIdDocumentImageHandled();
+        }
     }
 
     public interface OnFragmentInteractionListener {

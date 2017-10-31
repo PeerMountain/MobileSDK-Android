@@ -13,11 +13,18 @@ public class AppDocument {
     private ArrayList<FileDocument> fileDocuments = new ArrayList<>();
     private int res;
     private String title;
-    private   boolean isEmpty = false;
+    private   boolean isEmpty = false, isID = false, shouldAdd = false;
 
     public AppDocument(boolean isEmpty) {
         this();
         this.isEmpty = isEmpty;
+    }
+
+    public AppDocument(boolean isEmpty,boolean isID) {
+        this();
+        this.isEmpty = isEmpty;
+        this.isID = isID;
+        shouldAdd = true;
     }
 
     public AppDocument(int res, String title) {
@@ -83,6 +90,22 @@ public class AppDocument {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isID() {
+        return isID;
+    }
+
+    public void setID(boolean ID) {
+        isID = ID;
+    }
+
+    public boolean isShouldAdd() {
+        return shouldAdd;
+    }
+
+    public void setShouldAdd(boolean shouldAdd) {
+        this.shouldAdd = shouldAdd;
     }
 
     @Override

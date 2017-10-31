@@ -1,5 +1,6 @@
 package com.peermountain.core.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -94,8 +95,8 @@ public class LogUtils {
     }
 
     private static String prettyJson(String body) {
-        if (body != null && body.isEmpty()) {
-            return body;
+        if (TextUtils.isEmpty(body)) {
+            return " ";
         }
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();

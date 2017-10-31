@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.authorized.documents.DocumentsHelper;
+import com.peermountain.sdk.ui.authorized.documents.PmDocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DocumentUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
@@ -93,7 +93,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
 //        setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
 //        setTheme(ToolbarFragment.THEME_LIGHT);
         if(mListener!=null){
-            document = DocumentsHelper.getScannedData(scannedData);
+            document = PmDocumentsHelper.getScannedData(scannedData);
             mListener.onScannedIdDataAccepted(document);
         }
     }

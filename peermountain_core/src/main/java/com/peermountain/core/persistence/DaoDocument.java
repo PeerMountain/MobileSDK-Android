@@ -74,6 +74,9 @@ public class DaoDocument {
         String[] ids = new String[1];
         if (idsArr != null) {
             ids = new String[idsArr.length+1];
+            for (int i = 0; i < idsArr.length; i++) {
+               ids[i] = idsArr[i];
+            }
         }
         ids[ids.length-1] = id;
         StringBuilder sb = new StringBuilder();

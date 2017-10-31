@@ -18,6 +18,8 @@ import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.home.CardsEventListener;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
+import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
+import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.yuyakaido.android.cardstackview.CardStackView;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
     private static final String ARG_PARAM2 = "param2";
 
     private OnFragmentInteractionListener mListener;
-    DocumentsHelper documentsHelper;
+    PmDocumentsHelper pmDocumentsHelper;
 
     public DocumentsFragment() {
         // Required empty public constructor
@@ -58,10 +60,50 @@ public class DocumentsFragment extends HomeToolbarFragment {
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        documentsHelper = new DocumentsHelper(new DocumentsHelper.Events() {
+        createDocumentsHelper();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.pm_fragment_documents, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getViews(view);
+        setUpView();
+        setListeners();
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        pmDocumentsHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        pmDocumentsHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+
+    public void createDocumentsHelper() {
+        pmDocumentsHelper = new PmDocumentsHelper(new PmDocumentsHelper.Events() {
             @Override
             public void refreshAdapter() {
-                if(documentsAdapter!=null){
+                if (documentsAdapter != null) {
                     documentsAdapter.notifyDataSetChanged();
                     cardsEventListener.setCardsBackground();
                 }
@@ -79,54 +121,36 @@ public class DocumentsFragment extends HomeToolbarFragment {
 
             @Override
             public void onScanSDKLoading(boolean loading) {
-                if(pmTvLoading!=null)
-                pmTvLoading.setVisibility(!loading ?View.GONE:View.VISIBLE);
+                if (pmTvLoading != null)
+                    pmTvLoading.setVisibility(!loading ? View.GONE : View.VISIBLE);
+            }
+
+            @Override
+            public void onAddingDocumentCanceled(AppDocument document) {
+                if(documents!=null){
+                    documents.remove(document);
+                    setAdapter();
+                }
             }
 
         });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.pm_fragment_documents, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getViews(view);
-        setUpView();
-    }
-
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        documentsHelper.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        documentsHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
     CardStackView documentCardsView;
-TextView pmTvLoading;
+    TextView pmTvLoading,btnMenuScanID,btnMenuUpload;
+    View llMenuDocuments;
+
     /**
      * type ff to fast get new views
      */
     private void getViews(View view) {
         documentCardsView = view.findViewById(R.id.pm_documents_card_stack_view);
         pmTvLoading = view.findViewById(R.id.pmTvLoading);
+        llMenuDocuments = view.findViewById(R.id.llMenuDocuments);
+        btnMenuScanID = view.findViewById(R.id.btnMenuScanID);
+        btnMenuUpload = view.findViewById(R.id.btnMenuUpload);
+        RippleUtils.setRippleEffect(btnMenuScanID);
+        RippleUtils.setRippleEffect(btnMenuUpload);
     }
 
     private void setUpView() {
@@ -135,7 +159,7 @@ TextView pmTvLoading;
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // TODO: 10/17/2017 TBI add document
+                       llMenuDocuments.setVisibility(View.VISIBLE);
                     }
                 });
         setCardsView();
@@ -151,23 +175,59 @@ TextView pmTvLoading;
         });
     }
 
-    ArrayList<AppDocument> documents ;
+    ArrayList<AppDocument> documents;
     DocumentsAdapter documentsAdapter;
     CardsEventListener cardsEventListener;
 
     private void setCards() {
-        documents = documentsHelper.getDocumentsForAdapter();
+        documents = pmDocumentsHelper.getDocumentsForAdapter();
+        setAdapter();
+    }
+
+    private void setAdapter() {
         documentsAdapter = new DocumentsAdapter(getContext(), new DocumentsAdapter.DocumentEvents() {
             @Override
             public void onUpdateDocumentClick(AppDocument document) {
-                if(pmTvLoading.getVisibility()==View.VISIBLE) return;//it is loading already
+                if (pmTvLoading.getVisibility() == View.VISIBLE) return;//it is loading already
                 LogUtils.d("onUpdateDocumentClick", document.getTitle());
-                documentsHelper.updateDocument(document);
+//                if(document.isEmpty()){
+//                    documents.remove(document);
+//                    PeerMountainManager.removeDocument(document);
+//                    setAdapter();
+//                }else
+                    pmDocumentsHelper.updateDocument(document);
             }
         });
         documentsAdapter.addAll(documents);
         documentCardsView.setAdapter(documentsAdapter);
         documentCardsView.setCardEventListener(cardsEventListener = new CardsEventListener(documents, documentsAdapter, documentCardsView));
+    }
+
+    /**
+     * type ocl to fast get new setOnClickListener, rr/rc/rs to set ripple
+     */
+    private void setListeners() {
+        btnMenuUpload.setOnClickListener(new RippleOnClickListener(){
+            @Override
+            public void onClickListener(View view) {
+                AppDocument doc = new AppDocument(true,false);
+                onMenuClicked(doc);
+            }
+        });
+        btnMenuScanID.setOnClickListener(new RippleOnClickListener() {
+            @Override
+            public void onClickListener(View view) {
+//                AppDocument doc = new AppDocument(true,true);
+//                onMenuClicked(doc);
+            }
+        });
+    }
+
+    public void onMenuClicked(AppDocument doc) {
+        documents.add(0,doc);
+        setAdapter();
+        pmDocumentsHelper.addDocument(doc);
+        llMenuDocuments.setVisibility(View.GONE);
     }
 
     public interface OnFragmentInteractionListener {

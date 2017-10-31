@@ -12,7 +12,11 @@ import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ariadnext.android.smartsdk.exception.CaptureApiException;
@@ -37,6 +41,7 @@ import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PeerMountainSdkConstants;
+import com.peermountain.sdk.utils.SystemHelper;
 import com.shockwave.pdfium.PdfDocument;
 import com.shockwave.pdfium.PdfiumCore;
 
@@ -49,7 +54,7 @@ import java.util.ArrayList;
  * Created by Galeen on 10/27/2017.
  */
 
-public class DocumentsHelper {
+public class PmDocumentsHelper {
     public static final int REQUEST_CODE_SELECT_FILE = 533;
     public static final int REQUEST_SCAN_ID = 633;
     private AppDocument documentToUpdate;
@@ -71,7 +76,7 @@ public class DocumentsHelper {
         return null;
     }
 
-    public DocumentsHelper(Events callback) {
+    public PmDocumentsHelper(Events callback) {
         this.callback = callback;
         if (callback == null || callback.getActivity() == null) {
             throw new NullPointerException("callback and callback.getActivity() must not be null !");
@@ -81,6 +86,15 @@ public class DocumentsHelper {
     public void updateDocument(AppDocument documentToUpdate) {
         this.documentToUpdate = documentToUpdate;
         if (documentToUpdate.isIdentityDocument()) {
+//            scanId();
+        } else {
+            PmCoreUtils.browseDocuments(getActivity(), REQUEST_CODE_SELECT_FILE);
+        }
+    }
+
+    public void addDocument(AppDocument documentToUpdate) {
+        this.documentToUpdate = documentToUpdate;
+        if (documentToUpdate.isID()) {
             scanId();
         } else {
             PmCoreUtils.browseDocuments(getActivity(), REQUEST_CODE_SELECT_FILE);
@@ -128,7 +142,10 @@ public class DocumentsHelper {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                         showUpdateFileError();
+                        onCancelDocument();
                     }
+                }else{
+                    onCancelDocument();
                 }
                 handled = true;
                 break;
@@ -139,6 +156,7 @@ public class DocumentsHelper {
                     handleIdDocumentData(data);
                 } else {
                     Toast.makeText(getActivity(), R.string.pm_err_msg_scan_data, Toast.LENGTH_SHORT).show();
+                    onCancelDocument();
                 }
                 handled = true;
                 break;
@@ -147,7 +165,7 @@ public class DocumentsHelper {
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (DocumentsHelper.checkPermissionsForScanId(getActivity(), requestCode, permissions, grantResults)) {
+        if (PmDocumentsHelper.checkPermissionsForScanId(getActivity(), requestCode, permissions, grantResults)) {
             initScanIdSDK();
         } else {
             DialogUtils.showChoiceDialog(getActivity(), -1, R.string.pm_err_msg_permission_scan_id,
@@ -182,9 +200,14 @@ public class DocumentsHelper {
             documents.add(new AppDocument(R.drawable.pm_birther, "Birth Certificate"));
             documents.add(new AppDocument(R.drawable.pm_employment_contract, "Employment Contract"));
             documents.add(new AppDocument(R.drawable.pm_income_tax, "Tax Return"));
+            documents.add(new AppDocument(true));
             PeerMountainManager.saveDocuments(documents);
             return documents;
         }
+    }
+
+    private void onCancelDocument() {
+        if(callback!=null && documentToUpdate.isShouldAdd()) callback.onAddingDocumentCanceled(documentToUpdate);
     }
 
     private void copyFile(ParcelFileDescriptor pfd) {
@@ -201,7 +224,7 @@ public class DocumentsHelper {
                         }
                         ;
                     } else {
-                        updateDocument();
+                        updateFileDocument();
                     }
                 } else {
                     showUpdateFileError();
@@ -233,7 +256,7 @@ public class DocumentsHelper {
                         @Override
                         public void onFinish(boolean isSuccess) {
                             LogUtils.d("saveImageAsync", "result " + isSuccess);
-                            if (isSuccess) updateDocument();
+                            if (isSuccess) updateFileDocument();
                         }
                     });
         }
@@ -268,7 +291,7 @@ public class DocumentsHelper {
         Toast.makeText(getActivity(), "There was a problem", Toast.LENGTH_SHORT).show();
     }
 
-    private void updateDocument() {
+    private void updateFileDocument() {
         if (documentToUpdate == null || localFile == null)
             return;
         FileDocument fileDocument = getFileDocument();
@@ -290,11 +313,54 @@ public class DocumentsHelper {
             fileDocument.setImageUri(uri.toString());
             fileDocument.setFileUri(null);
         }
+        if(documentToUpdate.isEmpty() || TextUtils.isEmpty(documentToUpdate.getTitle())) {
+            documentToUpdate.setEmpty(false);
+            showSetNameDialog();
+        }else {
+            onDocumentDone();
+        }
+    }
 
+    private void onDocumentDone() {
         if (callback != null) {
             callback.refreshAdapter();
         }
-        PeerMountainManager.updateDocument(documentToUpdate);
+        if(documentToUpdate.isShouldAdd()){
+            documentToUpdate.setShouldAdd(false);
+            PeerMountainManager.addDocument(documentToUpdate);
+        }else {
+            PeerMountainManager.updateDocument(documentToUpdate);
+        }
+    }
+
+    private AlertDialog nameDialog;
+    private void showSetNameDialog(){
+        if(callback.getActivity()==null) return;
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(callback.getActivity());
+        dialog.setCancelable(false);
+        LayoutInflater vi = (LayoutInflater) callback.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = vi.inflate(R.layout.pm_set_file_title_dialog, null);
+        final EditText etDocName = view.findViewById(R.id.etDocName);
+        View btnCancel = view.findViewById(R.id.btnCancel);
+        View btnDone = view.findViewById(R.id.btnDone);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nameDialog.dismiss();
+                onDocumentDone();
+            }
+        });
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                documentToUpdate.setTitle(etDocName.getText().toString());
+                nameDialog.dismiss();
+                onDocumentDone();
+            }
+        });
+        dialog.setView(view);
+        nameDialog = dialog.show();
+        SystemHelper.showKeyboard(callback.getActivity(),etDocName);
     }
 
     private int sidesDone;
@@ -304,9 +370,9 @@ public class DocumentsHelper {
         if (scannedData != null) {
             documentId = getScannedData(scannedData);
             if (documentId == null) return;
-            sidesDone = 0;
-            if (documentId.getImageCropped() != null) sidesDone+=2;//first make a smaller image, then copy and delete the original
-            if (documentId.getImageCroppedBack() != null) sidesDone+=2;
+            sidesDone = 4;
+//            if (documentId.getImageCropped() != null) sidesDone+=2;//first make a smaller image, then copy and delete the original
+//            if (documentId.getImageCroppedBack() != null) sidesDone+=2;
 
             resizeIdImages(getActivity(), documentId,
                     new SizeImageEventCallback(true,false),
@@ -327,11 +393,8 @@ public class DocumentsHelper {
                 documentToUpdate.getDocuments().clear();//replace current
             }
             documentToUpdate.getDocuments().add(documentId);
-
-            if (callback != null) {
-                callback.refreshAdapter();
-            }
-            PeerMountainManager.updateDocument(documentToUpdate);
+            documentToUpdate.setEmpty(false);
+            onDocumentDone();
         }
     }
 
@@ -388,9 +451,11 @@ public class DocumentsHelper {
         Fragment getFragment();
 
         void onScanSDKLoading(boolean loading);
+
+        void onAddingDocumentCanceled(AppDocument document);
     }
 
-    public static void resizeIdImages(Context context, final DocumentID document, final SizeImageEventCallback callbackFront, final SizeImageEvent callbackBack, final SizeImageEventCallback callbackMoveFront, final SizeImageEvent callbackMoveBack) {
+    public static void resizeIdImages(Context context, final DocumentID document, final SizeImageEvent callbackFront, final SizeImageEvent callbackBack, final SizeImageEvent callbackMoveFront, final SizeImageEvent callbackMoveBack) {
         if (document != null) {
             int size = context.getResources().getDimensionPixelSize(R.dimen.pm_id_size);
             processIdImage(context, size, document.getImageCropped(), System.currentTimeMillis() + "",document.getDocNumber(), callbackFront,callbackMoveFront);
@@ -398,8 +463,7 @@ public class DocumentsHelper {
         }
     }
 
-    private static void processIdImage(final Context context, int size, final AXTImageResult image, String name,
-                                       final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
+    private static void processIdImage(final Context context, int size, final AXTImageResult image, String name,final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
         if (image != null && image.getWidth() > size) {
             final File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
             File newSmallerImage = PmCoreUtils.createLocalFile(context,idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
@@ -454,34 +518,13 @@ public class DocumentsHelper {
                             callback.onSized(image);
                         }
                     }else{
-                        LogUtils.d("onSized", "error");
+                        LogUtils.d("onMoved", "error");
                         if (callback != null) {
                             callback.onError();
                         }
                     }
                 }
             });
-//            ImageUtils.rotateAndResizeImageAsync(originalImage, newImage, image.getWidth(),
-//                    image.getHeight(), true, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
-//                        @Override
-//                        public void onImageCompressed(Bitmap bitmap, Uri uri) {
-//                            LogUtils.d("onMoved", uri.toString());
-//                            AXTImageResult image = new AXTImageResult();
-//                            image.setImageUri(uri.toString());
-//                            if (callback != null) {
-//                                callback.onSized(image);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            LogUtils.d("onSized", "error");
-//                            if (callback != null) {
-//                                callback.onError();
-//                            }
-//                        }
-//                    }
-//            );
         } else {
             if (callback != null) {
                 callback.onSized(null);

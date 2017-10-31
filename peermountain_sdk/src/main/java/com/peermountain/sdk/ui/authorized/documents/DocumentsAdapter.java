@@ -105,6 +105,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
         private void setViewAsOpen() {
             btnRipple.setEnabled(true);
             btn.setEnabled(true);
+            btn.setText(R.string.pm_documents_item_btn_update);
             if (appDocument.isIdentityDocument()) {
                 if(TextUtils.isEmpty(appDocument.getTitle())) {
                     tvMsg.setText(R.string.pm_document_item_id_title);
@@ -134,8 +135,9 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
         }
 
         private void setViewAsLocked() {
-            btn.setEnabled(false);
-            btnRipple.setEnabled(false);
+//            btn.setEnabled(false);
+//            btnRipple.setEnabled(false);
+            btn.setText(R.string.pm_add_new_file_from_card);
             ivFullImage.setVisibility(View.GONE);
             ivDocument.setVisibility(View.GONE);
             ivDocumentBack.setVisibility(View.GONE);

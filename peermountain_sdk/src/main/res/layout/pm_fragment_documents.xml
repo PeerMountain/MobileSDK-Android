@@ -1,39 +1,68 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:background="@drawable/pm_bkg"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             tools:activity="com.peermountain.sdk.ui.authorized.documents.DocumentsFragment">
+             tools:activity="com.peermountain.sdk.ui.authorized.documents.DocumentsFragment"
+             tools:background="@drawable/pm_bkg">
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/pm_documents_card_stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/pm_margin_big"
+        android:clipToPadding="false"
         android:paddingBottom="@dimen/pm_margin_big"
         android:paddingLeft="@dimen/pm_margin_big"
         android:paddingRight="@dimen/pm_margin_big"
-        android:clipToPadding="false"
-        app:visibleCount="3"
-        app:swipeThreshold="0.75"
-        app:translationDiff="30"
+        android:paddingTop="@dimen/pm_margin_big"
+        app:elevationEnabled="true"
         app:scaleDiff="0.07"
         app:stackFrom="top"
-        app:elevationEnabled="true"
+        app:swipeDirection="freedom"
         app:swipeEnabled="true"
-        app:swipeDirection="freedom"/>
+        app:swipeThreshold="0.75"
+        app:translationDiff="30"
+        app:visibleCount="3"/>
+
     <com.peermountain.sdk.views.PeerMountainTextView
         android:id="@+id/pmTvLoading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_marginBottom="100dp"
         android:gravity="center"
-        android:layout_gravity="bottom"
         android:padding="@dimen/pm_margin_normal"
         android:text="@string/pm_lbl_loading_sdk"
         android:textColor="@color/pm_text_accent"
         android:textSize="@dimen/pm_regular_text"
         android:visibility="gone"
         tools:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/llMenuDocuments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="@dimen/pm_margin_normal"
+        android:background="@drawable/pm_document_menu_bkg"
+        android:orientation="vertical"
+        android:padding="@dimen/pm_margin_normal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/btnMenuScanID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pm_scan_id_menu"
+            android:textColor="@color/pm_text_accent"/>
+
+        <com.peermountain.sdk.views.PeerMountainTextView
+            android:id="@+id/btnMenuUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_margin_normal"
+            android:text="@string/pm_upload_doc_menu"
+            android:textColor="@color/pm_text_accent"/>
+    </LinearLayout>
 </FrameLayout>
