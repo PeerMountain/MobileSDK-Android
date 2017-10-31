@@ -226,6 +226,8 @@ public class ImageUtils {
         task.execute();
     }
 
+
+
     public static class ConvertImageTask extends AsyncTask<Void, ConvertImageTask.Response, ConvertImageTask.Response> {
 
         private ByteArrayOutputStream baos = new ByteArrayOutputStream();

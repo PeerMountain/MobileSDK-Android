@@ -101,7 +101,8 @@ public class RegisterProfileFragment extends ToolbarFragment {
         callbackManager = CallbackManager.Factory.create();
         if (getArguments() != null) {
             document = getArguments().getParcelable(ARG_PARAM1);
-            DocumentsHelper.resizeIdImages(getActivity(), document, null,null);
+            DocumentsHelper.resizeIdImages(getActivity(), document, null,null,
+                    null,null);
         }
     }
 

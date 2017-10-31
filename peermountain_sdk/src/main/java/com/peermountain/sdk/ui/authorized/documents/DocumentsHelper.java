@@ -81,7 +81,7 @@ public class DocumentsHelper {
     public void updateDocument(AppDocument documentToUpdate) {
         this.documentToUpdate = documentToUpdate;
         if (documentToUpdate.isIdentityDocument()) {
-//            scanId();
+            scanId();
         } else {
             PmCoreUtils.browseDocuments(getActivity(), REQUEST_CODE_SELECT_FILE);
         }
@@ -305,12 +305,14 @@ public class DocumentsHelper {
             documentId = getScannedData(scannedData);
             if (documentId == null) return;
             sidesDone = 0;
-            if (documentId.getImageCropped() != null) sidesDone++;
-            if (documentId.getImageCroppedBack() != null) sidesDone++;
+            if (documentId.getImageCropped() != null) sidesDone+=2;//first make a smaller image, then copy and delete the original
+            if (documentId.getImageCroppedBack() != null) sidesDone+=2;
 
             resizeIdImages(getActivity(), documentId,
-                    new SizeImageEventCallback(true),
-                    new SizeImageEventCallback(false));
+                    new SizeImageEventCallback(true,false),
+                    new SizeImageEventCallback(false,false),
+                    new SizeImageEventCallback(true,true),
+                    new SizeImageEventCallback(false,true));
         }
     }
 
@@ -320,8 +322,8 @@ public class DocumentsHelper {
             if (documentToUpdate == null || documentId == null) return;
             if (documentToUpdate.getDocuments().size() > 0) {
                 //don't delete document images, because the SDK override them it self and is the same uri
-//                DocumentID oldDocument = documentToUpdate.getDocuments().get(0);
-//                deleteDocumentImages(oldDocument);
+                DocumentID oldDocument = documentToUpdate.getDocuments().get(0);
+                deleteDocumentImages(oldDocument);
                 documentToUpdate.getDocuments().clear();//replace current
             }
             documentToUpdate.getDocuments().add(documentId);
@@ -388,28 +390,31 @@ public class DocumentsHelper {
         void onScanSDKLoading(boolean loading);
     }
 
-    public static void resizeIdImages(Context context, final DocumentID document, final SizeImageEventCallback callbackFront, final SizeImageEvent callbackBack) {
+    public static void resizeIdImages(Context context, final DocumentID document, final SizeImageEventCallback callbackFront, final SizeImageEvent callbackBack, final SizeImageEventCallback callbackMoveFront, final SizeImageEvent callbackMoveBack) {
         if (document != null) {
             int size = context.getResources().getDimensionPixelSize(R.dimen.pm_id_size);
-            processIdImage(context, size, document.getImageCropped(), System.currentTimeMillis() + "", callbackFront);
-            processIdImage(context, size, document.getImageCroppedBack(), System.currentTimeMillis() + 1 + "", callbackBack);
+            processIdImage(context, size, document.getImageCropped(), System.currentTimeMillis() + "",document.getDocNumber(), callbackFront,callbackMoveFront);
+            processIdImage(context, size, document.getImageCroppedBack(), System.currentTimeMillis() + 1 + "",document.getDocNumber(), callbackBack,callbackMoveBack);
         }
     }
 
-    private static void processIdImage(Context context, int size, AXTImageResult image, String name, final SizeImageEvent callback) {
+    private static void processIdImage(final Context context, int size, final AXTImageResult image, String name,
+                                       final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
         if (image != null && image.getWidth() > size) {
-            File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
-            File newSmallerImage = PmCoreUtils.createLocalFile(context, name, PmCoreConstants.FILE_TYPE_IMAGES);
+            final File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
+            File newSmallerImage = PmCoreUtils.createLocalFile(context,idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
 
             ImageUtils.rotateAndResizeImageAsync(originalImage, newSmallerImage, size,
                     size / 2, false, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
                         @Override
                         public void onImageCompressed(Bitmap bitmap, Uri uri) {
-                            AXTImageResult image = new AXTImageResult();
-                            image.setImageUri(uri.toString());
+                            AXTImageResult imageResult = new AXTImageResult();
+                            imageResult.setImageUri(uri.toString());
                             if (callback != null) {
-                                callback.onSized(image);
+                                callback.onSized(imageResult);
                             }
+                            moveIdImage(context,image, System.currentTimeMillis()+"",
+                                    idNum,callbackMove);
                         }
 
                         @Override
@@ -418,6 +423,8 @@ public class DocumentsHelper {
                             if (callback != null) {
                                 callback.onError();
                             }
+                            moveIdImage(context,image, System.currentTimeMillis()+"",
+                                    idNum,callbackMove);
                         }
                     }
             );
@@ -425,9 +432,62 @@ public class DocumentsHelper {
             if (callback != null) {
                 callback.onSized(null);
             }
+            moveIdImage(context,image, System.currentTimeMillis()+"",
+                    idNum,callbackMove);
         }
     }
 
+    private static void moveIdImage(Context context, AXTImageResult image, String name,
+                                       String idNum,final SizeImageEvent callback) {
+        if (image != null) {
+            File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
+            File newImage = PmCoreUtils.createLocalFile(context,idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
+            final Uri uri = Uri.fromFile(newImage);
+            FileUtils.copyFileAsync(originalImage, newImage, true, new FileUtils.CopyFileEvents() {
+                @Override
+                public void onFinish(boolean isSuccess) {
+                    if(isSuccess){
+                        LogUtils.d("onMoved", uri.toString());
+                        AXTImageResult image = new AXTImageResult();
+                        image.setImageUri(uri.toString());
+                        if (callback != null) {
+                            callback.onSized(image);
+                        }
+                    }else{
+                        LogUtils.d("onSized", "error");
+                        if (callback != null) {
+                            callback.onError();
+                        }
+                    }
+                }
+            });
+//            ImageUtils.rotateAndResizeImageAsync(originalImage, newImage, image.getWidth(),
+//                    image.getHeight(), true, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
+//                        @Override
+//                        public void onImageCompressed(Bitmap bitmap, Uri uri) {
+//                            LogUtils.d("onMoved", uri.toString());
+//                            AXTImageResult image = new AXTImageResult();
+//                            image.setImageUri(uri.toString());
+//                            if (callback != null) {
+//                                callback.onSized(image);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            LogUtils.d("onSized", "error");
+//                            if (callback != null) {
+//                                callback.onError();
+//                            }
+//                        }
+//                    }
+//            );
+        } else {
+            if (callback != null) {
+                callback.onSized(null);
+            }
+        }
+    }
     public interface SizeImageEvent {
         void onSized(AXTImageResult image);
 
@@ -435,18 +495,27 @@ public class DocumentsHelper {
     }
 
     private class SizeImageEventCallback implements SizeImageEvent {
-        private boolean isFront;
+        private Boolean isFront,isMoving;
 
-        public SizeImageEventCallback(boolean isFront) {
+        public SizeImageEventCallback(Boolean isFront, Boolean isMoving) {
             this.isFront = isFront;
+            this.isMoving = isMoving;
         }
 
         @Override
         public void onSized(AXTImageResult image) {
-            if (isFront) {
-                documentId.setImageCroppedSmall(image);
-            } else {
-                documentId.setImageCroppedBackSmall(image);
+            if(!isMoving) {
+                if (isFront) {
+                    documentId.setImageCroppedSmall(image);
+                } else {
+                    documentId.setImageCroppedBackSmall(image);
+                }
+            }else{
+                if (isFront) {
+                    documentId.setImageCropped(image);
+                } else {
+                    documentId.setImageCroppedBack(image);
+                }
             }
             updateIdDocument();
         }

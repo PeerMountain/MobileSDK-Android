@@ -30,14 +30,35 @@ public class PmCoreUtils {
      * @return new empty file
      */
     public static File createLocalFile(Context context, String name, int type) {
+        return createLocalFile(context,null, name, type);
+//        String dir, ext;
+//        switch (type) {
+//            case PmCoreConstants.FILE_TYPE_PDF:
+//                dir = PmCoreConstants.LOCAL_DOCUMENTS_DIR;
+//                ext = ".pdf";
+//                break;
+//            default:
+//                dir = PmCoreConstants.LOCAL_IMAGE_DIR;
+//                ext = ".jpg";
+//        }
+//        File path = new File(context.getFilesDir(), dir);
+//        path.mkdirs();
+//        if (name == null) {
+//            name = System.currentTimeMillis() + "";
+//        }
+//        File file = new File(path, name + ext);
+//        return file;
+    }
+
+    public static File createLocalFile(Context context,String dirName, String name, int type) {
         String dir, ext;
         switch (type) {
             case PmCoreConstants.FILE_TYPE_PDF:
-                dir = PmCoreConstants.LOCAL_DOCUMENTS_DIR;
+                dir = PmCoreConstants.LOCAL_DOCUMENTS_DIR+(dirName!=null?"/"+dirName:"");
                 ext = ".pdf";
                 break;
             default:
-                dir = PmCoreConstants.LOCAL_IMAGE_DIR;
+                dir = PmCoreConstants.LOCAL_IMAGE_DIR+(dirName!=null?"/"+dirName:"");
                 ext = ".jpg";
         }
         File path = new File(context.getFilesDir(), dir);
