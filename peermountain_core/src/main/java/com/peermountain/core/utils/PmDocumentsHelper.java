@@ -80,7 +80,7 @@ public class PmDocumentsHelper {
     public void updateDocument(AppDocument documentToUpdate) {
         this.documentToUpdate = documentToUpdate;
         if (documentToUpdate.isIdentityDocument()) {
-//            scanId();
+            scanId();
         } else {
             PmCoreUtils.browseDocuments(getActivity(), REQUEST_CODE_SELECT_FILE);
         }

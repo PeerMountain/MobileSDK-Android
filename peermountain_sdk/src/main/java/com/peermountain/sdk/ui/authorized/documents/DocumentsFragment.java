@@ -219,8 +219,8 @@ public class DocumentsFragment extends HomeToolbarFragment {
             @Override
             public void onClickListener(View view) {
                 llMenuDocuments.setVisibility(View.GONE);
-//                AppDocument doc = new AppDocument(true,true);
-//                onMenuClicked(doc);
+                AppDocument doc = new AppDocument(true,true);
+                onMenuClicked(doc);
             }
         });
     }

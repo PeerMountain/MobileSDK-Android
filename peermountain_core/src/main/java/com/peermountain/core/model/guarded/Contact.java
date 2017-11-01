@@ -2,6 +2,7 @@ package com.peermountain.core.model.guarded;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -20,6 +21,16 @@ public class Contact implements Parcelable {
         id = UUID.randomUUID().toString();
     }
 
+    public PublicUser getPublicUser(String type){
+        for (PublicUser publicUser : getPublicProfiles()) {
+            if(publicUser!=null
+                    && !TextUtils.isEmpty(publicUser.getLoginType())
+                    && publicUser.getLoginType().equalsIgnoreCase(type)){
+                return publicUser;
+            }
+        }
+        return null;
+    }
     public String getMail() {
         return mail;
     }

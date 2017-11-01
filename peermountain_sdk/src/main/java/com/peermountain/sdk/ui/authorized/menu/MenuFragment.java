@@ -140,15 +140,6 @@ public class MenuFragment extends Fragment {
         if (profile != null) {
             mTvUsername.setText(profile.getNames());
             ProfileSettingsFragment.loadAvatar(getContext(),profile,mPmIvAvatar);
-//            if (!TextUtils.isEmpty(profile.getImageUri())) {
-//                mPmIvAvatar.setImageURI(Uri.parse(profile.getImageUri()));
-//            } else if (!TextUtils.isEmpty(profile.getPictureUrl())) {
-//                Picasso.with(getContext())
-//                        .load(profile.getPictureUrl())
-//                        .placeholder(R.drawable.pm_profil_white)
-//                        .error(R.color.pm_error_loading_avatar)
-//                        .into(mPmIvAvatar);
-//            }
         }
     }
 

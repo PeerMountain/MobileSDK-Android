@@ -114,7 +114,7 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
     @Override
     public void handleResult(Result rawResult) {
         if(mListener!=null){
-            mListener.onContactScannedFromQR(PeerMountainManager.handleQrScannResult(rawResult));
+            mListener.onContactScannedFromQR(PeerMountainManager.handleQrScanResult(rawResult));
         }
 //        final String qrcode =rawResult.getText().toString();
 //        Log.i("",""+qrcode);

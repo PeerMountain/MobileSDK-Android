@@ -29,6 +29,8 @@ import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -371,7 +373,11 @@ public class PeerMountainManager {
         return ShareHelper.getQrCode(contact, imageSize, qrColor);
     }
 
-    public static Contact handleQrScannResult(Result rawResult) {
+    public static Contact handleQrScanResult(Result rawResult) {
         return ShareHelper.handleResult(rawResult);
+    }
+
+    public static PublicUser parseFbPublicProfile(JSONObject userJ) {
+        return MyJsonParser.parseFbUser(userJ);
     }
 }

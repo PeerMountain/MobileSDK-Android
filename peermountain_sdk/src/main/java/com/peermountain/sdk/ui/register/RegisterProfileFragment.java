@@ -38,7 +38,6 @@ import com.linkedin.platform.errors.LIAuthError;
 import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
-import com.linkedin.platform.utils.Scope;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
@@ -47,11 +46,12 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
-import com.peermountain.sdk.R;
 import com.peermountain.core.utils.PmDocumentsHelper;
+import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
+import com.peermountain.sdk.utils.PublicProfileUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.squareup.picasso.Picasso;
@@ -59,8 +59,6 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class RegisterProfileFragment extends ToolbarFragment {
@@ -340,7 +338,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     }
 
     private void loginToLI() {
-        LISessionManager.getInstance(getApplicationContext()).init(getActivity(), buildScope(), new
+        LISessionManager.getInstance(getApplicationContext()).init(getActivity(), PublicProfileUtils.buildScopeLn(), new
                 AuthListener() {
                     @Override
                     public void onAuthSuccess() {
@@ -358,9 +356,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 }, true);
     }
 
-    private static Scope buildScope() {
-        return Scope.build(Scope.R_BASICPROFILE, Scope.R_EMAILADDRESS);
-    }
+
 
     private PublicUser liUser = null;
 
@@ -403,7 +399,18 @@ public class RegisterProfileFragment extends ToolbarFragment {
         manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                getFbUser(loginResult);
+                PublicProfileUtils.getFbUser(loginResult,new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject userJ, GraphResponse response) {
+                        fbUser = PeerMountainManager.parseFbPublicProfile(userJ);
+                        pmTvFB.setText(TextUtils.isEmpty(fbUser.getEmail()) ? fbUser.getSurname() : fbUser.getEmail());
+                        pmTvFBConnect.setText(R.string.pm_register_btn_disconnect);
+                        if (imageUri == null && fbUser.getPictureUrl() != null) {
+                            pictureUrl = fbUser.getPictureUrl();
+                            loadAvatarFromPublicProfileUrl();
+                        }
+                    }
+                });
             }
 
             @Override
@@ -418,58 +425,10 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 onLoginError(exception.getMessage());
             }
         });
-        List<String> permissionNeeds = Arrays.asList("public_profile", "email");
-        manager.logInWithReadPermissions(getActivity(), permissionNeeds);
+        manager.logInWithReadPermissions(getActivity(), PublicProfileUtils.fbPermisions());
     }
 
     PublicUser fbUser = null;
-
-    private void getFbUser(LoginResult loginResult) {
-        if (loginResult.getAccessToken() != null) {
-            final GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject userJ, GraphResponse response) {
-                    fbUser = parseFbUser(userJ);
-                    if (imageUri == null && fbUser.getPictureUrl() != null) {
-                        pictureUrl = fbUser.getPictureUrl();
-                        loadAvatarFromPublicProfileUrl();
-                    }
-                }
-            });
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,first_name,last_name,email,gender,picture");
-            request.setParameters(parameters);
-            request.executeAsync();
-        }
-    }
-
-    private PublicUser parseFbUser(JSONObject userJ) {
-        PublicUser publicUser = null;
-        if (userJ != null) {
-            LogUtils.d("fb user", userJ.toString());
-            if (!userJ.optString("id").isEmpty()) {
-                String id = userJ.optString("id");
-                String name = userJ.optString("first_name");
-                String lastName = userJ.optString("last_name");
-                String email = userJ.optString("email");
-                String gender = userJ.optString("gender");
-                String picture = userJ.optString("picture");
-                if (picture != null) {
-                    JSONObject picObj = userJ.optJSONObject("picture");
-                    if (picObj != null && picObj.has("data")) {
-                        picture = picObj.optJSONObject("data").optString("url");
-                    } else {
-                        picture = null;
-                    }
-                }
-                publicUser = new PublicUser(id, email, name, lastName, picture);
-                pmTvFB.setText(TextUtils.isEmpty(email) ? name : email);
-                pmTvFBConnect.setText(R.string.pm_register_btn_disconnect);
-//                Toast.makeText(getContext(), "FB logged", Toast.LENGTH_LONG).show();
-            }
-        }
-        return publicUser;
-    }
 
 
     public static File dispatchTakePictureIntent(Activity atv, Fragment fragment, int REQUEST_IMAGE_CAPTURE) {

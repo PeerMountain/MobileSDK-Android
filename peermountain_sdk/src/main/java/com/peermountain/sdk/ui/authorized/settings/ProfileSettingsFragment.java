@@ -20,19 +20,40 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.linkedin.platform.AccessToken;
+import com.linkedin.platform.LISessionManager;
+import com.linkedin.platform.errors.LIApiError;
+import com.linkedin.platform.errors.LIAuthError;
+import com.linkedin.platform.listeners.ApiListener;
+import com.linkedin.platform.listeners.ApiResponse;
+import com.linkedin.platform.listeners.AuthListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.peermountain.core.model.guarded.Contact;
+import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.FileUtils;
+import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.ui.register.RegisterProfileFragment;
+import com.peermountain.sdk.utils.PublicProfileUtils;
+import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.views.PeerMountainTextView;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -57,9 +78,10 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     private EditText etEmail;
     private EditText etPhone;
     private LinearLayout llSocialData;
-    private EditText etFb;
-    private EditText etLn;
     private boolean isMe = true;
+
+    private CallbackManager callbackManager;
+    private LoginManager manager;
 
     public ProfileSettingsFragment() {
         // Required empty public constructor
@@ -87,6 +109,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        callbackManager = CallbackManager.Factory.create();
         if (getArguments() != null) {
             Contact otherContact = getArguments().getParcelable(ARG_CONTACT);
             if (otherContact != null) {
@@ -151,6 +174,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
             if (data != null && data.getData() != null) {
                 imageUri = data.getData();
@@ -164,16 +189,23 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
     }
 
+    private Context getApplicationContext() {
+        return getActivity().getApplicationContext();
+    }
+
     private void saveProfile() {
         if (contact != null) {
-            if (imageUri != null) {
+
+            if (isMe) {
+                if (imageUri != null)
+                    contact.setImageUri(imageUri.toString());
+                setUpAvatar();
+                saveMyProfile();
+            } else if (imageUri != null) {
                 contact.setValidated(true);
                 contact.setValidatedImageUri(imageUri.toString());
                 PeerMountainManager.updateContact(contact);
                 initValidateBtn();
-            }
-            if (isMe) {
-                saveMyProfile();
             }
         }
     }
@@ -185,8 +217,10 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         contact.setPhone(etPhone.getText().toString());
         contact.setMail(etEmail.getText().toString());
         PeerMountainManager.saveProfile((Profile) contact);
-        if(mListener!=null) mListener.onMyProfileUpdated();
+        if (mListener != null) mListener.onMyProfileUpdated();
     }
+
+    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect;
 
     private void initView(View view) {
         pmIvAvatar = (RoundedImageView) view.findViewById(R.id.pmIvAvatar);
@@ -199,12 +233,14 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         etEmail = (EditText) view.findViewById(R.id.etEmail);
         etPhone = (EditText) view.findViewById(R.id.etPhone);
         llSocialData = (LinearLayout) view.findViewById(R.id.llSocialData);
-        etFb = (EditText) view.findViewById(R.id.etFb);
-        etLn = (EditText) view.findViewById(R.id.etLn);
         tvAddContact = view.findViewById(R.id.tvAddContact);
         tvValidateContact = view.findViewById(R.id.tvValidateContact);
         flValidate = view.findViewById(R.id.flValidate);
         ivValidated = view.findViewById(R.id.ivValidated);
+        pmTvFB = view.findViewById(R.id.pmTvFB);
+        pmTvFBConnect = view.findViewById(R.id.pmTvFBConnect);
+        pmTvLN = view.findViewById(R.id.pmTvLN);
+        pmTvLNConnect = view.findViewById(R.id.pmTvLNConnect);
     }
 
     private boolean canEdit = false;
@@ -235,7 +271,11 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         etPob.setEnabled(canEdit);
         etPhone.setEnabled(canEdit);
         etEmail.setEnabled(canEdit);
-        if(canEdit) PmSystemHelper.showKeyboard(getActivity(),etNames);
+        if (canEdit && llGeneralData.getVisibility() == View.VISIBLE) {
+            PmSystemHelper.showKeyboard(getActivity(), etNames);
+        }
+        pmTvLNConnect.setVisibility(canEdit ? View.VISIBLE : View.GONE);
+        pmTvFBConnect.setVisibility(canEdit ? View.VISIBLE : View.GONE);
     }
 
     public void setToolbarForContact() {
@@ -249,10 +289,17 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void setToolbarForMyProfile() {
-        setToolbar(R.drawable.pm_ic_logo_white,
+        setToolbar(!canEdit ?R.drawable.pm_ic_logo_white : R.drawable.pm_ic_close_24dp,
                 !canEdit ? R.drawable.pm_ic_edit_24dp : R.drawable.pm_ic_check_24dp,
                 R.string.pm_profile_settings_title,
-                homeToolbarEvents != null ? homeToolbarEvents.getOpenMenuListener() : null,
+                !canEdit ? homeToolbarEvents.getOpenMenuListener() : new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        contact = PeerMountainManager.getProfile();//reset
+                        canEdit = false;
+                        setUpView();
+                    }
+                },
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -298,12 +345,14 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 if (publicUser != null) {
                     switch (publicUser.getLoginType()) {
                         case PublicUser.LOGIN_TYPE_FB:
-                            etFb.setText(TextUtils.isEmpty(publicUser.getEmail()) ?
+                            pmTvFB.setText(TextUtils.isEmpty(publicUser.getEmail()) ?
                                     publicUser.getFirstname() : publicUser.getEmail());
+                            pmTvFBConnect.setText(R.string.pm_register_btn_disconnect);
                             break;
                         case PublicUser.LOGIN_TYPE_LN:
-                            etLn.setText(TextUtils.isEmpty(publicUser.getEmail()) ?
+                            pmTvLN.setText(TextUtils.isEmpty(publicUser.getEmail()) ?
                                     publicUser.getFirstname() : publicUser.getEmail());
+                            pmTvLNConnect.setText(R.string.pm_register_btn_disconnect);
                             break;
                     }
                 }
@@ -340,9 +389,127 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                     }
                 }
             });
+        } else {
+            pmTvFBConnect.setOnClickListener(new RippleOnClickListener() {
+                @Override
+                public void onClickListener(View view) {
+                    onPublicProfileClick(pmTvFBConnect, pmTvFB, PublicUser.LOGIN_TYPE_FB);
+                }
+            });
+            pmIvAvatar.setOnClickListener(new RippleOnClickListener() {
+                @Override
+                public void onClickListener(View view) {
+                   requestCapture();
+                }
+            });
+            pmTvLNConnect.setOnClickListener(new RippleOnClickListener() {
+                @Override
+                public void onClickListener(View view) {
+                    onPublicProfileClick(pmTvLNConnect, pmTvLN, PublicUser.LOGIN_TYPE_LN);
+                }
+            });
+//            RippleUtils.setRippleEffectSquare( pmTvFBConnect, pmTvLNConnect);
         }
         tvTabGeneral.setOnClickListener(tabClick);
         tvTabSocial.setOnClickListener(tabClick);
+    }
+
+    public void onPublicProfileClick(TextView pmTvConnect, TextView pmTv, String type) {
+        PublicUser user = contact.getPublicUser(type);
+        if (user == null) {
+            switch (type) {
+                case PublicUser.LOGIN_TYPE_LN:
+                    loginToLI();
+                    break;
+                case PublicUser.LOGIN_TYPE_FB:
+                    loginToFb();
+                    break;
+            }
+        } else {
+            switch (type) {
+                case PublicUser.LOGIN_TYPE_LN:
+                    PeerMountainManager.logoutPublicProfile();
+                    break;
+                case PublicUser.LOGIN_TYPE_FB:
+                    LoginManager.getInstance().logOut();
+                    break;
+            }
+            contact.getPublicProfiles().remove(user);
+            PeerMountainManager.saveProfile((Profile) contact);
+            pmTvConnect.setText(R.string.pm_register_btn_connect);
+            pmTv.setText("");
+        }
+    }
+
+    public void loginToFb() {
+        manager = LoginManager.getInstance();
+        manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                PublicProfileUtils.getFbUser(loginResult, new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject userJ, GraphResponse response) {
+                        PublicUser fbUser = PeerMountainManager.parseFbPublicProfile(userJ);
+                        pmTvFB.setText(TextUtils.isEmpty(fbUser.getEmail()) ? fbUser.getSurname() : fbUser.getEmail());
+                        pmTvFBConnect.setText(R.string.pm_register_btn_disconnect);
+                        contact.getPublicProfiles().add(fbUser);
+//                        PeerMountainManager.saveProfile((Profile) contact);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancel() {
+                LogUtils.e("FacebookException", "onCancel");
+                PublicProfileUtils.onLoginError(getContext(), getString(R.string.pm_error_canceled));
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                LogUtils.e("FacebookException", exception.getMessage());
+                PublicProfileUtils.onLoginError(getContext(), exception.getMessage());
+            }
+        });
+        manager.logInWithReadPermissions(getActivity(), PublicProfileUtils.fbPermisions());
+    }
+
+    private void loginToLI() {
+        LISessionManager.getInstance(getApplicationContext()).init(getActivity(), PublicProfileUtils.buildScopeLn(), new
+                AuthListener() {
+                    @Override
+                    public void onAuthSuccess() {
+                        getLiUser();
+                    }
+
+                    @Override
+                    public void onAuthError(LIAuthError error) {
+                        LogUtils.e("LISessionManager", getString(R.string.pm_error_msg, error.toString()));
+                        PublicProfileUtils.onLoginError(getContext(), error.toString());
+                    }
+                }, true);
+    }
+
+    public void getLiUser() {
+        AccessToken accessToken = LISessionManager.getInstance
+                (getApplicationContext()).getSession().getAccessToken();
+        PeerMountainManager.saveLiAccessToken(new PmAccessToken(accessToken.getValue(), accessToken.getExpiresOn()));
+        PublicProfileUtils.getLiUser(getApplicationContext(),
+                new ApiListener() {
+                    @Override
+                    public void onApiSuccess(ApiResponse s) {
+                        PublicUser liUser = PeerMountainManager.readPublicUser(s.getResponseDataAsString());
+                        pmTvLN.setText(liUser.getEmail());
+                        pmTvLNConnect.setText(R.string.pm_register_btn_disconnect);
+                        contact.getPublicProfiles().add(liUser);
+//                        PeerMountainManager.saveProfile((Profile) contact);
+                    }
+
+                    @Override
+                    public void onApiError(LIApiError error) {
+                        LogUtils.e("getLiUser", error.toString());
+                        PublicProfileUtils.onLoginError(getContext(), error.toString());
+                    }
+                });
     }
 
     private void initBtn() {

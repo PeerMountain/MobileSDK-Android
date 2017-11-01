@@ -14,6 +14,9 @@ import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.utils.LogUtils;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -118,6 +121,32 @@ class MyJsonParser {
         else
             reader.skipValue();
         return -1;
+    }
+
+    public static PublicUser parseFbUser(JSONObject userJ) {
+        PublicUser publicUser = null;
+        if (userJ != null) {
+            LogUtils.d("fb user", userJ.toString());
+            if (!userJ.optString("id").isEmpty()) {
+                String id = userJ.optString("id");
+                String name = userJ.optString("first_name");
+                String lastName = userJ.optString("last_name");
+                String email = userJ.optString("email");
+                String gender = userJ.optString("gender");
+                String picture = userJ.optString("picture");
+                if (picture != null) {
+                    JSONObject picObj = userJ.optJSONObject("picture");
+                    if (picObj != null && picObj.has("data")) {
+                        picture = picObj.optJSONObject("data").optString("url");
+                    } else {
+                        picture = null;
+                    }
+                }
+                publicUser = new PublicUser(id, email, name, lastName, picture);
+//                Toast.makeText(getContext(), "FB logged", Toast.LENGTH_LONG).show();
+            }
+        }
+        return publicUser;
     }
 
 

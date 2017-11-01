@@ -15,4 +15,11 @@ public abstract class SecureActivity extends ToolbarActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE);
     }
+
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        // TODO: 11/1/2017 restart inactivity timer here, also add logic in pause/resume of Home Activity
+    }
 }

@@ -120,6 +120,10 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="pm_settings_profile_lbl_public" parent="pm_settings_profile_lbl">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
     <style name="pm_settings_profile_et">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
