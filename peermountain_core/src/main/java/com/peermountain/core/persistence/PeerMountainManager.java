@@ -237,15 +237,15 @@ public class PeerMountainManager {
         return Cache.getInstance().getPin();
     }
 
-    public static void saveLastTimeLogin() {
-        Cache.getInstance().setLastTimeLogin(System.currentTimeMillis());
+    public static void saveLastTimeActive() {
+        Cache.getInstance().setLastTimeActive(System.currentTimeMillis());
     }
 
     /**
      * @return if the time for valid user set in PeerMountainConfig has past since was authorization
      */
-    public static boolean shuldAuthorize() {
-        return System.currentTimeMillis() > Cache.getInstance().getLastTimeLogin() + getPeerMountainConfig().getUserValidTime();
+    public static boolean shouldAuthorize() {
+        return System.currentTimeMillis() > Cache.getInstance().getLastTimeActive() + getPeerMountainConfig().getUserValidTime();
     }
 
     public static void saveFingerprint(boolean enabled) {

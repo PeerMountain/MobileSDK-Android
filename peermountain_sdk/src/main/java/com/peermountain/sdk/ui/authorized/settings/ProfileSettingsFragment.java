@@ -303,9 +303,9 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        if (canEdit) saveProfile();
-//                        canEdit = !canEdit;
-//                        setUpView();
+                        if (canEdit) saveProfile();
+                        canEdit = !canEdit;
+                        setUpView();
                     }
                 });
     }
@@ -555,10 +555,12 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 if (showGeneral) {
                     showGeneral = false;
                     initTabs();
+                    if(canEdit) PmSystemHelper.hideKeyboard(getActivity(),etNames);
                 }
             } else {
                 if (!showGeneral) {
                     showGeneral = true;
+                    if(canEdit)  PmSystemHelper.showKeyboard(getActivity(),etNames);;
                     initTabs();
                 }
             }

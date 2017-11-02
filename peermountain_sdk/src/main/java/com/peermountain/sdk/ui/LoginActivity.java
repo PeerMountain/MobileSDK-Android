@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.ui.register.RegisterPinFragment;
@@ -14,6 +15,7 @@ public class LoginActivity extends SecureActivity implements RegisterPinFragment
 
     public static void show(Activity activity, int requestCode) {
         Intent starter = new Intent(activity, LoginActivity.class);
+//        starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivityForResult(starter, requestCode);
     }
 
@@ -38,6 +40,7 @@ public class LoginActivity extends SecureActivity implements RegisterPinFragment
 
     @Override
     public void onLogin() {
+        PeerMountainManager.saveLastTimeActive();
         setResult(Activity.RESULT_OK);
         finish();
     }

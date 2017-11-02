@@ -97,11 +97,11 @@ class Cache {
         this.profile = profile;
     }
 
-    public long getLastTimeLogin() {
+    public long getLastTimeActive() {
         return lastTimeLogin;
     }
 
-    public void setLastTimeLogin(long lastTimeLogin) {
+    public void setLastTimeActive(long lastTimeLogin) {
         this.lastTimeLogin = lastTimeLogin;
     }
 

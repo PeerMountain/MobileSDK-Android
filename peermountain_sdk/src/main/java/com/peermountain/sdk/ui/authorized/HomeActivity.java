@@ -15,8 +15,10 @@ import android.widget.LinearLayout;
 
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.persistence.InactiveTimer;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.share.ShareContactActivity;
+import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.contacts.ContactsFragment;
@@ -46,7 +48,6 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         setContentView(R.layout.pm_activity_home, R.id.llMain);
         getViews();
         initDrawer();
-        authorize();
 //        setUpView();
     }
 
@@ -80,6 +81,34 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         if (!handled && topFragment != null) {
             topFragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        authorize();
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        if(inactivityCallback!=null) {
+            InactiveTimer.startListeningForNewInactivity();
+            PeerMountainManager.saveLastTimeActive();
+        }
+//        LogUtils.w("Secure atv", "onUserInteraction");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startListenForUserInteraction();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopListenForUserInteraction();
     }
 
     @Override
@@ -129,8 +158,12 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     public void authorize() {
         if (checkUserIsValid()
                 && (PeerMountainManager.getPin() != null || PeerMountainManager.getFingerprint())) {
-            // TODO: 10/13/2017 check if was active for less than 5 min ago
-            PeerMountainSDK.authorize(this, REQUEST_LOGIN);
+            //check if was not active for more than 5 min ago
+            if(PeerMountainManager.shouldAuthorize()) {
+                PeerMountainSDK.authorize(this, REQUEST_LOGIN);
+            }else{
+                setUpView();
+            }
         } else
             PeerMountainSDK.registerFlow(this, REQUEST_REGISTER);
     }
@@ -195,6 +228,15 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     private boolean isViewSet = false;
 
     private void setUpView() {
+        inactivityCallback = new InactiveTimer.InactiveTimerInteractions() {
+            @Override
+            public void onTimeOfInactivityEnds() {
+                LogUtils.w("inactivityCallback","onTimeOfInactivityEnds");
+                stopListenForUserInteraction();
+                PeerMountainSDK.authorize(HomeActivity.this, REQUEST_LOGIN);
+            }
+        };
+        startListenForUserInteraction();
         if (!isViewSet) {
             isViewSet = true;
             showHomeFragment();

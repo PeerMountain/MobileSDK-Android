@@ -27,11 +27,11 @@ public class StartActivity extends AppCompatActivity {
             config = new PeerMountainConfig()
                     .setApplicationContext(getApplicationContext())
                     .setDebug(BuildConfig.DEBUG)
-                    .setUserValidTime(1000*60*5)//5min, after that the user will be asked again to authorize
+                    .setUserValidTime(1000*30)//5min, after that the user will be asked again to authorize
                     .setIdCheckLicense("licence-2017-09-12");//axt file from assets
         } else {//just update
             config.setApplicationContext(getApplicationContext())
-                    .setUserValidTime(1000*60*5)
+                    .setUserValidTime(1000*30)
                     .setDebug(BuildConfig.DEBUG);
         }
         PeerMountainSDK.init(config);//ui ready
