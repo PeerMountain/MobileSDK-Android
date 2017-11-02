@@ -29,6 +29,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.linkedin.platform.AccessToken;
 import com.linkedin.platform.LISessionManager;
 import com.linkedin.platform.errors.LIApiError;
@@ -61,7 +63,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     private static final String ARG_CONTACT = "param1";
     public static final int REQUEST_IMAGE_CAPTURE = 711;
     public static final int REQUEST_CODE_WRITE_PERMISSION = 723;
-
+    public static final int REQUEST_CODE_SIGN_IN_GOOGLE = 727;
 
     private OnFragmentInteractionListener mListener;
 
@@ -106,10 +108,14 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
     }
 
+    GoogleApiClient mGoogleApiClient;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
+        prepareGoogleSignIn();
+
         if (getArguments() != null) {
             Contact otherContact = getArguments().getParcelable(ARG_CONTACT);
             if (otherContact != null) {
@@ -176,6 +182,10 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         super.onActivityResult(requestCode, resultCode, data);
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SIGN_IN_GOOGLE) {
+//            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+//            handleSignInResult(result);
+        }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
             if (data != null && data.getData() != null) {
                 imageUri = data.getData();
@@ -187,6 +197,26 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 }
             }
         }
+    }
+
+    public void prepareGoogleSignIn() {
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+//        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+//                .enableAutoManage(getActivity() /* FragmentActivity */,
+//                        new GoogleApiClient.OnConnectionFailedListener() {
+//                            @Override
+//                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//                            }
+//                        })
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
     }
 
     private Context getApplicationContext() {
@@ -220,7 +250,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         if (mListener != null) mListener.onMyProfileUpdated();
     }
 
-    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect;
+    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect, pmTvG, pmTvGConnect;
 
     private void initView(View view) {
         pmIvAvatar = (RoundedImageView) view.findViewById(R.id.pmIvAvatar);
@@ -241,6 +271,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         pmTvFBConnect = view.findViewById(R.id.pmTvFBConnect);
         pmTvLN = view.findViewById(R.id.pmTvLN);
         pmTvLNConnect = view.findViewById(R.id.pmTvLNConnect);
+        pmTvG = view.findViewById(R.id.pmTvG);
+        pmTvGConnect = view.findViewById(R.id.pmTvGConnect);
     }
 
     private boolean canEdit = false;
@@ -276,6 +308,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
         pmTvLNConnect.setVisibility(canEdit ? View.VISIBLE : View.GONE);
         pmTvFBConnect.setVisibility(canEdit ? View.VISIBLE : View.GONE);
+        pmTvGConnect.setVisibility(canEdit ? View.VISIBLE : View.GONE);
     }
 
     public void setToolbarForContact() {
@@ -289,7 +322,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void setToolbarForMyProfile() {
-        setToolbar(!canEdit ?R.drawable.pm_ic_logo_white : R.drawable.pm_ic_close_24dp,
+        setToolbar(!canEdit ? R.drawable.pm_ic_logo_white : R.drawable.pm_ic_close_24dp,
                 !canEdit ? R.drawable.pm_ic_edit_24dp : R.drawable.pm_ic_check_24dp,
                 R.string.pm_profile_settings_title,
                 !canEdit ? homeToolbarEvents.getOpenMenuListener() : new View.OnClickListener() {
@@ -354,6 +387,11 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                                     publicUser.getFirstname() : publicUser.getEmail());
                             pmTvLNConnect.setText(R.string.pm_register_btn_disconnect);
                             break;
+                        case PublicUser.LOGIN_TYPE_G:
+                            pmTvG.setText(TextUtils.isEmpty(publicUser.getEmail()) ?
+                                    publicUser.getFirstname() : publicUser.getEmail());
+                            pmTvGConnect.setText(R.string.pm_register_btn_disconnect);
+                            break;
                     }
                 }
             }
@@ -396,16 +434,22 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                     onPublicProfileClick(pmTvFBConnect, pmTvFB, PublicUser.LOGIN_TYPE_FB);
                 }
             });
-            pmIvAvatar.setOnClickListener(new RippleOnClickListener() {
+            pmTvGConnect.setOnClickListener(new RippleOnClickListener() {
                 @Override
                 public void onClickListener(View view) {
-                   requestCapture();
+                    onPublicProfileClick(pmTvGConnect, pmTvG, PublicUser.LOGIN_TYPE_G);
                 }
             });
             pmTvLNConnect.setOnClickListener(new RippleOnClickListener() {
                 @Override
                 public void onClickListener(View view) {
                     onPublicProfileClick(pmTvLNConnect, pmTvLN, PublicUser.LOGIN_TYPE_LN);
+                }
+            });
+            pmIvAvatar.setOnClickListener(new RippleOnClickListener() {
+                @Override
+                public void onClickListener(View view) {
+                    requestCapture();
                 }
             });
 //            RippleUtils.setRippleEffectSquare( pmTvFBConnect, pmTvLNConnect);
@@ -424,6 +468,9 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 case PublicUser.LOGIN_TYPE_FB:
                     loginToFb();
                     break;
+                case PublicUser.LOGIN_TYPE_G:
+                    loginToG();
+                    break;
             }
         } else {
             switch (type) {
@@ -433,12 +480,26 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 case PublicUser.LOGIN_TYPE_FB:
                     LoginManager.getInstance().logOut();
                     break;
+                case PublicUser.LOGIN_TYPE_G:
+//                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+//                            new ResultCallback<Status>() {
+//                                @Override
+//                                public void onResult(Status status) {
+//                                    // ...
+//                                }
+//                            });
+                    break;
             }
             contact.getPublicProfiles().remove(user);
             PeerMountainManager.saveProfile((Profile) contact);
             pmTvConnect.setText(R.string.pm_register_btn_connect);
             pmTv.setText("");
         }
+    }
+
+    public void loginToG() {
+//        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+//        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
     }
 
     public void loginToFb() {
@@ -512,6 +573,18 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 });
     }
 
+//    private void handleSignInResult(GoogleSignInResult result) {
+//        LogUtils.d("getGUser", "handleSignInResult:" + result.isSuccess());
+//        if (result.isSuccess()) {
+//            // Signed in successfully, show authenticated UI.
+//            GoogleSignInAccount acct = result.getSignInAccount();
+//            PublicUser gUser = new PublicUser(acct);
+//            pmTvG.setText(gUser.getEmail());
+//            pmTvGConnect.setText(R.string.pm_register_btn_disconnect);
+//            contact.getPublicProfiles().add(gUser);
+//        }
+//    }
+
     private void initBtn() {
         if (toAdd) {
             tvAddContact.setText(getString(R.string.pm_settings_add_to_contacts));
@@ -555,12 +628,13 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 if (showGeneral) {
                     showGeneral = false;
                     initTabs();
-                    if(canEdit) PmSystemHelper.hideKeyboard(getActivity(),etNames);
+                    if (canEdit) PmSystemHelper.hideKeyboard(getActivity(), etNames);
                 }
             } else {
                 if (!showGeneral) {
                     showGeneral = true;
-                    if(canEdit)  PmSystemHelper.showKeyboard(getActivity(),etNames);;
+                    if (canEdit) PmSystemHelper.showKeyboard(getActivity(), etNames);
+                    ;
                     initTabs();
                 }
             }

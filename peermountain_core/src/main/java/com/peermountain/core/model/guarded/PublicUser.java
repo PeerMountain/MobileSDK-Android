@@ -4,12 +4,14 @@ package com.peermountain.core.model.guarded;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class PublicUser implements Parcelable {
     public static final String LOGIN_TYPE_FB = "FACEBOOK";
     public static final String LOGIN_TYPE_LN = "LINKEDIN";
+    public static final String LOGIN_TYPE_G = "GOOGLE";
 
     @SerializedName("linked_in")
     @Expose
@@ -55,6 +57,17 @@ public class PublicUser implements Parcelable {
         this.surname = surname;
         this.pictureUrl = pictureUrl;
         loginType = LOGIN_TYPE_FB;
+    }
+
+    public PublicUser(GoogleSignInAccount acct) {
+        linked_in = acct.getId();
+        email = acct.getEmail();
+        firstname=acct.getGivenName();
+        surname = acct.getFamilyName();
+        if(acct.getPhotoUrl()!=null) {
+            pictureUrl = acct.getPhotoUrl().toString();
+        }
+        loginType = LOGIN_TYPE_G;
     }
 
     public String getLinked_in() {

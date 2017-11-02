@@ -2,8 +2,6 @@ package com.peermountain.core.persistence;
 
 import android.os.Handler;
 
-import com.peermountain.core.utils.LogUtils;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Timer;
@@ -37,7 +35,7 @@ public class InactiveTimer {
 
     public static void startListeningForNewInactivity() {
         stopListening();
-        LogUtils.d(TAG,"Start "+ new Date(System.currentTimeMillis()).toString());
+        log("Start "+ new Date(System.currentTimeMillis()).toString());
         timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {

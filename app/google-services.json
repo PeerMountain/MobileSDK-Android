@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "232654896437",
+    "project_id": "medichome-154412"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232654896437:android:abcaffd02a01ab52",
+        "android_client_info": {
+          "package_name": "com.peermountain.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232654896437-0ecsjsmgdhbnma0m0ta5eukilvg499fv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.peermountain.dev",
+            "certificate_hash": "57a95e6482bc82f4f79698e22f8cf87bbedbfed8"
+          }
+        },
+        {
+          "client_id": "232654896437-ab53sc7k4edl47nsehdj6uqv6lcm8ju7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhpzSZmsVZAMoENhbNeFmkw6SiTeDdQ84"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

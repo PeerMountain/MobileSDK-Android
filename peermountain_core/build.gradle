@@ -41,8 +41,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibraryVersion}"
     compile "com.android.support:design:${rootProject.ext.supportLibraryVersion}"
 
-
-    compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 //    compile "com.google.android.gms:play-services-vision:${rootProject.ext.playServicesVersion}" // this is only for the selfie feature
 //    compile 'com.android.support:multidex:1.0.1' //this must be added in app gradle also to implement multidex logic
     //idcheck.io end
@@ -52,4 +50,7 @@ dependencies {
     compile 'com.github.barteksc:pdfium-android:1.7.0'
     compile 'com.google.zxing:core:3.3.0'
     testCompile 'junit:junit:4.12'
+
+    compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
+
 }

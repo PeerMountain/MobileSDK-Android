@@ -12,3 +12,6 @@
               }
           }
       }
+4.Google SignIn must create a google-services.json
+    + apply plugin: 'com.google.gms.google-services'
+    + classpath 'com.google.gms:google-services:3.1.0'

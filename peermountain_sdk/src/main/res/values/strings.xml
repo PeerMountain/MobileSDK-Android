@@ -141,6 +141,7 @@
     <string name="pm_profile_settings_lbl_phone">Phone</string>
     <string name="pm_profile_settings_lbl_fb">Facebook</string>
     <string name="pm_profile_settings_lbl_ln">Linkedin</string>
+    <string name="pm_profile_settings_lbl_g">Google</string>
     <string name="pm_settings_add_to_contacts">ADD TO CONTACTS</string>
     <string name="pm_settings_remove_from_contacts">REMOVE FROM CONTACTS</string>
     <string name="pm_contact_btn_not_validated">Cross Validate</string>
