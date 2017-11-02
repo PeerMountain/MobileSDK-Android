@@ -65,6 +65,8 @@ dependencies {
     compile project(path: ':peermountain_sdk')
     //idcheck.io
     compile 'com.android.support:multidex:1.0.2'
+
+    //even when same play-services-auth are in peermountain_sdk, without adding it here to app wont compile
     compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
 }
 apply plugin: 'com.google.gms.google-services'
