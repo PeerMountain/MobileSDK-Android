@@ -13,6 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.InactiveTimer;
@@ -437,6 +441,25 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     @Override
     public void onMyProfileUpdated() {
         refreshMenu();
+    }
+    GoogleApiClient mGoogleApiClient;
+    @Override
+    public GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso) {
+        if(mGoogleApiClient==null) {
+            // Build a GoogleApiClient with access to the Google Sign-In API and the
+            // options specified by gso.
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            new GoogleApiClient.OnConnectionFailedListener() {
+                                @Override
+                                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                                }
+                            })
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+        }
+        return mGoogleApiClient;
     }
 
 //    @Override

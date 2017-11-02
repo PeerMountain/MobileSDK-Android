@@ -29,8 +29,13 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.linkedin.platform.AccessToken;
 import com.linkedin.platform.LISessionManager;
 import com.linkedin.platform.errors.LIApiError;
@@ -183,8 +188,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SIGN_IN_GOOGLE) {
-//            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-//            handleSignInResult(result);
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
             if (data != null && data.getData() != null) {
@@ -207,16 +212,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 .build();
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
-//        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-//                .enableAutoManage(getActivity() /* FragmentActivity */,
-//                        new GoogleApiClient.OnConnectionFailedListener() {
-//                            @Override
-//                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//                            }
-//                        })
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-//                .build();
+        mGoogleApiClient = mListener.getGoogleApiClientForSignIn(gso);
     }
 
     private Context getApplicationContext() {
@@ -481,13 +477,13 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                     LoginManager.getInstance().logOut();
                     break;
                 case PublicUser.LOGIN_TYPE_G:
-//                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-//                            new ResultCallback<Status>() {
-//                                @Override
-//                                public void onResult(Status status) {
-//                                    // ...
-//                                }
-//                            });
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+                                    // ...
+                                }
+                            });
                     break;
             }
             contact.getPublicProfiles().remove(user);
@@ -498,8 +494,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     }
 
     public void loginToG() {
-//        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-//        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
     }
 
     public void loginToFb() {
@@ -573,17 +569,17 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 });
     }
 
-//    private void handleSignInResult(GoogleSignInResult result) {
-//        LogUtils.d("getGUser", "handleSignInResult:" + result.isSuccess());
-//        if (result.isSuccess()) {
-//            // Signed in successfully, show authenticated UI.
-//            GoogleSignInAccount acct = result.getSignInAccount();
-//            PublicUser gUser = new PublicUser(acct);
-//            pmTvG.setText(gUser.getEmail());
-//            pmTvGConnect.setText(R.string.pm_register_btn_disconnect);
-//            contact.getPublicProfiles().add(gUser);
-//        }
-//    }
+    private void handleSignInResult(GoogleSignInResult result) {
+        LogUtils.d("getGUser", "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            PublicUser gUser = new PublicUser(acct);
+            pmTvG.setText(gUser.getEmail());
+            pmTvGConnect.setText(R.string.pm_register_btn_disconnect);
+            contact.getPublicProfiles().add(gUser);
+        }
+    }
 
     private void initBtn() {
         if (toAdd) {
@@ -662,5 +658,6 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
 
     public interface OnFragmentInteractionListener {
         void onMyProfileUpdated();
+        GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso);
     }
 }
