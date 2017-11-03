@@ -171,7 +171,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/pm_margin_normal"
                 android:layout_marginRight="@dimen/pm_margin_normal"
                 android:orientation="horizontal">
 
@@ -184,6 +183,36 @@
 
                 <com.peermountain.sdk.views.PeerMountainTextView
                     android:id="@+id/pmTvLNConnect"
+                    style="@style/pm_reg_profile_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/pm_register_btn_connect"/>
+
+            </LinearLayout>
+            <View
+                style="@style/pm_grey_line"/>
+
+            <com.peermountain.sdk.views.PeerMountainTextView
+                style="@style/pm_reg_profile_lbl"
+                android:text="@string/pm_profile_settings_lbl_g"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pm_margin_normal"
+                android:layout_marginRight="@dimen/pm_margin_normal"
+                android:orientation="horizontal">
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/pmTvG"
+                    style="@style/pm_reg_profile_et"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <com.peermountain.sdk.views.PeerMountainTextView
+                    android:id="@+id/pmTvGConnect"
                     style="@style/pm_reg_profile_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

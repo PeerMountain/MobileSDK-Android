@@ -493,11 +493,6 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
     }
 
-    public void loginToG() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
-    }
-
     public void loginToFb() {
         manager = LoginManager.getInstance();
         manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -527,7 +522,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 PublicProfileUtils.onLoginError(getContext(), exception.getMessage());
             }
         });
-        manager.logInWithReadPermissions(getActivity(), PublicProfileUtils.fbPermisions());
+        manager.logInWithReadPermissions(getActivity(), PublicProfileUtils.fbPermissions());
     }
 
     private void loginToLI() {
@@ -567,6 +562,11 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                         PublicProfileUtils.onLoginError(getContext(), error.toString());
                     }
                 });
+    }
+
+    public void loginToG() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
     }
 
     private void handleSignInResult(GoogleSignInResult result) {

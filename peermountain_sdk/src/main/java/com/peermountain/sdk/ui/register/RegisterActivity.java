@@ -6,12 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.sdk.R;
 import com.peermountain.core.utils.PmDocumentsHelper;
+import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
@@ -208,5 +213,25 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
     @Override
     public void lockMenu(boolean lock) {
 
+    }
+
+    GoogleApiClient mGoogleApiClient;
+    @Override
+    public GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso) {
+        if(mGoogleApiClient==null) {
+            // Build a GoogleApiClient with access to the Google Sign-In API and the
+            // options specified by gso.
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            new GoogleApiClient.OnConnectionFailedListener() {
+                                @Override
+                                public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                                    Toast.makeText(RegisterActivity.this, "Unable to connect to Google Api", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+        }
+        return mGoogleApiClient;
     }
 }

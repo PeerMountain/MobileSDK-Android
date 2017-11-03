@@ -30,6 +30,13 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.linkedin.platform.APIHelper;
 import com.linkedin.platform.AccessToken;
 import com.linkedin.platform.LISessionManager;
@@ -65,6 +72,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     private static final String ARG_PARAM1 = "param1";
     public static final int REQUEST_IMAGE_CAPTURE = 111;
     public static final int REQUEST_CODE_WRITE_PERMISSION = 123;
+    public static final int REQUEST_CODE_SIGN_IN_GOOGLE = 1727;
 
     private OnFragmentInteractionListener mListener;
     private DocumentID document;
@@ -98,6 +106,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
+        prepareGoogleSignIn();
         if (getArguments() != null) {
             document = getArguments().getParcelable(ARG_PARAM1);
             if(document==null) return;
@@ -150,6 +159,10 @@ public class RegisterProfileFragment extends ToolbarFragment {
         super.onActivityResult(requestCode, resultCode, data);
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(getActivity(), requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SIGN_IN_GOOGLE) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
             if (data != null && data.getData() != null) {
                 imageUri = data.getData();
@@ -184,6 +197,16 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 }
                 break;
         }
+    }
+    public void prepareGoogleSignIn() {
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = mListener.getGoogleApiClientForSignIn(gso);
     }
 
     boolean foundEmptyField = false;
@@ -230,7 +253,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     ImageView pmIvAvatar, pmIvNext;
     EditText pmEtNames, pmEtDob, pmEtPob, pmEtMail, pmEtPhone;
-    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect, tvNext;
+    TextView pmTvFB, pmTvFBConnect, pmTvLN, pmTvLNConnect, tvNext, pmTvG, pmTvGConnect;
 
     /**
      * type ff to fast get new views
@@ -248,10 +271,12 @@ public class RegisterProfileFragment extends ToolbarFragment {
         pmTvLNConnect = view.findViewById(R.id.pmTvLNConnect);
         pmIvNext = view.findViewById(R.id.pmIvNext);
         tvNext = view.findViewById(R.id.tvNext);
+        pmTvG = view.findViewById(R.id.pmTvG);
+        pmTvGConnect = view.findViewById(R.id.pmTvGConnect);
     }
 
     private File avatarFile = null;
-
+    GoogleApiClient mGoogleApiClient;
     /**
      * type oclf to fast get new setOnClickListener, rr/rc/rs to set ripple
      */
@@ -294,7 +319,26 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 }
             }
         });
-        RippleUtils.setRippleEffectSquare(tvNext, pmTvFBConnect, pmTvLNConnect);
+        pmTvGConnect.setOnClickListener(new RippleOnClickListener() {
+            @Override
+            public void onClickListener(View view) {
+                if (gUser == null) {
+                    loginToG();
+                } else {
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+                                    // ...
+                                }
+                            });
+                    gUser = null;
+                    pmTvGConnect.setText(R.string.pm_register_btn_connect);
+                    pmTvG.setText("");
+                }
+            }
+        });
+        RippleUtils.setRippleEffectSquare(tvNext, pmTvFBConnect, pmTvLNConnect,pmTvGConnect);
     }
 
     private void requestCapture() {
@@ -328,6 +372,9 @@ public class RegisterProfileFragment extends ToolbarFragment {
         if (fbUser != null) {
             profile.getPublicProfiles().add(fbUser);
         }
+        if (gUser != null) {
+            profile.getPublicProfiles().add(gUser);
+        }
         PeerMountainManager.saveProfile(profile);
         //nothing is mandatory
         isDone = true;
@@ -335,6 +382,22 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     private Context getApplicationContext() {
         return getActivity().getApplicationContext();
+    }
+
+    public void loginToG() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        getActivity().startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
+    }
+    PublicUser gUser;
+    private void handleSignInResult(GoogleSignInResult result) {
+        LogUtils.d("getGUser", "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            gUser = new PublicUser(acct);
+            pmTvG.setText(gUser.getEmail());
+            pmTvGConnect.setText(R.string.pm_register_btn_disconnect);
+        }
     }
 
     private void loginToLI() {
@@ -425,7 +488,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 onLoginError(exception.getMessage());
             }
         });
-        manager.logInWithReadPermissions(getActivity(), PublicProfileUtils.fbPermisions());
+        manager.logInWithReadPermissions(getActivity(), PublicProfileUtils.fbPermissions());
     }
 
     PublicUser fbUser = null;
@@ -500,5 +563,6 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     public interface OnFragmentInteractionListener {
         void onProfileRegistered();
+        GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso);
     }
 }

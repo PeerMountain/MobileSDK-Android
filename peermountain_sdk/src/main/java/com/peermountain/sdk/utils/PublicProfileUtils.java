@@ -41,7 +41,7 @@ public class PublicProfileUtils {
     public static Scope buildScopeLn() {
         return Scope.build(Scope.R_BASICPROFILE, Scope.R_EMAILADDRESS);
     }
-    public static List<String> fbPermisions() {
+    public static List<String> fbPermissions() {
         return  Arrays.asList("public_profile", "email");
     }
 }

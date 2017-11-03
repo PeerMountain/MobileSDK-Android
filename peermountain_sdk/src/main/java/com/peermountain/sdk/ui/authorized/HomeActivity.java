@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -453,7 +454,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
                             new GoogleApiClient.OnConnectionFailedListener() {
                                 @Override
                                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+                                    Toast.makeText(HomeActivity.this, "Unable to connect to Google Api", Toast.LENGTH_SHORT).show();
                                 }
                             })
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
