@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/pm_bkg"
+    tools:context="com.peermountain.core.camera.CameraActivity">
+
+    <TextView android:id="@+id/tvMsg"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/pm_msg_saving_live_selfie"
+              android:textColor="@color/pm_share_text"
+              android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- Camera -->
+    <com.otaliastudios.cameraview.CameraView
+        android:id="@+id/camera"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="@dimen/camera_size"
+        android:layout_height="@dimen/camera_size"
+        android:layout_gravity="center"
+        android:keepScreenOn="true"
+        app:cameraAudio="off"
+        app:cameraCropOutput="true"
+        app:cameraFacing="front"
+        app:cameraFlash="off"
+        app:cameraGestureLongTap="none"
+        app:cameraGesturePinch="zoom"
+        app:cameraGestureScrollHorizontal="exposureCorrection"
+        app:cameraGestureScrollVertical="none"
+        app:cameraGestureTap="focusWithMarker"
+        app:cameraGrid="off"
+        app:cameraJpegQuality="100"
+        app:cameraSessionType="picture"/>
+
+    <ImageView
+        android:id="@+id/btnRecord"
+        style="@style/camera_button"
+        android:background="@drawable/pm_rounded_btn"
+        app:srcCompat="@drawable/pm_ic_photo"
+        android:padding="12dp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="@style/camera_button"
+        android:visibility="visible"/>
+</FrameLayout>

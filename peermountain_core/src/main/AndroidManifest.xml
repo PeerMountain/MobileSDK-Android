@@ -21,10 +21,22 @@
         android:allowBackup="true"
         android:supportsRtl="true"
         android:theme="@style/PmCoreTheme"
-        tools:replace="android:theme" >
-        <activity android:name=".share.ShareContactActivity"
-                  android:theme="@style/PmCoreTheme"
-            android:screenOrientation="portrait">
+        tools:replace="android:theme">
+        <activity
+            android:name=".share.ShareContactActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/PmCoreTheme">
+        </activity>
+        <activity android:name=".camera.CameraActivity"
+                  android:screenOrientation="portrait"
+                  android:configChanges="orientation|keyboardHidden"
+                  android:theme="@style/PmCoreTheme">
+        </activity>
+        <activity
+            android:name=".camera.ShowLiveSelfieActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/PmCoreTheme">
         </activity>
     </application>
 

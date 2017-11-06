@@ -29,6 +29,13 @@
             android:visibility="visible"
             android:src="@drawable/pm_ic_shield_on"
             tools:visibility="visible"/>
+        <ImageView
+            android:id="@+id/pmIvAvatarLive"
+                   style="@style/pm_avatar_image"
+                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                   android:layout_gravity="center_horizontal"
+                   android:layout_margin="@dimen/pm_margin_normal"
+            android:visibility="gone"/>
     </FrameLayout>
 
     <LinearLayout

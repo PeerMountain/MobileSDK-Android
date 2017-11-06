@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorAccent">#49C5DE</color>
     <color name="pm_share_card_bkg">#33FFFFFF</color><!--20%-->
     <color name="pm_share_text">#FFFFFF</color><!--100%-->
     <color name="pm_share_et_hint">#80FFFFFF</color><!--50%-->

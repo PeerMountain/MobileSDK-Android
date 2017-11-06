@@ -67,7 +67,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_share_contact);
+        setContentView(R.layout.pm_activity_share_contact);
         setResult(RESULT_CANCELED);
         initView();
 

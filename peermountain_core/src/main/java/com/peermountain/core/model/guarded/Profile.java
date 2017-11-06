@@ -8,11 +8,24 @@ import java.util.ArrayList;
 
 public class Profile extends Contact{
     private ArrayList<DocumentID> documents = new ArrayList<>();
+    private ArrayList<String> liveSelfie = new ArrayList<>();
     public ArrayList<DocumentID> getDocuments() {
         return documents;
     }
 
     public void setDocuments(ArrayList<DocumentID> documents) {
         this.documents = documents;
+    }
+
+    public ArrayList<String> getLiveSelfie() {
+        return liveSelfie;
+    }
+
+    public void setLiveSelfie(ArrayList<String> liveSelfie) {
+        this.liveSelfie = liveSelfie;
+    }
+
+    public boolean hasLiveSelfie(){
+        return liveSelfie!=null && liveSelfie.size()>0;
     }
 }

@@ -78,6 +78,7 @@ class MyJsonParser {
     public static final String TYPE = "type";
     public static final String FILE_DOCUMENTS = "fileDocuments";
     public static final String FILE_URI = "file_uri";
+    public static final String LIVE_SELFIE = "live_selfie";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -339,6 +340,9 @@ class MyJsonParser {
                 case DOCUMENTS:
                     profile.setDocuments(readDocuments(reader));
                     break;
+                case LIVE_SELFIE:
+                    profile.setLiveSelfie(readLiveSelfie(reader));
+                    break;
                 default:
                     reader.skipValue();
             }
@@ -420,10 +424,20 @@ class MyJsonParser {
         }
         if (!justContact && contact instanceof Profile) {
             writeDocumentsID(writer, ((Profile) contact).getDocuments());
+            writeLiveSelfie(writer, ((Profile) contact).getLiveSelfie());
         }
         writer.endObject();
     }
-
+    private static void writeLiveSelfie(JsonWriter writer, ArrayList<String> images) throws IOException {
+        if (images.size() > 0) {
+            writer.name(LIVE_SELFIE);
+            writer.beginArray();
+            for (String image : images) {
+                writer.value(image);
+            }
+            writer.endArray();
+        }
+    }
     private static void writeDocumentsID(JsonWriter writer, ArrayList<DocumentID> documents) throws IOException {
         if (documents.size() > 0) {
             writer.name(DOCUMENTS);
@@ -579,6 +593,16 @@ class MyJsonParser {
         return contacts;
     }
 
+    private static ArrayList<String> readLiveSelfie(JsonReader reader) throws IOException {
+        ArrayList<String> images = new ArrayList<String>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            String image = getString(reader);
+            if (image != null) images.add(image);
+        }
+        reader.endArray();
+        return images;
+    }
 
     private static ArrayList<DocumentID> readDocuments(JsonReader reader) throws IOException {
         ArrayList<DocumentID> documents = new ArrayList<DocumentID>();

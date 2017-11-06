@@ -139,6 +139,14 @@ public class PeerMountainManager {
         }
     }
 
+    public static void saveCurrentProfile() {
+        try {
+            SharedPreferenceManager.saveProfile(MyJsonParser.writeProfile(getProfile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Profile getProfile() {
         if (Cache.getInstance().getProfile() == null)
             Cache.getInstance().setProfile(SharedPreferenceManager.getProfile());

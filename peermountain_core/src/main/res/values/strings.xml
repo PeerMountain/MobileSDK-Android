@@ -16,4 +16,6 @@
     <string name="pm_btn_ask_for_permission_again">OK</string>
     <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
+    <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
+    <string name="title_activity_show_live_selfie">ShowLiveSelfieActivity</string>
 </resources>
