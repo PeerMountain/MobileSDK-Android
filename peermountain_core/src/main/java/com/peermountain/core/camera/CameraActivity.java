@@ -17,7 +17,6 @@ import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.peermountain.core.R;
-import com.peermountain.core.utils.PmSystemHelper;
 
 import java.io.File;
 import java.util.ArrayList;

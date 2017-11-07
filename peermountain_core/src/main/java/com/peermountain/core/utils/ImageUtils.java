@@ -187,7 +187,9 @@ public class ImageUtils {
     public static void saveImageAsync(File file, Bitmap bitmap, SaveImageEvents callback){
         new SaveBitmapToFile(file, bitmap, callback).execute();
     }
-
+    public static void saveImageAsyncParallel(File file, Bitmap bitmap, SaveImageEvents callback){
+        new SaveBitmapToFile(file, bitmap, callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
     private static class SaveBitmapToFile extends AsyncTask<Void,Void,Boolean>{
         private File file;
         private Bitmap bitmap;

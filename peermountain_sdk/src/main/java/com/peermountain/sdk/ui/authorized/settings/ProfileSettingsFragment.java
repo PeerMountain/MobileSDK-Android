@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -55,8 +53,8 @@ import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.FileUtils;
-import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PmLiveSelfieHelper;
 import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
@@ -221,8 +219,8 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                     }
                     break;
                 case REQUEST_LIVE_IMAGE_CAPTURE:
-                    if(CameraActivity.bitmaps!=null
-                            && CameraActivity.bitmaps.size()>0) {
+                    if (CameraActivity.bitmaps != null
+                            && CameraActivity.bitmaps.size() > 0) {
                         pmIvAvatar.setImageDrawable(new BitmapDrawable(getResources(), CameraActivity.bitmaps.get(0)));
                     }
 //                    loadAvatar(getContext(), PeerMountainManager.getProfile(), pmIvAvatar);
@@ -266,58 +264,74 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     File dir;
     ArrayList<File> files = new ArrayList<>();
     int imagesInProcess = 0;
-    private void saveLiveSelfie(){
-        setToolbar(-1,R.string.pm_profile_settings_title,null);
-        prepareDir();
-        imagesInProcess = 0;
-        for (Bitmap bitmap : CameraActivity.bitmaps) {
-            saveFrame(bitmap);
-        }
-        CameraActivity.bitmaps=null;
-    }
 
-    private void saveFrame(Bitmap bitmap) {
-        String name = System.currentTimeMillis()+imagesInProcess + ".jpg";
-        File file = new File(dir, name);
-        files.add(file);
-        imagesInProcess++;
-        ImageUtils.saveImageAsync(file, bitmap, new ImageUtils.SaveImageEvents() {
+    private void saveLiveSelfie() {
+        setToolbar(-1, R.string.pm_profile_settings_title, null);
+        new PmLiveSelfieHelper(new PmLiveSelfieHelper.Events() {
             @Override
-            public void onFinish(boolean isSuccess) {
-                imagesInProcess--;
-                LogUtils.d("onPicture", "is saved : " + isSuccess);
-                if (imagesInProcess <= 0) {
-                    linkImagesToMyProfile();
-                }
+            public Activity getActivity() {
+                return ProfileSettingsFragment.this.getActivity();
             }
-        });
+
+            @Override
+            public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
+                if (mListener == null) return;
+                Profile profile = (Profile) contact;
+                profile.setImageUri(liveSelfie.get(0));
+                profile.setLiveSelfie(liveSelfie);
+                saveProfileAndRefreshView();
+            }
+        }).saveLiveSelfie();
+//        prepareDir();
+//        imagesInProcess = 0;
+//        for (Bitmap bitmap : CameraActivity.bitmaps) {
+//            saveFrame(bitmap);
+//        }
+//        CameraActivity.bitmaps = null;
     }
 
-    private void prepareDir() {
-        // TODO: 11/6/17 set dir in local storage?
-        dir = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),"/liveSelfie");
-        if(dir.exists()){
-            if(dir.listFiles().length>0) {
-                for (File file : dir.listFiles()) {
-                    file.delete();
-                }
-            }
-        }else {
-            dir.mkdirs();
-        }
-    }
-
-    private void linkImagesToMyProfile() {
-        ArrayList<String> liveSelfie = new ArrayList<>();
-        if (files.size() == 0) return;
-        Profile profile = (Profile) contact;
-        profile.setImageUri(Uri.fromFile(files.get(0)).toString());
-        for (int i = 0; i < files.size(); i++) {
-            liveSelfie.add(Uri.fromFile(files.get(i)).toString());
-        }
-        profile.setLiveSelfie(liveSelfie);
-        setViewForSavedProfile();
-    }
+//    private void saveFrame(Bitmap bitmap) {
+//        String name = System.currentTimeMillis() + imagesInProcess + ".jpg";
+//        File file = new File(dir, name);
+//        files.add(file);
+//        imagesInProcess++;
+//        ImageUtils.saveImageAsync(file, bitmap, new ImageUtils.SaveImageEvents() {
+//            @Override
+//            public void onFinish(boolean isSuccess) {
+//                imagesInProcess--;
+//                LogUtils.d("onPicture", "is saved : " + isSuccess);
+//                if (imagesInProcess <= 0) {
+//                    linkImagesToMyProfile();
+//                }
+//            }
+//        });
+//    }
+//
+//    private void prepareDir() {
+//        // TODO: 11/6/17 set dir in local storage?
+//        dir = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "/liveSelfie");
+//        if (dir.exists()) {
+//            if (dir.listFiles().length > 0) {
+//                for (File file : dir.listFiles()) {
+//                    file.delete();
+//                }
+//            }
+//        } else {
+//            dir.mkdirs();
+//        }
+//    }
+//
+//    private void linkImagesToMyProfile() {
+//        ArrayList<String> liveSelfie = new ArrayList<>();
+//        if (files.size() == 0) return;
+//        Profile profile = (Profile) contact;
+//        profile.setImageUri(Uri.fromFile(files.get(0)).toString());
+//        for (int i = 0; i < files.size(); i++) {
+//            liveSelfie.add(Uri.fromFile(files.get(i)).toString());
+//        }
+//        profile.setLiveSelfie(liveSelfie);
+//        if (mListener != null) saveProfileAndRefreshView();
+//    }
 
 
     private void saveMyProfile() {
@@ -326,14 +340,14 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         contact.setPob(etPob.getText().toString());
         contact.setPhone(etPhone.getText().toString());
         contact.setMail(etEmail.getText().toString());
-        if(CameraActivity.bitmaps!=null && CameraActivity.bitmaps.size()>0){
+        if (CameraActivity.bitmaps != null && CameraActivity.bitmaps.size() > 0) {
             saveLiveSelfie();
-        }else {
-            setViewForSavedProfile();
+        } else {
+            saveProfileAndRefreshView();
         }
     }
 
-    private void setViewForSavedProfile() {
+    private void saveProfileAndRefreshView() {
         PeerMountainManager.saveProfile((Profile) contact);
         setUpView();
         if (mListener != null) mListener.onMyProfileUpdated();
@@ -419,7 +433,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                 !canEdit ? homeToolbarEvents.getOpenMenuListener() : new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        CameraActivity.bitmaps=null;
+                        CameraActivity.bitmaps = null;
                         contact = PeerMountainManager.getProfile();//reset
                         canEdit = false;
                         setUpView();
@@ -431,7 +445,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                         canEdit = !canEdit;
                         if (!canEdit) {
                             saveProfile();
-                        }else {
+                        } else {
                             setUpView();
                         }
                     }
