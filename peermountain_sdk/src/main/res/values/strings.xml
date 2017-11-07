@@ -102,6 +102,7 @@
     <string name="pm_register_btn_disconnect">Disconnect</string>
     <string name="pm_lbl_confirm_title">Congratulations!</string>
     <string name="pm_lbl_confirm_msg">Your identity\nhas been verified.</string>
+    <string name="pm_err_no_liveselfie_created">Please make a live selfie to finish your registration</string>
     <!--register profile fragment end-->
 
     <!--home fragment-->

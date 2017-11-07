@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 
 public class PmLiveSelfieHelper {
+
     private File dir;
     private ArrayList<File> files = new ArrayList<>();
     private int imagesInProcess = 0;

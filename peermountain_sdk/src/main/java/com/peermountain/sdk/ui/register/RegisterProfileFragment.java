@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import com.linkedin.platform.errors.LIAuthError;
 import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
+import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
@@ -54,6 +56,8 @@ import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.core.utils.PmDocumentsHelper;
+import com.peermountain.core.utils.PmLiveSelfieHelper;
+import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
@@ -66,6 +70,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class RegisterProfileFragment extends ToolbarFragment {
@@ -109,15 +114,15 @@ public class RegisterProfileFragment extends ToolbarFragment {
         prepareGoogleSignIn();
         if (getArguments() != null) {
             document = getArguments().getParcelable(ARG_PARAM1);
-            if(document==null) return;
+            if (document == null) return;
             imageSidesDone = 4;
 //            if (document.getImageCropped() != null) imageSidesDone+=2;//first make a smaller image, then copy and delete the original
 //            if (document.getImageCroppedBack() != null) imageSidesDone+=2;
-            PmDocumentsHelper.resizeIdImages(getActivity(),  document,
-                    new SizeImageEventCallback(true,false),
-                    new SizeImageEventCallback(false,false),
-                    new SizeImageEventCallback(true,true),
-                    new SizeImageEventCallback(false,true));
+            PmDocumentsHelper.resizeIdImages(getActivity(), document,
+                    new SizeImageEventCallback(true, false),
+                    new SizeImageEventCallback(false, false),
+                    new SizeImageEventCallback(true, true),
+                    new SizeImageEventCallback(false, true));
         }
     }
 
@@ -164,24 +169,29 @@ public class RegisterProfileFragment extends ToolbarFragment {
             handleSignInResult(result);
         }
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (data != null && data.getData() != null) {
-                imageUri = data.getData();
+            if (CameraActivity.bitmaps != null
+                    && CameraActivity.bitmaps.size() > 0) {
+                pmIvAvatar.setImageDrawable(new BitmapDrawable(getResources(), CameraActivity.bitmaps.get(0)));
                 saveProfile();
             } else {
-                if (avatarFile != null && avatarFile.exists()) {
-                    imageUri = Uri.fromFile(avatarFile);
-                    saveProfile();
-                }
+                DialogUtils.showInfoSnackbar(getActivity(), R.string.pm_err_no_liveselfie_created);
             }
+//            if (data != null && data.getData() != null) {
+//                imageUri = data.getData();
+//                saveProfile();
+//            } else {
+//                if (avatarFile != null && avatarFile.exists()) {
+//                    imageUri = Uri.fromFile(avatarFile);
+//                    saveProfile();
+//                }
+//            }
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (isDone && imageSidesDone == 0)
-            if (mListener != null)
-                mListener.onProfileRegistered();
+        finish();
     }
 
     @Override
@@ -198,6 +208,13 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 break;
         }
     }
+
+    private void finish() {
+        if (isDone && imageSidesDone == 0)
+            if (mListener != null)
+                mListener.onProfileRegistered();
+    }
+
     public void prepareGoogleSignIn() {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -277,6 +294,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     private File avatarFile = null;
     GoogleApiClient mGoogleApiClient;
+
     /**
      * type oclf to fast get new setOnClickListener, rr/rc/rs to set ripple
      */
@@ -338,7 +356,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 }
             }
         });
-        RippleUtils.setRippleEffectSquare(tvNext, pmTvFBConnect, pmTvLNConnect,pmTvGConnect);
+        RippleUtils.setRippleEffectSquare(tvNext, pmTvFBConnect, pmTvLNConnect, pmTvGConnect);
     }
 
     private void requestCapture() {
@@ -347,7 +365,10 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_PERMISSION);
         } else {
-            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);
+            PmSystemHelper.hideKeyboard(getActivity(), pmEtNames);
+            Intent intent = new Intent(getActivity(), CameraActivity.class);
+            getActivity().startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+//            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -355,6 +376,48 @@ public class RegisterProfileFragment extends ToolbarFragment {
     boolean isDone = false;
 
     private void saveProfile() {
+        if (CameraActivity.bitmaps != null && CameraActivity.bitmaps.size() > 0) {
+            new PmLiveSelfieHelper(new PmLiveSelfieHelper.Events() {
+                @Override
+                public Activity getActivity() {
+                    return RegisterProfileFragment.this.getActivity();
+                }
+
+                @Override
+                public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
+                    if (mListener == null) return;
+                    saveProfile(liveSelfie);
+                }
+            }).saveLiveSelfie();
+        }
+//        Profile profile = new Profile();
+//        profile.getDocuments().add(document);
+//        profile.setNames(pmEtNames.getText().toString());
+//        profile.setDob(pmEtDob.getText().toString());
+//        profile.setPob(pmEtPob.getText().toString());
+//        profile.setMail(pmEtMail.getText().toString());
+//        profile.setPhone(pmEtPhone.getText().toString());
+//        if (imageUri != null) {
+//            profile.setImageUri(imageUri.toString());
+//        }
+//        profile.setPictureUrl(pictureUrl);
+//        if (liUser != null) {
+//            profile.getPublicProfiles().add(liUser);
+//        }
+//        if (fbUser != null) {
+//            profile.getPublicProfiles().add(fbUser);
+//        }
+//        if (gUser != null) {
+//            profile.getPublicProfiles().add(gUser);
+//        }
+//        PeerMountainManager.saveProfile(profile);
+//        //nothing is mandatory
+//        isDone = true;
+    }
+
+    private void saveProfile(ArrayList<String> liveSelfie) {
+        if (liveSelfie == null || liveSelfie.size() == 0) return;
+
         Profile profile = new Profile();
         profile.getDocuments().add(document);
         profile.setNames(pmEtNames.getText().toString());
@@ -362,9 +425,11 @@ public class RegisterProfileFragment extends ToolbarFragment {
         profile.setPob(pmEtPob.getText().toString());
         profile.setMail(pmEtMail.getText().toString());
         profile.setPhone(pmEtPhone.getText().toString());
-        if (imageUri != null) {
-            profile.setImageUri(imageUri.toString());
-        }
+//        if (imageUri != null) {
+//            profile.setImageUri(imageUri.toString());
+//        }
+        profile.setImageUri(liveSelfie.get(0));
+        profile.setLiveSelfie(liveSelfie);
         profile.setPictureUrl(pictureUrl);
         if (liUser != null) {
             profile.getPublicProfiles().add(liUser);
@@ -378,6 +443,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         PeerMountainManager.saveProfile(profile);
         //nothing is mandatory
         isDone = true;
+        finish();
     }
 
     private Context getApplicationContext() {
@@ -388,7 +454,9 @@ public class RegisterProfileFragment extends ToolbarFragment {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         getActivity().startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN_GOOGLE);
     }
+
     PublicUser gUser;
+
     private void handleSignInResult(GoogleSignInResult result) {
         LogUtils.d("getGUser", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
@@ -418,7 +486,6 @@ public class RegisterProfileFragment extends ToolbarFragment {
                     }
                 }, true);
     }
-
 
 
     private PublicUser liUser = null;
@@ -462,7 +529,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                PublicProfileUtils.getFbUser(loginResult,new GraphRequest.GraphJSONObjectCallback() {
+                PublicProfileUtils.getFbUser(loginResult, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject userJ, GraphResponse response) {
                         fbUser = PeerMountainManager.parseFbPublicProfile(userJ);
@@ -522,15 +589,16 @@ public class RegisterProfileFragment extends ToolbarFragment {
     }
 
     int imageSidesDone = 0;
+
     private void onIdDocumentImageHandled() {
         imageSidesDone--;
-        if (imageSidesDone == 0 && isDone && mListener!=null) {
+        if (imageSidesDone == 0 && isDone && mListener != null) {
             mListener.onProfileRegistered();
         }
     }
 
     private class SizeImageEventCallback implements PmDocumentsHelper.SizeImageEvent {
-        private Boolean isFront,isMoving;
+        private Boolean isFront, isMoving;
 
         public SizeImageEventCallback(Boolean isFront, Boolean isMoving) {
             this.isFront = isFront;
@@ -539,13 +607,13 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
         @Override
         public void onSized(AXTImageResult image) {
-            if(!isMoving) {
+            if (!isMoving) {
                 if (isFront) {
                     document.setImageCroppedSmall(image);
                 } else {
                     document.setImageCroppedBackSmall(image);
                 }
-            }else{
+            } else {
                 if (isFront) {
                     document.setImageCropped(image);
                 } else {
@@ -563,6 +631,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 
     public interface OnFragmentInteractionListener {
         void onProfileRegistered();
+
         GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso);
     }
 }
