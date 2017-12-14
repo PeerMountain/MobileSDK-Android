@@ -21,7 +21,7 @@ import java.util.Random;
 
 class KeywordsHelper {
 
-    public static Keywords getRandomKeywords(Context context) {
+    static Keywords getRandomKeywords(Context context) {
         ArrayList<Keyword> all = new ArrayList<>();
         loadAssetList(context, all, "kycwords.txt");
         HashSet<Keyword> random = new HashSet<>();
@@ -32,7 +32,7 @@ class KeywordsHelper {
         return new Keywords(random);
     }
 
-    public static Keywords getRandomKeywordsWithSavedIncluded(Context context) {
+    static Keywords getRandomKeywordsWithSavedIncluded(Context context) {
         ArrayList<Keyword> all = new ArrayList<>();
         loadAssetList(context, all, "kycwords.txt");
         Keywords savedKeywordsObject = PeerMountainManager.getSavedKeywordsObject();

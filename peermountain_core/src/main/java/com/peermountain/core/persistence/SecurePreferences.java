@@ -22,6 +22,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
@@ -73,7 +74,7 @@ public class SecurePreferences {
      *                       the plaintext value of the value which can be used to decipher the value.
      * @throws SecurePreferencesException
      */
-    public SecurePreferences(Context context, String preferenceName, String secureKey, boolean encryptKeys) throws SecurePreferencesException {
+    SecurePreferences(Context context, String preferenceName, String secureKey, boolean encryptKeys) throws SecurePreferencesException {
         try {
             this.writer = Cipher.getInstance(TRANSFORMATION);
             this.reader = Cipher.getInstance(TRANSFORMATION);
@@ -91,7 +92,7 @@ public class SecurePreferences {
         }
     }
 
-    protected void initCiphers(String secureKey) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException,
+    private void initCiphers(String secureKey) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException,
             InvalidAlgorithmParameterException {
         IvParameterSpec ivSpec = getIv();
         SecretKeySpec secretKey = getSecretKey(secureKey);
@@ -101,18 +102,18 @@ public class SecurePreferences {
         keyWriter.init(Cipher.ENCRYPT_MODE, secretKey);
     }
 
-    protected IvParameterSpec getIv() {
+    private IvParameterSpec getIv() {
         byte[] iv = new byte[writer.getBlockSize()];
         System.arraycopy("fldsjfodasjifudslfjdsaofshaufihadsf".getBytes(), 0, iv, 0, writer.getBlockSize());
         return new IvParameterSpec(iv);
     }
 
-    protected SecretKeySpec getSecretKey(String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private SecretKeySpec getSecretKey(String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         byte[] keyBytes = createKeyBytes(key);
         return new SecretKeySpec(keyBytes, TRANSFORMATION);
     }
 
-    protected byte[] createKeyBytes(String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private byte[] createKeyBytes(String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance(SECRET_KEY_HASH_TRANSFORMATION);
         md.reset();
         byte[] keyBytes = md.digest(key.getBytes(CHARSET));
@@ -121,17 +122,17 @@ public class SecurePreferences {
 
     public void put(String key, String value) {
         if (value == null) {
-            preferences.edit().remove(toKey(key)).commit();
+            removeValue(key);
         } else {
-            putValue(toKey(key), value);
+            putValue(toKey(key), value,false);
         }
     }
 
-    public void apply(String key, String value) {
+    private void apply(String key, String value) {
         if (value == null) {
             preferences.edit().remove(toKey(key)).apply();
         } else {
-            putValue(toKey(key), value);
+            putValue(toKey(key), value, true);
         }
     }
 
@@ -139,7 +140,8 @@ public class SecurePreferences {
         return preferences.contains(toKey(key));
     }
 
-    public void removeValue(String key) {
+    @SuppressLint("ApplySharedPref")
+    private void removeValue(String key) {
         preferences.edit().remove(toKey(key)).commit();
     }
 
@@ -159,7 +161,7 @@ public class SecurePreferences {
         return opt;
     }
 
-    public boolean getBoolean(String key, boolean opt) throws SecurePreferencesException {
+     boolean getBoolean(String key, boolean opt) throws SecurePreferencesException {
         if (preferences.contains(toKey(key))) {
             String securedEncodedValue = preferences.getString(toKey(key), Boolean.toString(opt));
             String res = decrypt(securedEncodedValue);
@@ -168,7 +170,7 @@ public class SecurePreferences {
         return opt;
     }
 
-    public long getLong(String key, long opt) throws SecurePreferencesException {
+     long getLong(String key, long opt) throws SecurePreferencesException {
         if (preferences.contains(toKey(key))) {
             String securedEncodedValue = preferences.getString(toKey(key), Long.toString(opt));
             String res = decrypt(securedEncodedValue);
@@ -177,7 +179,8 @@ public class SecurePreferences {
         return opt;
     }
 
-    public void clear() {
+    @SuppressLint("ApplySharedPref")
+    private void clear() {
         preferences.edit().clear().commit();
     }
 
@@ -187,17 +190,23 @@ public class SecurePreferences {
         else return key;
     }
 
-    private void putValue(String key, String value) throws SecurePreferencesException {
+    @SuppressLint({"CommitPrefEdits", "ApplySharedPref"})
+    private void putValue(String key, String value, boolean apply) throws SecurePreferencesException {
         String secureValueEncoded = encrypt(value, writer);
 
-        preferences.edit().putString(key, secureValueEncoded).commit();
+        preferences.edit().putString(key, secureValueEncoded);
+        if(apply){
+            preferences.edit().apply();
+        }else{
+            preferences.edit().commit();
+        }
     }
 
     public String encrypt(String value) {
         return encrypt(value, keyWriter);
     }
 
-    protected String encrypt(String value, Cipher writer) throws SecurePreferencesException {
+    private String encrypt(String value, Cipher writer) throws SecurePreferencesException {
         byte[] secureValue;
         try {
             secureValue = convert(writer, value.getBytes(CHARSET));
@@ -208,7 +217,7 @@ public class SecurePreferences {
         return secureValueEncoded;
     }
 
-    protected String decrypt(String securedEncodedValue) {
+    private String decrypt(String securedEncodedValue) {
         byte[] securedValue = Base64.decode(securedEncodedValue, Base64.NO_WRAP);
         byte[] value = convert(reader, securedValue);
         try {
@@ -225,10 +234,12 @@ public class SecurePreferences {
             throw new SecurePreferencesException(e);
         }
     }
-public SharedPreferences.Editor edit(){
-    return editor;
-}
-   private SharedPreferences.Editor editor = new SharedPreferences.Editor() {
+
+    SharedPreferences.Editor edit() {
+        return editor;
+    }
+
+    private SharedPreferences.Editor editor = new SharedPreferences.Editor() {
         @Override
         public SharedPreferences.Editor putString(String s, @Nullable String s1) {
             SecurePreferences.this.apply(s, s1);

@@ -287,7 +287,7 @@ class MyJsonParser {
 //        return profile;
     }
 
-    static Profile readProfile(JsonReader reader) throws IOException {
+    private static Profile readProfile(JsonReader reader) throws IOException {
         if (reader.peek() == JsonToken.NULL) {
             reader.skipValue();
             return null;

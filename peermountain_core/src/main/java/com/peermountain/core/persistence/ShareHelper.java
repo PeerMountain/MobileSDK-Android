@@ -2,6 +2,7 @@ package com.peermountain.core.persistence;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
@@ -16,22 +17,15 @@ import com.peermountain.core.model.guarded.Contact;
  * Created by Galeen on 10/31/2017.
  */
 
-public class ShareHelper {
+ class ShareHelper {
 
     @WorkerThread
     static Bitmap getQrCode(Contact contact, int imageSize, int qrColor) {
         QRCodeWriter writer = new QRCodeWriter();
 //            String contentContact = new Gson().toJson(contacts[0]);
-        StringBuilder data = new StringBuilder();
-        String divider = "@#@";
-        data.append(contact.getNames()).append(divider);
-        data.append(contact.getDob()).append(divider);
-        data.append(contact.getPob()).append(divider);
-        data.append(contact.getMail()).append(divider);
-        data.append(contact.getPhone());//.append(d);
-//            data.append(c.getPictureUrl());
+        String data = setData(contact);
         try {
-            BitMatrix bitMatrix = writer.encode(data.toString(), BarcodeFormat.QR_CODE, imageSize, imageSize);
+            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, imageSize, imageSize);
 
             Bitmap bmp = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.RGB_565);
             for (int x = 0; x < imageSize; x++) {
@@ -47,6 +41,19 @@ public class ShareHelper {
             Log.e("QR ERROR", "" + e);
         }
         return null;
+    }
+
+    @NonNull
+    private static String setData(Contact contact) {
+        StringBuilder data = new StringBuilder();
+        String divider = "@#@";
+        data.append(contact.getNames()).append(divider);
+        data.append(contact.getDob()).append(divider);
+        data.append(contact.getPob()).append(divider);
+        data.append(contact.getMail()).append(divider);
+        data.append(contact.getPhone());//.append(d);
+//            data.append(c.getPictureUrl());
+        return data.toString();
     }
 
     static Contact handleResult(Result rawResult) {

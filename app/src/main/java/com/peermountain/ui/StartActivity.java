@@ -19,7 +19,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
+// TODO: 12/13/2017 this must be called in Application.onCreate
         //is important to pass Application context to prevent memory leaks
         //for now it holds only 2 values, in future will keep all customizable data
         PeerMountainConfig config = PeerMountainManager.getLastPeerMountainConfig(this);
