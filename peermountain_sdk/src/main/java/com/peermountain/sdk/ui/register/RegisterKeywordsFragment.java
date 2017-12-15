@@ -21,7 +21,7 @@ import com.peermountain.core.utils.PmSystemHelper;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.sdk.views.PeerMountainTextView;
-
+@Deprecated
 public class RegisterKeywordsFragment extends ToolbarFragment {
 
     private OnFragmentInteractionListener mListener;

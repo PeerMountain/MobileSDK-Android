@@ -44,14 +44,14 @@ import com.peermountain.core.model.guarded.Contact;
     }
 
     @NonNull
-    private static String setData(Contact contact) {
+    static String setData(Contact contact) {
         StringBuilder data = new StringBuilder();
         String divider = "@#@";
         data.append(contact.getNames()).append(divider);
         data.append(contact.getDob()).append(divider);
         data.append(contact.getPob()).append(divider);
-        data.append(contact.getMail()).append(divider);
-        data.append(contact.getPhone());//.append(d);
+        data.append(contact.getPhone()).append(divider);
+        data.append(contact.getMail());//.append(d);
 //            data.append(c.getPictureUrl());
         return data.toString();
     }

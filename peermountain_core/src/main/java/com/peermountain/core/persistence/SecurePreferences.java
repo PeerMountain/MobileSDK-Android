@@ -132,7 +132,7 @@ public class SecurePreferences {
         if (value == null) {
             preferences.edit().remove(toKey(key)).apply();
         } else {
-            putValue(toKey(key), value, true);
+            putValue(toKey(key), value, false);
         }
     }
 
@@ -194,11 +194,11 @@ public class SecurePreferences {
     private void putValue(String key, String value, boolean apply) throws SecurePreferencesException {
         String secureValueEncoded = encrypt(value, writer);
 
-        preferences.edit().putString(key, secureValueEncoded);
+        SharedPreferences.Editor  editor = preferences.edit().putString(key, secureValueEncoded);
         if(apply){
-            preferences.edit().apply();
+            editor.apply();
         }else{
-            preferences.edit().commit();
+            editor.commit();
         }
     }
 

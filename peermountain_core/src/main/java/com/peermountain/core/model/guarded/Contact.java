@@ -136,6 +136,21 @@ public class Contact implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Contact)) return false;
+
+        Contact contact = (Contact) o;
+
+        return id.equals(contact.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
