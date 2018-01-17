@@ -224,7 +224,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     }
 
     private ShareObject shareObject = new ShareObject();
-    private boolean confirmedFinish = false, needToConfirmFinish = false;
+    private boolean receivedConfirmedFinish = false, sentConfirmFinish = false, needToConfirmFinish = true;
 
     private void handleMessage(ShareObject receivedShareObject) {
         if (receivedShareObject != null) {
@@ -237,7 +237,7 @@ public class ShareContactActivity extends ConnectionsActivity {
                     }
                     break;
                 case ShareObject.OPERATION_SHARE_CONFIRM_FINISH:// the other side is done sending and has received my data "OPERATION_SHARE_FINISH"
-                    confirmedFinish = true;
+                    receivedConfirmedFinish = true;
                     returnResult();
                     break;
                 case ShareObject.OPERATION_SHARE_CONTACT_DATA:
@@ -298,7 +298,7 @@ public class ShareContactActivity extends ConnectionsActivity {
     private boolean fileSaved = true;
 
     private void returnResult() {
-        if (!fileSaved || !confirmedFinish) return;
+        if (!fileSaved || !sentConfirmFinish || !receivedConfirmedFinish) return;
         Intent data = new Intent();
         data.putExtra(SHARE_DATA, shareObject);
         setResult(RESULT_OK, data);
@@ -378,12 +378,14 @@ public class ShareContactActivity extends ConnectionsActivity {
 
     private void sendConfirmFinish() {
         needToConfirmFinish = false;
+        sentConfirmFinish = true;
         ShareObject shareObject = new ShareObject(ShareObject.OPERATION_SHARE_CONFIRM_FINISH);
         send(Payload.fromBytes(PeerMountainManager.shareObjectToJson(shareObject).getBytes()));
     }
 
     private void sendFile() {
         if (uri == null) return;
+        fileSaved = false;
         // Open the ParcelFileDescriptor for this URI with read access.
         ParcelFileDescriptor pfd = null;
         try {
