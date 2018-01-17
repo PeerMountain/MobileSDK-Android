@@ -3,8 +3,10 @@ package com.peermountain.core.persistence;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import com.google.zxing.Result;
+import com.peermountain.core.BuildConfig;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.DocumentID;
@@ -37,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 public class PeerMountainManagerTest extends PmBaseInstrumentedTest {
     @Test
     public void testAppContext() throws Exception {
+        Log.e("id",BuildConfig.APPLICATION_ID);
         assertEquals("com.peermountain.core.test", appContext.getPackageName());
     }
 
