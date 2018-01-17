@@ -54,8 +54,8 @@ public class InactiveTimer {
         }, getSessionTime()/* amount of time in milliseconds before execution */);
     }
 
-    private static int getSessionTime() {
-        return 30 * 1000;//10 min
+    private static long getSessionTime() {
+        return PeerMountainManager.getUserValidTime();//5 min
     }
 
     public static void stopListening() {

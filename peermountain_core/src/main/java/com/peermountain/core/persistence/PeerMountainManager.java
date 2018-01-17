@@ -71,6 +71,14 @@ public class PeerMountainManager {
         return Cache.getInstance().getConfig();
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public static long getUserValidTime() {
+        long mills = new PeerMountainConfig().getUserValidTime();//default time
+        if(getPeerMountainConfig()!=null)
+            mills = getPeerMountainConfig().getUserValidTime();//user's set time
+        return mills;
+    }
+
     public static PmAccessToken getLiAccessToken() {
         if (Cache.getInstance().getAccessToken() == null) {
             Cache.getInstance().setAccessToken(SharedPreferenceManager.getPmAccessToken());
