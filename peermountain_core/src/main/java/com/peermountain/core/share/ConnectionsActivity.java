@@ -164,7 +164,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
             new PayloadCallback() {
                 @Override
                 public void onPayloadReceived(String endpointId, Payload payload) {
-                    logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, payload));
+//                    logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, payload));
                     if (payload.getType() == Payload.Type.FILE) {
                         // Add this to our tracking map, so that we can retrieve the payload later.
                         incomingPayloads.put(payload.getId(), payload);
@@ -175,8 +175,8 @@ public abstract class ConnectionsActivity extends AppCompatActivity
 
                 @Override
                 public void onPayloadTransferUpdate(String endpointId, PayloadTransferUpdate update) {
-                    logD(String.format(
-                                    "onPayloadTransferUpdate(endpointId=%s, update=%d)", endpointId, update.getBytesTransferred()));
+//                    logD(String.format(
+//                                    "onPayloadTransferUpdate(endpointId=%s, update=%d)", endpointId, update.getBytesTransferred()));
 
                     if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
                         Payload payload = incomingPayloads.remove(update.getPayloadId());
