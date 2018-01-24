@@ -54,7 +54,7 @@ public class LogUtils {
     }
 
 
-    private static boolean isDebug() {
+    public static boolean isDebug() {
         return PeerMountainManager.getPeerMountainConfig() != null && PeerMountainManager.getPeerMountainConfig().isDebug();
     }
 

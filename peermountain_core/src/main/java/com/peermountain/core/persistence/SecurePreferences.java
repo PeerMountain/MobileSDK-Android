@@ -41,11 +41,11 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 
-public class SecurePreferences {
+class SecurePreferences {
 
     public static class SecurePreferencesException extends RuntimeException {
 
-        public SecurePreferencesException(Throwable e) {
+        SecurePreferencesException(Throwable e) {
             super(e);
         }
 

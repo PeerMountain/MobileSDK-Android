@@ -323,9 +323,9 @@ class SharedPreferenceManager {
     }
 
      static Context getContext() {
-        if (PeerMountainManager.applicationContext == null) {
+        if (PeerMountainManager.getApplicationContext() == null) {
             LogUtils.e("SharedPreferenceManager", "No Context!");
         }
-        return PeerMountainManager.applicationContext;
+        return PeerMountainManager.getApplicationContext();
     }
 }

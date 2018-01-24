@@ -41,7 +41,11 @@ import java.util.HashSet;
  */
 public class PeerMountainManager {
     // TODO: 6.1.2017 г. create a method to update the cache if is dirty
-    static Context applicationContext = null;
+    private static Context applicationContext = null;
+
+    public static Context getApplicationContext() {
+        return applicationContext;
+    }
 
     public static void init(PeerMountainConfig config) {
         PeerMountainManager.applicationContext = config.getApplicationContext();
