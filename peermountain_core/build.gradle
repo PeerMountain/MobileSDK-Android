@@ -61,7 +61,7 @@ dependencies {
     implementation(group: 'org.opendatakit', name: 'opendatakit-javarosa', version: '2.7.0') {
         exclude module: 'joda-time'
     }
-    implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.5.1'
+//    implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.5.1'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"

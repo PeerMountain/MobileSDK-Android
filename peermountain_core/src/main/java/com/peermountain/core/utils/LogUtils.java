@@ -29,15 +29,15 @@ public class LogUtils {
         }
 
         public void d(String msg) {
-            LogUtils.d(TAG, prettyJson(msg));
+            LogUtils.d(TAG, msg);
         }
 
         public void v(String tag, String msg) {
-            LogUtils.v(TAG, prettyJson(msg));
+            LogUtils.v(TAG, msg);
         }
 
         public void w(String msg) {
-            LogUtils.w(TAG, prettyJson(msg));
+            LogUtils.w(TAG, msg);
         }
 
         public void d(HashMap<String, String> postDataParams) {
@@ -45,11 +45,11 @@ public class LogUtils {
         }
 
         public void e(String msg) {
-            LogUtils.e(TAG, prettyJson(msg));
+            LogUtils.e(TAG, msg);
         }
 
         public void i(String msg) {
-            LogUtils.i(TAG, prettyJson(msg));
+            LogUtils.i(TAG, msg);
         }
     }
 

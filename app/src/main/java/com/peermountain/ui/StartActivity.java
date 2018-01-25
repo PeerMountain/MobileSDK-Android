@@ -2,13 +2,18 @@ package com.peermountain.ui;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.peermountain.BuildConfig;
 import com.peermountain.R;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
+import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.PeerMountainSDK;
+
+import java.io.File;
 
 
 public class StartActivity extends AppCompatActivity {
@@ -38,7 +43,26 @@ public class StartActivity extends AppCompatActivity {
 //        PeerMountainManager.init(config); // must implement ui in the app
 
 //        PeerMountainSDK.logout();//to test login again
-        showSplash();
+
+//        showSplash();
+
+
+//        NetworkManager.downloadXForm(new MainCallback(null,MainCallback.TYPE_NO_PROGRESS), new File(Environment.getExternalStorageDirectory()
+//                + File.separator + "odk.xml"));
+        FormLoaderTask task = new FormLoaderTask(null,null,null);
+        task.execute( new File(Environment.getExternalStorageDirectory()
+                + File.separator + "odk.xml").getAbsolutePath());
+        task.setFormLoaderListener(new FormLoaderTask.FormLoaderListener() {
+            @Override
+            public void loadingComplete(FormLoaderTask task) {
+                LogUtils.d("ttt","ttt "+ task.getRequestCode());
+            }
+
+            @Override
+            public void loadingError(String errorMsg) {
+                LogUtils.d("eee","eee "+ errorMsg);
+            }
+        });
     }
 
     @Override

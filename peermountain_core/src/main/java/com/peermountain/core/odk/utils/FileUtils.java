@@ -39,7 +39,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-import timber.log.Timber;
 
 /**
  * Static methods used for common file operations.

@@ -9,6 +9,7 @@
     <string name="pm_share_accept_dialog_msg">Confirm if the code %s is also displayed on the other device</string>
     <string name="pm_share_accept_dialog_btn_accept">Accept</string>
     <string name="pm_share_accept_dialog_btn_cancel">Cancel</string>
+    <string name="pm_err_sdcard_unmounted">Cannot access the SD card. Perhaps it is mounted via USB? (Current state: %s)</string>
 
 
     <string name="pm_document_item_id_title">Identity Document</string>

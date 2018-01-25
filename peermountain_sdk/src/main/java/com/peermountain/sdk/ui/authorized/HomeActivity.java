@@ -54,8 +54,6 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         getViews();
         initDrawer();
 //        setUpView();
-//        NetworkManager.downloadXForm(new MainCallback(null,MainCallback.TYPE_NO_PROGRESS), new File(Environment.getExternalStorageDirectory()
-//                + File.separator + "odk.xml"));
     }
 
     @Override

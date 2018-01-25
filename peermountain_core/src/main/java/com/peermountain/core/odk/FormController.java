@@ -17,6 +17,7 @@ package com.peermountain.core.odk;
 import android.support.annotation.Nullable;
 
 import com.peermountain.core.odk.exeptions.JavaRosaException;
+import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.odk.views.ODKView;
 
@@ -54,7 +55,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import timber.log.Timber;
 
 /**
  * This class is a wrapper for Javarosa's FormEntryController. In theory, if you wanted to replace

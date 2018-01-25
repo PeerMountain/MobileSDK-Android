@@ -4,13 +4,13 @@ package com.peermountain.core.odk.tasks;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import timber.log.Timber;
 
 /**
  * Background task for appending a timer event to the timer log

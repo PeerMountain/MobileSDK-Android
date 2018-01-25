@@ -2,6 +2,8 @@ package com.peermountain.core.network;
 
 import android.util.Log;
 
+import com.peermountain.core.utils.LogUtils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -445,7 +447,7 @@ public class NetworkRequestHelper {
      * Downloads a file from a URL
      *
      * @param fileURL HTTP URL of the file to be downloaded
-     * @param file File to save
+     * @param file    File to save
      * @throws IOException
      */
     static NetworkResponse downloadFile(String fileURL, File file)
@@ -461,11 +463,23 @@ public class NetworkRequestHelper {
             String disposition = httpConn.getHeaderField("Content-Disposition");
             String contentType = httpConn.getContentType();
             int contentLength = httpConn.getContentLength();
-
-            System.out.println("Content-Type = " + contentType);
-            System.out.println("Content-Disposition = " + disposition);
-            System.out.println("Content-Length = " + contentLength);
-            System.out.println("fileName = " + fileName);
+            if (disposition != null) {
+                // extracts file name from header field
+                int index = disposition.indexOf("filename=");
+                if (index > 0) {
+                    fileName = disposition.substring(index + 10,
+                            disposition.length() - 1);
+                }
+            } else {
+                // extracts file name from URL
+                fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1,
+                        fileURL.length());
+            }
+            LogUtils.d("downloadFile", "File in result" +
+                    "\nContent-Type = " + contentType
+                    + "\nContent-Disposition = " + disposition
+                    + "\nContent-Length = " + contentLength
+                    + "\nfileName = " + fileName);
 
             // opens input stream from the HTTP connection
             InputStream inputStream = httpConn.getInputStream();
@@ -481,11 +495,11 @@ public class NetworkRequestHelper {
 
             outputStream.close();
             inputStream.close();
-            networkResponse = new NetworkResponse(responseCode,file);
-            System.out.println("File downloaded");
+            networkResponse = new NetworkResponse(responseCode, file);
+            LogUtils.d("downloadFile","File downloaded");
         } else {
             networkResponse = new NetworkResponse("No file to download. Server replied HTTP code: " + responseCode, responseCode);
-            System.out.println("No file to download. Server replied HTTP code: " + responseCode);
+            LogUtils.d("downloadFile","No file to download. Server replied HTTP code: " + responseCode);
         }
         httpConn.disconnect();
         return networkResponse;

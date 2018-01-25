@@ -13,7 +13,6 @@ import org.javarosa.form.api.FormEntryController;
 import java.io.File;
 import java.util.ArrayList;
 
-import timber.log.Timber;
 
 
 /**
