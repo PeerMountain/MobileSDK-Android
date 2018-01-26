@@ -17,12 +17,13 @@ package com.peermountain.core.odk.tasks;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import com.peermountain.core.odk.FormController;
 import com.peermountain.core.odk.model.FileReferenceFactory;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.FileUtils;
+import com.peermountain.core.utils.LogUtils;
 
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
@@ -106,27 +107,28 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         }
 
 
-        protected  FormController getController() {
+        protected FormController getController() {
             return controller;
         }
 
-        protected   boolean hasUsedSavepoint() {
+        protected boolean hasUsedSavepoint() {
             return usedSavepoint;
         }
 
-        protected  void free() {
+        protected void free() {
             controller = null;
         }
     }
 
     public interface FormLoaderListener {
         void loadingComplete(FormLoaderTask task);
+
         void loadingError(String errorMsg);
     }
 
-    FECWrapper data;
+    private FECWrapper data;
 
-    public  FormLoaderTask(String instancePath, String XPath, String waitingXPath) {
+    public FormLoaderTask(String instancePath, String XPath, String waitingXPath) {
         mInstancePath = instancePath;
         mXPath = XPath;
         mWaitingXPath = waitingXPath;
@@ -137,43 +139,131 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
      * an instance, it will be used to fill the {@link FormDef}.
      */
     @Override
-    protected  FECWrapper doInBackground(String... path) {
-        FormEntryController fec = null;
-        FormDef fd = null;
-        FileInputStream fis = null;
+    protected FECWrapper doInBackground(String... path) {
+        FormEntryController formEntryController = null;
+        FormDef formDef = null;
         mErrorMsg = null;
 
         String formPath = path[0];
 
-        File formXml = new File(formPath);
-        String formHash = FileUtils.getMd5Hash(formXml);
-        File formBin = new File(Collect.CACHE_PATH + File.separator + formHash + ".formdef");
+        File formXmlFile = new File(formPath);
+        formDef = getFormDefFromFileOrCache(formXmlFile);
 
-        if (formBin.exists()) {
+        if (mErrorMsg != null) {
+            return null;
+        }
+
+        // new evaluation context for function handlers
+//        fd.setEvaluationContext(new EvaluationContext(null));
+
+        // create FormEntryController from formdef
+        FormEntryModel formEntryModel = new FormEntryModel(formDef);
+        formEntryController = new FormEntryController(formEntryModel);
+
+        boolean usedSavepoint = false;
+        final InstanceInitializationFactory instanceInit = new InstanceInitializationFactory();
+        try {
+            // import existing data into formdef
+            if (mInstancePath != null) {
+                File instanceFile = new File(mInstancePath);
+                File shadowInstanceFile = getSavepointFile(instanceFile.getName());
+                if (shadowInstanceFile.exists() &&
+                        (shadowInstanceFile.lastModified() > instanceFile.lastModified())) {
+                    // the savepoint is newer than the saved value of the instance.
+                    // use it.
+                    usedSavepoint = true;
+                    instanceFile = shadowInstanceFile;
+                    LogUtils.w(t, "Loading instance from shadow file: " + shadowInstanceFile.getAbsolutePath());
+                }
+                if (instanceFile.exists()) {
+                    // This order is important. Import data, then initialize.
+                    importData(instanceFile, formEntryController);
+                    formDef.initialize(false, instanceInit);
+                } else {
+                    formDef.initialize(true, instanceInit);
+                }
+            } else {
+                formDef.initialize(true, instanceInit);
+            }
+        } catch (RuntimeException e) {
+            mErrorMsg = e.getMessage();
+            return null;
+        }
+
+        // set paths to /data/user/0/com.peermountain.dev/files/pm_xforms/forms/formfilename-media/
+        String formFileName = formXmlFile.getName().substring(0, formXmlFile.getName().lastIndexOf("."));
+        File formMediaDir = new File(formXmlFile.getParent(), formFileName + "-media");
+
+        // Remove previous forms
+        ReferenceManager.instance().clearSession();
+
+        // This should get moved to the Application Class
+        if (ReferenceManager.instance().getFactories().length == 0) {
+            // this is /data/user/0/com.peermountain.dev/files/pm_xforms
+            ReferenceManager.instance().addReferenceFactory(
+                    new FileReferenceFactory(Collect.ODK_ROOT));
+        }
+
+        // Set jr://... to point to /data/user/0/com.peermountain.dev/files/pm_xforms/forms/filename-media/
+        ReferenceManager.instance().addSessionRootTranslator(
+                new RootTranslator("jr://images/", "jr://file/forms/" + formFileName + "-media/"));
+        ReferenceManager.instance().addSessionRootTranslator(
+                new RootTranslator("jr://image/", "jr://file/forms/" + formFileName + "-media/"));
+        ReferenceManager.instance().addSessionRootTranslator(
+                new RootTranslator("jr://audio/", "jr://file/forms/" + formFileName + "-media/"));
+        ReferenceManager.instance().addSessionRootTranslator(
+                new RootTranslator("jr://video/", "jr://file/forms/" + formFileName + "-media/"));
+
+        // clean up vars
+        formDef = null;
+        formXmlFile = null;
+        formPath = null;
+
+        FormController fc = new FormController(formMediaDir, formEntryController, mInstancePath == null ? null : new File(mInstancePath));
+        if (mXPath != null) {
+            // we are resuming after having terminated -- set index to this position...
+            FormIndex idx = fc.getIndexFromXPath(mXPath);
+            fc.jumpToIndex(idx);
+        }
+        if (mWaitingXPath != null) {
+            FormIndex idx = fc.getIndexFromXPath(mWaitingXPath);
+            fc.setIndexWaitingForData(idx);
+        }
+        data = new FECWrapper(fc, usedSavepoint);
+        return data;
+
+    }
+
+    @Nullable
+    private FormDef getFormDefFromFileOrCache(File formXmlFile) {
+        FormDef formDef = null;
+        String formHash = FileUtils.getMd5Hash(formXmlFile);
+        File formBinFile = new File(Collect.CACHE_PATH + File.separator
+                + formHash + ".formdef");
+
+        if (formBinFile.exists()) {
             // if we have binary, deserialize binary
-            Log.i(
-                    t,
-                    "Attempting to load " + formXml.getName() + " from cached file: "
-                            + formBin.getAbsolutePath());
-            fd = deserializeFormDef(formBin);
-            if (fd == null) {
+            LogUtils.i(t, "Attempting to load " + formXmlFile.getName()
+                    + " from cached file: " + formBinFile.getAbsolutePath());
+            formDef = deserializeFormDef(formBinFile);
+            if (formDef == null) {
                 // some error occured with deserialization. Remove the file, and make a new .formdef
                 // from xml
-                Log.w(t,
-                        "Deserialization FAILED!  Deleting cache file: " + formBin.getAbsolutePath());
-                formBin.delete();
+                LogUtils.w(t, "Deserialization FAILED!  Deleting cache file: "
+                        + formBinFile.getAbsolutePath());
+                formBinFile.delete();
             }
         }
-        if (fd == null) {
-            // no binary, read from xml
+        if (formDef == null) {
+            // no binary, read from xml file
             try {
-                Log.i(t, "Attempting to load from: " + formXml.getAbsolutePath());
-                fis = new FileInputStream(formXml);
-                fd = XFormUtils.getFormFromInputStream(fis);
-                if (fd == null) {
+                LogUtils.i(t, "Attempting to load from: " + formXmlFile.getAbsolutePath());
+                FileInputStream fileInputStream = new FileInputStream(formXmlFile);
+                formDef = XFormUtils.getFormFromInputStream(fileInputStream);
+                if (formDef == null) {
                     mErrorMsg = "Error reading XForm file";
                 } else {
-                    serializeFormDef(fd, formPath);
+                    serializeFormDef(formDef, formXmlFile);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -186,123 +276,38 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
                 e.printStackTrace();
             }
         }
-
-        if (mErrorMsg != null) {
-            return null;
-        }
-
-        // new evaluation context for function handlers
-//        fd.setEvaluationContext(new EvaluationContext(null));
-
-        // create FormEntryController from formdef
-        FormEntryModel fem = new FormEntryModel(fd);
-        fec = new FormEntryController(fem);
-
-        boolean usedSavepoint = false;
-        final InstanceInitializationFactory instanceInit = new InstanceInitializationFactory();
-        try {
-            // import existing data into formdef
-            if (mInstancePath != null) {
-                File instance = new File(mInstancePath);
-                File shadowInstance = getSavepointFile(instance.getName());
-                if ( shadowInstance.exists() &&
-                        ( shadowInstance.lastModified() > instance.lastModified()) ) {
-                    // the savepoint is newer than the saved value of the instance.
-                    // use it.
-                    usedSavepoint = true;
-                    instance = shadowInstance;
-                    Log.w(t,"Loading instance from shadow file: " + shadowInstance.getAbsolutePath());
-                }
-                if ( instance.exists() ) {
-                    // This order is important. Import data, then initialize.
-                    importData(instance, fec);
-                    fd.initialize(false, instanceInit);
-                } else {
-                    fd.initialize(true, instanceInit);
-                }
-            } else {
-                fd.initialize(true, instanceInit);
-            }
-        } catch (RuntimeException e) {
-            mErrorMsg = e.getMessage();
-            return null;
-        }
-
-        // set paths to /sdcard/odk/forms/formfilename-media/
-        String formFileName = formXml.getName().substring(0, formXml.getName().lastIndexOf("."));
-        File formMediaDir = new File( formXml.getParent(), formFileName + "-media");
-
-        // Remove previous forms
-        ReferenceManager.instance().clearSession();
-
-        // This should get moved to the Application Class
-        if (ReferenceManager.instance().getFactories().length == 0) {
-            // this is /sdcard/odk
-            ReferenceManager.instance().addReferenceFactory(
-                    new FileReferenceFactory(Collect.ODK_ROOT));
-        }
-
-        // Set jr://... to point to /sdcard/odk/forms/filename-media/
-        ReferenceManager.instance().addSessionRootTranslator(
-                new RootTranslator("jr://images/", "jr://file/forms/" + formFileName + "-media/"));
-        ReferenceManager.instance().addSessionRootTranslator(
-                new RootTranslator("jr://image/", "jr://file/forms/" + formFileName + "-media/"));
-        ReferenceManager.instance().addSessionRootTranslator(
-                new RootTranslator("jr://audio/", "jr://file/forms/" + formFileName + "-media/"));
-        ReferenceManager.instance().addSessionRootTranslator(
-                new RootTranslator("jr://video/", "jr://file/forms/" + formFileName + "-media/"));
-
-        // clean up vars
-        fis = null;
-        fd = null;
-        formBin = null;
-        formXml = null;
-        formPath = null;
-
-        FormController fc = new FormController(formMediaDir, fec, mInstancePath == null ? null : new File(mInstancePath));
-        if ( mXPath != null ) {
-            // we are resuming after having terminated -- set index to this position...
-            FormIndex idx = fc.getIndexFromXPath(mXPath);
-            fc.jumpToIndex(idx);
-        }
-        if ( mWaitingXPath != null ) {
-            FormIndex idx = fc.getIndexFromXPath(mWaitingXPath);
-            fc.setIndexWaitingForData(idx);
-        }
-        data = new FECWrapper(fc, usedSavepoint);
-        return data;
-
+        return formDef;
     }
 
 
-    public  boolean importData(File instanceFile, FormEntryController fec) {
+    public boolean importData(File instanceFile, FormEntryController formEntryController) {
         // convert files into a byte array
         byte[] fileBytes = FileUtils.getFileAsBytes(instanceFile);
 
         // get the root of the saved and template instances
         TreeElement savedRoot = XFormParser.restoreDataModel(fileBytes, null).getRoot();
-        TreeElement templateRoot = fec.getModel().getForm().getInstance().getRoot().deepCopy(true);
+        TreeElement templateRoot = formEntryController.getModel().getForm().getInstance().getRoot().deepCopy(true);
 
         // weak check for matching forms
         if (!savedRoot.getName().equals(templateRoot.getName()) || savedRoot.getMult() != 0) {
-            Log.e(t, "Saved form instance does not match template form definition");
+            LogUtils.e(t, "Saved form instance does not match template form definition");
             return false;
         } else {
             // populate the data model
-            TreeReference tr = TreeReference.rootRef();
-            tr.add(templateRoot.getName(), TreeReference.INDEX_UNBOUND);
-            templateRoot.populate(savedRoot, fec.getModel().getForm());
+            TreeReference treeReference = TreeReference.rootRef();
+            treeReference.add(templateRoot.getName(), TreeReference.INDEX_UNBOUND);
+            templateRoot.populate(savedRoot, formEntryController.getModel().getForm());
 
             // populated model to current form
-            fec.getModel().getForm().getInstance().setRoot(templateRoot);
+            formEntryController.getModel().getForm().getInstance().setRoot(templateRoot);
 
             // fix any language issues
             // : http://bitbucket.org/javarosa/main/issue/5/itext-n-appearing-in-restored-instances
-            if (fec.getModel().getLanguages() != null) {
-                fec.getModel()
+            if (formEntryController.getModel().getLanguages() != null) {
+                formEntryController.getModel()
                         .getForm()
-                        .localeChanged(fec.getModel().getLanguage(),
-                                fec.getModel().getForm().getLocalizer());
+                        .localeChanged(formEntryController.getModel().getLanguage(),
+                                formEntryController.getModel().getForm().getLocalizer());
             }
 
             return true;
@@ -317,7 +322,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
      * @param formDef serialized FormDef file
      * @return {@link FormDef} object
      */
-    public  FormDef deserializeFormDef(File formDef) {
+    public FormDef deserializeFormDef(File formDef) {
 
         // TODO: any way to remove reliance on jrsp?
 
@@ -363,11 +368,11 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
     /**
      * Write the FormDef to the file system as a binary blog.
      *
-     * @param filepath path to the form file
+     * @param fileXml the form file
      */
-    public  void serializeFormDef(FormDef fd, String filepath) {
+    private void serializeFormDef(FormDef fd, File fileXml) {
         // calculate unique md5 identifier
-        String hash = FileUtils.getMd5Hash(new File(filepath));
+        String hash = FileUtils.getMd5Hash(fileXml);
         File formDef = new File(Collect.CACHE_PATH + File.separator + hash + ".formdef");
 
         // formdef does not exist, create one.
@@ -389,7 +394,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
 
 
     @Override
-    protected  void onPostExecute(FECWrapper wrapper) {
+    protected void onPostExecute(FECWrapper wrapper) {
         synchronized (this) {
             if (mStateListener != null) {
                 if (wrapper == null) {
@@ -402,49 +407,50 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
     }
 
 
-    public  void setFormLoaderListener(FormLoaderListener sl) {
+    public void setFormLoaderListener(FormLoaderListener sl) {
         synchronized (this) {
             mStateListener = sl;
         }
     }
 
-    public  FormController getFormController() {
-        return ( data != null ) ? data.getController() : null;
+    public FormController getFormController() {
+        return (data != null) ? data.getController() : null;
     }
 
     public boolean hasUsedSavepoint() {
-        return (data != null ) ? data.hasUsedSavepoint() : false;
+        return (data != null) ? data.hasUsedSavepoint() : false;
     }
 
-    public  void destroy() {
+    public void destroy() {
         if (data != null) {
             data.free();
             data = null;
         }
     }
 
-    public  boolean hasPendingActivityResult() {
+    public boolean hasPendingActivityResult() {
         return pendingActivityResult;
     }
 
-    public  int getRequestCode() {
+    public int getRequestCode() {
         return requestCode;
     }
 
-    public  int getResultCode() {
+    public int getResultCode() {
         return resultCode;
     }
 
-    public  Intent getIntent() {
+    public Intent getIntent() {
         return intent;
     }
 
-    public  void setActivityResult(int requestCode, int resultCode, Intent intent) {
+    public void setActivityResult(int requestCode, int resultCode, Intent intent) {
         this.pendingActivityResult = true;
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.intent = intent;
     }
+
     /**
      * Return the savepoint file for a given instance.
      */

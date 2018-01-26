@@ -1,8 +1,5 @@
 package com.peermountain.core.odk.utils;
 
-import android.os.Environment;
-
-import com.peermountain.core.R;
 import com.peermountain.core.persistence.PeerMountainManager;
 
 import java.io.File;
@@ -12,10 +9,12 @@ import java.io.File;
  */
 
 public class Collect {
-    // Storage paths
-    public static final String ODK_ROOT = Environment.getExternalStorageDirectory()
-            + File.separator + "pm_odk";
+    // Storage paths  /data/user/0/com.peermountain.dev/files/pm_xforms/
+    public static final String ROOT_POSTFIX = File.separator + "pm_xforms";
+    public static final String ODK_ROOT = PeerMountainManager.getApplicationContext().getFilesDir()
+            + ROOT_POSTFIX;
     public static final String FORMS_PATH = ODK_ROOT + File.separator + "forms";
+    public static final String SHORT_FORMS_PATH = ROOT_POSTFIX + File.separator + "forms";
     public static final String INSTANCES_PATH = ODK_ROOT + File.separator + "instances";
     public static final String CACHE_PATH = ODK_ROOT + File.separator + ".cache";
     public static final String METADATA_PATH = ODK_ROOT + File.separator + "metadata";
@@ -35,11 +34,11 @@ public class Collect {
      * @throws RuntimeException if there is no SDCard or the directory exists as a non directory
      */
     public static void createODKDirs() throws RuntimeException {
-        String cardstatus = Environment.getExternalStorageState();
-        if (!cardstatus.equals(Environment.MEDIA_MOUNTED)) {
-            throw new RuntimeException(
-                    PeerMountainManager.getApplicationContext().getString(R.string.pm_err_sdcard_unmounted, cardstatus));
-        }
+//        String cardstatus = Environment.getExternalStorageState();
+//        if (!cardstatus.equals(Environment.MEDIA_MOUNTED)) {
+//            throw new RuntimeException(
+//                    PeerMountainManager.getApplicationContext().getString(R.string.pm_err_sdcard_unmounted, cardstatus));
+//        }
 
         String[] dirs = {
                 ODK_ROOT, FORMS_PATH, INSTANCES_PATH, CACHE_PATH, METADATA_PATH, OFFLINE_LAYERS

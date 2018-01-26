@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import com.peermountain.core.model.guarded.FileDocument;
+import com.peermountain.core.odk.utils.Collect;
 
 import java.io.File;
 
@@ -16,7 +17,7 @@ import java.io.File;
 public class PmCoreUtils {
     /**
      * @param context Context
-     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document , other is for images
+     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document ,LOCAL_XFORM_DIR for XForms, other is for images
      * @return new empty file
      */
     public static File createLocalFile(Context context, int type) {
@@ -25,7 +26,7 @@ public class PmCoreUtils {
 
     /**
      * @param context Context
-     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document , other is for images
+     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document ,LOCAL_XFORM_DIR FOR XFORMS , other is for images
      * @param name    File name without extension
      * @return new empty file
      */
@@ -50,12 +51,26 @@ public class PmCoreUtils {
 //        return file;
     }
 
+    /**
+     * @param context Context
+     * @param type    PmCoreConstants.FILE_TYPE_PDF is for document ,LOCAL_XFORM_DIR FOR XFORMS , other is for images
+     * @param url    will use last content after / for File name without extension
+     * @return new empty file
+     */
+    public static File createLocalFileFromUrl(Context context, String url, int type) {
+        return createLocalFile(context,null, url.substring(url.lastIndexOf("/") + 1,url.length()), type);
+    }
+
     public static File createLocalFile(Context context,String dirName, String name, int type) {
         String dir, ext;
         switch (type) {
             case PmCoreConstants.FILE_TYPE_PDF:
                 dir = PmCoreConstants.LOCAL_DOCUMENTS_DIR+(dirName!=null?"/"+dirName:"");
                 ext = ".pdf";
+                break;
+            case PmCoreConstants.FILE_TYPE_XFORM:
+                dir = Collect.SHORT_FORMS_PATH+(dirName!=null?"/"+dirName:"");
+                ext = ".xml";
                 break;
             default:
                 dir = PmCoreConstants.LOCAL_IMAGE_DIR+(dirName!=null?"/"+dirName:"");

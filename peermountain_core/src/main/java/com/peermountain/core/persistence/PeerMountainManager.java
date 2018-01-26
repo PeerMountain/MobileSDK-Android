@@ -27,10 +27,17 @@ import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.model.unguarded.Keywords;
+import com.peermountain.core.network.MainCallback;
+import com.peermountain.core.network.NetworkManager;
+import com.peermountain.core.network.NetworkResponse;
+import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.PmCoreUtils;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,11 +54,17 @@ public class PeerMountainManager {
         return applicationContext;
     }
 
+    /**
+     * This method must be called in Application.onCreate
+     *
+     * @param config PeerMountainConfig
+     */
     public static void init(PeerMountainConfig config) {
         PeerMountainManager.applicationContext = config.getApplicationContext();
         config.setApplicationContext(null);
         Cache.getInstance().setConfig(config);
         SharedPreferenceManager.saveConfig(config);
+        Collect.createODKDirs();
     }
 
     /**
@@ -78,7 +91,7 @@ public class PeerMountainManager {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     public static long getUserValidTime() {
         long mills = new PeerMountainConfig().getUserValidTime();//default time
-        if(getPeerMountainConfig()!=null)
+        if (getPeerMountainConfig() != null)
             mills = getPeerMountainConfig().getUserValidTime();//user's set time
         return mills;
     }
@@ -237,7 +250,7 @@ public class PeerMountainManager {
 
     public static ArrayList<AppDocument> getDocuments() {
         if (Cache.getInstance().getDocuments() == null)
-            Cache.getInstance().setDocuments( SharedPreferenceManager.getDocuments());
+            Cache.getInstance().setDocuments(SharedPreferenceManager.getDocuments());
         return Cache.getInstance().getDocuments();
     }
 
@@ -399,5 +412,16 @@ public class PeerMountainManager {
 
     public static PublicUser parseFbPublicProfile(JSONObject userJ) {
         return MyJsonParser.parseFbUser(userJ);
+    }
+
+    public static void downloadXForm(MainCallback mCallback, String url) {
+        // TODO: 1/26/2018 downloadManifestAndMediaFiles
+        File file = PmCoreUtils.createLocalFileFromUrl(applicationContext, url,
+                PmCoreConstants.FILE_TYPE_XFORM);
+        if (file.exists()) {//it is downloaded
+            if (mCallback != null) mCallback.onPostExecute(new NetworkResponse(200, file));
+        } else {
+            NetworkManager.downloadXForm(mCallback, url, file);
+        }
     }
 }

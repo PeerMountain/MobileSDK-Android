@@ -56,8 +56,8 @@ public class NetworkManager {
         return ServerOperation.doServerCall(action, null);
     }
 
-    public static AsyncTask<Action, Void, NetworkResponse> downloadXForm(MainCallback mCallback, File file) {
-        AsyncTask<Action, Void, NetworkResponse> serverOperation =  doMainActionSynchronized(mCallback, Actions.getForm(file), "downloadXForm... ");
+    public static AsyncTask<Action, Void, NetworkResponse> downloadXForm(MainCallback mCallback,String url, File intoFile) {
+        AsyncTask<Action, Void, NetworkResponse> serverOperation =  doMainActionSynchronized(mCallback, Actions.getForm(intoFile,url), "downloadXForm... ");
         mCallback.setTask(serverOperation);
         return serverOperation;
     }

@@ -26,9 +26,11 @@ public class PmCoreConstants {
 
     public static final String LOCAL_IMAGE_DIR = "/images";
     public static final String LOCAL_DOCUMENTS_DIR = "/documents";
+    public static final String LOCAL_XFORM_DIR = "/xforms";
     public static final String PUBLIC_IMAGE_DIR = "/images";
     public static final int FILE_TYPE_IMAGES = 0;
     public static final int FILE_TYPE_PDF = 1;
+    public static final int FILE_TYPE_XFORM = 2;
 
     public static final int KEYWORDS_SHOW_COUNT = 20;
     public static final int KEYWORDS_SHOW_TO_VALIDATE_COUNT = 28;

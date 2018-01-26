@@ -1,0 +1,68 @@
+package com.peermountain.core.odk;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import com.peermountain.core.R;
+import com.peermountain.core.network.BaseEvents;
+import com.peermountain.core.network.MainCallback;
+import com.peermountain.core.network.NetworkResponse;
+import com.peermountain.core.odk.tasks.FormLoaderTask;
+import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.LogUtils;
+
+import java.io.File;
+
+public class XFormActivity extends AppCompatActivity {
+
+    public static final String EXTRA_URL = "URL";//"https://www.dropbox.com/s/9kj12067gqhst42/Sample%20Form.xml?dl=1"
+
+    public static void show(Context context, String xFormUrl) {
+        Intent starter = new Intent(context, XFormActivity.class);
+        starter.putExtra(EXTRA_URL,xFormUrl);
+        context.startActivity(starter);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_xform);
+        String url = getIntent().getStringExtra(EXTRA_URL);
+        if(url!=null){
+            PeerMountainManager.downloadXForm(new DownloadXFormCallback(null,MainCallback.TYPE_NO_PROGRESS),url);
+        }
+    }
+
+    private void loadXForm(File file) {
+        FormLoaderTask task = new FormLoaderTask(null,null,null);
+        task.execute( file.getAbsolutePath());
+        task.setFormLoaderListener(new FormLoaderTask.FormLoaderListener() {
+            @Override
+            public void loadingComplete(FormLoaderTask task) {
+                LogUtils.d("ttt","ttt "+ task.getRequestCode());
+            }
+
+            @Override
+            public void loadingError(String errorMsg) {
+                LogUtils.d("eee","eee "+ errorMsg);
+            }
+        });
+    }
+
+    private class DownloadXFormCallback extends MainCallback {
+
+        DownloadXFormCallback(BaseEvents presenterCallback, int progressType) {
+            super(presenterCallback, progressType);
+        }
+
+        @Override
+        public void onPostExecute(NetworkResponse networkResponse) {
+            super.onPostExecute(networkResponse);
+            if(networkResponse.file!=null){
+                loadXForm(networkResponse.file);
+            }
+        }
+    }
+}

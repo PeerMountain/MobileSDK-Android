@@ -16,7 +16,10 @@ import com.peermountain.sdk.ui.register.RegisterActivity;
  */
 
 public class PeerMountainSDK {
-
+    /**
+     * This method must be called in Application.onCreate
+     * @param config PeerMountainConfig
+     */
     public static void init(PeerMountainConfig config){
         PeerMountainManager.init(config);
     }

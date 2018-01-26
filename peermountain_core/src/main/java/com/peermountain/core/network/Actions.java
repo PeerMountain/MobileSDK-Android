@@ -18,9 +18,9 @@ public class Actions {
     }
 
     @NonNull
-    static Action getForm(File file) {
+    static Action getForm(File file,String url) {
         Action action = new Action(Action.DOWNLOAD_FILE,
-                "https://www.dropbox.com/s/9kj12067gqhst42/Sample%20Form.xml?dl=1",
+                url,
                 "",file);
         action.isFullUrl = true;
         return action;
