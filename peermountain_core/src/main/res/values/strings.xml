@@ -19,4 +19,13 @@
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
     <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
     <string name="title_activity_show_live_selfie">ShowLiveSelfieActivity</string>
+
+
+    <string name="pm_audio_file_error">No audio file was specified.</string>
+    <string name="pm_audio_file_invalid">File: %s is not a valid audio file.</string>
+    <string name="pm_file_missing">File: %s is missing.</string>
+    <string name="pm_file_invalid">File: %s is invalid.</string>
+    <string name="pm_activity_not_found">No activity found to handle: %s</string>
+    <string name="pm_launch_app">Launch</string>
+    <string name="pm_no_app">The requested application is missing. Please manually enter the reading.</string>
 </resources>

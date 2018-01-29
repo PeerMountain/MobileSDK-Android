@@ -1,9 +1,240 @@
 package com.peermountain.core.odk.views;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.peermountain.core.odk.utils.ViewIds;
+import com.peermountain.core.odk.views.widgets.WidgetFactory;
+import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
+
+import org.javarosa.form.api.FormEntryCaption;
+import org.javarosa.form.api.FormEntryPrompt;
+
+import java.util.ArrayList;
+
 /**
  * Created by Galeen on 1/24/2018.
  */
 
-public class ODKView {
+public class ODKView extends ScrollView implements View.OnTouchListener{
     public static final String FIELD_LIST = "field-list";
+
+    private LinearLayout view;
+    private LinearLayout.LayoutParams layout;
+    private ArrayList<QuestionWidget> widgets;
+
+    public ODKView(Context context, final FormEntryPrompt[] questionPrompts,
+                   FormEntryCaption[] groups, boolean advancingPage) {
+        super(context);
+        widgets = new ArrayList<>();
+
+        view = new LinearLayout(getContext());
+        view.setOrientation(LinearLayout.VERTICAL);
+        view.setGravity(Gravity.TOP);
+        view.setPadding(0, 7, 0, 0);
+
+        layout =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+        layout.setMargins(10, 0, 10, 0);
+
+        // display which group you are in as well as the question
+
+        addGroupText(groups);
+
+        // when the grouped fields are populated by an external app, this will get true.
+        boolean readOnlyOverride = false;
+
+        // get the group we are showing -- it will be the last of the groups in the groups list
+//        if (groups != null && groups.length > 0) {
+//            final FormEntryCaption c = groups[groups.length - 1];
+//            final String intentString = c.getFormElement().getAdditionalAttribute(null, "intent");
+//            if (intentString != null && intentString.length() != 0) {
+//
+//                readOnlyOverride = true;
+//
+//                final String buttonText;
+//                final String errorString;
+//                String v = c.getSpecialFormQuestionText("buttonText");
+//                buttonText = (v != null) ? v : context.getString(R.string.pm_launch_app);
+//                v = c.getSpecialFormQuestionText("noAppErrorString");
+//                errorString = (v != null) ? v : context.getString(R.string.pm_no_app);
+//
+//                TableLayout.LayoutParams params = new TableLayout.LayoutParams();
+//                params.setMargins(7, 5, 7, 5);
+//
+//                // set button formatting
+//                Button launchIntentButton = new Button(getContext());
+//                launchIntentButton.setId(ViewIds.generateViewId());
+//                launchIntentButton.setText(buttonText);
+////                launchIntentButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+////                        Collect.getQuestionFontsize() + 2);
+//                launchIntentButton.setPadding(20, 20, 20, 20);
+//                launchIntentButton.setLayoutParams(params);
+//
+//                launchIntentButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+////                        String intentName = ExternalAppsUtils.extractIntentName(intentString);
+////                        Map<String, String> parameters = ExternalAppsUtils.extractParameters(
+////                                intentString);
+////
+////                        Intent i = new Intent(intentName);
+////                        try {
+////                            ExternalAppsUtils.populateParameters(i, parameters,
+////                                    c.getIndex().getReference());
+////
+////                            for (FormEntryPrompt p : questionPrompts) {
+////                                IFormElement formElement = p.getFormElement();
+////                                if (formElement instanceof QuestionDef) {
+////                                    TreeReference reference =
+////                                            (TreeReference) formElement.getBind().getReference();
+////                                    IAnswerData answerValue = p.getAnswerValue();
+////                                    Object value =
+////                                            answerValue == null ? null : answerValue.getValue();
+////                                    switch (p.getDataType()) {
+////                                        case Constants.DATATYPE_TEXT:
+////                                        case Constants.DATATYPE_INTEGER:
+////                                        case Constants.DATATYPE_DECIMAL:
+////                                            i.putExtra(reference.getNameLast(),
+////                                                    (Serializable) value);
+////                                            break;
+////                                    }
+////                                }
+////                            }
+////
+////                            ((Activity) getContext()).startActivityForResult(i, RequestCodes.EX_GROUP_CAPTURE);
+////                        } catch (ExternalParamsException e) {
+////                            Timber.e(e, "ExternalParamsException");
+////
+////                            ToastUtils.showShortToast(e.getMessage());
+////                        } catch (ActivityNotFoundException e) {
+////                            Timber.e(e, "ActivityNotFoundExcept");
+////
+////                            ToastUtils.showShortToast(errorString);
+////                        }
+//                    }
+//                });
+//
+//                View divider = new View(getContext());
+//                divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
+//                divider.setMinimumHeight(3);
+//                view.addView(divider);
+//
+//                view.addView(launchIntentButton, layout);
+//            }
+//        }
+
+        boolean first = true;
+        for (FormEntryPrompt p : questionPrompts) {
+            if (!first) {
+                addDivider();
+            } else {
+                first = false;
+            }
+
+            // if question or answer type is not supported, use text widget
+            QuestionWidget qw =
+                    WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
+            qw.setLongClickable(true);
+//            qw.setOnLongClickListener(this);
+            qw.setId(ViewIds.generateViewId());
+
+            widgets.add(qw);
+            view.addView(qw, layout);
+        }
+
+        addView(view);
+    }
+
+    private void addDivider() {
+        View divider = new View(getContext());
+        divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
+        divider.setMinimumHeight(3);
+        view.addView(divider);
+    }
+
+    /**
+     * // * Add a TextView containing the hierarchy of groups to which the question belongs. //
+     */
+    private void addGroupText(FormEntryCaption[] groups) {
+        String path = getGroupsPath(groups);
+
+        // build view
+        if (!path.isEmpty()) {
+            TextView tv = new TextView(getContext());
+            tv.setText(path);
+//            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Collect.getQuestionFontsize() - 4);
+            tv.setPadding(0, 0, 0, 5);
+            view.addView(tv, layout);
+        }
+    }
+
+    @NonNull
+    public static String getGroupsPath(FormEntryCaption[] groups) {
+        StringBuilder path = new StringBuilder("");
+        if (groups != null) {
+            String longText;
+            int multiplicity;
+            int index = 1;
+            // list all groups in one string
+            for (FormEntryCaption group : groups) {
+                multiplicity = group.getMultiplicity() + 1;
+                longText = group.getLongText();
+                if (longText != null) {
+                    path.append(longText);
+                    if (group.repeats() && multiplicity > 0) {
+                        path
+                                .append(" (")
+                                .append(multiplicity)
+                                .append(")");
+                    }
+                    if (index < groups.length) {
+                        path.append(" > ");
+                    }
+                    index++;
+                }
+            }
+        }
+
+        return path.toString();
+    }
+
+    public void setFocus(Context context) {
+        if (widgets.size() > 0) {
+            widgets.get(0).setFocus(context);
+        }
+    }
+
+    /**
+     * Releases widget resources, such as {@link android.media.MediaPlayer}s
+     */
+    public void releaseWidgetResources() {
+        for (QuestionWidget w : widgets) {
+            w.release();
+        }
+    }
+
+    public ArrayList<QuestionWidget> getWidgets() {
+        return widgets;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+//        onTouch(this,event);
+        return false;
+    }
+
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return false;
+    }
 }

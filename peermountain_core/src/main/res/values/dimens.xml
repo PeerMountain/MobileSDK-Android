@@ -6,6 +6,8 @@
     <dimen name="pm_margin_xbig">40dp</dimen>
     <dimen name="pm_margin_micro">4dp</dimen>
 
+    <dimen name="pm_text_normal">14sp</dimen>
+
     <dimen name="pm_corners">6dp</dimen>
     <dimen name="pm_avatar_size">70dp</dimen>
     <dimen name="pm_id_size">200dp</dimen>

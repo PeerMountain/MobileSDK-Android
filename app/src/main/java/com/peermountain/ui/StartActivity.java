@@ -43,6 +43,7 @@ public class StartActivity extends AppCompatActivity {
 //        showSplash();
 
         XFormActivity.show(this,"https://www.dropbox.com/s/9kj12067gqhst42/Sample%20Form.xml?dl=1");
+        finish();
     }
 
     @Override

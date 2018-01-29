@@ -51,6 +51,7 @@ import org.javarosa.xpath.expr.XPathExpression;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,7 @@ import java.util.List;
  *
  * @author carlhartung
  */
-public class FormController {
+public class FormController implements Serializable{
 
 
     public static final boolean STEP_INTO_GROUP = true;

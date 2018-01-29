@@ -30,6 +30,7 @@ import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkManager;
 import com.peermountain.core.network.NetworkResponse;
+import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreConstants;
@@ -414,6 +415,11 @@ public class PeerMountainManager {
         return MyJsonParser.parseFbUser(userJ);
     }
 
+    /**
+     * If local file exist then this XForm is downloaded already and will be returned the file
+     * @param mCallback callback to return the file and notify for events
+     * @param url location to download the file
+     */
     public static void downloadXForm(MainCallback mCallback, String url) {
         // TODO: 1/26/2018 downloadManifestAndMediaFiles
         File file = PmCoreUtils.createLocalFileFromUrl(applicationContext, url,
@@ -423,5 +429,11 @@ public class PeerMountainManager {
         } else {
             NetworkManager.downloadXForm(mCallback, url, file);
         }
+    }
+
+    public static void loadXForm(File file, FormLoaderTask.FormLoaderListener callback) {
+        FormLoaderTask task = new FormLoaderTask(null,null,null);
+        task.execute( file.getAbsolutePath());
+        task.setFormLoaderListener(callback);
     }
 }

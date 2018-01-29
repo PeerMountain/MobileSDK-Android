@@ -5,4 +5,5 @@
     <color name="pm_share_text">#FFFFFF</color><!--100%-->
     <color name="pm_share_et_hint">#80FFFFFF</color><!--50%-->
     <color name="pm_share_text_accent">#49C5DE</color>
+    <color name="pm_odk_text">#000000</color><!--100%-->
 </resources>

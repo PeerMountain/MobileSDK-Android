@@ -1,5 +1,9 @@
 package com.peermountain.core.odk.utils;
 
+import android.os.SystemClock;
+import android.support.annotation.Nullable;
+
+import com.peermountain.core.odk.FormController;
 import com.peermountain.core.persistence.PeerMountainManager;
 
 import java.io.File;
@@ -28,6 +32,16 @@ public class Collect {
 
     public static String defaultSysLanguage;
 
+    private static Collect singleton = null;
+
+    public static Collect getInstance() {
+        if(singleton==null){
+            singleton = new Collect();
+        }
+        return singleton;
+    }
+    @Nullable
+    private FormController formController = null;
     /**
      * Creates required directories on the SDCard (or other external storage)
      *
@@ -79,5 +93,26 @@ public class Collect {
             }
         }
         return false;
+    }
+
+    @Nullable
+    public FormController getFormController() {
+        return formController;
+    }
+
+    public void setFormController(@Nullable FormController controller) {
+        formController = controller;
+    }
+
+    private static long lastClickTime;
+    // Preventing multiple clicks, using threshold of 500 ms
+    public static boolean allowClick() {
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        boolean allowClick = (lastClickTime == 0 || lastClickTime == elapsedRealtime) // just for tests
+                || elapsedRealtime - lastClickTime > 500;
+        if (allowClick) {
+            lastClickTime = elapsedRealtime;
+        }
+        return allowClick;
     }
 }

@@ -119,9 +119,9 @@ public class IntroFragment extends ToolbarFragment implements View.OnTouchListen
 
     private void setFlipperListener() {
         vf.setInAnimation(AnimationUtils.loadAnimation(getActivity(),
-                R.anim.slide_left));
+                R.anim.pm_slide_left));
         vf.setOutAnimation(AnimationUtils.loadAnimation(getActivity(),
-                R.anim.slide_out_left));
+                R.anim.pm_slide_out_left));
         vf.getInAnimation().setAnimationListener(new Animation.AnimationListener() {
 
             public void onAnimationStart(Animation animation) {
@@ -138,9 +138,9 @@ public class IntroFragment extends ToolbarFragment implements View.OnTouchListen
                     if (!isInfinite) {
                         vf.stopFlipping();
                         vf.setInAnimation(AnimationUtils.loadAnimation(getActivity(),
-                                R.anim.slide_right));
+                                R.anim.pm_slide_right));
                         vf.setOutAnimation(AnimationUtils.loadAnimation(getActivity(),
-                                R.anim.slide_out_right));
+                                R.anim.pm_slide_out_right));
                     }
                 }
             }
@@ -168,9 +168,9 @@ public class IntroFragment extends ToolbarFragment implements View.OnTouchListen
         vf.stopFlipping();
         // Set the animation
         vf.setInAnimation(AnimationUtils.loadAnimation(getActivity(),
-                R.anim.slide_left));
+                R.anim.pm_slide_left));
         vf.setOutAnimation(AnimationUtils.loadAnimation(getActivity(),
-                R.anim.slide_out_left));
+                R.anim.pm_slide_out_left));
         // Flip!
         vf.showNext();
         startFlipper();
@@ -181,9 +181,9 @@ public class IntroFragment extends ToolbarFragment implements View.OnTouchListen
         vf.stopFlipping();
         // Set the animation
         vf.setInAnimation(AnimationUtils.loadAnimation(getActivity(),
-                R.anim.slide_right));
+                R.anim.pm_slide_right));
         vf.setOutAnimation(AnimationUtils.loadAnimation(getActivity(),
-                R.anim.slide_out_right));
+                R.anim.pm_slide_out_right));
         // Flip!
         vf.showPrevious();
         startFlipper();
