@@ -85,7 +85,7 @@ public abstract class QuestionWidget
             }
         });
 
-        questionFontSize = getContext().getResources().getDimensionPixelSize(R.dimen.pm_text_normal);//Collect.getQuestionFontsize();
+        questionFontSize = Collect.getQuestionFontSize();
 
         formEntryPrompt = prompt;
 
@@ -110,10 +110,10 @@ public abstract class QuestionWidget
     }
 
     private MediaLayout createQuestionMediaLayout(FormEntryPrompt prompt) {
-        String promptText = prompt.getLongText();
+        String promptText = prompt.getLongText();//title
         // Add the text view. Textview always exists, regardless of whether there's text.
         TextView questionText = new TextView(getContext());
-        questionText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getQuestionFontSize());
+        questionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getQuestionFontSize());
         questionText.setTypeface(null, Typeface.BOLD);
         questionText.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text));
         questionText.setPadding(0, 0, 0, 7);
@@ -292,7 +292,7 @@ public abstract class QuestionWidget
 
         if (s != null && !s.equals("")) {
             helpText.setId(ViewIds.generateViewId());
-            helpText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getQuestionFontSize() - 3);
+            helpText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getQuestionFontSize() - 2);
             //noinspection ResourceType
             helpText.setPadding(0, -5, 0, 7);
             // wrap to the widget of view

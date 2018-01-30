@@ -33,22 +33,22 @@ public class WidgetFactory {
     /**
      * Returns the appropriate QuestionWidget for the given FormEntryPrompt.
      *
-     * @param fep              prompt element to be rendered
+     * @param formEntryPrompt              prompt element to be rendered
      * @param context          Android context
      * @param readOnlyOverride a flag to be ORed with JR readonly attribute.
      */
-    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt fep, Context context,
+    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt formEntryPrompt, Context context,
                                                         boolean readOnlyOverride) {
 
         // get appearance hint and clean it up so it is lower case and never null...
-        String appearance = fep.getAppearanceHint();
+        String appearance = formEntryPrompt.getAppearanceHint();
         if (appearance == null) {
             appearance = "";
+        }else {       // for now, all appearance tags are in english...
+            appearance = appearance.toLowerCase(Locale.ENGLISH);
         }
-        // for now, all appearance tags are in english...
-        appearance = appearance.toLowerCase(Locale.ENGLISH);
 
-        final QuestionWidget questionWidget = new StringWidget(context, fep, readOnlyOverride);
+        final QuestionWidget questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
 //        switch (fep.getControlType()) {
 //            case Constants.CONTROL_INPUT:
 //                switch (fep.getDataType()) {

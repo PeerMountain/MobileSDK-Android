@@ -2,13 +2,15 @@ package com.peermountain.core.odk.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.ViewIds;
 import com.peermountain.core.odk.views.widgets.WidgetFactory;
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
  * Created by Galeen on 1/24/2018.
  */
 
-public class ODKView extends ScrollView implements View.OnTouchListener{
+public class ODKView extends NestedScrollView implements View.OnTouchListener{
     public static final String FIELD_LIST = "field-list";
 
     private LinearLayout view;
@@ -74,7 +76,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
 //                launchIntentButton.setId(ViewIds.generateViewId());
 //                launchIntentButton.setText(buttonText);
 ////                launchIntentButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
-////                        Collect.getQuestionFontsize() + 2);
+////                        Collect.getQuestionFontSize() + 2);
 //                launchIntentButton.setPadding(20, 20, 20, 20);
 //                launchIntentButton.setLayoutParams(params);
 //
@@ -142,7 +144,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
             // if question or answer type is not supported, use text widget
             QuestionWidget qw =
                     WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
-            qw.setLongClickable(true);
+//            qw.setLongClickable(true);
 //            qw.setOnLongClickListener(this);
             qw.setId(ViewIds.generateViewId());
 
@@ -157,7 +159,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
         View divider = new View(getContext());
         divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
         divider.setMinimumHeight(3);
-        view.addView(divider);
+        view.addView(divider,layout);
     }
 
     /**
@@ -170,7 +172,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
         if (!path.isEmpty()) {
             TextView tv = new TextView(getContext());
             tv.setText(path);
-//            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Collect.getQuestionFontsize() - 4);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Collect.getQuestionFontSize());
             tv.setPadding(0, 0, 0, 5);
             view.addView(tv, layout);
         }

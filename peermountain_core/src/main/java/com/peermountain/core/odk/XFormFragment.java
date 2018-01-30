@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -88,13 +89,14 @@ public class XFormFragment extends Fragment {
     private ViewFlipper viewFlipper;
     private ViewFlipperController viewFlipperController;
     private TextView tvText, pmTvTitle;
+    ArrayList<View> screenViews = new ArrayList<>();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         formController = Collect.getInstance().getFormController();
         getViews(view);
-        viewFlipperController = new ViewFlipperController(viewFlipper,view, new ViewFlipperController.Callback() {
+        viewFlipperController = new ViewFlipperController(viewFlipper, view, new ViewFlipperController.Callback() {
             @Override
             public void onNewScreen(int position) {
                 tvText.setText("" + position);
@@ -109,45 +111,25 @@ public class XFormFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 viewFlipperController.showNext();
-//                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                ArrayList<View> views = new ArrayList<>();
-//                for(int i=0;i<3;i++){
-//                    ImageView iv = new ImageView(getContext());
-////                    iv.setLayoutParams(lp);
-//                    iv.setImageResource(R.drawable.pm_bkg);
-//                    views.add(iv);
-//                }
-//                viewFlipperController.addViews(views);
             }
         });
         if (formController != null) {
-            // TODO: 1/29/18 add views
-
             pmTvTitle.setText(formController.getFormTitle());
-            ArrayList<View> views = new ArrayList<>();
-            int originalEvent = formController.getEvent();
-            views.add(createView(originalEvent,false));
-            int event = 0;
-            try {
-                event = formController.stepToNextScreenEvent();
-            } catch (JavaRosaException e) {
-                e.printStackTrace();
-                return;
-            }
+            int event;
+//            try {
+            event = formController.stepToNextEvent(true);
 
             // Helps prevent transition animation at the end of the form (if user swipes left
             // she will stay on the same screen) originalEvent != event ||
             while (event != FormEntryController.EVENT_END_OF_FORM) {
-                views.add(createView(event,false));
-                try {
-                    event = formController.stepToNextScreenEvent();
-                } catch (JavaRosaException e) {
-                    e.printStackTrace();
-                    return;
+                screenViews.add(createView(event, false));
+                if (event == FormEntryController.EVENT_GROUP) {
+                    formController.stepOverToGroupEnd();
                 }
-
+                event = formController.stepToNextEvent(true);
             }
-            viewFlipperController.addViews(views);
+            screenViews.add(createView(event, false));//this is EVENT_END_OF_FORM
+            viewFlipperController.addViews(screenViews);
         }
     }
 
@@ -155,6 +137,10 @@ public class XFormFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public boolean dispatchTouchEvent(MotionEvent mv) {
+        return viewFlipperController != null && viewFlipperController.onTouch(null, mv);
     }
 
     private void getViews(View view) {
@@ -172,8 +158,6 @@ public class XFormFragment extends Fragment {
      * @return newly created View
      */
     private View createView(int event, boolean advancingPage) {
-        FormController formController = Collect.getInstance()
-                .getFormController();
         if (formController == null) return null;
 
         formController.getTimerLogger().logTimerEvent(TimerLogger.EventTypes.FEC,
@@ -373,13 +357,13 @@ public class XFormFragment extends Fragment {
             default:
                 Timber.e("Attempted to create a view that does not exist.");
                 // this is badness to avoid a crash.
-                try {
-                    event = formController.stepToNextScreenEvent();
+//                try {
+                event = formController.stepToNextEvent(true);
 //                    createErrorDialog(getString(R.string.survey_internal_error), EXIT);
-                } catch (JavaRosaException e) {
-                    Timber.e(e);
-//                    createErrorDialog(e.getCause().getMessage(), EXIT);
-                }
+//                } catch (JavaRosaException e) {
+//                    Timber.e(e);
+////                    createErrorDialog(e.getCause().getMessage(), EXIT);
+//                }
                 return createView(event, advancingPage);
         }
     }
@@ -398,10 +382,10 @@ public class XFormFragment extends Fragment {
     }
 
     private void releaseOdkView() {
-        if (odkView != null) {
-            odkView.releaseWidgetResources();
-            odkView = null;
-        }
+//        if (odkView != null) {
+//            odkView.releaseWidgetResources();
+//            odkView = null;
+//        }
     }
 
     public interface OnFragmentInteractionListener {

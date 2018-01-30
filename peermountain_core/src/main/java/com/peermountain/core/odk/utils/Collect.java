@@ -25,8 +25,8 @@ public class Collect {
     public static final String TMPFILE_PATH = CACHE_PATH + File.separator + "tmp.jpg";
     public static final String TMPDRAWFILE_PATH = CACHE_PATH + File.separator + "tmpDraw.jpg";
     public static final String LOG_PATH = ODK_ROOT + File.separator + "log";
-    public static final String DEFAULT_FONTSIZE = "21";
-    public static final int DEFAULT_FONTSIZE_INT = 21;
+    public static final String DEFAULT_FONTSIZE = "14";
+    public static final int DEFAULT_FONTSIZE_INT = 14;
     public static final String OFFLINE_LAYERS = ODK_ROOT + File.separator + "layers";
     public static final String SETTINGS = ODK_ROOT + File.separator + "settings";
 
@@ -35,13 +35,15 @@ public class Collect {
     private static Collect singleton = null;
 
     public static Collect getInstance() {
-        if(singleton==null){
+        if (singleton == null) {
             singleton = new Collect();
         }
         return singleton;
     }
+
     @Nullable
     private FormController formController = null;
+
     /**
      * Creates required directories on the SDCard (or other external storage)
      *
@@ -105,6 +107,7 @@ public class Collect {
     }
 
     private static long lastClickTime;
+
     // Preventing multiple clicks, using threshold of 500 ms
     public static boolean allowClick() {
         long elapsedRealtime = SystemClock.elapsedRealtime();
@@ -115,4 +118,13 @@ public class Collect {
         }
         return allowClick;
     }
+
+    public static int getQuestionFontSize() {
+        if (PeerMountainManager.getPeerMountainConfig() == null) {
+            return Collect.DEFAULT_FONTSIZE_INT;
+        }
+
+        return PeerMountainManager.getPeerMountainConfig().getFontSize();
+    }
+
 }

@@ -11,6 +11,7 @@ public class PeerMountainConfig {
     private Context applicationContext;
     private String idCheckLicense = null;
     private long userValidTime = 1000*60*5;//5min
+    private int fontSize = 14;
 
     public PeerMountainConfig() {
     }
@@ -48,6 +49,20 @@ public class PeerMountainConfig {
 
     public PeerMountainConfig setUserValidTime(long userValidTime) {
         this.userValidTime = userValidTime;
+        return this;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    /**
+     * Set font size in SP
+     * @param fontSize the number will be converted in SP pixels if not set default value is 14
+     * @return self
+     */
+    public PeerMountainConfig setFontSize(int fontSize) {
+        this.fontSize = fontSize;
         return this;
     }
 }

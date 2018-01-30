@@ -505,6 +505,11 @@ public class FormController implements Serializable{
      * the group represented by the FormIndex.
      */
     private int stepOverGroup() {
+        stepOverToGroupEnd();
+        return stepToNextEvent(STEP_OVER_GROUP);
+    }
+
+    public void stepOverToGroupEnd() {
         ArrayList<FormIndex> indicies = new ArrayList<FormIndex>();
         GroupDef gd =
                 (GroupDef) formEntryController.getModel().getForm()
@@ -520,7 +525,6 @@ public class FormController implements Serializable{
 
         // jump to the end of the group
         formEntryController.jumpToIndex(indicies.get(indicies.size() - 1));
-        return stepToNextEvent(STEP_OVER_GROUP);
     }
 
     /**
