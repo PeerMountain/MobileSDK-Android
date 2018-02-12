@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -88,13 +89,14 @@ public class XFormFragment extends Fragment {
     private ViewFlipper viewFlipper;
     private ViewFlipperController viewFlipperController;
     private TextView tvText, pmTvTitle;
+    ArrayList<View> screenViews = new ArrayList<>();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         formController = Collect.getInstance().getFormController();
         getViews(view);
-        viewFlipperController = new ViewFlipperController(viewFlipper,view, new ViewFlipperController.Callback() {
+        viewFlipperController = new ViewFlipperController(viewFlipper, view, new ViewFlipperController.Callback() {
             @Override
             public void onNewScreen(int position) {
                 tvText.setText("" + position);
@@ -127,15 +129,6 @@ public class XFormFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 viewFlipperController.showNext();
-//                ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                ArrayList<View> views = new ArrayList<>();
-//                for(int i=0;i<3;i++){
-//                    ImageView iv = new ImageView(getContext());
-////                    iv.setLayoutParams(lp);
-//                    iv.setImageResource(R.drawable.pm_bkg);
-//                    views.add(iv);
-//                }
-//                viewFlipperController.addViews(views);
             }
         });
         if (formController != null) {
@@ -146,6 +139,9 @@ public class XFormFragment extends Fragment {
 
             while (event != FormEntryController.EVENT_END_OF_FORM) {
                 views.add(createView(event,false));
+                if (event == FormEntryController.EVENT_GROUP) {
+                    formController.stepOverToGroupEnd();
+                }
                 try {
                     event = formController.stepToNextScreenEvent();
                 } catch (JavaRosaException e) {
@@ -167,6 +163,10 @@ public class XFormFragment extends Fragment {
         mListener = null;
     }
 
+    public boolean dispatchTouchEvent(MotionEvent mv) {
+        return viewFlipperController != null && viewFlipperController.onTouch(null, mv);
+    }
+
     private void getViews(View view) {
         tvText = view.findViewById(R.id.tvText);
         pmTvTitle = view.findViewById(R.id.pmTvTitle);
@@ -182,8 +182,6 @@ public class XFormFragment extends Fragment {
      * @return newly created View
      */
     private View createView(int event, boolean advancingPage) {
-        FormController formController = Collect.getInstance()
-                .getFormController();
         if (formController == null) return null;
 // TODO: 2/12/18 this timer must be called on screen loaded
         formController.getTimerLogger().logTimerEvent(TimerLogger.EventTypes.FEC,
@@ -383,13 +381,13 @@ public class XFormFragment extends Fragment {
             default:
                 Timber.e("Attempted to create a view that does not exist.");
                 // this is badness to avoid a crash.
-                try {
-                    event = formController.stepToNextScreenEvent();
+//                try {
+                event = formController.stepToNextEvent(true);
 //                    createErrorDialog(getString(R.string.survey_internal_error), EXIT);
-                } catch (JavaRosaException e) {
-                    Timber.e(e);
-//                    createErrorDialog(e.getCause().getMessage(), EXIT);
-                }
+//                } catch (JavaRosaException e) {
+//                    Timber.e(e);
+////                    createErrorDialog(e.getCause().getMessage(), EXIT);
+//                }
                 return createView(event, advancingPage);
         }
     }
@@ -411,10 +409,10 @@ public class XFormFragment extends Fragment {
      * This must be called only if you show 1 question at a time
      */
     private void releaseOdkView() {
-        if (odkView != null) {
-            odkView.releaseWidgetResources();
-            odkView = null;
-        }
+//        if (odkView != null) {
+//            odkView.releaseWidgetResources();
+//            odkView = null;
+//        }
     }
 
     public interface OnFragmentInteractionListener {

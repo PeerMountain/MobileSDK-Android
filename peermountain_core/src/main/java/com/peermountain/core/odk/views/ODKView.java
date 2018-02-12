@@ -2,11 +2,11 @@ package com.peermountain.core.odk.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.peermountain.core.R;
@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
  * ScrollView holding questions of one group or single question
  */
 
-public class ODKView extends ScrollView implements View.OnTouchListener {
+public class ODKView extends NestedScrollView implements View.OnTouchListener{
     public static final String FIELD_LIST = "field-list";
 
     private LinearLayout view;
@@ -84,7 +84,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener {
 //                launchIntentButton.setId(ViewIds.generateViewId());
 //                launchIntentButton.setText(buttonText);
 ////                launchIntentButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
-////                        Collect.getQuestionFontsize() + 2);
+////                        Collect.getQuestionFontSize() + 2);
 //                launchIntentButton.setPadding(20, 20, 20, 20);
 //                launchIntentButton.setLayoutParams(params);
 //
@@ -172,7 +172,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener {
         View divider = new View(getContext());
         divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
         divider.setMinimumHeight(3);
-        view.addView(divider);
+        view.addView(divider,layout);
     }
 
     /**

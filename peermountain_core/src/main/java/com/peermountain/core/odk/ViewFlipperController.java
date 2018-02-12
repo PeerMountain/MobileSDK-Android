@@ -35,7 +35,7 @@ public class ViewFlipperController implements View.OnTouchListener {
         this.callback = callback;
         this.viewToFling = viewToFling;
         setFlipperListeners();
-        viewFlipper.setOnTouchListener(this);
+        viewToFling.setOnTouchListener(this);
     }
 
     public ViewFlipperController(ViewFlipper viewFlipper, View viewToFling, boolean withAnimation, boolean withFinishOnLast, boolean isInfinite, boolean isAutoStart, Callback callback) {
@@ -72,11 +72,11 @@ public class ViewFlipperController implements View.OnTouchListener {
                 break;
             }
 
-            case MotionEvent.ACTION_MOVE: {
-                // store the X value when the user's finger was pressed down
-                if (downXValue == 0) downXValue = arg1.getX();
-                break;
-            }
+//            case MotionEvent.ACTION_MOVE: {
+//                // store the X value when the user's finger was pressed down
+//                if (downXValue == 0) downXValue = arg1.getX();
+//                break;
+//            }
 
             case MotionEvent.ACTION_UP: {
                 // Get the X value when the user released his/her finger
@@ -97,7 +97,7 @@ public class ViewFlipperController implements View.OnTouchListener {
         }
 
         // if you return false, these actions will not be recorded
-        return true;
+        return false;
     }
 
     private void moveLeft() {

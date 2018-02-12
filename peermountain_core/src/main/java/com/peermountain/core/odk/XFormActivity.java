@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 
 import com.peermountain.core.R;
 import com.peermountain.core.network.BaseEvents;
@@ -36,12 +37,22 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
         }
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent mv) {
+        if (fragment==null || !fragment.dispatchTouchEvent(mv)) {
+            return super.dispatchTouchEvent(mv);
+        }else{
+            return true;
+        }
+    }
+
+    private XFormFragment fragment = null;
     private void loadXForm(File file) {
         PeerMountainManager.loadXForm(file,new FormLoaderTask.FormLoaderListener() {
             @Override
             public void loadingComplete(FormLoaderTask task) {
                 LogUtils.d("ttt","ttt "+ task.getRequestCode());
-                XFormFragment fragment = new XFormFragment();
+                fragment = new XFormFragment();
                 Collect.getInstance().setFormController(task.getFormController());
                 android.support.v4.app.FragmentTransaction fr = getSupportFragmentManager().beginTransaction();
                 fr.replace(R.id.container,fragment);

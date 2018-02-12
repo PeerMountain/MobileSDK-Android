@@ -39,7 +39,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/PmCoreTheme">
         </activity>
-        <activity android:name=".odk.XFormActivity">
+        <activity android:name=".odk.XFormActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/PmCoreTheme">
         </activity>
     </application>
 

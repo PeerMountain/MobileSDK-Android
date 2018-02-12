@@ -19,9 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -33,7 +31,6 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.ViewIds;
-import com.peermountain.core.views.PeerMountainTextView;
 
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.form.api.FormEntryPrompt;
@@ -122,10 +119,10 @@ public abstract class QuestionWidget
     }
 
     private MediaLayout createQuestionMediaLayout(FormEntryPrompt prompt) {
-        String promptText = prompt.getLongText();
+        String promptText = prompt.getLongText();//title
         // Add the text view. Textview always exists, regardless of whether there's text.
         TextView questionText = new TextView(getContext());
-        questionText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getQuestionFontSize());
+        questionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getQuestionFontSize());
         questionText.setTypeface(null, Typeface.BOLD);
         questionText.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text));
         questionText.setPadding(0, 0, 0, 7);
