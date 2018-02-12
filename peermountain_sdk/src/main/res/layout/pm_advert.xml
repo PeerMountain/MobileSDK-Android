@@ -17,7 +17,7 @@
         android:padding="5dp"
         android:src="@drawable/pm_ic_logo_white"/>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/tvTutoAdTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:layout_margin="@dimen/pm_margin_normal"
         android:src="@drawable/pm_cards"/>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/tvTutoAdMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/btnGetCard"
         android:layout_width="match_parent"
         android:layout_height="50dp"

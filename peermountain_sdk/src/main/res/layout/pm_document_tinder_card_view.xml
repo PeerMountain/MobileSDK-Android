@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/pm_confirm_btn_size"
         android:orientation="vertical">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
     </LinearLayout>
 
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTvUpdate"
         style="@style/pm_square_btn"
         android:layout_gravity="bottom"

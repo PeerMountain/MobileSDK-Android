@@ -57,9 +57,15 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
 
 
     private class DownloadXFormCallback extends MainCallback {
-
+        // TODO: 2/12/18 add media file links
         DownloadXFormCallback(BaseEvents presenterCallback, int progressType) {
             super(presenterCallback, progressType);
+        }
+
+        @Override
+        public void inTheEndOfDoInBackground(NetworkResponse networkResponse) {
+            super.inTheEndOfDoInBackground(networkResponse);
+            // TODO: 2/12/18 download media files
         }
 
         @Override

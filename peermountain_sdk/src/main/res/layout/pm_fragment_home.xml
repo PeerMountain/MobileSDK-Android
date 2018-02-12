@@ -13,12 +13,12 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvTabActivity"
             style="@style/pm_tab"
             android:text="@string/pm_tab_home_activity"/>
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvTabInfo"
             style="@style/pm_tab"
             android:text="@string/pm_tab_home_information"

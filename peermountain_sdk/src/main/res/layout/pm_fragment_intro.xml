@@ -21,7 +21,7 @@
         android:orientation="vertical"
         android:padding="@dimen/pm_margin_normal">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvTutoTitle"
             style="@style/pm_tv_shadow"
             android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             android:textColor="@color/pm_text_color"
             android:textSize="18sp"/>
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvTutoMsg"
             style="@style/pm_tv_shadow"
             android:layout_width="match_parent"
@@ -72,7 +72,7 @@
               android:layout_height="0dp"
               android:layout_weight="1"/>-->
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvTutoMsg2"
             style="@style/pm_tv_shadow"
             android:layout_width="match_parent"
@@ -92,7 +92,7 @@
             android:gravity="center"
             >
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvSkip"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -114,7 +114,7 @@
                 android:id="@+id/ivDot3"
                 style="@style/pm_dot_tuto"/>
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvNext"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

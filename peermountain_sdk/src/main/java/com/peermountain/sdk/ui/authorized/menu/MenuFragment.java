@@ -19,7 +19,7 @@ import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
-import com.peermountain.sdk.views.PeerMountainTextView;
+import com.peermountain.core.views.PeerMountainTextView;
 
 /**
  * A simple {@link Fragment} subclass.

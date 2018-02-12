@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
-import com.peermountain.sdk.views.PeerMountainTextView;
+import com.peermountain.core.views.PeerMountainTextView;
 import com.yuyakaido.android.cardstackview.CardStackView;
 
 import java.util.ArrayList;

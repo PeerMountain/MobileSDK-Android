@@ -98,12 +98,30 @@ public class XFormFragment extends Fragment {
             @Override
             public void onNewScreen(int position) {
                 tvText.setText("" + position);
+                StringBuilder sb = new StringBuilder();
+                if(position==viewFlipper.getChildCount()-1){//init last screen
+                    for (ODKView odkView1 : viewFlipperController.getOdkViews()) {
+                        for (FormEntryPrompt questionPrompt : odkView1.questionPrompts) {
+                            sb.append(questionPrompt.getQuestionText());
+                            sb.append(" : ");
+                            sb.append(questionPrompt.getAnswerText());
+                            sb.append("\n");
+                        }
+                    }
+                    endView.setText(sb.toString());
+                }
             }
 
             @Override
             public void onFinish() {
 
             }
+
+            @Override
+            public FormController getFormController() {
+                return formController;
+            }
+
         });
         view.findViewById(R.id.pmBtnAddItems).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,22 +139,11 @@ public class XFormFragment extends Fragment {
             }
         });
         if (formController != null) {
-            // TODO: 1/29/18 add views
-
+            //add views
             pmTvTitle.setText(formController.getFormTitle());
             ArrayList<View> views = new ArrayList<>();
-            int originalEvent = formController.getEvent();
-            views.add(createView(originalEvent,false));
-            int event = 0;
-            try {
-                event = formController.stepToNextScreenEvent();
-            } catch (JavaRosaException e) {
-                e.printStackTrace();
-                return;
-            }
+            int event = formController.getEvent();
 
-            // Helps prevent transition animation at the end of the form (if user swipes left
-            // she will stay on the same screen) originalEvent != event ||
             while (event != FormEntryController.EVENT_END_OF_FORM) {
                 views.add(createView(event,false));
                 try {
@@ -145,7 +152,10 @@ public class XFormFragment extends Fragment {
                     e.printStackTrace();
                     return;
                 }
-
+//                this was last question, noe create exit view and end
+                if(event == FormEntryController.EVENT_END_OF_FORM){
+                    views.add(createView(event,false));
+                }
             }
             viewFlipperController.addViews(views);
         }
@@ -164,7 +174,7 @@ public class XFormFragment extends Fragment {
     }
 
     ODKView odkView;
-
+    TextView endView;
     /**
      * Creates a view given the View type and an event
      *
@@ -175,7 +185,7 @@ public class XFormFragment extends Fragment {
         FormController formController = Collect.getInstance()
                 .getFormController();
         if (formController == null) return null;
-
+// TODO: 2/12/18 this timer must be called on screen loaded
         formController.getTimerLogger().logTimerEvent(TimerLogger.EventTypes.FEC,
                 event, formController.getFormIndex().getReference(), advancingPage, true);
 
@@ -184,7 +194,7 @@ public class XFormFragment extends Fragment {
                 return createViewForFormBeginning(event, true, formController);
 
             case FormEntryController.EVENT_END_OF_FORM:
-                TextView endView = new TextView(getContext());
+                endView = new TextView(getContext());
                 endView.setText("End view!");
 //                ((TextView) endView.findViewById(R.id.description))
 //                        .setText(getString(R.string.save_enter_data_description,
@@ -397,6 +407,9 @@ public class XFormFragment extends Fragment {
         return createView(event, advancingPage);
     }
 
+    /**
+     * This must be called only if you show 1 question at a time
+     */
     private void releaseOdkView() {
         if (odkView != null) {
             odkView.releaseWidgetResources();

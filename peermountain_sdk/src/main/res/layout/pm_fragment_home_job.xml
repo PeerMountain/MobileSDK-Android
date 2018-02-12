@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvBtnAgree"
             style="@style/pm_square_btn"
             android:gravity="center"
@@ -36,7 +36,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginTop="100dp">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/pm_margin_normal"

@@ -22,7 +22,7 @@ import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
-import com.peermountain.sdk.views.PeerMountainTextView;
+import com.peermountain.core.views.PeerMountainTextView;
 
 import java.util.ArrayList;
 import java.util.HashSet;

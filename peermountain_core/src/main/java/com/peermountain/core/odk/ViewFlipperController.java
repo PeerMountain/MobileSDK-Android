@@ -8,8 +8,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ViewFlipper;
 
 import com.peermountain.core.R;
+import com.peermountain.core.odk.exeptions.JavaRosaException;
+import com.peermountain.core.odk.utils.Timber;
+import com.peermountain.core.odk.views.ODKView;
+
+import org.javarosa.core.model.FormIndex;
+import org.javarosa.core.model.data.IAnswerData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Galeen on 1/29/18.
@@ -101,17 +108,43 @@ public class ViewFlipperController implements View.OnTouchListener {
         }
     }
 
-    public void showNext() {
+    private void showNextQuestion() {
         viewFlipper.stopFlipping();
         // Set the animation
         viewFlipper.setInAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.pm_slide_left));
         viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.pm_slide_out_left));
+        boolean updateParent = true;
+        if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 2 && callback != null) {
+            callback.onNewScreen(viewFlipper.getDisplayedChild() + 1);
+            updateParent = false;
+        }
         // Flip!
         viewFlipper.showNext();
         startFlipper();
-        setTextAndDots();
+        if (updateParent) setTextAndDots();
+    }
+
+    public void showNext() {
+        if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 1) return;
+
+        if (viewFlipper.getCurrentView() instanceof ODKView && callback != null
+                && callback.getFormController() != null) {
+            ODKView view = (ODKView) viewFlipper.getCurrentView();
+            HashMap<FormIndex, IAnswerData> answers = view.getAnswers();
+            try {
+                FormController.FailedConstraint constraint = callback.getFormController().saveAllScreenAnswers(answers, true);
+                view.onAnswerQuestion(constraint);
+                if (constraint == null) {
+                    showNextQuestion();
+                }
+            } catch (JavaRosaException e) {
+                Timber.e(e);
+            }
+        } else {
+            showNextQuestion();
+        }
     }
 
     private void showPrev() {
@@ -182,9 +215,22 @@ public class ViewFlipperController implements View.OnTouchListener {
         return viewFlipper.getContext();
     }
 
+    public ArrayList<ODKView> getOdkViews() {
+        ArrayList<ODKView> res = new ArrayList<>();
+        int end = viewFlipper.getChildCount();
+        for (int i = 0; i < end; i++) {
+            if (viewFlipper.getChildAt(i) instanceof ODKView) {
+                res.add((ODKView) viewFlipper.getChildAt(i));
+            }
+        }
+        return res;
+    }
+
     public interface Callback {
         void onNewScreen(int position);
 
         void onFinish();
+
+        FormController getFormController();
     }
 }

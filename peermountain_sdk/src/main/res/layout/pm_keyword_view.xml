@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.peermountain.sdk.views.PeerMountainTextView
+<com.peermountain.core.views.PeerMountainTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:grid="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
     android:layout_margin="@dimen/pm_margin_micro"
     android:background="@drawable/pm_keywords_selector"
+    android:gravity="center"
     android:textColor="@color/pm_text_color"
-    tools:text="Text"
     grid:layout_columnWeight="1"
-    grid:layout_gravity="fill">
+    grid:layout_gravity="fill"
+    tools:text="Text">
 
-</com.peermountain.sdk.views.PeerMountainTextView>
+</com.peermountain.core.views.PeerMountainTextView>

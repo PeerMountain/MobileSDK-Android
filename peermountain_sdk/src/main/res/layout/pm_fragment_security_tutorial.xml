@@ -18,7 +18,7 @@
             android:layout_marginBottom="@dimen/pm_confirm_btn_size"
             android:padding="@dimen/pm_margin_normal">
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvCurrentPageTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 android:textStyle="bold"
                 />
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvCurrentPageMessage1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>-->
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvCurrentPageMessage2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 android:textSize="@dimen/pm_regular_text"
                 android:lineSpacingExtra="10dp"/>
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvCurrentPageNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

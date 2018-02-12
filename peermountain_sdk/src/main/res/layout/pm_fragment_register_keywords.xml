@@ -7,7 +7,7 @@
               android:orientation="vertical"
               tools:activity="com.peermountain.sdk.ui.register.RegisterKeywordsFragment">
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTvMessageKeywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:orientation="vertical"
         android:padding="@dimen/pm_margin_normal">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pm_keywords"
@@ -46,7 +46,7 @@
             />
     </LinearLayout>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTVSavedKeywords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTVSavedKeywordsHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

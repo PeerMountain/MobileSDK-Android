@@ -20,7 +20,7 @@
             android:id="@+id/pmIvAvatar"
             style="@style/pm_avatar_image"/>
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvMenuHome"
                 style="@style/pm_menu_text"
                 android:layout_marginLeft="@dimen/pm_margin_normal"
@@ -51,22 +51,22 @@
                 android:layout_marginTop="@dimen/pm_margin_xbig"
                 android:text="@string/pm_menu_home"/>
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvMenuDocuments"
                 style="@style/pm_menu_text"
                 android:text="@string/pm_menu_documents"/>
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvMenuContacts"
                 style="@style/pm_menu_text"
                 android:text="@string/pm_menu_contacts"/>
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvMenuSettings"
                 style="@style/pm_menu_text"
                 android:text="@string/pm_menu_settings"/>
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:id="@+id/tvMenuWipe"
                 style="@style/pm_menu_text"
                 android:text="Wipe profile"/>

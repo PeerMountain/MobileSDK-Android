@@ -9,43 +9,53 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.peermountain.core.R;
+import com.peermountain.core.odk.FormController;
 import com.peermountain.core.odk.utils.ViewIds;
 import com.peermountain.core.odk.views.widgets.WidgetFactory;
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
 
+import org.javarosa.core.model.FormIndex;
+import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryPrompt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by Galeen on 1/24/2018.
+ * ScrollView holding questions of one group or single question
  */
 
-public class ODKView extends ScrollView implements View.OnTouchListener{
+public class ODKView extends ScrollView implements View.OnTouchListener {
     public static final String FIELD_LIST = "field-list";
 
     private LinearLayout view;
     private LinearLayout.LayoutParams layout;
     private ArrayList<QuestionWidget> widgets;
+    private int padding = 10;
+    public FormEntryPrompt[] questionPrompts;
 
-    public ODKView(Context context, final FormEntryPrompt[] questionPrompts,
+    public ODKView(Context context, FormEntryPrompt[] questionPrompts,
                    FormEntryCaption[] groups, boolean advancingPage) {
         super(context);
+        this.questionPrompts = questionPrompts;
         widgets = new ArrayList<>();
 
         view = new LinearLayout(getContext());
         view.setOrientation(LinearLayout.VERTICAL);
         view.setGravity(Gravity.TOP);
-        view.setPadding(0, 7, 0, 0);
+        padding = getContext().getResources().getDimensionPixelSize(R.dimen.pm_margin_small);
+        view.setPadding(0, padding, 0, 0);
 
         layout =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
-        layout.setMargins(10, 0, 10, 0);
+        layout.setMargins(padding, 0, padding, 0);
 
         // display which group you are in as well as the question
-
         addGroupText(groups);
 
         // when the grouped fields are populated by an external app, this will get true.
@@ -141,13 +151,18 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
 
             // if question or answer type is not supported, use text widget
             QuestionWidget qw =
-                    WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
-            qw.setLongClickable(true);
+                    null;
+            try {
+                qw = WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
+                qw.setLongClickable(true);
 //            qw.setOnLongClickListener(this);
-            qw.setId(ViewIds.generateViewId());
+                qw.setId(ViewIds.generateViewId());
 
-            widgets.add(qw);
-            view.addView(qw, layout);
+                widgets.add(qw);
+                view.addView(qw, layout);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         addView(view);
@@ -171,7 +186,7 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
             TextView tv = new TextView(getContext());
             tv.setText(path);
 //            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Collect.getQuestionFontsize() - 4);
-            tv.setPadding(0, 0, 0, 5);
+            tv.setPadding(0, 0, 0, padding);
             view.addView(tv, layout);
         }
     }
@@ -223,6 +238,30 @@ public class ODKView extends ScrollView implements View.OnTouchListener{
 
     public ArrayList<QuestionWidget> getWidgets() {
         return widgets;
+    }
+
+    /**
+     * @return a HashMap of answers entered by the user for this set of widgets
+     */
+    public HashMap<FormIndex, IAnswerData> getAnswers() {
+        HashMap<FormIndex, IAnswerData> answers = new LinkedHashMap<>();
+        for (QuestionWidget q : widgets) {
+            /*
+             * The FormEntryPrompt has the FormIndex, which is where the answer gets stored. The
+             * QuestionWidget has the answer the user has entered.
+             */
+            FormEntryPrompt p = q.getFormEntryPrompt();
+            answers.put(p.getIndex(), q.getAnswer());
+        }
+
+        return answers;
+    }
+
+    public void onAnswerQuestion(FormController.FailedConstraint constraint) {
+        int size = widgets.size();
+        for (int i = 0; i < size; i++) {
+            widgets.get(i).onAnswerQuestion(constraint);
+        }
     }
 
     @Override

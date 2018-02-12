@@ -24,7 +24,7 @@
         app:translationDiff="30"
         app:visibleCount="3"/>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTvLoading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,14 +50,14 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/btnMenuScanID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pm_scan_id_menu"
             android:textColor="@color/pm_text_accent"/>
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/btnMenuUpload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

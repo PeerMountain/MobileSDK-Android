@@ -54,7 +54,7 @@
                 android:padding="@dimen/pm_margin_normal"
                 android:orientation="vertical">
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -65,7 +65,7 @@
                     android:textColor="@color/pm_text_color"
                     android:textSize="@dimen/pm_regular_text"/>
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -93,7 +93,7 @@
                     android:src="@drawable/pm_id_card_white"/>
 
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/pmTvLoading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

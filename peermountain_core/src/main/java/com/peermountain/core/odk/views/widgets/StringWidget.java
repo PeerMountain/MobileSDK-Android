@@ -20,16 +20,20 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TextKeyListener;
 import android.text.method.TextKeyListener.Capitalize;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import com.peermountain.core.R;
 import com.peermountain.core.odk.utils.Timber;
@@ -50,27 +54,42 @@ import org.javarosa.form.api.FormEntryPrompt;
 public class StringWidget extends QuestionWidget {
     private static final String ROWS = "rows";
     private EditText answerText;
-
+    private int colorActive, colorError, colorInactive;
     boolean readOnly = false;
 
-    public StringWidget(Context context, FormEntryPrompt prompt, boolean readOnlyOverride) {
+    public StringWidget(Context context, FormEntryPrompt prompt, boolean readOnlyOverride) throws Exception {
         this(context, prompt, readOnlyOverride, true);
         setupChangeListener();
     }
 
     protected StringWidget(Context context, FormEntryPrompt prompt, boolean readOnlyOverride,
-                           boolean derived) {
+                           boolean derived) throws Exception {
         super(context, prompt);
-
-        answerText = new EditText(context);
-        answerText.setId(ViewIds.generateViewId());
         readOnly = prompt.isReadOnly() || readOnlyOverride;
+        colorActive = ContextCompat.getColor(getContext(), R.color.colorPrimary);
+        colorInactive = ContextCompat.getColor(getContext(), R.color.pm_odk_text_hint);
+        colorError = ContextCompat.getColor(getContext(), R.color.pm_odk_text_error);
+        if (!readOnly) {
+            setEditableView(context, prompt);
+        } else {
+            setStaticView(context);
+        }
+        if (answerText == null) {
+            throw new Exception("");
+        }
+        mainInit(prompt);
 
-        answerText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
+    }
 
-        TableLayout.LayoutParams params = new TableLayout.LayoutParams();
+    private void mainInit(FormEntryPrompt prompt) {
+        // capitalize the first letter of the sentence
+        answerText.setKeyListener(new TextKeyListener(Capitalize.SENTENCES, false));
 
-        /*
+        // needed to make long read only text scroll
+        answerText.setHorizontallyScrolling(false);
+        answerText.setSingleLine(false);
+
+         /*
          * If a 'rows' attribute is on the input tag, set the minimum number of lines
          * to display in the field to that value.
          *
@@ -92,31 +111,74 @@ public class StringWidget extends QuestionWidget {
                 Timber.e("Unable to process the rows setting for the answerText field: %s", e.toString());
             }
         }
-
-        params.setMargins(7, 5, 7, 5);
-        answerText.setLayoutParams(params);
-
-        // capitalize the first letter of the sentence
-        answerText.setKeyListener(new TextKeyListener(Capitalize.SENTENCES, false));
-
-        // needed to make long read only text scroll
-        answerText.setHorizontallyScrolling(false);
-        answerText.setSingleLine(false);
-
         String s = prompt.getAnswerText();
         if (s != null) {
             answerText.setText(s);
             Selection.setSelection(answerText.getText(), answerText.getText().toString().length());
         }
+    }
 
-        if (readOnly) {
-            answerText.setBackground(null);
-            answerText.setEnabled(false);
-            answerText.setTextColor(ContextCompat.getColor(context, R.color.pm_odk_text));
-            answerText.setFocusable(false);
-        }
+    private void setStaticView(Context context) {
+        answerText = new EditText(context);
+        answerText.setId(ViewIds.generateViewId());
 
+        answerText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getContext().getResources().getDimension(R.dimen.pm_text_normal));
+
+        TableLayout.LayoutParams params = new TableLayout.LayoutParams();
+        int margin = context.getResources().getDimensionPixelSize(R.dimen.pm_margin_normal);
+        params.setMargins(margin, 0, margin, 0);
+        answerText.setLayoutParams(params);
+        answerText.setBackground(null);
+        answerText.setEnabled(false);
+        answerText.setTextColor(ContextCompat.getColor(context, R.color.pm_odk_text));
+        answerText.setFocusable(false);
         addAnswerView(answerText);
+    }
+
+    private TextView tvTitle, tvMsg;
+    private View vLine;
+
+    private void setEditableView(Context context, FormEntryPrompt prompt) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (inflater != null) {
+            ViewGroup viewParent = getAnswerViewParent();
+            inflater.inflate(R.layout.pm_input_view, viewParent);
+            answerText = viewParent.findViewById(R.id.pmEtInput);
+            tvTitle = viewParent.findViewById(R.id.pmInputTitle);
+            vLine = viewParent.findViewById(R.id.pmEtInputLine);
+            if (TextUtils.isEmpty(prompt.getQuestionText())) {
+                tvTitle.setVisibility(GONE);
+            } else {
+                tvTitle.setText(prompt.getQuestionText());
+                answerText.setOnFocusChangeListener(new OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View view, boolean hasFocus) {
+                        if (isWithError) return;
+                        if (hasFocus) {
+                            tvTitle.setTextColor(colorActive);
+                            vLine.setBackgroundColor(colorActive);
+                        } else {
+                            tvTitle.setTextColor(colorInactive);
+                            vLine.setBackgroundColor(colorInactive);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onAnswerQuestion(boolean isAnswered) {
+        super.onAnswerQuestion(isAnswered);
+        if (!isAnswered) {
+            tvTitle.setTextColor(colorError);
+            vLine.setBackgroundColor(colorError);
+        } else {
+            int color = hasFocus() ? colorActive : colorInactive;
+            tvTitle.setTextColor(color);
+            vLine.setBackgroundColor(color);
+        }
     }
 
     protected void setupChangeListener() {

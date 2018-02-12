@@ -10,7 +10,7 @@
 
     <!--<include layout="@layout/pm_toolbar"/>-->
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTvMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:textColor="@color/pm_text_color"
         android:textSize="@dimen/pm_big_text"/>
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmTvMessage2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
             android:orientation="horizontal"
             android:visibility="gone">
 
-            <com.peermountain.sdk.views.PeerMountainTextView
+            <com.peermountain.core.views.PeerMountainTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pm_don_t_remember_your_code"
@@ -109,7 +109,7 @@
                 android:layout_marginLeft="@dimen/pm_margin_small"
                 android:orientation="vertical">
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/pmTvRecover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                     android:id="@+id/kbKey1"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="1"/>
                 </LinearLayout>
@@ -144,11 +144,11 @@
                     android:id="@+id/kbKey2"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="2"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_hint"
                         android:text="ABC"/>
                 </LinearLayout>
@@ -157,11 +157,11 @@
                     android:id="@+id/kbKey3"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="3"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_hint"
                         android:text="DEF"/>
                 </LinearLayout>
@@ -173,11 +173,11 @@
                     android:id="@+id/kbKey4"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="4"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_hint"
                         android:text="GHI"/>
                 </LinearLayout>
@@ -186,11 +186,11 @@
                     android:id="@+id/kbKey5"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="5"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_hint"
                         android:text="GHI"/>
                 </LinearLayout>
@@ -199,11 +199,11 @@
                     android:id="@+id/kbKey6"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="6"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_hint"
                         android:text="MNO"/>
                 </LinearLayout>
@@ -215,11 +215,11 @@
                     android:id="@+id/kbKey7"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="7"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_hint"
                         android:text="PQRS"/>
                 </LinearLayout>
@@ -228,11 +228,11 @@
                     android:id="@+id/kbKey8"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="8"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         android:id="@+id/peerMountainTextView"
                         style="@style/pm_keyboard_btn_hint"
                         android:text="TUV"/>
@@ -242,11 +242,11 @@
                     android:id="@+id/kbKey9"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="9"/>
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         android:id="@+id/peerMountainTextView2"
                         style="@style/pm_keyboard_btn_hint"
                         android:text="WXYZ"/>
@@ -272,7 +272,7 @@
                     android:id="@+id/kbKey0"
                     style="@style/pm_keyboard_btn">
 
-                    <com.peermountain.sdk.views.PeerMountainTextView
+                    <com.peermountain.core.views.PeerMountainTextView
                         style="@style/pm_keyboard_btn_num"
                         android:text="0"/>
 

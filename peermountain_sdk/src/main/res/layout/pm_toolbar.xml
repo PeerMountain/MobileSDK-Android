@@ -7,7 +7,7 @@
     android:id="@+id/toolbar"
     tools:showIn="@layout/pm_content_home">
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:id="@+id/pmToolbarTitle"
         style="@style/pm_tv_shadow"
         android:layout_width="wrap_content"

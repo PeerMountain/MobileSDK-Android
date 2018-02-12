@@ -23,7 +23,7 @@
         android:orientation="vertical"
         android:padding="@dimen/pm_margin_normal">
 
-        <com.peermountain.sdk.views.PeerMountainTextView
+        <com.peermountain.core.views.PeerMountainTextView
             android:id="@+id/tvJobMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                 android:background="@drawable/pm_job_btn_border"
                 android:orientation="vertical">
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn1Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                     android:textColor="@color/pm_job_item_btn_text"
                     android:textSize="@dimen/pm_job_item_title_text"/>
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn1Msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                 android:background="@drawable/pm_job_btn_border"
                 android:orientation="vertical">
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn2Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                     android:textColor="@color/pm_job_item_btn_text"
                     android:textSize="@dimen/pm_job_item_title_text"/>
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn2Msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                 android:background="@drawable/pm_job_btn_border"
                 android:orientation="vertical">
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn3Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
                     android:textColor="@color/pm_job_item_btn_text"
                     android:textSize="@dimen/pm_job_item_title_text"/>
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn3Msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                 android:background="@drawable/pm_job_btn_border"
                 android:orientation="vertical">
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn4Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                     android:textColor="@color/pm_job_item_btn_text"
                     android:textSize="@dimen/pm_job_item_title_text"/>
 
-                <com.peermountain.sdk.views.PeerMountainTextView
+                <com.peermountain.core.views.PeerMountainTextView
                     android:id="@+id/tvBtn4Msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

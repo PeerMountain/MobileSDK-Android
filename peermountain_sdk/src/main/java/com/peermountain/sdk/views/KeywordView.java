@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.peermountain.core.model.unguarded.Keyword;
+import com.peermountain.core.views.PeerMountainTextView;
 
 
 /**

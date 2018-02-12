@@ -149,7 +149,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         File formXmlFile = new File(formPath);
         formDef = getFormDefFromFileOrCache(formXmlFile);
 
-        if (mErrorMsg != null) {
+        if (mErrorMsg != null || formDef ==null) {
             return null;
         }
 
@@ -280,7 +280,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
     }
 
 
-    public boolean importData(File instanceFile, FormEntryController formEntryController) {
+    private boolean importData(File instanceFile, FormEntryController formEntryController) {
         // convert files into a byte array
         byte[] fileBytes = FileUtils.getFileAsBytes(instanceFile);
 

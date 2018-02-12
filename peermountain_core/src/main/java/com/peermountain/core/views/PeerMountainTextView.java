@@ -1,4 +1,4 @@
-package com.peermountain.sdk.views;
+package com.peermountain.core.views;
 
 /**
  * Created by Galeen on 10/9/17.
@@ -10,7 +10,7 @@ import android.graphics.Typeface;
 import android.support.v4.util.ArrayMap;
 import android.util.AttributeSet;
 
-import com.peermountain.sdk.R;
+import com.peermountain.core.R;
 
 
 /**

@@ -687,7 +687,7 @@ public class FormController implements Serializable{
      */
     public FailedConstraint saveAllScreenAnswers(HashMap<FormIndex, IAnswerData> answers,
                                                  boolean evaluateConstraints) throws JavaRosaException {
-        if (currentPromptIsQuestion()) {
+//        if (currentPromptIsQuestion()) {
             for (FormIndex index : answers.keySet()) {
                 // Within a group, you can only save for question events
                 if (getEvent(index) == FormEntryController.EVENT_QUESTION) {
@@ -706,7 +706,7 @@ public class FormController implements Serializable{
                             index.getReference().toString());
                 }
             }
-        }
+//        }
         return null;
     }
 

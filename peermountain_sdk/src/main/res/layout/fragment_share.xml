@@ -8,7 +8,7 @@
               tools:background="@drawable/pm_bkg"
               tools:activity="com.peermountain.sdk.ui.authorized.contacts.ShareFragment">
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pm_share_using_google_nearby"
@@ -27,7 +27,7 @@
     </FrameLayout>
 
 
-    <com.peermountain.sdk.views.PeerMountainTextView
+    <com.peermountain.core.views.PeerMountainTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pm_share_using_qr_code"

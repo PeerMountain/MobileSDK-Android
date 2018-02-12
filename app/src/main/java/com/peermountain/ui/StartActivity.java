@@ -42,7 +42,8 @@ public class StartActivity extends AppCompatActivity {
 
 //        showSplash();
 
-        XFormActivity.show(this,"https://www.dropbox.com/s/9kj12067gqhst42/Sample%20Form.xml?dl=1");
+        XFormActivity.show(this,"https://www.dropbox.com/s/8zj9t5xylb0gklw/test%20form.xml?dl=1");
+//                "https://www.dropbox.com/s/9kj12067gqhst42/Sample%20Form.xml?dl=1");
         finish();
     }
 

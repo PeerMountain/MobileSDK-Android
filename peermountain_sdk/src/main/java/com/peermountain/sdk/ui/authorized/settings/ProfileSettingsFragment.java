@@ -61,7 +61,7 @@ import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.ui.register.RegisterProfileFragment;
 import com.peermountain.sdk.utils.PublicProfileUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.views.PeerMountainTextView;
+import com.peermountain.core.views.PeerMountainTextView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;

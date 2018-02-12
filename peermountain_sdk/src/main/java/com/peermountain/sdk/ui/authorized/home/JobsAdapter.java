@@ -12,7 +12,7 @@ import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
-import com.peermountain.sdk.views.PeerMountainTextView;
+import com.peermountain.core.views.PeerMountainTextView;
 
 /**
  * Created by Galeen on 10/12/2017.
