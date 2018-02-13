@@ -19,7 +19,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.ViewIds;
+import com.peermountain.core.views.PeerMountainTextView;
 
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.form.api.FormEntryPrompt;

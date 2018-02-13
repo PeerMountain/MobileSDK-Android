@@ -38,8 +38,6 @@ public class WidgetFactory {
      * @param readOnlyOverride a flag to be ORed with JR readonly attribute.
      */
     public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt formEntryPrompt, Context context,
-                                                        boolean readOnlyOverride) {
-    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt fep, Context context,
                                                         boolean readOnlyOverride) throws Exception {
 
         // get appearance hint and clean it up so it is lower case and never null...
@@ -51,7 +49,7 @@ public class WidgetFactory {
         }
 
         final QuestionWidget questionWidget;// = new StringWidget(context, fep, readOnlyOverride);
-        switch (fep.getControlType()) {
+        switch (formEntryPrompt.getControlType()) {
 //            case Constants.CONTROL_INPUT:
 //                switch (fep.getDataType()) {
 //                    case Constants.DATATYPE_DATE_TIME:
@@ -257,7 +255,7 @@ public class WidgetFactory {
 //                }
 //                break;
             default:
-                questionWidget = new StringWidget(context, fep, readOnlyOverride);
+                questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
                 break;
         }
         return questionWidget;
