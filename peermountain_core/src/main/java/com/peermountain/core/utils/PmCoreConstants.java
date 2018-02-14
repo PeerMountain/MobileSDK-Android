@@ -1,6 +1,8 @@
 package com.peermountain.core.utils;
 
 
+import com.peermountain.core.BuildConfig;
+
 /**
  * Created by Galeen on 14.3.2017 г..
  * Constants related to peermountain_core
@@ -35,6 +37,9 @@ public class PmCoreConstants {
     public static final int KEYWORDS_SHOW_COUNT = 20;
     public static final int KEYWORDS_SHOW_TO_VALIDATE_COUNT = 28;
     public static final int MIN_KEYWORDS_SAVE = 6;
+
+    public static final String BROAD_CAST_TOUCH_ACTION = BuildConfig.APPLICATION_ID + "touch";
+    public static final String EXTRA_CAN_SLIDE = "canSlide";
 }
 
 

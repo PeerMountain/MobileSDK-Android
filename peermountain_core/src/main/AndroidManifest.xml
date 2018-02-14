@@ -41,6 +41,7 @@
         </activity>
         <activity android:name=".odk.XFormActivity"
                   android:screenOrientation="portrait"
+                  android:windowSoftInputMode="adjustResize"
                   android:theme="@style/PmCoreTheme">
         </activity>
     </application>

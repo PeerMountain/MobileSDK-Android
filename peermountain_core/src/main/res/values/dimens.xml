@@ -6,6 +6,7 @@
     <dimen name="pm_margin_xbig">40dp</dimen>
     <dimen name="pm_margin_micro">4dp</dimen>
 
+    <dimen name="pm_text_big">18sp</dimen>
     <dimen name="pm_text_normal">16sp</dimen>
     <dimen name="pm_text_small">12sp</dimen>
 
@@ -14,4 +15,6 @@
     <dimen name="pm_id_size">200dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="camera_size">300dp</dimen>
+    <dimen name="pm_odk_slider_weight">12dp</dimen>
+    <dimen name="pm_odk_thumb_border">8dp</dimen>
 </resources>

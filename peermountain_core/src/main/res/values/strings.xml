@@ -28,4 +28,5 @@
     <string name="pm_activity_not_found">No activity found to handle: %s</string>
     <string name="pm_launch_app">Launch</string>
     <string name="pm_no_app">The requested application is missing. Please manually enter the reading.</string>
+    <string name="pm_btn_ok">OK</string>
 </resources>

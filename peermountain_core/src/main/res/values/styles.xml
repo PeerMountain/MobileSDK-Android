@@ -28,4 +28,17 @@
 
     <style name="PmCoreTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="PmCheckbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/pm_odk_text</item>
+        <item name="android:textSize">@dimen/pm_text_normal</item>
+        <item name="colorControlNormal">@color/pm_odk_checkbox_default</item>
+        <item name="colorControlActivated">@color/pm_odk_checkbox_active</item>
+    </style>
+
+    <style name="PmRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:textColor">@color/pm_odk_text</item>
+        <item name="android:textSize">@dimen/pm_text_normal</item>
+        <item name="colorControlNormal">@color/pm_odk_checkbox_default</item>
+        <item name="colorControlActivated">@color/pm_odk_checkbox_active</item>
+    </style>
 </resources>

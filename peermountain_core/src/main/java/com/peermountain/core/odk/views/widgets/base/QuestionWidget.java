@@ -1,6 +1,7 @@
 package com.peermountain.core.odk.views.widgets.base;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,12 +13,14 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -33,6 +36,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.ViewIds;
+import com.peermountain.core.utils.PmCoreConstants;
 import com.peermountain.core.views.PeerMountainTextView;
 
 import org.javarosa.core.model.FormIndex;
@@ -56,7 +60,8 @@ public abstract class QuestionWidget
     private final FormEntryPrompt formEntryPrompt;
     private final MediaLayout questionMediaLayout = null;
     private MediaPlayer player;
-    private final PeerMountainTextView helpTextView;
+    protected final PeerMountainTextView tvHelp;
+    protected final PeerMountainTextView tvLabel;
     private final FrameLayout answerViewParent;
 
     private Bundle state;
@@ -64,10 +69,16 @@ public abstract class QuestionWidget
     private int playColor = DEFAULT_PLAY_COLOR;
     private int playBackgroundColor = DEFAULT_PLAY_BACKGROUND_COLOR;
     int padding, paddingSmall;
+    protected static int colorActive, colorError, colorInactive;
 
     public QuestionWidget(Context context, FormEntryPrompt prompt) {
         super(context);
         setOrientation(LinearLayout.VERTICAL);
+        if(colorActive==0) {
+            colorActive = getColor(R.color.pm_odk_active);
+            colorInactive = getColor(R.color.pm_odk_text_hint);
+            colorError = getColor(R.color.pm_odk_text_error);
+        }
 //        if (context instanceof FormEntryActivity) {
 //            state = ((FormEntryActivity) context).getState();
 //        }
@@ -102,13 +113,15 @@ public abstract class QuestionWidget
 //        setPadding(0, 7, 0, 0);
 
 //        questionMediaLayout = createQuestionMediaLayout(prompt);
-        helpTextView = createHelpText(prompt);
+        tvLabel = createLabelText(prompt);
+        tvHelp = createHelpText(prompt);
 
         answerViewParent = new FrameLayout(getContext());
 //
 //        addQuestionMediaLayout(getQuestionMediaLayout());
+        addLabelTextView(tvLabel);
         addAnswerViewParent();
-        addHelpTextView(getHelpTextView());
+        addHelpTextView(tvHelp);
     }
 
     /**
@@ -127,7 +140,7 @@ public abstract class QuestionWidget
         TextView questionText = new TextView(getContext());
         questionText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getQuestionFontSize());
         questionText.setTypeface(null, Typeface.BOLD);
-        questionText.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text));
+        questionText.setTextColor(getColor(R.color.pm_odk_text));
         questionText.setPadding(0, 0, 0, 7);
         questionText.setText(promptText == null ? "" : TextUtils.textToHtml(promptText));
         questionText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -178,7 +191,7 @@ public abstract class QuestionWidget
     }
 
     public TextView getHelpTextView() {
-        return helpTextView;
+        return tvHelp;
     }
 
     public void playAudio() {
@@ -230,6 +243,8 @@ public abstract class QuestionWidget
     // Abstract methods
 
     public abstract void setFocus(Context context);
+
+    public abstract boolean canGetFocus();
 
     public abstract void setOnLongClickListener(OnLongClickListener l);
 
@@ -285,7 +300,7 @@ public abstract class QuestionWidget
      */
     protected void addHelpTextView(View v) {
         if (v == null) {
-            Timber.e("cannot add a null view as helpTextView");
+            Timber.e("cannot add a null view as tvHelp");
             return;
         }
 
@@ -304,20 +319,59 @@ public abstract class QuestionWidget
 
         if (helpText != null && !helpText.equals("")) {
             tvHelp.setId(ViewIds.generateViewId());
-            tvHelp.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    getContext().getResources().getDimension(R.dimen.pm_text_small));
+            setTextSize(tvHelp,R.dimen.pm_text_small);
             //noinspection ResourceType
             tvHelp.setPadding(padding, paddingSmall, padding, paddingSmall);
             // wrap to the widget of view
             tvHelp.setHorizontallyScrolling(false);
 //            helpText.setTypeface(null, Typeface.ITALIC);
             tvHelp.setText(TextUtils.textToHtml(helpText));
-            tvHelp.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text_hint));
+            tvHelp.setTextColor(getColor(R.color.pm_odk_text_hint));
             tvHelp.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
             tvHelp.setVisibility(View.GONE);
         }
         return tvHelp;
+    }
+
+    /**
+     * Add a TextView containing the label text to the default location.
+     * Override to reposition.
+     */
+    protected void addLabelTextView(View v) {
+        if (v == null) {
+            Timber.e("cannot add a null view as tvHelp");
+            return;
+        }
+
+        // default for helptext
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+//        params.addRule(RelativeLayout.BELOW, getQuestionMediaLayout().getId());
+//        params.setMargins(10, 0, 10, 0);
+        addView(v, params);
+    }
+
+    private PeerMountainTextView createLabelText(FormEntryPrompt prompt) {
+        PeerMountainTextView tvLabel = new PeerMountainTextView(getContext());
+        String labelText = prompt.getQuestionText();
+
+        if (labelText != null && !labelText.equals("")) {
+            tvLabel.setId(ViewIds.generateViewId());
+            setTextSize(tvLabel,R.dimen.pm_text_normal);
+            //noinspection ResourceType
+            tvLabel.setPadding(padding, paddingSmall, padding, paddingSmall);
+            // wrap to the widget of view
+            tvLabel.setHorizontallyScrolling(false);
+//            helpText.setTypeface(null, Typeface.ITALIC);
+            tvLabel.setText(TextUtils.textToHtml(labelText));
+            tvLabel.setTextColor(colorActive);
+//            tvLabel.setMovementMethod(LinkMovementMethod.getInstance());
+        } else {
+            tvLabel.setVisibility(View.GONE);
+        }
+        return tvLabel;
     }
 
     protected void addAnswerViewParent() {
@@ -447,7 +501,7 @@ public abstract class QuestionWidget
         TextView textView = new TextView(getContext());
 
         textView.setId(R.id.answer_text);
-        textView.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text));
+        textView.setTextColor(getColor(R.color.pm_odk_text));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, getAnswerFontSize());
         textView.setPadding(20, 20, 20, 20);
 
@@ -602,16 +656,60 @@ public abstract class QuestionWidget
     public void onAnswerQuestion(boolean isAnswered) {
         isWithError = !isAnswered;
         if (!isAnswered) {
-            helpTextView.setText(formEntryPrompt.getConstraintText());
-            helpTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text_error));
+            tvHelp.setText(formEntryPrompt.getConstraintText());
+            tvHelp.setTextColor(colorError);
+            tvLabel.setTextColor(colorError);
         } else {
-            helpTextView.setText(TextUtils.textToHtml(formEntryPrompt.getHelpText()));
-            helpTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.pm_odk_text_hint));
+            tvHelp.setText(TextUtils.textToHtml(formEntryPrompt.getHelpText()));
+            tvHelp.setTextColor(colorInactive);
+            tvLabel.setTextColor(hasFocus() ? colorActive : colorInactive);
         }
     }
 
+    protected void onFocus(boolean hasFocus){
+        if (isWithError) return;
+        if (hasFocus) {
+            tvLabel.setTextColor(colorActive);
+        } else {
+            tvLabel.setTextColor(colorInactive);
+        }
+    }
+
+
     public void onAnswerQuestion(FormController.FailedConstraint constraint) {
         onAnswerQuestion(constraint == null || !constraint.index.equals(formEntryPrompt.getIndex()));
+    }
+
+    protected int getColor(int res){
+        return ContextCompat.getColor(getContext(), res);
+    }
+
+    protected void setTextSize(TextView tv, int res){
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getContext().getResources().getDimension(res));
+    }
+
+    /**
+     * notify any parent if is listening for touch events to slide
+     * to next question or etc, that currently the view needs to slide
+     * only
+     * @param canParentSlide false - the view needs to slide
+     * only , true - the view is done
+     */
+    protected void blockParentTouch(boolean canParentSlide){
+        Intent intent = new Intent(PmCoreConstants.BROAD_CAST_TOUCH_ACTION);
+        intent.putExtra(PmCoreConstants.EXTRA_CAN_SLIDE,canParentSlide);
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    protected void defaultSetFocus(){
+        requestFocus();
+        InputMethodManager inputManager =
+                (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(inputManager!=null){
+            inputManager.hideSoftInputFromWindow(getWindowToken(), 0);
+        }
     }
 }
 

@@ -7,16 +7,6 @@
               android:background="@android:color/transparent"
               android:orientation="vertical">
 
-    <com.peermountain.core.views.PeerMountainTextView
-        android:id="@+id/pmInputTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pm_margin_normal"
-        android:layout_marginRight="@dimen/pm_margin_normal"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/pm_text_normal"
-        tools:text="Title"/>
-
     <EditText
         android:id="@+id/pmEtInput"
         android:layout_width="match_parent"

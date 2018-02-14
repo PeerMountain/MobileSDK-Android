@@ -17,7 +17,12 @@ package com.peermountain.core.odk.views.widgets;
 import android.content.Context;
 
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
+import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
+import com.peermountain.core.odk.views.widgets.range.RangeDecimalWidget;
+import com.peermountain.core.odk.views.widgets.range.RangeIntegerWidget;
+import com.peermountain.core.odk.views.widgets.choice.RadioList;
 
+import org.javarosa.core.model.Constants;
 import org.javarosa.form.api.FormEntryPrompt;
 
 import java.util.Locale;
@@ -168,44 +173,9 @@ public class WidgetFactory {
 //            case Constants.CONTROL_VIDEO_CAPTURE:
 //                questionWidget = new VideoWidget(context, fep);
 //                break;
-//            case Constants.CONTROL_SELECT_ONE:
-//                // SurveyCTO-revised support for dynamic select content (from .csv files)
-//                // consider traditional ODK appearance to be first word in appearance string
-//                if (appearance.startsWith("compact") || appearance.startsWith("quickcompact")) {
-//                    int numColumns = -1;
-//                    try {
-//                        String firstWord = appearance.split("\\s+")[0];
-//                        int idx = firstWord.indexOf('-');
-//                        if (idx != -1) {
-//                            numColumns =
-//                                    Integer.parseInt(firstWord.substring(idx + 1));
-//                        }
-//                    } catch (Exception e) {
-//                        // Do nothing, leave numColumns as -1
-//                        Timber.e("Exception parsing numColumns");
-//                    }
-//
-//                    if (appearance.startsWith("quick")) {
-//                        questionWidget = new GridWidget(context, fep, numColumns, true);
-//                    } else {
-//                        questionWidget = new GridWidget(context, fep, numColumns, false);
-//                    }
-//                } else if (appearance.startsWith("minimal")) {
-//                    questionWidget = new SpinnerWidget(context, fep);
-//                } else if (appearance.startsWith("quick")) {
-//                    questionWidget = new SelectOneAutoAdvanceWidget(context, fep);
-//                } else if (appearance.equals("list-nolabel")) {
-//                    questionWidget = new ListWidget(context, fep, false);
-//                } else if (appearance.equals("list")) {
-//                    questionWidget = new ListWidget(context, fep, true);
-//                } else if (appearance.equals("label")) {
-//                    questionWidget = new LabelWidget(context, fep);
-//                } else if (appearance.contains("search") || appearance.contains("autocomplete")) {
-//                    questionWidget = new SelectOneSearchWidget(context, fep);
-//                } else {
-//                    questionWidget = new SelectOneWidget(context, fep);
-//                }
-//                break;
+            case Constants.CONTROL_SELECT_ONE:
+                questionWidget = new RadioList(context, formEntryPrompt);
+                break;
 //            case Constants.CONTROL_SELECT_MULTI:
 //                // SurveyCTO-revised support for dynamic select content (from .csv files)
 //                // consider traditional ODK appearance to be first word in appearance string
@@ -241,19 +211,19 @@ public class WidgetFactory {
 //            case Constants.CONTROL_TRIGGER:
 //                questionWidget = new TriggerWidget(context, fep);
 //                break;
-//            case Constants.CONTROL_RANGE:
-//                switch (fep.getDataType()) {
-//                    case Constants.DATATYPE_INTEGER:
-//                        questionWidget = new RangeIntegerWidget(context, fep);
-//                        break;
-//                    case Constants.DATATYPE_DECIMAL:
-//                        questionWidget = new RangeDecimalWidget(context, fep);
-//                        break;
-//                    default:
-//                        questionWidget = new StringWidget(context, fep, readOnlyOverride);
-//                        break;
-//                }
-//                break;
+            case Constants.CONTROL_RANGE:
+                switch (formEntryPrompt.getDataType()) {
+                    case Constants.DATATYPE_INTEGER:
+                        questionWidget = new RangeIntegerWidget(context, formEntryPrompt);
+                        break;
+                    case Constants.DATATYPE_DECIMAL:
+                        questionWidget = new RangeDecimalWidget(context, formEntryPrompt);
+                        break;
+                    default:
+                        questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
+                        break;
+                }
+                break;
             default:
                 questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
                 break;

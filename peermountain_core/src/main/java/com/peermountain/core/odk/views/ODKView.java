@@ -3,6 +3,7 @@ package com.peermountain.core.odk.views;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +30,7 @@ import java.util.LinkedHashMap;
  * ScrollView holding questions of one group or single question
  */
 
-public class ODKView extends NestedScrollView implements View.OnTouchListener{
+public class ODKView extends NestedScrollView implements View.OnTouchListener {
     public static final String FIELD_LIST = "field-list";
 
     private LinearLayout view;
@@ -164,15 +165,14 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener{
                 e.printStackTrace();
             }
         }
-
         addView(view);
     }
 
-    private void addDivider() {
-        View divider = new View(getContext());
-        divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
-        divider.setMinimumHeight(3);
-        view.addView(divider,layout);
+    private void addDivider() {// no divider for now
+//        View divider = new View(getContext());
+//        divider.setBackgroundResource(android.R.drawable.divider_horizontal_bright);
+//        divider.setMinimumHeight(3);
+//        view.addView(divider,layout);
     }
 
     /**
@@ -185,7 +185,8 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener{
         if (!path.isEmpty()) {
             TextView tv = new TextView(getContext());
             tv.setText(path);
-//            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Collect.getQuestionFontsize() - 4);
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getContext().getResources().getDimension(R.dimen.pm_text_big));
             tv.setPadding(0, 0, 0, padding);
             view.addView(tv, layout);
         }
@@ -222,6 +223,12 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener{
     }
 
     public void setFocus(Context context) {
+//        for (int i = 0; i < widgets.size(); i++) {
+//            if(widgets.get(i).canGetFocus()){
+//                widgets.get(i).setFocus(context);
+//                break;
+//            }
+//        }
         if (widgets.size() > 0) {
             widgets.get(0).setFocus(context);
         }

@@ -65,7 +65,7 @@ import java.util.List;
  *
  * @author carlhartung
  */
-public class FormController implements Serializable{
+public class FormController implements Serializable {
 
 
     public static final boolean STEP_INTO_GROUP = true;
@@ -90,7 +90,7 @@ public class FormController implements Serializable{
 
     /**
      * OpenRosa metadata of a form instance.
-     *
+     * <p>
      * Contains the values for the required metadata
      * fields and nothing else.
      *
@@ -505,11 +505,11 @@ public class FormController implements Serializable{
      * the group represented by the FormIndex.
      */
     private int stepOverGroup() {
-        stepOverToGroupEnd();
-        return stepToNextEvent(STEP_OVER_GROUP);
+        boolean isOK = stepOverToGroupEnd();
+        return stepToNextEvent(!isOK);
     }
 
-    public void stepOverToGroupEnd() {
+    public boolean stepOverToGroupEnd() {
         ArrayList<FormIndex> indicies = new ArrayList<FormIndex>();
         GroupDef gd =
                 (GroupDef) formEntryController.getModel().getForm()
@@ -523,8 +523,11 @@ public class FormController implements Serializable{
             idxChild = formEntryController.getModel().incrementIndex(idxChild, false);
         }
 
-        // jump to the end of the group
-        formEntryController.jumpToIndex(indicies.get(indicies.size() - 1));
+        if (indicies.size() > 0) {        // jump to the end of the group
+            formEntryController.jumpToIndex(indicies.get(indicies.size() - 1));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -557,8 +560,8 @@ public class FormController implements Serializable{
                         || event == FormEntryController.EVENT_PROMPT_NEW_REPEAT
                         || (event == FormEntryController.EVENT_QUESTION && indexIsInFieldList())
                         || ((event == FormEntryController.EVENT_GROUP
-                                || event == FormEntryController.EVENT_REPEAT)
-                                && !indexIsInFieldList())) {
+                        || event == FormEntryController.EVENT_REPEAT)
+                        && !indexIsInFieldList())) {
                     event = stepToPreviousEvent();
                 }
 
@@ -581,7 +584,7 @@ public class FormController implements Serializable{
                                 GroupDef pd = (GroupDef) fc.getFormElement();
                                 if (pd.getChildren().size() == 1
                                         && ODKView.FIELD_LIST.equalsIgnoreCase(
-                                                pd.getAppearanceAttr())) {
+                                        pd.getAppearanceAttr())) {
                                     formEntryController.jumpToIndex(fc.getIndex());
                                 }
                             }
@@ -628,7 +631,7 @@ public class FormController implements Serializable{
                             break;
                         default:
                             Timber.w("JavaRosa added a new EVENT type and didn't tell us... shame "
-                                            + "on them.");
+                                    + "on them.");
                             break;
                     }
                 } while (event != FormEntryController.EVENT_END_OF_FORM);
@@ -692,24 +695,24 @@ public class FormController implements Serializable{
     public FailedConstraint saveAllScreenAnswers(HashMap<FormIndex, IAnswerData> answers,
                                                  boolean evaluateConstraints) throws JavaRosaException {
 //        if (currentPromptIsQuestion()) {
-            for (FormIndex index : answers.keySet()) {
-                // Within a group, you can only save for question events
-                if (getEvent(index) == FormEntryController.EVENT_QUESTION) {
-                    int saveStatus;
-                    IAnswerData answer = answers.get(index);
-                    if (evaluateConstraints) {
-                        saveStatus = answerQuestion(index, answer);
-                        if (saveStatus != FormEntryController.ANSWER_OK) {
-                            return new FailedConstraint(index, saveStatus);
-                        }
-                    } else {
-                        saveAnswer(index, answer);
+        for (FormIndex index : answers.keySet()) {
+            // Within a group, you can only save for question events
+            if (getEvent(index) == FormEntryController.EVENT_QUESTION) {
+                int saveStatus;
+                IAnswerData answer = answers.get(index);
+                if (evaluateConstraints) {
+                    saveStatus = answerQuestion(index, answer);
+                    if (saveStatus != FormEntryController.ANSWER_OK) {
+                        return new FailedConstraint(index, saveStatus);
                     }
                 } else {
-                    Timber.w("Attempted to save an index referencing something other than a question: %s",
-                            index.getReference().toString());
+                    saveAnswer(index, answer);
                 }
+            } else {
+                Timber.w("Attempted to save an index referencing something other than a question: %s",
+                        index.getReference().toString());
             }
+        }
 //        }
         return null;
     }

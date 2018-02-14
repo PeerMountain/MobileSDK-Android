@@ -12,19 +12,16 @@
  * the License.
  */
 
-package com.peermountain.core.odk.views.widgets;
+package com.peermountain.core.odk.views.widgets.edit_text;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TextKeyListener;
 import android.text.method.TextKeyListener.Capitalize;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -33,7 +30,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import com.peermountain.core.R;
 import com.peermountain.core.odk.utils.Timber;
@@ -54,7 +50,6 @@ import org.javarosa.form.api.FormEntryPrompt;
 public class StringWidget extends QuestionWidget {
     private static final String ROWS = "rows";
     private EditText answerText;
-    private int colorActive, colorError, colorInactive;
     boolean readOnly = false;
 
     public StringWidget(Context context, FormEntryPrompt prompt, boolean readOnlyOverride) throws Exception {
@@ -66,13 +61,10 @@ public class StringWidget extends QuestionWidget {
                            boolean derived) throws Exception {
         super(context, prompt);
         readOnly = prompt.isReadOnly() || readOnlyOverride;
-        colorActive = ContextCompat.getColor(getContext(), R.color.colorPrimary);
-        colorInactive = ContextCompat.getColor(getContext(), R.color.pm_odk_text_hint);
-        colorError = ContextCompat.getColor(getContext(), R.color.pm_odk_text_error);
         if (!readOnly) {
-            setEditableView(context, prompt);
+            setEditableView();
         } else {
-            setStaticView(context);
+            setStaticView();
         }
         if (answerText == null) {
             throw new Exception("");
@@ -118,53 +110,43 @@ public class StringWidget extends QuestionWidget {
         }
     }
 
-    private void setStaticView(Context context) {
-        answerText = new EditText(context);
+    private void setStaticView() {
+        answerText = new EditText(getContext());
         answerText.setId(ViewIds.generateViewId());
-
-        answerText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                getContext().getResources().getDimension(R.dimen.pm_text_normal));
+        setTextSize(answerText,R.dimen.pm_text_normal);
 
         TableLayout.LayoutParams params = new TableLayout.LayoutParams();
-        int margin = context.getResources().getDimensionPixelSize(R.dimen.pm_margin_normal);
+        int margin = getContext().getResources().getDimensionPixelSize(R.dimen.pm_margin_normal);
         params.setMargins(margin, 0, margin, 0);
         answerText.setLayoutParams(params);
         answerText.setBackground(null);
         answerText.setEnabled(false);
-        answerText.setTextColor(ContextCompat.getColor(context, R.color.pm_odk_text));
+        answerText.setTextColor(getColor(R.color.pm_odk_text));
         answerText.setFocusable(false);
         addAnswerView(answerText);
     }
 
-    private TextView tvTitle, tvMsg;
     private View vLine;
 
-    private void setEditableView(Context context, FormEntryPrompt prompt) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private void setEditableView() {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             ViewGroup viewParent = getAnswerViewParent();
             inflater.inflate(R.layout.pm_input_view, viewParent);
             answerText = viewParent.findViewById(R.id.pmEtInput);
-            tvTitle = viewParent.findViewById(R.id.pmInputTitle);
             vLine = viewParent.findViewById(R.id.pmEtInputLine);
-            if (TextUtils.isEmpty(prompt.getQuestionText())) {
-                tvTitle.setVisibility(GONE);
-            } else {
-                tvTitle.setText(prompt.getQuestionText());
-                answerText.setOnFocusChangeListener(new OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View view, boolean hasFocus) {
-                        if (isWithError) return;
-                        if (hasFocus) {
-                            tvTitle.setTextColor(colorActive);
-                            vLine.setBackgroundColor(colorActive);
-                        } else {
-                            tvTitle.setTextColor(colorInactive);
-                            vLine.setBackgroundColor(colorInactive);
-                        }
+            answerText.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    StringWidget.this.onFocus(hasFocus);
+                    if (isWithError) return;
+                    if (hasFocus) {
+                        vLine.setBackgroundColor(colorActive);
+                    } else {
+                        vLine.setBackgroundColor(colorInactive);
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -172,11 +154,10 @@ public class StringWidget extends QuestionWidget {
     public void onAnswerQuestion(boolean isAnswered) {
         super.onAnswerQuestion(isAnswered);
         if (!isAnswered) {
-            tvTitle.setTextColor(colorError);
             vLine.setBackgroundColor(colorError);
+            setFocus(getContext());
         } else {
             int color = hasFocus() ? colorActive : colorInactive;
-            tvTitle.setTextColor(color);
             vLine.setBackgroundColor(color);
         }
     }
@@ -250,6 +231,11 @@ public class StringWidget extends QuestionWidget {
         } else {
             inputManager.hideSoftInputFromWindow(answerText.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public boolean canGetFocus() {
+        return true;
     }
 
 

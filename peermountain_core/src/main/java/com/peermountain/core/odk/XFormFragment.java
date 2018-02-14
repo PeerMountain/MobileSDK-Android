@@ -1,9 +1,13 @@
 package com.peermountain.core.odk;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +21,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.odk.views.ODKView;
+import com.peermountain.core.utils.PmCoreConstants;
 
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
@@ -89,7 +94,7 @@ public class XFormFragment extends Fragment {
     private ViewFlipper viewFlipper;
     private ViewFlipperController viewFlipperController;
     private TextView tvText, pmTvTitle;
-    ArrayList<View> screenViews = new ArrayList<>();
+    ArrayList<View> odkViews = new ArrayList<>();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -101,7 +106,7 @@ public class XFormFragment extends Fragment {
             public void onNewScreen(int position) {
                 tvText.setText("" + position);
                 StringBuilder sb = new StringBuilder();
-                if(position==viewFlipper.getChildCount()-1){//init last screen
+                if (position == viewFlipper.getChildCount() - 1) {//init last screen
                     for (ODKView odkView1 : viewFlipperController.getOdkViews()) {
                         for (FormEntryPrompt questionPrompt : odkView1.questionPrompts) {
                             sb.append(questionPrompt.getQuestionText());
@@ -111,6 +116,11 @@ public class XFormFragment extends Fragment {
                         }
                     }
                     endView.setText(sb.toString());
+                }else{
+                    ODKView currentOdkView = viewFlipperController.getCurrentOdkView();
+                    if(currentOdkView!=null){
+                        currentOdkView.setFocus(getContext());
+                    }
                 }
             }
 
@@ -132,13 +142,12 @@ public class XFormFragment extends Fragment {
             }
         });
         if (formController != null) {
-            //add views
+            //add odkViews
             pmTvTitle.setText(formController.getFormTitle());
-            ArrayList<View> views = new ArrayList<>();
             int event = formController.getEvent();
 
             while (event != FormEntryController.EVENT_END_OF_FORM) {
-                views.add(createView(event,false));
+                odkViews.add(createView(event, false));
                 if (event == FormEntryController.EVENT_GROUP) {
                     formController.stepOverToGroupEnd();
                 }
@@ -149,12 +158,27 @@ public class XFormFragment extends Fragment {
                     return;
                 }
 //                this was last question, noe create exit view and end
-                if(event == FormEntryController.EVENT_END_OF_FORM){
-                    views.add(createView(event,false));
+                if (event == FormEntryController.EVENT_END_OF_FORM) {
+                    odkViews.add(createView(event, false));
                 }
             }
-            viewFlipperController.addViews(views);
+            viewFlipperController.addViews(odkViews);
+            if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
+                ((ODKView) odkViews.get(0)).setFocus(getContext());
+            }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(touchBroadcast, new IntentFilter(PmCoreConstants.BROAD_CAST_TOUCH_ACTION));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(touchBroadcast);
     }
 
     @Override
@@ -164,7 +188,7 @@ public class XFormFragment extends Fragment {
     }
 
     public boolean dispatchTouchEvent(MotionEvent mv) {
-        return viewFlipperController != null && viewFlipperController.onTouch(null, mv);
+        return canSlide && viewFlipperController != null && viewFlipperController.onTouch(null, mv);
     }
 
     private void getViews(View view) {
@@ -175,6 +199,7 @@ public class XFormFragment extends Fragment {
 
     ODKView odkView;
     TextView endView;
+
     /**
      * Creates a view given the View type and an event
      *
@@ -340,6 +365,9 @@ public class XFormFragment extends Fragment {
                 } catch (RuntimeException e) {
                     Timber.e(e);
                     // this is badness to avoid a crash.
+                    if (event == FormEntryController.EVENT_GROUP) {
+                        formController.stepOverToGroupEnd();
+                    }
                     try {
                         event = formController.stepToNextScreenEvent();
 //                        createErrorDialog(e.getMessage(), DO_NOT_EXIT);
@@ -417,6 +445,16 @@ public class XFormFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
     }
+
+    private boolean canSlide = true;
+    private BroadcastReceiver touchBroadcast = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                canSlide = intent.getBooleanExtra(PmCoreConstants.EXTRA_CAN_SLIDE, true);
+            }
+        }
+    };
 
     /**
      * Used whenever we need to show empty view and be able to recognize it from the code

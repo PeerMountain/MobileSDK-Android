@@ -226,6 +226,10 @@ public class ViewFlipperController implements View.OnTouchListener {
         return res;
     }
 
+    public ODKView getCurrentOdkView(){
+        return viewFlipper.getCurrentView() instanceof ODKView ? (ODKView) viewFlipper.getCurrentView() : null;
+    }
+
     public interface Callback {
         void onNewScreen(int position);
 

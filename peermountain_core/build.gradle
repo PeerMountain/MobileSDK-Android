@@ -64,6 +64,9 @@ dependencies {
     }
 //    implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.5.1'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
+    api ('com.appyvet:materialrangebar:1.4.1') {
+        exclude module: 'support-compat'
+    }
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 
