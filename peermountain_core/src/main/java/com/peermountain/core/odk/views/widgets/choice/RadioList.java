@@ -29,19 +29,19 @@ public class RadioList extends ChoiceList {
 
     @Override
     protected CompoundButton createButton(int position) {
-        RadioButton r = new RadioButton(new ContextThemeWrapper(getContext(), R.style.PmRadioButton)
+        RadioButton radioButton = new RadioButton(new ContextThemeWrapper(getContext(), R.style.PmRadioButton)
                 , null, 0);
 
-        r.setId(ViewIds.generateViewId());
-        r.setTag(position);
-        setTextSize(r, R.dimen.pm_text_normal);
-        r.setText(getFormEntryPrompt().getSelectChoiceText(items.get(position)));
-        r.setEnabled(!getFormEntryPrompt().isReadOnly());
-        r.setFocusable(!getFormEntryPrompt().isReadOnly());
+        radioButton.setId(ViewIds.generateViewId());
+        radioButton.setTag(position);
+        setTextSize(radioButton, R.dimen.pm_text_normal);
+        radioButton.setText(getFormEntryPrompt().getSelectChoiceText(items.get(position)));
+        radioButton.setEnabled(!getFormEntryPrompt().isReadOnly());
+        radioButton.setFocusable(!getFormEntryPrompt().isReadOnly());
         if (items.get(position).getValue().equals(answer)) {
-            r.setChecked(true);
+            radioButton.setChecked(true);
         }
-        return r;
+        return radioButton;
     }
 
     @Override

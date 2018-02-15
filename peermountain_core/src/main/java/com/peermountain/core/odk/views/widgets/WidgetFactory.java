@@ -17,6 +17,7 @@ package com.peermountain.core.odk.views.widgets;
 import android.content.Context;
 
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
+import com.peermountain.core.odk.views.widgets.choice.CheckList;
 import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeDecimalWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeIntegerWidget;
@@ -176,9 +177,10 @@ public class WidgetFactory {
             case Constants.CONTROL_SELECT_ONE:
                 questionWidget = new RadioList(context, formEntryPrompt);
                 break;
-//            case Constants.CONTROL_SELECT_MULTI:
-//                // SurveyCTO-revised support for dynamic select content (from .csv files)
-//                // consider traditional ODK appearance to be first word in appearance string
+            case Constants.CONTROL_SELECT_MULTI:
+                questionWidget = new CheckList(context, formEntryPrompt);
+                // SurveyCTO-revised support for dynamic select content (from .csv files)
+                // consider traditional ODK appearance to be first word in appearance string
 //                if (appearance.startsWith("compact")) {
 //                    int numColumns = -1;
 //                    try {
@@ -207,7 +209,7 @@ public class WidgetFactory {
 //                } else {
 //                    questionWidget = new SelectMultiWidget(context, fep);
 //                }
-//                break;
+                break;
 //            case Constants.CONTROL_TRIGGER:
 //                questionWidget = new TriggerWidget(context, fep);
 //                break;
