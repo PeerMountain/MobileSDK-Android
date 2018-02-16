@@ -29,4 +29,10 @@
     <string name="pm_launch_app">Launch</string>
     <string name="pm_no_app">The requested application is missing. Please manually enter the reading.</string>
     <string name="pm_btn_ok">OK</string>
+    <string name="pm_survey_saving_validating_message">Saving data</string>
+    <string name="survey_saving_collecting_message">Collecting data…</string>
+    <string name="survey_saving_saving_message">Saving to SD card…</string>
+    <string name="survey_saving_finalizing_message">Finalizing to SD card…</string>
+    <string name="survey_saving_encrypting_message">Encrypting data…</string>
+    <string name="survey_saving_validating_message">Validating answers…</string>
 </resources>
