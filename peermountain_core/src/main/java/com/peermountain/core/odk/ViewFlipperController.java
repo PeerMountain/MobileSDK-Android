@@ -1,14 +1,18 @@
 package com.peermountain.core.odk;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.peermountain.core.R;
 import com.peermountain.core.odk.exeptions.JavaRosaException;
+import com.peermountain.core.odk.model.SaveResult;
+import com.peermountain.core.odk.tasks.SaveToDiskTask;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.views.ODKView;
 
@@ -126,8 +130,31 @@ public class ViewFlipperController implements View.OnTouchListener {
         if (updateParent) setTextAndDots();
     }
 
+    SaveToDiskTask saveToDiskTask;
+
     public void showNext() {
-        if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 1) return;
+        if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 1) {
+            if (saveToDiskTask == null || saveToDiskTask.getStatus() != AsyncTask.Status.RUNNING) {
+                saveToDiskTask = new SaveToDiskTask(null,true,true,"test_to_save");
+                saveToDiskTask.setFormSavedListener(new SaveToDiskTask.FormSavedListener() {
+                    @Override
+                    public void savingComplete(SaveResult saveStatus) {
+                        if(saveStatus!=null){
+                            Toast.makeText(viewFlipper.getContext(), "code : "+saveStatus.getSaveResult()+
+                                    "\nmsg : "+
+                                    saveStatus.getSaveErrorMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onProgressStep(String stepMessage) {
+                        Toast.makeText(viewFlipper.getContext(), stepMessage, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                saveToDiskTask.execute();
+            }
+            return;
+        }
 
         if (viewFlipper.getCurrentView() instanceof ODKView && callback != null
                 && callback.getFormController() != null) {
@@ -226,7 +253,7 @@ public class ViewFlipperController implements View.OnTouchListener {
         return res;
     }
 
-    public ODKView getCurrentOdkView(){
+    public ODKView getCurrentOdkView() {
         return viewFlipper.getCurrentView() instanceof ODKView ? (ODKView) viewFlipper.getCurrentView() : null;
     }
 

@@ -101,40 +101,7 @@ public class XFormFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         formController = Collect.getInstance().getFormController();
         getViews(view);
-        viewFlipperController = new ViewFlipperController(viewFlipper, view, new ViewFlipperController.Callback() {
-            @Override
-            public void onNewScreen(int position) {
-                tvText.setText("" + position);
-                StringBuilder sb = new StringBuilder();
-                if (position == viewFlipper.getChildCount() - 1) {//init last screen
-                    for (ODKView odkView1 : viewFlipperController.getOdkViews()) {
-                        for (FormEntryPrompt questionPrompt : odkView1.questionPrompts) {
-                            sb.append(questionPrompt.getQuestionText());
-                            sb.append(" : ");
-                            sb.append(questionPrompt.getAnswerText());
-                            sb.append("\n");
-                        }
-                    }
-                    endView.setText(sb.toString());
-                }else{
-                    ODKView currentOdkView = viewFlipperController.getCurrentOdkView();
-                    if(currentOdkView!=null){
-                        currentOdkView.setFocus(getContext());
-                    }
-                }
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-
-            @Override
-            public FormController getFormController() {
-                return formController;
-            }
-
-        });
+        viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback);
         view.findViewById(R.id.pmBtnAddItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +157,41 @@ public class XFormFragment extends Fragment {
     public boolean dispatchTouchEvent(MotionEvent mv) {
         return canSlide && viewFlipperController != null && viewFlipperController.onTouch(null, mv);
     }
+
+    ViewFlipperController.Callback viewFlipperCallback = new ViewFlipperController.Callback() {
+        @Override
+        public void onNewScreen(int position) {
+            tvText.setText("" + position);
+            StringBuilder sb = new StringBuilder();
+            if (position == viewFlipper.getChildCount() - 1) {//init last screen
+                for (ODKView odkView1 : viewFlipperController.getOdkViews()) {
+                    for (FormEntryPrompt questionPrompt : odkView1.questionPrompts) {
+                        sb.append(questionPrompt.getQuestionText());
+                        sb.append(" : ");
+                        sb.append(questionPrompt.getAnswerText());
+                        sb.append("\n");
+                    }
+                }
+                endView.setText(sb.toString());
+            }else{
+                ODKView currentOdkView = viewFlipperController.getCurrentOdkView();
+                if(currentOdkView!=null){
+                    currentOdkView.setFocus(getContext());
+                }
+            }
+        }
+
+        @Override
+        public void onFinish() {
+
+        }
+
+        @Override
+        public FormController getFormController() {
+            return formController;
+        }
+
+    };
 
     private void getViews(View view) {
         tvText = view.findViewById(R.id.tvText);

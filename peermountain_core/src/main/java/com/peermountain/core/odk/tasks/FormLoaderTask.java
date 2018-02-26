@@ -95,6 +95,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
     private int requestCode = 0;
     private int resultCode = 0;
     private Intent intent = null;
+    public String formPath;
 
     protected class FECWrapper {
         FormController controller;
@@ -144,7 +145,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         FormDef formDef = null;
         mErrorMsg = null;
 
-        String formPath = path[0];
+        formPath = path[0];
 
         File formXmlFile = new File(formPath);
         formDef = getFormDefFromFileOrCache(formXmlFile);
@@ -217,7 +218,7 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         // clean up vars
         formDef = null;
         formXmlFile = null;
-        formPath = null;
+//        formPath = null;
 
         FormController fc = new FormController(formMediaDir, formEntryController, mInstancePath == null ? null : new File(mInstancePath));
         if (mXPath != null) {

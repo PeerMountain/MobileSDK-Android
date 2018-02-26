@@ -12,10 +12,15 @@ import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkResponse;
 import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.odk.utils.Collect;
+import com.peermountain.core.odk.utils.FileUtils;
+import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class XFormActivity extends AppCompatActivity implements XFormFragment.OnFragmentInteractionListener{
 
@@ -53,7 +58,25 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
             public void loadingComplete(FormLoaderTask task) {
                 LogUtils.d("ttt","ttt "+ task.getRequestCode());
                 fragment = new XFormFragment();
-                Collect.getInstance().setFormController(task.getFormController());
+                FormController formController = task.getFormController();
+                Collect.getInstance().setFormController(formController);
+                if (formController.getInstancePath() == null) {
+
+                    // Create new answer folder.
+                    String time = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss",
+                            Locale.ENGLISH).format(Calendar.getInstance().getTime());
+                    String file = task.formPath.substring(task.formPath.lastIndexOf('/') + 1,
+                            task.formPath.lastIndexOf('.'));
+                    String path = Collect.INSTANCES_PATH + File.separator + file + "_"
+                            + time;
+                    if (FileUtils.createFolder(path)) {
+                        File instanceFile = new File(path + File.separator + file + "_" + time + ".xml");
+                        formController.setInstancePath(instanceFile);
+                    }
+
+                    formController.getTimerLogger().logTimerEvent(TimerLogger.EventTypes.FORM_START, 0, null, false, true);
+                }
+
                 android.support.v4.app.FragmentTransaction fr = getSupportFragmentManager().beginTransaction();
                 fr.replace(R.id.container,fragment);
                 fr.commit();
