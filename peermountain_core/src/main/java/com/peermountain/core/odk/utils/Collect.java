@@ -1,12 +1,16 @@
 package com.peermountain.core.odk.utils;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 
-import com.peermountain.core.odk.FormController;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.PmSerializationUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Galeen on 1/25/2018.
@@ -30,6 +34,8 @@ public class Collect {
     public static final String OFFLINE_LAYERS = ODK_ROOT + File.separator + "layers";
     public static final String SETTINGS = ODK_ROOT + File.separator + "settings";
 
+    private static final String FORM_CONTROLLER_FILE = "FORM_CONTROLLER_FILE";
+
     public static String defaultSysLanguage;
 
     private static Collect singleton = null;
@@ -39,6 +45,10 @@ public class Collect {
             singleton = new Collect();
         }
         return singleton;
+    }
+
+    private Collect() {
+//        initFormController();
     }
 
     @Nullable
@@ -104,7 +114,7 @@ public class Collect {
 
     public void setFormController(@Nullable FormController controller) {
         formController = controller;
-        // TODO: 2/26/18 serialize it
+//        saveFormController();
     }
 
     private static long lastClickTime;
@@ -128,4 +138,35 @@ public class Collect {
 //        return PeerMountainManager.getPeerMountainConfig().getFontSize();
 //    }
 
+    @SuppressLint("StaticFieldLeak")
+    private void saveFormController() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... formControllers) {
+                try {
+                    PmSerializationUtil.serialize(PeerMountainManager.getApplicationContext(), FORM_CONTROLLER_FILE, formController);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void initFormController() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... formControllers) {
+                try {
+                    formController = (FormController) PmSerializationUtil.deserialize(PeerMountainManager.getApplicationContext(), FORM_CONTROLLER_FILE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
 }

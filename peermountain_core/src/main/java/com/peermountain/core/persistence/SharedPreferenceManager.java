@@ -84,9 +84,11 @@ class SharedPreferenceManager {
     static void addDocument(AppDocument document) {
         DaoDocument.addDocument(document);
     }
-    static ArrayList<AppDocument> getDocuments(){
+
+    static ArrayList<AppDocument> getDocuments() {
         return DaoDocument.getDocuments();
     }
+
     static void saveDocuments(ArrayList<AppDocument> documents) {
         DaoDocument.saveDocuments(documents);
     }
@@ -269,7 +271,7 @@ class SharedPreferenceManager {
         return token;
     }
 
-     static void putString(String key, String value) {
+    static void putString(String key, String value) {
         if (getContext() == null) return;
         SharedPreferences.Editor mEditor = getSecureEditor(getContext());
 //        try {
@@ -280,11 +282,11 @@ class SharedPreferenceManager {
 //        }
     }
 
-     static String getString(String key, String opt) {
+    static String getString(String key, String opt) {
         return getString(getContext(), key, opt);
     }
 
-     static String getString(Context context, String key, String opt) {
+    static String getString(Context context, String key, String opt) {
         SecurePreferences mSharedPreferences = getSecurePrefs(context);
         String res = mSharedPreferences.getString(key, opt);
         // TODO: 10/17/2017 remove after all users migrated in next versions
@@ -303,7 +305,7 @@ class SharedPreferenceManager {
         return res;
     }
 
-     static boolean getBoolean(String key, boolean opt) {
+    static boolean getBoolean(String key, boolean opt) {
         SecurePreferences mSharedPreferences = getSecurePrefs(getContext());
         boolean res = mSharedPreferences.getBoolean(key, opt);
         // TODO: 10/17/2017 remove after all users migrated in next versions
@@ -322,7 +324,7 @@ class SharedPreferenceManager {
         return res;
     }
 
-     static Context getContext() {
+    static Context getContext() {
         if (PeerMountainManager.getApplicationContext() == null) {
             LogUtils.e("SharedPreferenceManager", "No Context!");
         }

@@ -4,7 +4,7 @@ package com.peermountain.core.odk.utils;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 
-import com.peermountain.core.odk.FormController;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.tasks.TimerSaveTask;
 
 import org.javarosa.core.model.instance.TreeReference;

@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.peermountain.core.odk;
+package com.peermountain.core.odk.model;
 
 import android.support.annotation.Nullable;
 

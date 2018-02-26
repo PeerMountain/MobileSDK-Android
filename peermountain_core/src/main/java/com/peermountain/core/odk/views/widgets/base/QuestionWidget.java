@@ -30,7 +30,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.peermountain.core.R;
-import com.peermountain.core.odk.FormController;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.exeptions.JavaRosaException;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;

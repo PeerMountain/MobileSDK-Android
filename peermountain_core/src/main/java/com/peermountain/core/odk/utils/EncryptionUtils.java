@@ -16,7 +16,7 @@ package com.peermountain.core.odk.utils;
 
 import android.net.Uri;
 
-import com.peermountain.core.odk.FormController;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.exeptions.EncryptionException;
 
 import org.apache.commons.io.IOUtils;

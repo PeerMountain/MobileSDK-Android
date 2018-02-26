@@ -150,7 +150,6 @@ class MyJsonParser {
         return publicUser;
     }
 
-
     static String writeShareObject(ShareObject shareObject) throws IOException {
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);

@@ -19,7 +19,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 
-import com.peermountain.core.odk.FormController;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.model.FileReferenceFactory;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.FileUtils;

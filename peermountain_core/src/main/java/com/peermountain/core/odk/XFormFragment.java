@@ -17,6 +17,7 @@ import android.widget.ViewFlipper;
 
 import com.peermountain.core.R;
 import com.peermountain.core.odk.exeptions.JavaRosaException;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
