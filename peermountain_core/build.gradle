@@ -60,7 +60,7 @@ dependencies {
     compile('com.otaliastudios:cameraview:1.3.1')
     //ODK
     implementation(group: 'org.opendatakit', name: 'opendatakit-javarosa', version: '2.8.0') {
-        exclude module: 'joda-time'
+//        exclude module: 'joda-time'
     }
 //    implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.5.1'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
@@ -69,6 +69,7 @@ dependencies {
     api ('com.appyvet:materialrangebar:1.4.1') {
         exclude module: 'support-compat'
     }
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 

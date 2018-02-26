@@ -19,4 +19,7 @@
     <color name="pm_odk_slider_thumb_border">#FFFFFF</color>
     <color name="pm_odk_checkbox_default">#FF49C5DE</color>
     <color name="pm_odk_checkbox_active">#FF126B82</color>
+
+    <color name="pm_odk_date_day_text">#000000</color>
+    <color name="pm_odk_date_day_selected">#FF126B82</color>
 </resources>

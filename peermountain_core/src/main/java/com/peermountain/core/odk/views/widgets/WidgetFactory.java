@@ -18,6 +18,7 @@ import android.content.Context;
 
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
 import com.peermountain.core.odk.views.widgets.choice.CheckList;
+import com.peermountain.core.odk.views.widgets.date.DatePicker;
 import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeDecimalWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeIntegerWidget;
@@ -148,7 +149,8 @@ public class WidgetFactory {
 //                        break;
 //                }
 //                break;
-//            case Constants.CONTROL_IMAGE_CHOOSE:
+            case Constants.CONTROL_IMAGE_CHOOSE:
+                questionWidget = new DatePicker(context,formEntryPrompt);
 //                if (appearance.equals("web")) {
 //                    questionWidget = new ImageWebViewWidget(context, fep);
 //                } else if (appearance.equals("signature")) {
@@ -164,7 +166,7 @@ public class WidgetFactory {
 //                } else {
 //                    questionWidget = new ImageWidget(context, fep, false);
 //                }
-//                break;
+                break;
 //            case Constants.CONTROL_OSM_CAPTURE:
 //                questionWidget = new OSMWidget(context, fep);
 //                break;

@@ -41,4 +41,8 @@
         <item name="colorControlNormal">@color/pm_odk_checkbox_default</item>
         <item name="colorControlActivated">@color/pm_odk_checkbox_active</item>
     </style>
+
+    <style name="PmCustomCalendarTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@color/pm_odk_date_day_text</item>
+    </style>
 </resources>
