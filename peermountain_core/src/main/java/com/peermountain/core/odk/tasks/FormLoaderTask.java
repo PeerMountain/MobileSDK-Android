@@ -24,6 +24,7 @@ import com.peermountain.core.odk.model.FileReferenceFactory;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.FileUtils;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PmCoreUtils;
 
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
@@ -147,6 +148,14 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
 
         formPath = path[0];
 
+        String instanceFileName = formPath.substring(formPath.lastIndexOf('/') + 1,
+                formPath.lastIndexOf('.'));
+
+        File instanceFile = PmCoreUtils.getAnswersForXForm(instanceFileName);
+//        if(isRealFile(instanceFile)){
+//            mInstancePath = instanceFile.getAbsolutePath();
+//        }
+
         File formXmlFile = new File(formPath);
         formDef = getFormDefFromFileOrCache(formXmlFile);
 
@@ -165,8 +174,8 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         final InstanceInitializationFactory instanceInit = new InstanceInitializationFactory();
         try {
             // import existing data into formdef
-            if (mInstancePath != null) {
-                File instanceFile = new File(mInstancePath);
+            if (isRealFile(instanceFile)) {
+//                File instanceFile = new File(mInstancePath);
                 File shadowInstanceFile = getSavepointFile(instanceFile.getName());
                 if (shadowInstanceFile.exists() &&
                         (shadowInstanceFile.lastModified() > instanceFile.lastModified())) {
@@ -220,7 +229,8 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         formXmlFile = null;
 //        formPath = null;
 
-        FormController fc = new FormController(formMediaDir, formEntryController, mInstancePath == null ? null : new File(mInstancePath));
+        FormController fc = new FormController(formMediaDir, formEntryController,
+                !isRealFile(instanceFile) ? null : instanceFile);
         if (mXPath != null) {
             // we are resuming after having terminated -- set index to this position...
             FormIndex idx = fc.getIndexFromXPath(mXPath);
@@ -233,6 +243,10 @@ public class FormLoaderTask extends AsyncTask<String, String, FormLoaderTask.FEC
         data = new FECWrapper(fc, usedSavepoint);
         return data;
 
+    }
+
+    private boolean isRealFile(File instanceFile) {
+        return instanceFile!=null && instanceFile.exists();
     }
 
     @Nullable

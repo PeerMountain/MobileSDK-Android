@@ -104,6 +104,7 @@ public class Collect {
 
     public void setFormController(@Nullable FormController controller) {
         formController = controller;
+        // TODO: 2/26/18 serialize it
     }
 
     private static long lastClickTime;
@@ -119,12 +120,12 @@ public class Collect {
         return allowClick;
     }
 
-    public static int getQuestionFontSize() {
-        if (PeerMountainManager.getPeerMountainConfig() == null) {
-            return Collect.DEFAULT_FONTSIZE_INT;
-        }
-
-        return PeerMountainManager.getPeerMountainConfig().getFontSize();
-    }
+//    public static int getQuestionFontSize() {
+//        if (PeerMountainManager.getPeerMountainConfig() == null) {
+//            return Collect.DEFAULT_FONTSIZE_INT;
+//        }
+//
+//        return PeerMountainManager.getPeerMountainConfig().getFontSize();
+//    }
 
 }
