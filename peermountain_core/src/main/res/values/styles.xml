@@ -43,6 +43,12 @@
     </style>
 
     <style name="PmCustomCalendarTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
-        <item name="android:textColor">@color/pm_odk_date_day_text</item>
+        <item name="android:textColor">@color/pm_calendar_date</item>
+    </style>
+    <style name="PmCustomCalendarTextAppearanceMonth" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@color/pm_calendar_month</item>
+    </style>
+    <style name="PmCustomCalendarTextAppearanceWeek" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@color/pm_calendar_week</item>
     </style>
 </resources>

@@ -20,6 +20,10 @@
     <color name="pm_odk_checkbox_default">#FF49C5DE</color>
     <color name="pm_odk_checkbox_active">#FF126B82</color>
 
-    <color name="pm_odk_date_day_text">#000000</color>
-    <color name="pm_odk_date_day_selected">#FF126B82</color>
+    <color name="pm_odk_date_day_text">#0C0033</color>
+    <color name="pm_odk_date_day_text_selected">#FFFFFF</color>
+    <color name="pm_odk_date_day_text_disabled">#60000000</color>
+    <color name="pm_odk_date_day_week">#90000000</color>
+    <color name="pm_odk_date_day_month">#0C0033</color>
+    <color name="pm_odk_date_day_selected_bkg">#FF126B82</color>
 </resources>

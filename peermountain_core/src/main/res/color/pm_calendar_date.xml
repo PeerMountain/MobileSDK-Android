@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_checked="true"
+        android:color="@color/pm_odk_date_day_text_selected"
+        />
+
+    <item
+        android:state_pressed="true"
+        android:color="@color/pm_odk_date_day_text_selected"
+        />
+
+    <item
+        android:state_enabled="false"
+        android:color="@color/pm_odk_date_day_text_disabled"
+        />
+
+    <item android:color="@color/pm_odk_date_day_text" />
+</selector>

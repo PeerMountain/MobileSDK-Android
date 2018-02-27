@@ -14,6 +14,7 @@
 
 package com.peermountain.core.odk.utils;
 
+import android.os.Build;
 import android.text.Html;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -92,13 +93,16 @@ public class TextUtils {
         return text;
     }
 
-    public static CharSequence textToHtml(String text) {
+    public static CharSequence textToHtml(String htmlText) {
 
-        if (text == null) {
+        if (htmlText == null) {
             return null;
         }
-
-        return Html.fromHtml(markdownToHtml(text));
+        if (Build.VERSION.SDK_INT >= 24) {//markdownToHtml(text)
+            return Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(htmlText);
+        }
     }
 
     public interface Callback {

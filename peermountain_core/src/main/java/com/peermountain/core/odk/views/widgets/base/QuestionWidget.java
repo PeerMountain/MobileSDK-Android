@@ -56,20 +56,21 @@ public abstract class QuestionWidget
     private static final int DEFAULT_PLAY_COLOR = Color.BLUE;
     private static final int DEFAULT_PLAY_BACKGROUND_COLOR = Color.WHITE;
 
-    private final int questionFontSize;
     private final FormEntryPrompt formEntryPrompt;
     private final MediaLayout questionMediaLayout = null;
     private MediaPlayer player;
-    protected final PeerMountainTextView tvHelp;
-    protected final PeerMountainTextView tvLabel;
     private final FrameLayout answerViewParent;
 
     private Bundle state;
 
     private int playColor = DEFAULT_PLAY_COLOR;
     private int playBackgroundColor = DEFAULT_PLAY_BACKGROUND_COLOR;
-    int padding, paddingSmall;
+    
+    protected final PeerMountainTextView tvHelp;
+    protected final PeerMountainTextView tvLabel;
+    protected final int padding, paddingSmall;
     protected static int colorActive, colorError, colorInactive;
+    protected final int questionFontSize;
 
     public QuestionWidget(Context context, FormEntryPrompt prompt) {
         super(context);

@@ -57,12 +57,14 @@ public class WidgetFactory {
 
         final QuestionWidget questionWidget;// = new StringWidget(context, fep, readOnlyOverride);
         switch (formEntryPrompt.getControlType()) {
-//            case Constants.CONTROL_INPUT:
-//                switch (fep.getDataType()) {
-//                    case Constants.DATATYPE_DATE_TIME:
+            case Constants.CONTROL_INPUT:
+                switch (formEntryPrompt.getDataType()) {
+                    case Constants.DATATYPE_DATE_TIME:
 //                        questionWidget = new DateTimeWidget(context, fep);
 //                        break;
-//                    case Constants.DATATYPE_DATE:
+                    case Constants.DATATYPE_TIME:
+                    case Constants.DATATYPE_DATE:
+                        questionWidget = new DatePicker(context,formEntryPrompt);
 //                        if (appearance.contains("ethiopian")) {
 //                            questionWidget = new EthiopianDateWidget(context, fep);
 //                        } else if (appearance.contains("coptic")) {
@@ -72,7 +74,7 @@ public class WidgetFactory {
 //                        } else {
 //                            questionWidget = new DateWidget(context, fep);
 //                        }
-//                        break;
+                        break;
 //                    case Constants.DATATYPE_TIME:
 //                        questionWidget = new TimeWidget(context, fep);
 //                        break;
@@ -144,13 +146,13 @@ public class WidgetFactory {
 //                    case Constants.DATATYPE_BOOLEAN:
 //                        questionWidget = new BooleanWidget(context, fep);
 //                        break;
-//                    default:
-//                        questionWidget = new StringWidget(context, fep, readOnlyOverride);
-//                        break;
-//                }
-//                break;
+                    default:
+                        questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
+                        break;
+                }
+                break;
             case Constants.CONTROL_IMAGE_CHOOSE:
-                questionWidget = new DatePicker(context,formEntryPrompt);
+                questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
 //                if (appearance.equals("web")) {
 //                    questionWidget = new ImageWebViewWidget(context, fep);
 //                } else if (appearance.equals("signature")) {

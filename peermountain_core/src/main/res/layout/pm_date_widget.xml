@@ -9,7 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         app:mcv_dateTextAppearance="@style/PmCustomCalendarTextAppearance"
-        app:mcv_selectionColor="@color/pm_odk_date_day_selected"
+        app:mcv_headerTextAppearance="@style/PmCustomCalendarTextAppearanceMonth"
+        app:mcv_weekDayTextAppearance="@style/PmCustomCalendarTextAppearanceWeek"
+        app:mcv_selectionColor="@color/pm_odk_date_day_selected_bkg"
         app:mcv_arrowColor="@color/colorAccent"
+        app:mcv_showOtherDates="other_months"
         />
 </FrameLayout>

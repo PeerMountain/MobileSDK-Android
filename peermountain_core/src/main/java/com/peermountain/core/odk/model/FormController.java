@@ -31,6 +31,7 @@ import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.ValidateOutcome;
 import org.javarosa.core.model.condition.EvaluationContext;
+import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.instance.FormInstance;
@@ -441,7 +442,7 @@ public class FormController implements Serializable {
     /**
      * Attempts to save answer into the given FormIndex into the data model.
      */
-    public int answerQuestion(FormIndex index, IAnswerData data) throws JavaRosaException {
+    private int answerQuestion(FormIndex index, IAnswerData data) throws JavaRosaException {
         try {
             return formEntryController.answerQuestion(index, data, true);
         } catch (Exception e) {
@@ -700,7 +701,9 @@ public class FormController implements Serializable {
             if (getEvent(index) == FormEntryController.EVENT_QUESTION) {
                 int saveStatus;
                 IAnswerData answer = answers.get(index);
-                if (evaluateConstraints) {
+                if (evaluateConstraints
+                        && !(answer instanceof DateData)//this is workaround for DatePicker, the date is not checked if is in the range
+                        ) {
                     saveStatus = answerQuestion(index, answer);
                     if (saveStatus != FormEntryController.ANSWER_OK) {
                         return new FailedConstraint(index, saveStatus);

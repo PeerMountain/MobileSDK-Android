@@ -135,25 +135,7 @@ public class ViewFlipperController implements View.OnTouchListener {
 
     public void showNext() {
         if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 1) {
-            if (saveToDiskTask == null || saveToDiskTask.getStatus() != AsyncTask.Status.RUNNING) {
-                saveToDiskTask = new SaveToDiskTask(null,true,true,"test_to_save");
-                saveToDiskTask.setFormSavedListener(new SaveToDiskTask.FormSavedListener() {
-                    @Override
-                    public void savingComplete(SaveResult saveStatus) {
-                        if(saveStatus!=null){
-                            Toast.makeText(viewFlipper.getContext(), "code : "+saveStatus.getSaveResult()+
-                                    "\nmsg : "+
-                                    saveStatus.getSaveErrorMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onProgressStep(String stepMessage) {
-                        Toast.makeText(viewFlipper.getContext(), stepMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                saveToDiskTask.execute();
-            }
+            saveXFormAnswers();
             return;
         }
 
@@ -172,6 +154,28 @@ public class ViewFlipperController implements View.OnTouchListener {
             }
         } else {
             showNextQuestion();
+        }
+    }
+
+    public void saveXFormAnswers() {
+        if (saveToDiskTask == null || saveToDiskTask.getStatus() != AsyncTask.Status.RUNNING) {
+            saveToDiskTask = new SaveToDiskTask(null,true,true,"test_to_save");
+            saveToDiskTask.setFormSavedListener(new SaveToDiskTask.FormSavedListener() {
+                @Override
+                public void savingComplete(SaveResult saveStatus) {
+                    if(saveStatus!=null){
+                        Toast.makeText(viewFlipper.getContext(), "code : "+saveStatus.getSaveResult()+
+                                "\nmsg : "+
+                                saveStatus.getSaveErrorMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onProgressStep(String stepMessage) {
+                    Toast.makeText(viewFlipper.getContext(), stepMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+            saveToDiskTask.execute();
         }
     }
 

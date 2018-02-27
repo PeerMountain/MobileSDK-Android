@@ -29,9 +29,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TableLayout;
 
 import com.peermountain.core.R;
+import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.ViewIds;
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
@@ -105,7 +105,11 @@ public class StringWidget extends QuestionWidget {
         }
         String s = prompt.getAnswerText();
         if (s != null) {
-            answerText.setText(s);
+            if(readOnly){
+                answerText.setText(TextUtils.textToHtml(s));
+            }else{
+                answerText.setText(s);
+            }
             Selection.setSelection(answerText.getText(), answerText.getText().toString().length());
         }
     }
@@ -113,12 +117,9 @@ public class StringWidget extends QuestionWidget {
     private void setStaticView() {
         answerText = new EditText(getContext());
         answerText.setId(ViewIds.generateViewId());
-        setTextSize(answerText,R.dimen.pm_text_normal);
+        setTextSize(answerText, R.dimen.pm_text_normal);
 
-        TableLayout.LayoutParams params = new TableLayout.LayoutParams();
-        int margin = getContext().getResources().getDimensionPixelSize(R.dimen.pm_margin_normal);
-        params.setMargins(margin, 0, margin, 0);
-        answerText.setLayoutParams(params);
+        answerText.setPadding(padding, 0, padding, 0);
         answerText.setBackground(null);
         answerText.setEnabled(false);
         answerText.setTextColor(getColor(R.color.pm_odk_text));
@@ -141,9 +142,9 @@ public class StringWidget extends QuestionWidget {
                     StringWidget.this.onFocus(hasFocus);
                     if (isWithError) return;
                     if (hasFocus) {
-                        vLine.setBackgroundColor(colorActive);
+                        updateLineColor(colorActive);
                     } else {
-                        vLine.setBackgroundColor(colorInactive);
+                        updateLineColor(colorInactive);
                     }
                 }
             });
@@ -154,12 +155,16 @@ public class StringWidget extends QuestionWidget {
     public void onAnswerQuestion(boolean isAnswered) {
         super.onAnswerQuestion(isAnswered);
         if (!isAnswered) {
-            vLine.setBackgroundColor(colorError);
+            updateLineColor(colorError);
             setFocus(getContext());
         } else {
             int color = hasFocus() ? colorActive : colorInactive;
-            vLine.setBackgroundColor(color);
+            updateLineColor(color);
         }
+    }
+
+    public void updateLineColor(int color) {
+        if (vLine != null) vLine.setBackgroundColor(color);
     }
 
     protected void setupChangeListener() {
@@ -207,7 +212,7 @@ public class StringWidget extends QuestionWidget {
 
     @NonNull
     public String getAnswerText() {
-        return answerText.getText().toString();
+        return readOnly?"":answerText.getText().toString();
     }
 
 

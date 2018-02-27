@@ -36,7 +36,7 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
     private LinearLayout view;
     private LinearLayout.LayoutParams layout;
     private ArrayList<QuestionWidget> widgets;
-    private int padding = 10;
+    private int paddingSmall = 10,padding;
     public FormEntryPrompt[] questionPrompts;
 
     public ODKView(Context context, FormEntryPrompt[] questionPrompts,
@@ -48,13 +48,14 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
         view = new LinearLayout(getContext());
         view.setOrientation(LinearLayout.VERTICAL);
         view.setGravity(Gravity.TOP);
-        padding = getContext().getResources().getDimensionPixelSize(R.dimen.pm_margin_small);
-        view.setPadding(0, padding, 0, 0);
+        padding = getContext().getResources().getDimensionPixelSize(R.dimen.pm_margin_normal);
+        paddingSmall = getContext().getResources().getDimensionPixelSize(R.dimen.pm_margin_small);
+        view.setPadding(0, paddingSmall, 0, 0);
 
         layout =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT);
-        layout.setMargins(padding, 0, padding, 0);
+        layout.setMargins(paddingSmall, 0, paddingSmall, 0);
 
         // display which group you are in as well as the question
         addGroupText(groups);
@@ -151,10 +152,8 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
             }
 
             // if question or answer type is not supported, use text widget
-            QuestionWidget qw =
-                    null;
             try {
-                qw = WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
+                QuestionWidget qw = WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
                 qw.setLongClickable(true);
 //            qw.setOnLongClickListener(this);
                 qw.setId(ViewIds.generateViewId());
@@ -187,7 +186,7 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
             tv.setText(path);
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     getContext().getResources().getDimension(R.dimen.pm_text_big));
-            tv.setPadding(0, 0, 0, padding);
+            tv.setPadding(padding, 0, padding, paddingSmall);
             view.addView(tv, layout);
         }
     }
