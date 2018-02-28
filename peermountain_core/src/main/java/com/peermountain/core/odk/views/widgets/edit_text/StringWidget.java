@@ -104,7 +104,7 @@ public class StringWidget extends QuestionWidget {
             }
         }
         String s = prompt.getAnswerText();
-        if (s != null) {
+        if (!android.text.TextUtils.isEmpty(s)) {
             if(readOnly){
                 answerText.setText(TextUtils.textToHtml(s));
             }else{
@@ -212,7 +212,7 @@ public class StringWidget extends QuestionWidget {
 
     @NonNull
     public String getAnswerText() {
-        return readOnly?"":answerText.getText().toString();
+        return answerText.getText().toString();
     }
 
 

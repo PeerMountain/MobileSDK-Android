@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="@dimen/pm_margin_normal">
+
+    <com.peermountain.core.views.PeerMountainTextView
+        android:id="@+id/pmBtnLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/pm_margin_small"
+        android:background="@drawable/pm_rounded_btn"
+        android:textColor="@color/pm_odk_text"
+        android:textSize="@dimen/pm_text_normal"
+        android:text="Get Location"/>
+
+    <com.peermountain.core.views.PeerMountainTextView
+        android:id="@+id/pmTvLocationData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_margin_small"
+        android:textColor="@color/pm_odk_text"
+        android:textSize="@dimen/pm_text_normal"
+        tools:text="Location"/>
+
+    <ProgressBar
+        android:id="@+id/pmProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+</LinearLayout>

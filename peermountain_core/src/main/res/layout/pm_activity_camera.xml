@@ -40,7 +40,7 @@
     <ImageView
         android:id="@+id/btnRecord"
         style="@style/camera_button"
-        android:background="@drawable/pm_rounded_btn"
+        android:background="@drawable/pm_circle_btn"
         app:srcCompat="@drawable/pm_ic_photo"
         android:padding="12dp"
         android:visibility="gone"

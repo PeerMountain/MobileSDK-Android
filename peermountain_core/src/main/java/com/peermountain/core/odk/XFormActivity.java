@@ -3,6 +3,8 @@ package com.peermountain.core.odk;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
@@ -14,15 +16,16 @@ import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TimerLogger;
+import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreUtils;
 
 import java.io.File;
 
-public class XFormActivity extends AppCompatActivity implements XFormFragment.OnFragmentInteractionListener {
+public class XFormActivity extends AppCompatActivity implements XFormFragment.OnFragmentInteractionListener, QuestionWidget.Events {
 
-    public static final String EXTRA_URL = "URL";//"https://www.dropbox.com/s/9kj12067gqhst42/Sample%20Form.xml?dl=1"
+    public static final String EXTRA_URL = "URL";
 
     public static void show(Context context, String xFormUrl) {
         Intent starter = new Intent(context, XFormActivity.class);
@@ -46,6 +49,31 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
             return super.dispatchTouchEvent(mv);
         } else {
             return true;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(fragment!=null){
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private int waitingPermissionRequestCode;
+    private QuestionWidget.PermissionCallback waitingPermissionCallback;
+    @Override
+    public void requestPermission(String[] permissions,int requestCode,boolean isMandatory, QuestionWidget.PermissionCallback callback) {
+        waitingPermissionCallback = callback;
+        waitingPermissionRequestCode = requestCode;
+        ActivityCompat.requestPermissions(this,permissions,requestCode);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == waitingPermissionRequestCode && waitingPermissionCallback!=null){
+            waitingPermissionCallback.onPermission(grantResults);
         }
     }
 
@@ -87,7 +115,6 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
             }
         });
     }
-
 
     private class DownloadXFormCallback extends MainCallback {
         // TODO: 2/12/18 add media file links

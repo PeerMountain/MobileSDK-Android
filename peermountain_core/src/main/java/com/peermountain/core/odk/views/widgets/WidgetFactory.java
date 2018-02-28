@@ -14,15 +14,16 @@
 
 package com.peermountain.core.odk.views.widgets;
 
-import android.content.Context;
+import android.app.Activity;
 
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
 import com.peermountain.core.odk.views.widgets.choice.CheckList;
+import com.peermountain.core.odk.views.widgets.choice.RadioList;
 import com.peermountain.core.odk.views.widgets.date.DatePicker;
 import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
+import com.peermountain.core.odk.views.widgets.location.LocationWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeDecimalWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeIntegerWidget;
-import com.peermountain.core.odk.views.widgets.choice.RadioList;
 
 import org.javarosa.core.model.Constants;
 import org.javarosa.form.api.FormEntryPrompt;
@@ -41,10 +42,10 @@ public class WidgetFactory {
      * Returns the appropriate QuestionWidget for the given FormEntryPrompt.
      *
      * @param formEntryPrompt              prompt element to be rendered
-     * @param context          Android context
+     * @param activity          Android activity
      * @param readOnlyOverride a flag to be ORed with JR readonly attribute.
      */
-    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt formEntryPrompt, Context context,
+    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt formEntryPrompt, Activity activity,
                                                         boolean readOnlyOverride) throws Exception {
 
         // get appearance hint and clean it up so it is lower case and never null...
@@ -64,7 +65,7 @@ public class WidgetFactory {
 //                        break;
                     case Constants.DATATYPE_TIME:
                     case Constants.DATATYPE_DATE:
-                        questionWidget = new DatePicker(context,formEntryPrompt);
+                        questionWidget = new DatePicker(activity,formEntryPrompt);
 //                        if (appearance.contains("ethiopian")) {
 //                            questionWidget = new EthiopianDateWidget(context, fep);
 //                        } else if (appearance.contains("coptic")) {
@@ -104,9 +105,9 @@ public class WidgetFactory {
 //                                    useThousandSeparator);
 //                        }
 //                        break;
-//                    case Constants.DATATYPE_GEOPOINT:
-//                        questionWidget = new GeoPointWidget(context, fep);
-//                        break;
+                    case Constants.DATATYPE_GEOPOINT:
+                        questionWidget = new LocationWidget(activity, formEntryPrompt);
+                        break;
 //                    case Constants.DATATYPE_GEOSHAPE:
 //                        questionWidget = new GeoShapeWidget(context, fep);
 //                        break;
@@ -147,12 +148,12 @@ public class WidgetFactory {
 //                        questionWidget = new BooleanWidget(context, fep);
 //                        break;
                     default:
-                        questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
+                        questionWidget = new StringWidget(activity, formEntryPrompt, readOnlyOverride);
                         break;
                 }
                 break;
             case Constants.CONTROL_IMAGE_CHOOSE:
-                questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
+                questionWidget = new StringWidget(activity, formEntryPrompt, readOnlyOverride);
 //                if (appearance.equals("web")) {
 //                    questionWidget = new ImageWebViewWidget(context, fep);
 //                } else if (appearance.equals("signature")) {
@@ -179,10 +180,10 @@ public class WidgetFactory {
 //                questionWidget = new VideoWidget(context, fep);
 //                break;
             case Constants.CONTROL_SELECT_ONE:
-                questionWidget = new RadioList(context, formEntryPrompt);
+                questionWidget = new RadioList(activity, formEntryPrompt);
                 break;
             case Constants.CONTROL_SELECT_MULTI:
-                questionWidget = new CheckList(context, formEntryPrompt);
+                questionWidget = new CheckList(activity, formEntryPrompt);
                 // SurveyCTO-revised support for dynamic select content (from .csv files)
                 // consider traditional ODK appearance to be first word in appearance string
 //                if (appearance.startsWith("compact")) {
@@ -220,18 +221,18 @@ public class WidgetFactory {
             case Constants.CONTROL_RANGE:
                 switch (formEntryPrompt.getDataType()) {
                     case Constants.DATATYPE_INTEGER:
-                        questionWidget = new RangeIntegerWidget(context, formEntryPrompt);
+                        questionWidget = new RangeIntegerWidget(activity, formEntryPrompt);
                         break;
                     case Constants.DATATYPE_DECIMAL:
-                        questionWidget = new RangeDecimalWidget(context, formEntryPrompt);
+                        questionWidget = new RangeDecimalWidget(activity, formEntryPrompt);
                         break;
                     default:
-                        questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
+                        questionWidget = new StringWidget(activity, formEntryPrompt, readOnlyOverride);
                         break;
                 }
                 break;
             default:
-                questionWidget = new StringWidget(context, formEntryPrompt, readOnlyOverride);
+                questionWidget = new StringWidget(activity, formEntryPrompt, readOnlyOverride);
                 break;
         }
         return questionWidget;

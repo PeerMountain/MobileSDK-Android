@@ -1,6 +1,8 @@
 package com.peermountain.core.odk.views;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.util.TypedValue;
@@ -39,9 +41,9 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
     private int paddingSmall = 10,padding;
     public FormEntryPrompt[] questionPrompts;
 
-    public ODKView(Context context, FormEntryPrompt[] questionPrompts,
+    public ODKView(Activity activity, FormEntryPrompt[] questionPrompts,
                    FormEntryCaption[] groups, boolean advancingPage) {
-        super(context);
+        super(activity);
         this.questionPrompts = questionPrompts;
         widgets = new ArrayList<>();
 
@@ -153,7 +155,7 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
 
             // if question or answer type is not supported, use text widget
             try {
-                QuestionWidget qw = WidgetFactory.createWidgetFromPrompt(p, getContext(), readOnlyOverride);
+                QuestionWidget qw = WidgetFactory.createWidgetFromPrompt(p, activity, readOnlyOverride);
                 qw.setLongClickable(true);
 //            qw.setOnLongClickListener(this);
                 qw.setId(ViewIds.generateViewId());
@@ -280,6 +282,19 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        return false;
+    }
+
+    /**
+     * @param requestCode param from Activity result
+     * @param resultCode param from Activity result
+     * @param data param from Activity result
+     * @return true if is handled
+     */
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data){
+        for (QuestionWidget widget : widgets) {
+            if(widget.onActivityResult(requestCode, resultCode, data)) return true;
+        }
         return false;
     }
 }

@@ -100,6 +100,10 @@ public class XFormFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+//        double val = (double) DateUtils.daysSinceEpoch(new Date(2018-1900,0,1));
+//        double val1 = (double) DateUtils.daysSinceEpoch(new Date(2018-1900,2,31));
+//        LogUtils.d("dates","january : "+val+" march : "+val1);
         formController = Collect.getInstance().getFormController();
         getViews(view);
         viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback);
@@ -133,6 +137,18 @@ public class XFormFragment extends Fragment {
             viewFlipperController.addViews(odkViews);
             if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
                 ((ODKView) odkViews.get(0)).setFocus(getContext());
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        for (View view : odkViews) {
+            if(view instanceof ODKView){
+                if(((ODKView) view).onActivityResult(requestCode, resultCode, data)){
+                 break;
+                }
             }
         }
     }
@@ -361,7 +377,7 @@ public class XFormFragment extends Fragment {
                     FormEntryPrompt[] prompts = formController.getQuestionPrompts();
                     FormEntryCaption[] groups = formController
                             .getGroupsForCurrentIndex();
-                    odkView = new ODKView(getContext(), prompts, groups, advancingPage);
+                    odkView = new ODKView(getActivity(), prompts, groups, advancingPage);
                     Timber.i("Created view for group %s %s",
                             (groups.length > 0 ? groups[groups.length - 1].getLongText() : "[top]"),
                             (prompts.length > 0 ? prompts[0].getQuestionText() : "[no question]"));

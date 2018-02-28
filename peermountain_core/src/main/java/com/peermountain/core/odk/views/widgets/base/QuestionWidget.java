@@ -30,8 +30,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.peermountain.core.R;
-import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.exeptions.JavaRosaException;
+import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
@@ -65,7 +65,7 @@ public abstract class QuestionWidget
 
     private int playColor = DEFAULT_PLAY_COLOR;
     private int playBackgroundColor = DEFAULT_PLAY_BACKGROUND_COLOR;
-    
+
     protected final PeerMountainTextView tvHelp;
     protected final PeerMountainTextView tvLabel;
     protected final int padding, paddingSmall;
@@ -75,7 +75,7 @@ public abstract class QuestionWidget
     public QuestionWidget(Context context, FormEntryPrompt prompt) {
         super(context);
         setOrientation(LinearLayout.VERTICAL);
-        if(colorActive==0) {
+        if (colorActive == 0) {
             colorActive = getColor(R.color.pm_odk_active);
             colorInactive = getColor(R.color.pm_odk_text_hint);
             colorError = getColor(R.color.pm_odk_text_error);
@@ -320,7 +320,7 @@ public abstract class QuestionWidget
 
         if (helpText != null && !helpText.equals("")) {
             tvHelp.setId(ViewIds.generateViewId());
-            setTextSize(tvHelp,R.dimen.pm_text_small);
+            setTextSize(tvHelp, R.dimen.pm_text_small);
             //noinspection ResourceType
             tvHelp.setPadding(padding, paddingSmall, padding, paddingSmall);
             // wrap to the widget of view
@@ -360,7 +360,7 @@ public abstract class QuestionWidget
 
         if (labelText != null && !labelText.equals("")) {
             tvLabel.setId(ViewIds.generateViewId());
-            setTextSize(tvLabel,R.dimen.pm_text_normal);
+            setTextSize(tvLabel, R.dimen.pm_text_normal);
             //noinspection ResourceType
             tvLabel.setPadding(padding, paddingSmall, padding, paddingSmall);
             // wrap to the widget of view
@@ -667,7 +667,7 @@ public abstract class QuestionWidget
         }
     }
 
-    protected void onFocus(boolean hasFocus){
+    protected void onFocus(boolean hasFocus) {
         if (isWithError) return;
         if (hasFocus) {
             tvLabel.setTextColor(colorActive);
@@ -681,11 +681,11 @@ public abstract class QuestionWidget
         onAnswerQuestion(constraint == null || !constraint.index.equals(formEntryPrompt.getIndex()));
     }
 
-    protected int getColor(int res){
+    protected int getColor(int res) {
         return ContextCompat.getColor(getContext(), res);
     }
 
-    protected void setTextSize(TextView tv, int res){
+    protected void setTextSize(TextView tv, int res) {
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getContext().getResources().getDimension(res));
     }
@@ -694,23 +694,42 @@ public abstract class QuestionWidget
      * notify any parent if is listening for touch events to slide
      * to next question or etc, that currently the view needs to slide
      * only
+     *
      * @param canParentSlide false - the view needs to slide
-     * only , true - the view is done
+     *                       only , true - the view is done
      */
-    protected void blockParentTouch(boolean canParentSlide){
+    protected void blockParentTouch(boolean canParentSlide) {
         Intent intent = new Intent(PmCoreConstants.BROAD_CAST_TOUCH_ACTION);
-        intent.putExtra(PmCoreConstants.EXTRA_CAN_SLIDE,canParentSlide);
+        intent.putExtra(PmCoreConstants.EXTRA_CAN_SLIDE, canParentSlide);
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
         localBroadcastManager.sendBroadcast(intent);
     }
 
-    protected void defaultSetFocus(){
+    protected void defaultSetFocus() {
         requestFocus();
         InputMethodManager inputManager =
                 (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(inputManager!=null){
+        if (inputManager != null) {
             inputManager.hideSoftInputFromWindow(getWindowToken(), 0);
         }
+    }
+
+    /**
+     * @param requestCode param from Activity result
+     * @param resultCode param from Activity result
+     * @param data param from Activity result
+     * @return true if is handled
+     */
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data){
+        return false;
+    }
+
+    public interface Events {
+        void requestPermission(String[] permissions,int requestCode,boolean isMandatory, PermissionCallback callback);
+    }
+
+    public interface PermissionCallback {
+        void onPermission(int[] grantResults);
     }
 }
 

@@ -39,6 +39,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile "com.android.support:support-annotations:${rootProject.ext.supportLibraryVersion}"
+    implementation "com.google.android.gms:play-services-location:${rootProject.ext.playServicesVersion}"
 
     //idcheck.io AreadNext
     compile(name: 'smartsdk-4.10.0-release', ext: 'aar')
