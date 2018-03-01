@@ -21,6 +21,7 @@ import com.peermountain.core.odk.views.widgets.choice.CheckList;
 import com.peermountain.core.odk.views.widgets.choice.RadioList;
 import com.peermountain.core.odk.views.widgets.date.DatePicker;
 import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
+import com.peermountain.core.odk.views.widgets.image.ImageWidget;
 import com.peermountain.core.odk.views.widgets.location.LocationWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeDecimalWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeIntegerWidget;
@@ -153,7 +154,7 @@ public class WidgetFactory {
                 }
                 break;
             case Constants.CONTROL_IMAGE_CHOOSE:
-                questionWidget = new StringWidget(activity, formEntryPrompt, readOnlyOverride);
+                questionWidget = new ImageWidget(activity, formEntryPrompt);
 //                if (appearance.equals("web")) {
 //                    questionWidget = new ImageWebViewWidget(context, fep);
 //                } else if (appearance.equals("signature")) {

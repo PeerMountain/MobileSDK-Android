@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.odk.utils.*;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 
 import java.io.File;
 
@@ -107,7 +109,7 @@ public class PmCoreUtils {
         return file;
     }
 
-    public static void browseDocuments(Activity activity, int requestCode) {
+    public static boolean browseDocuments(Activity activity, int requestCode) {
         String[] mimeTypes = {
                 FileDocument.TYPE_IMAGE,
                 FileDocument.TYPE_PDF
@@ -123,26 +125,29 @@ public class PmCoreUtils {
 
         setMimeTypes(mimeTypes, intent);
         if (intent.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivityForResult(Intent.createChooser(intent, "ChooseFile"), requestCode);
+            activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file_title)), requestCode);
         } else {
             mimeTypes = new String[]{
                     FileDocument.TYPE_IMAGE
+
             };
             setMimeTypes(mimeTypes, intent);
             if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                activity.startActivityForResult(Intent.createChooser(intent, "ChooseFile"), requestCode);
+                activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file_title)), requestCode);
             } else {
                 mimeTypes = new String[]{
                         FileDocument.TYPE_PDF
                 };
                 setMimeTypes(mimeTypes, intent);
                 if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                    activity.startActivityForResult(Intent.createChooser(intent, "ChooseFile"), requestCode);
+                    activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file_title)), requestCode);
                 } else {
                     // TODO: 10/26/2017 show error
+                    return false;
                 }
             }
         }
+        return true;
     }
 
     private static void setMimeTypes(String[] mimeTypes, Intent intent) {

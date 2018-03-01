@@ -35,4 +35,7 @@
     <string name="survey_saving_finalizing_message">Finalizing to SD card…</string>
     <string name="survey_saving_encrypting_message">Encrypting data…</string>
     <string name="survey_saving_validating_message">Validating answers…</string>
+    <string name="get_location_btn">Get Location</string>
+    <string name="pick_file_btn">Pick file</string>
+    <string name="choose_file_title">Choose File</string>
 </resources>

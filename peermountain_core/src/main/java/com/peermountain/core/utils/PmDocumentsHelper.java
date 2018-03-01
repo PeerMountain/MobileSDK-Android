@@ -36,6 +36,9 @@ import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmRequestCodes;
 import com.shockwave.pdfium.PdfDocument;
 import com.shockwave.pdfium.PdfiumCore;
 
@@ -49,8 +52,6 @@ import java.util.ArrayList;
  */
 
 public class PmDocumentsHelper {
-    public static final int REQUEST_CODE_SELECT_FILE = 533;
-    public static final int REQUEST_SCAN_ID = 633;
     private AppDocument documentToUpdate;
 
     private File localFile, documentImageFile;
@@ -82,26 +83,27 @@ public class PmDocumentsHelper {
         if (documentToUpdate.isIdentityDocument()) {
             scanId();
         } else {
-            PmCoreUtils.browseDocuments(getActivity(), REQUEST_CODE_SELECT_FILE);
+            PmCoreUtils.browseDocuments(getActivity(), PmRequestCodes.REQUEST_CODE_SELECT_FILE);
         }
     }
 
-    public void addDocument(AppDocument documentToUpdate) {
+    public boolean addDocument(AppDocument documentToUpdate) {
         this.documentToUpdate = documentToUpdate;
         if (documentToUpdate.isID()) {
             scanId();
         } else {
-            PmCoreUtils.browseDocuments(getActivity(), REQUEST_CODE_SELECT_FILE);
+            return PmCoreUtils.browseDocuments(getActivity(), PmRequestCodes.REQUEST_CODE_SELECT_FILE);
         }
+        return true;
     }
 
     private void scanId() {
         if(callback!=null) callback.onScanSDKLoading(true);
         if (PeerMountainManager.isScanIdSDKReady()) {
             if (getFragment() != null) {
-                PeerMountainManager.scanId(getFragment(), REQUEST_SCAN_ID);
+                PeerMountainManager.scanId(getFragment(), PmRequestCodes.REQUEST_SCAN_ID);
             } else {
-                PeerMountainManager.scanId(getActivity(), REQUEST_SCAN_ID);
+                PeerMountainManager.scanId(getActivity(), PmRequestCodes.REQUEST_SCAN_ID);
             }
         } else {
             initScanIdSDK();
@@ -126,7 +128,7 @@ public class PmDocumentsHelper {
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         boolean handled = false;
         switch (requestCode) {
-            case REQUEST_CODE_SELECT_FILE:
+            case PmRequestCodes.REQUEST_CODE_SELECT_FILE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     LogUtils.d("selected file", data.getData().toString());
                     try {
@@ -143,7 +145,7 @@ public class PmDocumentsHelper {
                 }
                 handled = true;
                 break;
-            case REQUEST_SCAN_ID:
+            case PmRequestCodes.REQUEST_SCAN_ID:
                 if(callback!=null) callback.onScanSDKLoading(false);
                 if (resultCode == Activity.RESULT_OK
                         || PeerMountainCoreConstants.isFake) {

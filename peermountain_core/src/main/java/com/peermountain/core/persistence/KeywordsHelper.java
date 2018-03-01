@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.peermountain.core.model.unguarded.Keyword;
 import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 
 import java.io.BufferedReader;
 import java.io.IOException;

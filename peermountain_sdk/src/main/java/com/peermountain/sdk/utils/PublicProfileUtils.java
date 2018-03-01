@@ -8,7 +8,7 @@ import com.facebook.login.LoginResult;
 import com.linkedin.platform.APIHelper;
 import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.utils.Scope;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.sdk.R;
 
 import java.util.Arrays;

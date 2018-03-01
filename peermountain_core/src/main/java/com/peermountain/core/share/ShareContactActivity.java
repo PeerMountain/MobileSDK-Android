@@ -23,7 +23,7 @@ import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 
 import java.io.FileNotFoundException;

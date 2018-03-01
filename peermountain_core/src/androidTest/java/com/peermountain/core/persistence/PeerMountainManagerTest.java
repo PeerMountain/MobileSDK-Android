@@ -17,7 +17,7 @@ import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.model.unguarded.Keyword;
 import com.peermountain.core.model.unguarded.Keywords;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 
 import junit.framework.Assert;
 

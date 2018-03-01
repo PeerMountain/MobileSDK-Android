@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.peermountain.core.R;
-import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
+import com.peermountain.core.odk.views.widgets.base.PermissionQuestionWidget;
 import com.peermountain.core.views.PeerMountainTextView;
 
 import org.javarosa.core.model.data.GeoPointData;
@@ -23,11 +23,9 @@ import org.javarosa.form.api.FormEntryPrompt;
  * Get current location and set as answer
  */
 
-public class LocationWidget extends QuestionWidget {
+public class LocationWidget extends PermissionQuestionWidget {
     private Location myLocation;
-    private Activity activity;
     private LocationController locationController;
-    private Events activityCallback;
     private LocationController.Callback locationCallback;
     private PeerMountainTextView tvButton, tvLabel;
     private ProgressBar progressBar;
@@ -35,15 +33,13 @@ public class LocationWidget extends QuestionWidget {
 
     public LocationWidget(Activity activity, FormEntryPrompt prompt) {
         super(activity, prompt);
-        this.activity = activity;
-        if (activity instanceof Events) {
-            activityCallback = (Events) activity;
-        } else {
-            throw new RuntimeException(activity.toString()
-                    + " QuestionWidget.Events");
-        }
+
         locationController = new LocationController(activity);
         setLocationCallback();
+        createView();
+    }
+
+    public void createView() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             ViewGroup viewParent = getAnswerViewParent();

@@ -17,7 +17,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PeerMountainCoreConstants;
+import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 
 /**
  * Created by Galeen on 10/11/2017.

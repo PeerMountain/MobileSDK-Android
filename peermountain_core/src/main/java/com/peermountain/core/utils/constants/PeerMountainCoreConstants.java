@@ -1,4 +1,4 @@
-package com.peermountain.core.utils;
+package com.peermountain.core.utils.constants;
 
 /**
  * Created by Galeen on 10/31/2017.

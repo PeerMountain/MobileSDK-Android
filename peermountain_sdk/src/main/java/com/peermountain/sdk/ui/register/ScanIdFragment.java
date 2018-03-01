@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PeerMountainCoreConstants;
+import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;

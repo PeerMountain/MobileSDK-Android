@@ -36,7 +36,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.ViewIds;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.views.PeerMountainTextView;
 
 import org.javarosa.core.model.FormIndex;

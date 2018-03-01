@@ -33,7 +33,7 @@ import com.peermountain.core.network.NetworkResponse;
 import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 
 import org.json.JSONObject;

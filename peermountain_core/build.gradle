@@ -71,6 +71,8 @@ dependencies {
         exclude module: 'support-compat'
     }
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 

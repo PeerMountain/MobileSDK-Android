@@ -53,7 +53,7 @@ import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.PmCoreConstants;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.utils.PmLiveSelfieHelper;

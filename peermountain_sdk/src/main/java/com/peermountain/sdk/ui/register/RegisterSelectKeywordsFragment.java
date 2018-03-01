@@ -27,7 +27,7 @@ import com.peermountain.core.views.PeerMountainTextView;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static com.peermountain.core.utils.PmCoreConstants.MIN_KEYWORDS_SAVE;
+import static com.peermountain.core.utils.constants.PmCoreConstants.MIN_KEYWORDS_SAVE;
 
 public class RegisterSelectKeywordsFragment extends ToolbarFragment {
 

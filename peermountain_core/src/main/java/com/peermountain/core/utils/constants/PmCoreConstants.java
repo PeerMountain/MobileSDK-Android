@@ -1,4 +1,4 @@
-package com.peermountain.core.utils;
+package com.peermountain.core.utils.constants;
 
 
 import com.peermountain.core.BuildConfig;
