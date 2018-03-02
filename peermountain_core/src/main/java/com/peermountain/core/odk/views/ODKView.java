@@ -17,6 +17,7 @@ import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.utils.ViewIds;
 import com.peermountain.core.odk.views.widgets.WidgetFactory;
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
+import com.peermountain.core.utils.PmSystemHelper;
 
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.data.IAnswerData;
@@ -35,6 +36,7 @@ import java.util.LinkedHashMap;
 public class ODKView extends NestedScrollView implements View.OnTouchListener {
     public static final String FIELD_LIST = "field-list";
 
+    private Activity activity;
     private LinearLayout view;
     private LinearLayout.LayoutParams layout;
     private ArrayList<QuestionWidget> widgets;
@@ -44,6 +46,7 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
     public ODKView(Activity activity, FormEntryPrompt[] questionPrompts,
                    FormEntryCaption[] groups, boolean advancingPage) {
         super(activity);
+        this.activity = activity;
         this.questionPrompts = questionPrompts;
         widgets = new ArrayList<>();
 
@@ -224,15 +227,16 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
     }
 
     public void setFocus(Context context) {
-//        for (int i = 0; i < widgets.size(); i++) {
-//            if(widgets.get(i).canGetFocus()){
-//                widgets.get(i).setFocus(context);
-//                break;
-//            }
-//        }
-        if (widgets.size() > 0) {
-            widgets.get(0).setFocus(context);
+        for (int i = 0; i < widgets.size(); i++) {
+            if(widgets.get(i).canGetFocus()){
+                widgets.get(i).setFocus(context);
+                return;
+            }
         }
+        PmSystemHelper.hideKeyboard(activity);
+//        if (widgets.size() > 0) {
+//            widgets.get(0).setFocus(context);
+//        }
     }
 
     /**

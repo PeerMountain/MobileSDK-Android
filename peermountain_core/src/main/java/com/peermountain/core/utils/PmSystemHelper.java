@@ -10,6 +10,12 @@ import android.view.inputmethod.InputMethodManager;
  */
 
 public class PmSystemHelper {
+
+    public static void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus() == null ? activity.findViewById(android.R.id.content) : activity.getCurrentFocus();
+        hideKeyboard(activity,view);
+    }
+
     public static void hideKeyboard(Activity activity, View v) {
         if(activity==null || v==null) return;
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -113,33 +113,9 @@ public class XFormFragment extends Fragment {
                 viewFlipperController.showNext();
             }
         });
-        if (formController != null) {
-            //add odkViews
-            pmTvTitle.setText(formController.getFormTitle());
-            int event = formController.getEvent();
-
-            while (event != FormEntryController.EVENT_END_OF_FORM) {
-                odkViews.add(createView(event, false));
-                if (event == FormEntryController.EVENT_GROUP) {
-                    formController.stepOverToGroupEnd();
-                }
-                try {
-                    event = formController.stepToNextScreenEvent();
-                } catch (JavaRosaException e) {
-                    e.printStackTrace();
-                    return;
-                }
-//                this was last question, noe create exit view and end
-                if (event == FormEntryController.EVENT_END_OF_FORM) {
-                    odkViews.add(createView(event, false));
-                }
-            }
-            viewFlipperController.addViews(odkViews);
-            if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
-                ((ODKView) odkViews.get(0)).setFocus(getContext());
-            }
-        }
+        initOdkViews();
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -169,6 +145,36 @@ public class XFormFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+
+    public void initOdkViews() {
+        if (formController != null) {
+            //add odkViews
+            pmTvTitle.setText(formController.getFormTitle());
+            int event = formController.getEvent();
+
+            while (event != FormEntryController.EVENT_END_OF_FORM) {
+                odkViews.add(createView(event, false));
+                if (event == FormEntryController.EVENT_GROUP) {
+                    formController.stepOverToGroupEnd();
+                }
+                try {
+                    event = formController.stepToNextScreenEvent();
+                } catch (JavaRosaException e) {
+                    e.printStackTrace();
+                    return;
+                }
+//                this was last question, noe create exit view and end
+                if (event == FormEntryController.EVENT_END_OF_FORM) {
+                    odkViews.add(createView(event, false));
+                }
+            }
+            viewFlipperController.addViews(odkViews);
+            if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
+                ((ODKView) odkViews.get(0)).setFocus(getContext());
+            }
+        }
     }
 
     public boolean dispatchTouchEvent(MotionEvent mv) {

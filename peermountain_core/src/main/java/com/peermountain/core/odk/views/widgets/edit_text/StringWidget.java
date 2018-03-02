@@ -240,7 +240,7 @@ public class StringWidget extends QuestionWidget {
 
     @Override
     public boolean canGetFocus() {
-        return true;
+        return !readOnly;
     }
 
 

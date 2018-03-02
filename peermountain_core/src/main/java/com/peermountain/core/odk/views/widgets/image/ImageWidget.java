@@ -93,7 +93,7 @@ public class ImageWidget extends PermissionQuestionWidget {
 
     @Override
     public IAnswerData getAnswer() {
-        return appDocument.isEmpty() ? null : new StringData(appDocument.getTitle());
+        return appDocument.isEmpty() ? null : new StringData(appDocument.getFileDocuments().get(0).getImageUri());
     }
 
     @Override
