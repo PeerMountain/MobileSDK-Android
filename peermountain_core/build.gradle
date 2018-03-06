@@ -67,7 +67,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     implementation group: 'net.sf.kxml', name: 'kxml2', version: '2.3.0'
     implementation group: 'net.sf.opencsv', name: 'opencsv', version: '2.3'
-    api ('com.appyvet:materialrangebar:1.4.1') {
+    api('com.appyvet:materialrangebar:1.4.1') {
         exclude module: 'support-compat'
     }
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'

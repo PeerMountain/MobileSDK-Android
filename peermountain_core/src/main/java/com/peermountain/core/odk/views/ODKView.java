@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -43,7 +44,7 @@ public class ODKView extends NestedScrollView implements View.OnTouchListener {
     private int paddingSmall = 10,padding;
     public FormEntryPrompt[] questionPrompts;
 
-    public ODKView(Activity activity, FormEntryPrompt[] questionPrompts,
+    public ODKView(FragmentActivity activity, FormEntryPrompt[] questionPrompts,
                    FormEntryCaption[] groups, boolean advancingPage) {
         super(activity);
         this.activity = activity;

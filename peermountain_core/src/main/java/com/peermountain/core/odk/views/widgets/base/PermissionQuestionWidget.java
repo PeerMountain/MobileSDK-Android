@@ -1,6 +1,6 @@
 package com.peermountain.core.odk.views.widgets.base;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
 import org.javarosa.form.api.FormEntryPrompt;
 
@@ -10,10 +10,10 @@ import org.javarosa.form.api.FormEntryPrompt;
  */
 
 public abstract class PermissionQuestionWidget extends QuestionWidget {
-    public Activity activity;
+    public FragmentActivity activity;
     public Events activityCallback;
 
-    public PermissionQuestionWidget(Activity activity, FormEntryPrompt prompt) {
+    public PermissionQuestionWidget(FragmentActivity activity, FormEntryPrompt prompt) {
         super(activity, prompt);
         this.activity = activity;
         if (activity instanceof Events) {

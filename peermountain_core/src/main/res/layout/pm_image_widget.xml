@@ -18,6 +18,17 @@
         android:textSize="@dimen/pm_text_normal"
         android:text="@string/pm_pick_file_btn"/>
 
+    <com.peermountain.core.views.PeerMountainTextView
+        android:id="@+id/pmBtnSelectDocument"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_margin_small"
+        android:padding="@dimen/pm_margin_small"
+        android:background="@drawable/pm_rounded_btn"
+        android:textColor="@color/pm_odk_text"
+        android:textSize="@dimen/pm_text_normal"
+        android:text="@string/pm_pick_document_btn"/>
+
     <ImageView
         android:id="@+id/pmIvSelectedImage"
         android:layout_width="match_parent"

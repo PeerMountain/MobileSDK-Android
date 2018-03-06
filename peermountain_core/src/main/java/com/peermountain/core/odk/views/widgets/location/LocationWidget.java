@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class LocationWidget extends PermissionQuestionWidget {
     private ProgressBar progressBar;
     private GeoPointData answeredLocation;
 
-    public LocationWidget(Activity activity, FormEntryPrompt prompt) {
+    public LocationWidget(FragmentActivity activity, FormEntryPrompt prompt) {
         super(activity, prompt);
 
         locationController = new LocationController(activity);

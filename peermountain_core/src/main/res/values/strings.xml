@@ -37,6 +37,10 @@
     <string name="survey_saving_validating_message">Validating answers…</string>
     <string name="pm_get_location_btn">Get Location</string>
     <string name="pm_pick_file_btn">Pick file</string>
+    <string name="pm_pick_document_btn">Select saved document</string>
     <string name="pm_change_file_btn">Change %s</string>
     <string name="pm_choose_file_title">Choose File</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

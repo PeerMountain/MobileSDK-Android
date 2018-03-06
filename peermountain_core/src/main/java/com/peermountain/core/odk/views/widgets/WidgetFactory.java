@@ -14,14 +14,14 @@
 
 package com.peermountain.core.odk.views.widgets;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
 import com.peermountain.core.odk.views.widgets.choice.CheckList;
 import com.peermountain.core.odk.views.widgets.choice.RadioList;
 import com.peermountain.core.odk.views.widgets.date.DatePicker;
 import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
-import com.peermountain.core.odk.views.widgets.image.ImageWidget;
+import com.peermountain.core.odk.views.widgets.image.DocumentWidget;
 import com.peermountain.core.odk.views.widgets.location.LocationWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeDecimalWidget;
 import com.peermountain.core.odk.views.widgets.range.RangeIntegerWidget;
@@ -46,7 +46,7 @@ public class WidgetFactory {
      * @param activity          Android activity
      * @param readOnlyOverride a flag to be ORed with JR readonly attribute.
      */
-    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt formEntryPrompt, Activity activity,
+    public static QuestionWidget createWidgetFromPrompt(FormEntryPrompt formEntryPrompt, FragmentActivity activity,
                                                         boolean readOnlyOverride) throws Exception {
 
         // get appearance hint and clean it up so it is lower case and never null...
@@ -154,7 +154,7 @@ public class WidgetFactory {
                 }
                 break;
             case Constants.CONTROL_IMAGE_CHOOSE:
-                questionWidget = new ImageWidget(activity, formEntryPrompt);
+                questionWidget = new DocumentWidget(activity, formEntryPrompt);
 //                if (appearance.equals("web")) {
 //                    questionWidget = new ImageWebViewWidget(context, fep);
 //                } else if (appearance.equals("signature")) {
