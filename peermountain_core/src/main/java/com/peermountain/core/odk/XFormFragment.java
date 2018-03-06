@@ -4,10 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +27,7 @@ import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.odk.views.ODKView;
 import com.peermountain.core.utils.constants.PmCoreConstants;
+import com.peermountain.core.views.RecyclerScrollListenerWithSelectOnFirstVisibleItem;
 
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
@@ -94,10 +98,11 @@ public class XFormFragment extends Fragment {
     }
 
     private ViewFlipper viewFlipper;
+    private RecyclerView rvQuestions;
     private ViewFlipperController viewFlipperController;
     private TextView tvText, pmTvTitle;
     ArrayList<View> odkViews = new ArrayList<>();
-
+private QuestionsRecyclerAdapter adapter;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -107,13 +112,37 @@ public class XFormFragment extends Fragment {
 //        LogUtils.d("dates","january : "+val+" march : "+val1);
         formController = Collect.getInstance().getFormController();
         getViews(view);
-        viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback);
+        viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback,false);
         view.findViewById(R.id.pmBtnAddItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewFlipperController.showNext();
             }
         });
+        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        rvQuestions.addOnScrollListener(new RecyclerScrollListenerWithSelectOnFirstVisibleItem(
+                new RecyclerScrollListenerWithSelectOnFirstVisibleItem.OnEvent() {
+                    @Override
+                    public boolean canSelectItem() {
+                        return false;
+                    }
+
+                    @Override
+                    public void onScrollFinished(int selectedPosition, int firstVisible, int lastVisible) {
+
+                    }
+
+                    @Override
+                    public LinearLayoutManager getLinearLayoutManager() {
+                        return (LinearLayoutManager) rvQuestions.getLayoutManager();
+                    }
+
+                    @Override
+                    public QuestionsRecyclerAdapter getAdapter() {
+                        return adapter;
+                    }
+                },0, Color.WHITE,Color.WHITE
+        ));
         initOdkViews();
     }
 
@@ -182,16 +211,24 @@ public class XFormFragment extends Fragment {
             if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
                 ((ODKView) odkViews.get(0)).setFocus(getContext());
             }
+            ArrayList<Boolean> list = new ArrayList<>();
+            for (int i = 0; i<odkViews.size();i++){
+                list.add(false);// TODO: 3/6/18 check if is answered
+            }
+            rvQuestions.setAdapter(adapter = new QuestionsRecyclerAdapter(list));
         }
     }
 
     public boolean dispatchTouchEvent(MotionEvent mv) {
-        return canSlide && viewFlipperController != null && viewFlipperController.onTouch(null, mv);
+        return canSlide && viewFlipperController != null
+                && viewFlipperController.isWithSwipe()
+                && viewFlipperController.onTouch(null, mv);
     }
 
     ViewFlipperController.Callback viewFlipperCallback = new ViewFlipperController.Callback() {
         @Override
         public void onNewScreen(int position) {
+            //this one is called after all answers for the screen are validated and saved
             tvText.setText("" + position);
             StringBuilder sb = new StringBuilder();
             if (position == viewFlipper.getChildCount() - 1) {//init last screen
@@ -229,6 +266,7 @@ public class XFormFragment extends Fragment {
         tvText = view.findViewById(R.id.tvText);
         pmTvTitle = view.findViewById(R.id.pmTvTitle);
         viewFlipper = view.findViewById(R.id.pmVfXForm);
+        rvQuestions = view.findViewById(R.id.rvQuestions);
 //        progressBar = view.findViewById(R.id.progressViewsLoading);
     }
 
@@ -500,48 +538,4 @@ public class XFormFragment extends Fragment {
             super(context);
         }
     }
-
-//    private class CreateOdkViewsTask extends AsyncTask<Void, View, Void> {
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            int event = formController.getEvent();
-//            while (event != FormEntryController.EVENT_END_OF_FORM) {
-//                View view = createView(event, false);
-//                viewFlipperController.addView(view);
-//                odkViews.add(view);
-//                if (event == FormEntryController.EVENT_GROUP) {
-//                    formController.stepOverToGroupEnd();
-//                }
-//                try {
-//                    event = formController.stepToNextScreenEvent();
-//                } catch (JavaRosaException e) {
-//                    e.printStackTrace();
-//                    return null;
-//                }
-////                this was last question, noe create exit view and end
-//                if (event == FormEntryController.EVENT_END_OF_FORM) {
-//                    View viewEnd = createView(event, false);
-//                    odkViews.add(viewEnd);
-//                    viewFlipperController.addView(viewEnd);
-//                }
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(View... values) {
-//            super.onProgressUpdate(values);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
-//                ((ODKView) odkViews.get(0)).setFocus(getContext());
-//            }
-//            createOdkViewsTask = null;
-//            progressBar.setVisibility(View.GONE);
-//        }
-//    }
 }

@@ -34,17 +34,21 @@ public class ViewFlipperController implements View.OnTouchListener {
     private float downXValue;
     private Callback callback;
     private View viewToFling;
+    private boolean withSwipe;
 
-    public ViewFlipperController(ViewFlipper viewFlipper, View viewToFling, Callback callback) {
+    public ViewFlipperController(ViewFlipper viewFlipper, View viewToFling, Callback callback, boolean withSwipe) {
         this.viewFlipper = viewFlipper;
         this.callback = callback;
         this.viewToFling = viewToFling;
+        this.withSwipe = withSwipe;
         setFlipperListeners();
-        viewToFling.setOnTouchListener(this);
+        if(withSwipe){
+            viewToFling.setOnTouchListener(this);
+        }
     }
 
-    public ViewFlipperController(ViewFlipper viewFlipper, View viewToFling, boolean withAnimation, boolean withFinishOnLast, boolean isInfinite, boolean isAutoStart, Callback callback) {
-        this(viewFlipper, viewToFling, callback);
+    public ViewFlipperController(ViewFlipper viewFlipper, View viewToFling, boolean withAnimation, boolean withFinishOnLast, boolean isInfinite, boolean isAutoStart, Callback callback, boolean withSwipe) {
+        this(viewFlipper, viewToFling, callback,withSwipe);
         this.withAnimation = withAnimation;
         this.withFinishOnLast = withFinishOnLast;
         this.isInfinite = isInfinite;
@@ -260,6 +264,14 @@ public class ViewFlipperController implements View.OnTouchListener {
 
     public ODKView getCurrentOdkView() {
         return viewFlipper.getCurrentView() instanceof ODKView ? (ODKView) viewFlipper.getCurrentView() : null;
+    }
+
+    public boolean isWithSwipe() {
+        return withSwipe;
+    }
+
+    public void setWithSwipe(boolean withSwipe) {
+        this.withSwipe = withSwipe;
     }
 
     public interface Callback {

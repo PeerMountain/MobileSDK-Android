@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ProgressBar;
 
 import com.peermountain.R;
 import com.peermountain.core.odk.XFormActivity;
@@ -19,7 +20,6 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
 //        PeerMountainSDK.logout();//to test login again
 
 //        showSplash();

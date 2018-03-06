@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.peermountain.core.R;
 import com.peermountain.core.network.BaseEvents;
@@ -33,10 +35,12 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
         context.startActivity(starter);
     }
 
+    private ProgressBar progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_xform);
+        progress = findViewById(R.id.progress);
         String url = getIntent().getStringExtra(EXTRA_URL);
         if (url != null) {
             PeerMountainManager.downloadXForm(new DownloadXFormCallback(null, MainCallback.TYPE_NO_PROGRESS), url);
@@ -107,6 +111,7 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
                 android.support.v4.app.FragmentTransaction fr = getSupportFragmentManager().beginTransaction();
                 fr.replace(R.id.container, fragment);
                 fr.commit();
+                progress.setVisibility(View.GONE);
             }
 
             @Override
@@ -134,6 +139,12 @@ public class XFormActivity extends AppCompatActivity implements XFormFragment.On
             if (networkResponse.file != null) {
                 loadXForm(networkResponse.file);
             }
+        }
+
+        @Override
+        public void onError(String msg, NetworkResponse networkResponse) {
+            super.onError(msg, networkResponse);
+            progress.setVisibility(View.GONE);
         }
     }
 }
