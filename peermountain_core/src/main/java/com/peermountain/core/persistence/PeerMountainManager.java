@@ -231,6 +231,19 @@ public class PeerMountainManager {
         return Cache.getInstance().getContacts();
     }
 
+    public static AppDocument getDocument(String id) {
+        if(id == null) return null;
+        ArrayList<AppDocument> documents = getDocuments();
+        if(documents!=null){
+            for (AppDocument document : documents) {
+                if(document.getId().equals(id)){
+                    return document;
+                }
+            }
+        }
+        return null;
+    }
+
 
     public static void addDocument(AppDocument document) {
         getDocuments().add(document);

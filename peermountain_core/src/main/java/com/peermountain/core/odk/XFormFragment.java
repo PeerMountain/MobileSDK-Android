@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -121,9 +122,9 @@ public class XFormFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         for (View view : odkViews) {
-            if(view instanceof ODKView){
-                if(((ODKView) view).onActivityResult(requestCode, resultCode, data)){
-                 break;
+            if (view instanceof ODKView) {
+                if (((ODKView) view).onActivityResult(requestCode, resultCode, data)) {
+                    break;
                 }
             }
         }
@@ -145,13 +146,20 @@ public class XFormFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+//        if (createOdkViewsTask != null) {
+//            createOdkViewsTask.cancel(true);
+//            createOdkViewsTask = null;
+//        }
     }
 
+//    CreateOdkViewsTask createOdkViewsTask;
 
     public void initOdkViews() {
         if (formController != null) {
             //add odkViews
             pmTvTitle.setText(formController.getFormTitle());
+//            createOdkViewsTask = new CreateOdkViewsTask();
+//            createOdkViewsTask.execute();
             int event = formController.getEvent();
 
             while (event != FormEntryController.EVENT_END_OF_FORM) {
@@ -196,9 +204,9 @@ public class XFormFragment extends Fragment {
                     }
                 }
                 endView.setText(sb.toString());
-            }else{
+            } else {
                 ODKView currentOdkView = viewFlipperController.getCurrentOdkView();
-                if(currentOdkView!=null){
+                if (currentOdkView != null) {
                     currentOdkView.setFocus(getContext());
                 }
             }
@@ -215,11 +223,13 @@ public class XFormFragment extends Fragment {
         }
 
     };
+    ProgressBar progressBar;
 
     private void getViews(View view) {
         tvText = view.findViewById(R.id.tvText);
         pmTvTitle = view.findViewById(R.id.pmTvTitle);
         viewFlipper = view.findViewById(R.id.pmVfXForm);
+//        progressBar = view.findViewById(R.id.progressViewsLoading);
     }
 
     ODKView odkView;
@@ -490,4 +500,48 @@ public class XFormFragment extends Fragment {
             super(context);
         }
     }
+
+//    private class CreateOdkViewsTask extends AsyncTask<Void, View, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            int event = formController.getEvent();
+//            while (event != FormEntryController.EVENT_END_OF_FORM) {
+//                View view = createView(event, false);
+//                viewFlipperController.addView(view);
+//                odkViews.add(view);
+//                if (event == FormEntryController.EVENT_GROUP) {
+//                    formController.stepOverToGroupEnd();
+//                }
+//                try {
+//                    event = formController.stepToNextScreenEvent();
+//                } catch (JavaRosaException e) {
+//                    e.printStackTrace();
+//                    return null;
+//                }
+////                this was last question, noe create exit view and end
+//                if (event == FormEntryController.EVENT_END_OF_FORM) {
+//                    View viewEnd = createView(event, false);
+//                    odkViews.add(viewEnd);
+//                    viewFlipperController.addView(viewEnd);
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(View... values) {
+//            super.onProgressUpdate(values);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
+//                ((ODKView) odkViews.get(0)).setFocus(getContext());
+//            }
+//            createOdkViewsTask = null;
+//            progressBar.setVisibility(View.GONE);
+//        }
+//    }
 }

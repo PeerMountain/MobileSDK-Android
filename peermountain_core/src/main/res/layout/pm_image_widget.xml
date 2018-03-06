@@ -16,7 +16,7 @@
         android:background="@drawable/pm_rounded_btn"
         android:textColor="@color/pm_odk_text"
         android:textSize="@dimen/pm_text_normal"
-        android:text="@string/pick_file_btn"/>
+        android:text="@string/pm_pick_file_btn"/>
 
     <ImageView
         android:id="@+id/pmIvSelectedImage"

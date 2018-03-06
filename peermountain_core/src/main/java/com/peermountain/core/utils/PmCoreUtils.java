@@ -125,7 +125,7 @@ public class PmCoreUtils {
 
         setMimeTypes(mimeTypes, intent);
         if (intent.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file_title)), requestCode);
+            activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.pm_choose_file_title)), requestCode);
         } else {
             mimeTypes = new String[]{
                     FileDocument.TYPE_IMAGE
@@ -133,14 +133,14 @@ public class PmCoreUtils {
             };
             setMimeTypes(mimeTypes, intent);
             if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file_title)), requestCode);
+                activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.pm_choose_file_title)), requestCode);
             } else {
                 mimeTypes = new String[]{
                         FileDocument.TYPE_PDF
                 };
                 setMimeTypes(mimeTypes, intent);
                 if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                    activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.choose_file_title)), requestCode);
+                    activity.startActivityForResult(Intent.createChooser(intent, activity.getString(R.string.pm_choose_file_title)), requestCode);
                 } else {
                     // TODO: 10/26/2017 show error
                     return false;

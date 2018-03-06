@@ -13,6 +13,7 @@ import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.odk.views.widgets.base.PermissionQuestionWidget;
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.views.PeerMountainTextView;
 import com.squareup.picasso.Picasso;
@@ -34,16 +35,19 @@ public class ImageWidget extends PermissionQuestionWidget {
 
     public ImageWidget(final Activity activity, FormEntryPrompt prompt) {
         super(activity, prompt);
+        createView(activity, prompt);
+        initDocumentHelper(activity);
+    }
+
+    public void createView(Activity activity, FormEntryPrompt prompt) {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
             ViewGroup viewParent = getAnswerViewParent();
             inflater.inflate(R.layout.pm_image_widget, viewParent);
+            // TODO: 3/2/2018 show a list with all save documents
             tvButton = viewParent.findViewById(R.id.pmBtnSelectImage);
             imageView = viewParent.findViewById(R.id.pmIvSelectedImage);
-//            if (getFormEntryPrompt().getAnswerValue() != null) {
-//                answeredLocation = new GeoPointData((double[])getFormEntryPrompt().getAnswerValue().getValue());
-//                tvLabel.setText(answeredLocation.getDisplayText());
-//            }
+            setCurrentAnswer(activity, prompt);
             tvButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -52,7 +56,19 @@ public class ImageWidget extends PermissionQuestionWidget {
                 }
             });
         }
-        initDocumentHelper(activity);
+    }
+
+    public void setCurrentAnswer(Activity activity, FormEntryPrompt prompt) {
+        if (prompt.getAnswerValue() != null) {
+            String id = prompt.getAnswerText();
+            appDocument = PeerMountainManager.getDocument(id);
+            if(appDocument==null){
+                appDocument = new AppDocument(true);
+                appDocument.setShouldAdd(true);
+            }else{
+                loadImage(activity);
+            }
+        }
     }
 
     public void initDocumentHelper(final Activity activity) {
@@ -60,12 +76,7 @@ public class ImageWidget extends PermissionQuestionWidget {
                 new PmDocumentsHelper.Events() {
                     @Override
                     public void refreshAdapter() {
-                        if(appDocument.getFileDocuments().size()>0){
-                            FileDocument fileDocument = appDocument.getFileDocuments().get(0);
-                            Picasso.with(activity).load(fileDocument.getImageUri())
-                                    .error(R.color.pm_odk_text_error)
-                                    .into(imageView);
-                        }
+                        loadImage(activity);
                     }
 
                     @Override
@@ -91,14 +102,25 @@ public class ImageWidget extends PermissionQuestionWidget {
         );
     }
 
+    public void loadImage(Activity activity) {
+        if(appDocument.getFileDocuments().size()>0){
+            FileDocument fileDocument = appDocument.getFileDocuments().get(0);
+            Picasso.with(activity).load(fileDocument.getImageUri())
+                    .error(R.color.pm_odk_text_error)
+                    .into(imageView);
+            tvButton.setText(activity.getString(R.string.pm_change_file_btn, appDocument.getTitle()));
+        }
+    }
+
     @Override
     public IAnswerData getAnswer() {
-        return appDocument.isEmpty() ? null : new StringData(appDocument.getFileDocuments().get(0).getImageUri());
+        return appDocument.isEmpty() ? null : new StringData(appDocument.getId());
     }
 
     @Override
     public void clearAnswer() {
         appDocument = new AppDocument(true);
+        appDocument.setShouldAdd(true);
         tvButton.setEnabled(true);
     }
 

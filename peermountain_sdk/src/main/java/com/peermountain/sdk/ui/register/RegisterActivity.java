@@ -16,6 +16,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.PmDocumentsHelper;
+import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
@@ -26,7 +27,7 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
         ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragment.OnFragmentInteractionListener {
     @IdRes
     int containerId = R.id.flContainer;
-    PmFragmentUtils.FragmentBuilder fb;
+    PmFragmentUtils.FragmentBuilder fragmentBuilder;
     ScanIdFragment scanIdFragment;
     DocumentID scannedDocument = null;
 
@@ -35,7 +36,7 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pm_activity_register, R.id.llMainView);
-        fb = PmFragmentUtils.init(this, containerId);
+        fragmentBuilder = PmFragmentUtils.init(this, containerId);
         if (savedInstanceState != null && scannedDocument != null) {
             showRegisterProfileFragment(scannedDocument);
         } else {
@@ -92,46 +93,46 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
     }
 
     private void showPinFragment() {
-        fb.addToBackStack(false);
-        fb.replace(RegisterPinFragment.newInstance(false));
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(RegisterPinFragment.newInstance(false));
     }
 
     private void showTutorialFragment() {
-        fb.addToBackStack(false);
-        fb.replace(new IntroFragment());
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(new IntroFragment());
     }
 
     private void showKeywordsFragment() {
 //        showRegisterProfileFragment(null);
-        fb.addToBackStack(true);
-        fb.replace(RegisterSelectKeywordsFragment.newInstance(false));
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(RegisterSelectKeywordsFragment.newInstance(false));
     }
 
     private void showScanIdFragment() {
 //        registerKeywordsFragment = null;
-        fb.addToBackStack(true);
-        fb.replace(scanIdFragment = ScanIdFragment.newInstance(null, null));
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(scanIdFragment = ScanIdFragment.newInstance(null, null));
     }
 
     private void showScannedIdDataFragment(Intent scannedData) {
         scanIdFragment = null;
-        fb.addToBackStack(true);
-        fb.replace(ShowScannedIdFragment.newInstance(scannedData));
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(ShowScannedIdFragment.newInstance(scannedData));
     }
 
     private void showRegisterProfileFragment(DocumentID document) {
-        fb.addToBackStack(false);
-        fb.replace(RegisterProfileFragment.newInstance(document));
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(RegisterProfileFragment.newInstance(document));
     }
 
     private void showConfirmationFragment() {
-        fb.addToBackStack(true);
-        fb.replace(new ConfirmationAccountFragment());
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(new ConfirmationAccountFragment());
     }
 
     private void showSecurityTutorialFragment() {
-        fb.addToBackStack(true);
-        fb.replace(new SecurityTutorialFragment());
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(new SecurityTutorialFragment());
     }
 
     @Override
@@ -151,7 +152,11 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
 
     @Override
     public void onKeywordsSaved() {
-        showScanIdFragment();
+        if(PeerMountainCoreConstants.isFake){
+            showScannedIdDataFragment(null);
+        }else{
+            showScanIdFragment();
+        }
     }
 
     @Override
@@ -201,7 +206,7 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
 
     @Override
     public void onSecurityTutorialEnd() {
-        fb.pop();
+        fragmentBuilder.pop();
     }
 
     @Override
