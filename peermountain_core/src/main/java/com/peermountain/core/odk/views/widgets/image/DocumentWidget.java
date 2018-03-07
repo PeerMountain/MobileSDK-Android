@@ -144,6 +144,7 @@ public class DocumentWidget extends PermissionQuestionWidget {
             FileDocument fileDocument = appDocument.getFileDocuments().get(0);
             Picasso.with(activity).load(fileDocument.getImageUri())
                     .error(R.color.pm_odk_text_error)
+                    .resize(imageView.getWidth(),activity.getResources().getDimensionPixelSize(R.dimen.pm_odk_image_document_height))
                     .into(imageView);
             setButtonTitle();
         }

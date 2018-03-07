@@ -42,13 +42,13 @@ public class ViewFlipperController implements View.OnTouchListener {
         this.viewToFling = viewToFling;
         this.withSwipe = withSwipe;
         setFlipperListeners();
-        if(withSwipe){
+        if (withSwipe) {
             viewToFling.setOnTouchListener(this);
         }
     }
 
     public ViewFlipperController(ViewFlipper viewFlipper, View viewToFling, boolean withAnimation, boolean withFinishOnLast, boolean isInfinite, boolean isAutoStart, Callback callback, boolean withSwipe) {
-        this(viewFlipper, viewToFling, callback,withSwipe);
+        this(viewFlipper, viewToFling, callback, withSwipe);
         this.withAnimation = withAnimation;
         this.withFinishOnLast = withFinishOnLast;
         this.isInfinite = isInfinite;
@@ -56,19 +56,45 @@ public class ViewFlipperController implements View.OnTouchListener {
         startFlipper();
     }
 
-    public void addViews(ArrayList<View> views) {
-        int size = views.size();
-        for (int i = 0; i < size; i++) {
-            addView(views.get(i));
-        }
-    }
+    private ArrayList<View> views;
+    private int displayedChild = 0;
 
-    public void addView(View view) {
+    public void addViews(ArrayList<View> views) {
+        this.views = views;
+//        int size = views.size();
+//        for (int i = 0; i < size; i++) {
         if (viewFlipper.getChildCount() == 0 && callback != null) {
             callback.onNewScreen(0);
         }
-        viewFlipper.addView(view);
 
+        viewFlipper.addView(views.get(0));
+        viewFlipper.addView(views.get(1));
+//        }
+    }
+
+    private void addView(View view, boolean back) {
+        if (viewFlipper.getChildCount() == 3) {//keep only 3 views current 1 before and 1 after
+            int pos = getDisplayedChild() + (back ? 2 : -2);
+            if (pos <= getChildCount() - 1 && pos >= 0) {//if valid view remove
+                View viewToRemove = views.get(pos);
+                removeView(viewToRemove);
+            }
+        }
+        if (view.getParent() == null){
+            viewFlipper.addView(view, back ? 0 : 2);// add 1 view before or after
+        }
+    }
+
+    private void removeView(View view) {
+        viewFlipper.removeView(view);
+    }
+
+    public int getChildCount() {
+        return views == null ? 0 : views.size();
+    }
+
+    private int getDisplayedChild() {
+        return displayedChild;
     }
 
     @Override
@@ -110,7 +136,7 @@ public class ViewFlipperController implements View.OnTouchListener {
     }
 
     private void moveLeft() {
-        if (viewFlipper.getDisplayedChild() < viewFlipper.getChildCount() - 1 || isInfinite) {
+        if (getDisplayedChild() < getChildCount() - 1 || isInfinite) {
             showNext();
         } else {
             if (withFinishOnLast) finish();
@@ -125,12 +151,16 @@ public class ViewFlipperController implements View.OnTouchListener {
         viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(getContext(),
                 R.anim.pm_slide_out_left));
         boolean updateParent = true;
-        if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 2 && callback != null) {
-            callback.onNewScreen(viewFlipper.getDisplayedChild() + 1);
+        if (getDisplayedChild() == getChildCount() - 1 && callback != null) {
+            callback.onNewScreen(getDisplayedChild());
             updateParent = false;
         }
         // Flip!
         viewFlipper.showNext();
+        displayedChild++;
+        if (displayedChild < getChildCount() - 1) {
+            addView(views.get(displayedChild + 1), false);//first
+        }
         startFlipper();
         if (updateParent) setTextAndDots();
     }
@@ -138,7 +168,7 @@ public class ViewFlipperController implements View.OnTouchListener {
     SaveToDiskTask saveToDiskTask;
 
     public boolean showNext() {
-        if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 1) {
+        if (getDisplayedChild() == getChildCount() - 1) {
             saveXFormAnswers();
             return true;
         }
@@ -166,13 +196,13 @@ public class ViewFlipperController implements View.OnTouchListener {
 
     public void saveXFormAnswers() {
         if (saveToDiskTask == null || saveToDiskTask.getStatus() != AsyncTask.Status.RUNNING) {
-            saveToDiskTask = new SaveToDiskTask(null,true,true,"test_to_save");
+            saveToDiskTask = new SaveToDiskTask(null, true, true, "test_to_save");
             saveToDiskTask.setFormSavedListener(new SaveToDiskTask.FormSavedListener() {
                 @Override
                 public void savingComplete(SaveResult saveStatus) {
-                    if(saveStatus!=null){
-                        Toast.makeText(viewFlipper.getContext(), "code : "+saveStatus.getSaveResult()+
-                                "\nmsg : "+
+                    if (saveStatus != null) {
+                        Toast.makeText(viewFlipper.getContext(), "code : " + saveStatus.getSaveResult() +
+                                "\nmsg : " +
                                 saveStatus.getSaveErrorMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -195,12 +225,16 @@ public class ViewFlipperController implements View.OnTouchListener {
                 R.anim.pm_slide_out_right));
         // Flip!
         viewFlipper.showPrevious();
+        displayedChild--;
+        if (displayedChild > 0) {
+            addView(views.get(displayedChild - 1), true);//first
+        }
         startFlipper();
         setTextAndDots();
     }
 
     public void moveRight() {
-        if (viewFlipper.getDisplayedChild() > 0 || isInfinite) {
+        if (getDisplayedChild() > 0 || isInfinite) {
             showPrev();
         }
     }
@@ -227,8 +261,8 @@ public class ViewFlipperController implements View.OnTouchListener {
             }
 
             public void onAnimationEnd(Animation animation) {
-                int displayedChild = viewFlipper.getDisplayedChild();
-                int childCount = viewFlipper.getChildCount();
+                int displayedChild = getDisplayedChild();
+                int childCount = getChildCount();
                 if (displayedChild == childCount - 1) {
                     if (!isInfinite) {
                         viewFlipper.stopFlipping();
@@ -243,7 +277,7 @@ public class ViewFlipperController implements View.OnTouchListener {
     }
 
     private void setTextAndDots() {
-        if (callback != null) callback.onNewScreen(viewFlipper.getDisplayedChild());
+        if (callback != null) callback.onNewScreen(getDisplayedChild());
     }
 
     private void finish() {
@@ -256,10 +290,10 @@ public class ViewFlipperController implements View.OnTouchListener {
 
     public ArrayList<ODKView> getOdkViews() {
         ArrayList<ODKView> res = new ArrayList<>();
-        int end = viewFlipper.getChildCount();
+        int end = views.size()-1;
         for (int i = 0; i < end; i++) {
-            if (viewFlipper.getChildAt(i) instanceof ODKView) {
-                res.add((ODKView) viewFlipper.getChildAt(i));
+            if (views.get(i) instanceof ODKView) {
+                res.add((ODKView) views.get(i));
             }
         }
         return res;

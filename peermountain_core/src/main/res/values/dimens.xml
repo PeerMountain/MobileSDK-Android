@@ -17,4 +17,5 @@
     <dimen name="camera_size">300dp</dimen>
     <dimen name="pm_odk_slider_weight">12dp</dimen>
     <dimen name="pm_odk_thumb_border">8dp</dimen>
+    <dimen name="pm_odk_image_document_height">200dp</dimen>
 </resources>

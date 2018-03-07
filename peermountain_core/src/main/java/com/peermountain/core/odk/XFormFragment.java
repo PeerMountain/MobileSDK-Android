@@ -215,6 +215,8 @@ public class XFormFragment extends Fragment {
         }
     }
 
+    int emptyFields = 1;
+
     public void initRecycler() {
         rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvQuestions.setOnFlingListenerGaleen(new GaleenRecyclerView.OnFlingListenerGaleen() {
@@ -223,17 +225,17 @@ public class XFormFragment extends Fragment {
             @Override
             public void onFling(int scrolledPosition) {
                 if (adapter != null) {
-                    if (lastPosition < scrolledPosition) {
+                    if (lastPosition < scrolledPosition
+                            || scrolledPosition == adapter.getItemCount() - 1 - emptyFields) {
                         if (viewFlipperController.showNext()) {
                             adapter.updateItems(scrolledPosition);
                             rvQuestions.setCanFling(true);
                             lastPosition = scrolledPosition;
                         } else {
                             rvQuestions.setCanFling(true);
-//                            lastPosition = scrolledPosition;
                             rvQuestions.revert();
                         }
-                    }else{
+                    } else {
                         viewFlipperController.moveRight();
                         adapter.updateItems(scrolledPosition);
                         rvQuestions.setCanFling(true);
@@ -244,7 +246,6 @@ public class XFormFragment extends Fragment {
             }
         });
 
-        int emptyFields = 1;
         ArrayList<Boolean> list = new ArrayList<>();
         for (int i = 0; i < odkViews.size() + (emptyFields * 2); i++) {
             list.add(false);// TODO: 3/6/18 check if is answered
@@ -266,7 +267,7 @@ public class XFormFragment extends Fragment {
             //this one is called after all answers for the screen are validated and saved
             tvText.setText("" + position);
             StringBuilder sb = new StringBuilder();
-            if (position == viewFlipper.getChildCount() - 1) {//init last screen
+            if (position == viewFlipperController.getChildCount() - 1) {//init last screen
                 for (ODKView odkView1 : viewFlipperController.getOdkViews()) {
                     for (FormEntryPrompt questionPrompt : odkView1.questionPrompts) {
                         sb.append(questionPrompt.getQuestionText());
