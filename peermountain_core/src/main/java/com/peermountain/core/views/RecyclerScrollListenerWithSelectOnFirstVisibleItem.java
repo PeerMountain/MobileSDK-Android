@@ -44,7 +44,7 @@ public class RecyclerScrollListenerWithSelectOnFirstVisibleItem extends Recycler
                     View view = recyclerView.getChildAt(2);//recyclerView.getFocusedChild()
                     int pos = recyclerView.getChildAdapterPosition(view);
                     if (pos != lastListPosition) {
-                        callback.getAdapter().updateItems(lastListPosition,pos);
+                        callback.getAdapter().updateItems(pos);
                         lastListPosition = pos;
                         if (dx < 0) { // scroll from left to right
 //                            if (pos > 0)

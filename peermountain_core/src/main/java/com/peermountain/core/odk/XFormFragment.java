@@ -4,13 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +25,7 @@ import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.odk.views.ODKView;
 import com.peermountain.core.utils.constants.PmCoreConstants;
-import com.peermountain.core.views.RecyclerScrollListenerWithSelectOnFirstVisibleItem;
+import com.peermountain.core.views.GaleenRecyclerView;
 
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
@@ -98,7 +96,7 @@ public class XFormFragment extends Fragment {
     }
 
     private ViewFlipper viewFlipper;
-    private RecyclerView rvQuestions;
+    private GaleenRecyclerView rvQuestions;
     private ViewFlipperController viewFlipperController;
     private TextView tvText, pmTvTitle;
     ArrayList<View> odkViews = new ArrayList<>();
@@ -120,29 +118,38 @@ private QuestionsRecyclerAdapter adapter;
             }
         });
         rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-        rvQuestions.addOnScrollListener(new RecyclerScrollListenerWithSelectOnFirstVisibleItem(
-                new RecyclerScrollListenerWithSelectOnFirstVisibleItem.OnEvent() {
-                    @Override
-                    public boolean canSelectItem() {
-                        return false;
-                    }
+        rvQuestions.setOnFlingListenerGaleen(new GaleenRecyclerView.OnFlingListenerGaleen() {
 
-                    @Override
-                    public void onScrollFinished(int selectedPosition, int firstVisible, int lastVisible) {
-
-                    }
-
-                    @Override
-                    public LinearLayoutManager getLinearLayoutManager() {
-                        return (LinearLayoutManager) rvQuestions.getLayoutManager();
-                    }
-
-                    @Override
-                    public QuestionsRecyclerAdapter getAdapter() {
-                        return adapter;
-                    }
-                },0, Color.WHITE,Color.WHITE
-        ));
+            @Override
+            public void onFling(int scrolledPosition) {
+                if(adapter!=null) {
+                    adapter.updateItems(scrolledPosition);
+                }
+            }
+        });
+//        rvQuestions.addOnScrollListener(new RecyclerScrollListenerWithSelectOnFirstVisibleItem(
+//                new RecyclerScrollListenerWithSelectOnFirstVisibleItem.OnEvent() {
+//                    @Override
+//                    public boolean canSelectItem() {
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public void onScrollFinished(int selectedPosition, int firstVisible, int lastVisible) {
+//
+//                    }
+//
+//                    @Override
+//                    public LinearLayoutManager getLinearLayoutManager() {
+//                        return (LinearLayoutManager) rvQuestions.getLayoutManager();
+//                    }
+//
+//                    @Override
+//                    public QuestionsRecyclerAdapter getAdapter() {
+//                        return adapter;
+//                    }
+//                },0, Color.WHITE,Color.WHITE
+//        ));
         initOdkViews();
     }
 
@@ -212,10 +219,11 @@ private QuestionsRecyclerAdapter adapter;
                 ((ODKView) odkViews.get(0)).setFocus(getContext());
             }
             ArrayList<Boolean> list = new ArrayList<>();
-            for (int i = 0; i<odkViews.size();i++){
+            for (int i = 0; i<odkViews.size()+4;i++){
                 list.add(false);// TODO: 3/6/18 check if is answered
             }
             rvQuestions.setAdapter(adapter = new QuestionsRecyclerAdapter(list));
+            adapter.updateItems(2);
         }
     }
 

@@ -4,12 +4,15 @@
              android:layout_width="100dp"
              android:layout_height="150dp">
 
-    <ImageView android:id="@+id/ivQuestionBkg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/ivQuestionBkg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleY=".75"
         android:src="@drawable/pm_employment_contract"/>
 
-    <ImageView android:id="@+id/ivChecked"
+    <ImageView
+        android:id="@+id/ivChecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

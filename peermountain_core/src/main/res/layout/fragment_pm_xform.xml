@@ -27,7 +27,7 @@
         android:layout_marginBottom="@dimen/pm_margin_small"
         android:textColor="@android:color/holo_red_dark"/>
 
-    <android.support.v7.widget.RecyclerView
+    <com.peermountain.core.views.GaleenRecyclerView
         android:id="@+id/rvQuestions"
         android:layout_width="match_parent"
         android:layout_height="130dp"
