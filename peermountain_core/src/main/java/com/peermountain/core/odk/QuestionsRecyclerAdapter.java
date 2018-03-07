@@ -16,9 +16,11 @@ import java.util.ArrayList;
 
 public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecyclerAdapter.ViewHolder> {
     private ArrayList<Boolean> values;
+    private int emptyFields = 1;
 
-    public QuestionsRecyclerAdapter(ArrayList<Boolean> values) {
+    public QuestionsRecyclerAdapter(ArrayList<Boolean> values, int emptyFields) {
         this.values = values;
+        this.emptyFields = emptyFields;
     }
 
     @Override
@@ -41,12 +43,16 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
     private int lastListPosition = -1;
 
     public void updateItems(int newPosition) {
-        if (newPosition < 2 || newPosition > values.size() - 3) return;
+        if (isEmptyField(newPosition)) return;
         if (lastListPosition != -1) values.set(lastListPosition, false);
         values.set(newPosition, true);
         if (lastListPosition != -1) notifyItemChanged(lastListPosition);
         notifyItemChanged(newPosition);
         lastListPosition = newPosition;
+    }
+
+    private boolean isEmptyField(int position) {
+        return position < emptyFields || position > values.size() - (emptyFields+1);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,7 +66,7 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
 
         void bind(int position) {
             this.position = position;
-            if (position < 2 || position > values.size() - 3) {
+            if (isEmptyField(position)) {
                 ivQuestionBkg.setVisibility(View.GONE);
             } else {
                 ivQuestionBkg.setVisibility(View.VISIBLE);

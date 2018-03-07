@@ -137,10 +137,10 @@ public class ViewFlipperController implements View.OnTouchListener {
 
     SaveToDiskTask saveToDiskTask;
 
-    public void showNext() {
+    public boolean showNext() {
         if (viewFlipper.getDisplayedChild() == viewFlipper.getChildCount() - 1) {
             saveXFormAnswers();
-            return;
+            return true;
         }
 
         if (viewFlipper.getCurrentView() instanceof ODKView && callback != null
@@ -152,13 +152,16 @@ public class ViewFlipperController implements View.OnTouchListener {
                 view.onAnswerQuestion(constraint);
                 if (constraint == null) {
                     showNextQuestion();
+                    return true;
                 }
             } catch (JavaRosaException e) {
                 Timber.e(e);
             }
         } else {
             showNextQuestion();
+            return true;
         }
+        return false;
     }
 
     public void saveXFormAnswers() {
@@ -196,7 +199,7 @@ public class ViewFlipperController implements View.OnTouchListener {
         setTextAndDots();
     }
 
-    private void moveRight() {
+    public void moveRight() {
         if (viewFlipper.getDisplayedChild() > 0 || isInfinite) {
             showPrev();
         }

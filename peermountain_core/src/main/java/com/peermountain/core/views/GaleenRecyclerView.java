@@ -23,12 +23,18 @@ public class GaleenRecyclerView extends RecyclerView {
         super(context, attrs, defStyle);
     }
 
-    private int lastPosition = 1, positionToSend = 2;
+    private int emptyFields = 1, oldPosition;
+    private int positionToScroll = emptyFields - 1, positionToSend = emptyFields;
+    private boolean canFling = true;
+    LinearLayoutManager linearLayoutManager;
 
     @Override
     public boolean fling(int velocityX, int velocityY) {
 //        Log.e("onFling","x : "+ velocityX+" y : "+velocityY);
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) getLayoutManager();
+        if (!canFling) return false;
+        if (linearLayoutManager == null) {
+            linearLayoutManager = (LinearLayoutManager) getLayoutManager();
+        }
         if (linearLayoutManager.getOrientation() == HORIZONTAL) {
 //these four variables identify the views you see on screen.
 //            int lastVisibleView = linearLayoutManager.findLastVisibleItemPosition();
@@ -50,40 +56,54 @@ public class GaleenRecyclerView extends RecyclerView {
 //if(user swipes to the left)
 //            if (velocityX > 0) smoothScrollBy(scrollDistanceLeft, 0);
 //            else smoothScrollBy(-scrollDistanceRight, 0);
-            int positionToScroll;
-            if (lastPosition != -1) {
-                positionToScroll = lastPosition;
-            } else {
+
+            if (positionToScroll == -1) {
                 positionToScroll = linearLayoutManager.findFirstVisibleItemPosition();
             }
+            oldPosition = positionToScroll;
+
             if (velocityX > 0) {
-                if (positionToScroll < getAdapter().getItemCount() - 1) {
+                if (positionToScroll < getAdapter().getItemCount() - (emptyFields + 2)) {
                     positionToScroll++;
-                    positionToSend = positionToSend + 1;
-                }
-                if (positionToSend > getAdapter().getItemCount() - 2) {
-                    positionToSend = getAdapter().getItemCount() - 3;
                 }
             } else {
-                if (positionToScroll > 0) {
+                if (positionToScroll > emptyFields - 1) {
                     positionToScroll--;
-                    positionToSend = positionToSend - 1;
-                }
-                if (positionToSend < 2) {
-                    positionToSend = 2;
                 }
             }
+            positionToSend = positionToScroll + 1;
 //                positionToScroll = linearLayoutManager.findLastVisibleItemPosition();
-            if (positionToScroll >= 2 && positionToScroll <= getAdapter().getItemCount() - 3){
-                linearLayoutManager.scrollToPositionWithOffset(positionToScroll,0);
-            }
+            linearLayoutManager.scrollToPositionWithOffset(positionToScroll, 0);
             if (onFlingListenerGaleen != null)
                 onFlingListenerGaleen.onFling(positionToSend);
-            lastPosition = positionToScroll;
             return false;
         } else {
             return super.fling(velocityX, velocityY);
         }
+    }
+
+    public void setCanFling(boolean canFling) {
+        this.canFling = canFling;
+    }
+
+    public void revert() {
+        positionToScroll = oldPosition;
+        positionToSend = positionToScroll + 1;
+//                positionToScroll = linearLayoutManager.findLastVisibleItemPosition();
+        linearLayoutManager.scrollToPositionWithOffset(positionToScroll, 0);
+        if (onFlingListenerGaleen != null)
+            onFlingListenerGaleen.onFling(positionToSend);
+    }
+
+    /**
+     * This one must be called before setAdapter
+     *
+     * @param emptyFields how many empty fields we have upfront and in the back
+     */
+    public void setEmptyFields(int emptyFields) {
+        this.emptyFields = emptyFields;
+        positionToScroll = emptyFields - 1;
+        positionToSend = emptyFields;
     }
 
     public OnFlingListenerGaleen getGellenOnFlingListener() {

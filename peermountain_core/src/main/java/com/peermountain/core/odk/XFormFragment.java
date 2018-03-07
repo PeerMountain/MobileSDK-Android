@@ -24,6 +24,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.odk.views.ODKView;
+import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.views.GaleenRecyclerView;
 
@@ -100,7 +101,8 @@ public class XFormFragment extends Fragment {
     private ViewFlipperController viewFlipperController;
     private TextView tvText, pmTvTitle;
     ArrayList<View> odkViews = new ArrayList<>();
-private QuestionsRecyclerAdapter adapter;
+    private QuestionsRecyclerAdapter adapter;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -110,21 +112,11 @@ private QuestionsRecyclerAdapter adapter;
 //        LogUtils.d("dates","january : "+val+" march : "+val1);
         formController = Collect.getInstance().getFormController();
         getViews(view);
-        viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback,false);
+        viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback, false);
         view.findViewById(R.id.pmBtnAddItems).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 viewFlipperController.showNext();
-            }
-        });
-        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-        rvQuestions.setOnFlingListenerGaleen(new GaleenRecyclerView.OnFlingListenerGaleen() {
-
-            @Override
-            public void onFling(int scrolledPosition) {
-                if(adapter!=null) {
-                    adapter.updateItems(scrolledPosition);
-                }
             }
         });
 //        rvQuestions.addOnScrollListener(new RecyclerScrollListenerWithSelectOnFirstVisibleItem(
@@ -218,13 +210,48 @@ private QuestionsRecyclerAdapter adapter;
             if (odkViews.size() > 0 && odkViews.get(0) instanceof ODKView) {
                 ((ODKView) odkViews.get(0)).setFocus(getContext());
             }
-            ArrayList<Boolean> list = new ArrayList<>();
-            for (int i = 0; i<odkViews.size()+4;i++){
-                list.add(false);// TODO: 3/6/18 check if is answered
-            }
-            rvQuestions.setAdapter(adapter = new QuestionsRecyclerAdapter(list));
-            adapter.updateItems(2);
+
+            initRecycler();
         }
+    }
+
+    public void initRecycler() {
+        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvQuestions.setOnFlingListenerGaleen(new GaleenRecyclerView.OnFlingListenerGaleen() {
+            int lastPosition = -1;
+
+            @Override
+            public void onFling(int scrolledPosition) {
+                if (adapter != null) {
+                    if (lastPosition < scrolledPosition) {
+                        if (viewFlipperController.showNext()) {
+                            adapter.updateItems(scrolledPosition);
+                            rvQuestions.setCanFling(true);
+                            lastPosition = scrolledPosition;
+                        } else {
+                            rvQuestions.setCanFling(true);
+//                            lastPosition = scrolledPosition;
+                            rvQuestions.revert();
+                        }
+                    }else{
+                        viewFlipperController.moveRight();
+                        adapter.updateItems(scrolledPosition);
+                        rvQuestions.setCanFling(true);
+                        lastPosition = scrolledPosition;
+                    }
+                    LogUtils.d("scrolledPosition", "" + scrolledPosition);
+                }
+            }
+        });
+
+        int emptyFields = 1;
+        ArrayList<Boolean> list = new ArrayList<>();
+        for (int i = 0; i < odkViews.size() + (emptyFields * 2); i++) {
+            list.add(false);// TODO: 3/6/18 check if is answered
+        }
+        rvQuestions.setEmptyFields(emptyFields);
+        rvQuestions.setAdapter(adapter = new QuestionsRecyclerAdapter(list, emptyFields));
+        adapter.updateItems(emptyFields);
     }
 
     public boolean dispatchTouchEvent(MotionEvent mv) {
