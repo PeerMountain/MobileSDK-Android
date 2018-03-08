@@ -2,19 +2,33 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
-             android:layout_height="wrap_content">
+             android:layout_height="wrap_content"
+             android:paddingBottom="@dimen/pm_margin_small">
 
-    <ImageView
-        android:id="@+id/ivDoc"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        tools:src="@drawable/pm_bkg"/>
-
-    <com.peermountain.core.views.PeerMountainTextView
-        android:id="@+id/tvDocumentTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="66dp"
-        android:layout_gravity="center_vertical"
-        tools:text="Name"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/pm_margin_small">
+
+        <ImageView
+            android:id="@+id/ivDoc"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/odk_doc_list_image_size"
+            tools:src="@drawable/pm_bkg"/>
+
+        <com.peermountain.core.views.PeerMountainTextView
+            android:id="@+id/tvDocumentTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/pm_margin_small"
+            tools:text="Name"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimary"/>
 </FrameLayout>

@@ -21,6 +21,7 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
 
     private ArrayList<AppDocument> docs;
     private Events mListener;
+    private int imageSize;
 
 
     public AppDocumentsAdapter(ArrayList<AppDocument> docs, Events mListener) {
@@ -52,6 +53,9 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
 
         ViewHolder(View itemView) {
             super(itemView);
+            if(imageSize == 0){
+                imageSize = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.odk_doc_list_image_size);
+            }
             tvDocumentTitle = itemView.findViewById(R.id.tvDocumentTitle);
             ivDoc = itemView.findViewById(R.id.ivDoc);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +73,7 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
             if(document.getFileDocuments()!=null && document.getFileDocuments().size()>0){
                 Picasso.with(ivDoc.getContext())
                         .load(document.getFileDocuments().get(0).getImageUri())
+                        .resize(0,imageSize)
                         .into(ivDoc);
             }
             tvDocumentTitle.setText(document.getTitle());
