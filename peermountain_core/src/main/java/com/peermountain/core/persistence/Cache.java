@@ -7,6 +7,7 @@ import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 
@@ -30,6 +31,7 @@ class Cache {
     private long lastTimeLogin;
     private HashSet<Contact> contacts = null;
     private ArrayList<AppDocument> documents = null;
+    private ArrayList<PmJob> jobs = null;
 
     private Cache() {
     }
@@ -119,6 +121,14 @@ class Cache {
 
     public void setDocuments(ArrayList<AppDocument> documents) {
         this.documents = documents;
+    }
+
+    public ArrayList<PmJob> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(ArrayList<PmJob> jobs) {
+        this.jobs = jobs;
     }
 }
 

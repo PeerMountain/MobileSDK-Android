@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pm_bkg"
+    tools:background="@drawable/pm_bkg"
     android:orientation="vertical"
-    tools:context="com.peermountain.core.odk.XFormFragment">
+    tools:context="com.peermountain.sdk.ui.authorized.home.xforms.XFormFragment">
 
     <TextView
         android:id="@+id/pmTvTitle"

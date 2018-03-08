@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.peermountain.core.model.guarded.PmJob;
+import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.core.views.PeerMountainTextView;
@@ -109,12 +110,13 @@ public class HomeFragment extends HomeToolbarFragment {
     JobsAdapter jobsAdapter;
 
     private void setCards() {
+        jobs = PeerMountainManager.getJobs();
         addStaticJobs();
         if (jobs == null) return;
         jobsAdapter = new JobsAdapter(getContext(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onHomeJobedClicked();
+                mListener.onHomeJobClicked((PmJob)v.getTag());
             }
         });
         jobsAdapter.addAll(jobs);
@@ -123,7 +125,7 @@ public class HomeFragment extends HomeToolbarFragment {
     }
 
     private void addStaticJobs() {
-        jobs.add(new PmJob("Miles & More Card", "Scan your ID or Passport"));
+//        jobs.add(new PmJob("Miles & More Card", "Scan your ID or Passport"));
         jobs.add(new PmJob("World Card", PmJob.TYPE_WORLD_CARD));
         jobs.add(new PmJob("World Elite Card", PmJob.TYPE_ELITE_CARD));
         jobs.add(new PmJob("Silicon Valley Bank Card", PmJob.TYPE_SV_CARD));//fake
@@ -231,6 +233,6 @@ public class HomeFragment extends HomeToolbarFragment {
     };
 
     public interface OnFragmentInteractionListener {
-        void onHomeJobedClicked();
+        void onHomeJobClicked(PmJob job);
     }
 }

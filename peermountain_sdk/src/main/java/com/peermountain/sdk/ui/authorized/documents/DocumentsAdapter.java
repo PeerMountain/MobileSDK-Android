@@ -23,10 +23,14 @@ import com.squareup.picasso.Picasso;
  */
 
 public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
-    private  DocumentEvents callback;
-    public DocumentsAdapter(Context context,DocumentEvents callback) {
+    private DocumentEvents callback;
+    private int docHeight, fileWidth;
+
+    public DocumentsAdapter(Context context, DocumentEvents callback) {
         super(context, 0);
         this.callback = callback;
+        docHeight = context.getResources().getDimensionPixelSize(R.dimen.pm_scanned_id_image_height);
+        fileWidth = context.getResources().getDimensionPixelSize(R.dimen.pm_file_image_width);
     }
 
     private boolean showActivity = true;
@@ -45,7 +49,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
         if (contentView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             contentView = inflater.inflate(R.layout.pm_document_tinder_card_view, parent, false);
-            holder = new ViewHolder(contentView,callback);
+            holder = new ViewHolder(contentView, callback);
             contentView.setTag(holder);
         } else {
             holder = (ViewHolder) contentView.getTag();
@@ -62,18 +66,18 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
         return contentView;
     }
 
-    public interface DocumentEvents{
+    public interface DocumentEvents {
         void onUpdateDocumentClick(AppDocument document);
     }
 
-    private static class ViewHolder {
+    private class ViewHolder {
         final View parent, btnRipple;
         final TextView tvMsg, btn;
         final ImageView ivDocumentBack, ivDocument, ivFullImage;
         AppDocument appDocument;
-        private  DocumentEvents callback;
+        private DocumentEvents callback;
 
-        ViewHolder(View view,DocumentEvents listener) {
+        ViewHolder(View view, DocumentEvents listener) {
             this.callback = listener;
             parent = view;
             tvMsg = (TextView) view.findViewById(R.id.tvMsg);
@@ -85,7 +89,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
             btn.setOnClickListener(new RippleOnClickListener() {
                 @Override
                 public void onClickListener(View clickedView) {
-                    if(callback!=null){
+                    if (callback != null) {
                         callback.onUpdateDocumentClick(appDocument);
                     }
                 }
@@ -107,9 +111,9 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
             btn.setEnabled(true);
             btn.setText(R.string.pm_documents_item_btn_update);
             if (appDocument.isIdentityDocument()) {
-                if(TextUtils.isEmpty(appDocument.getTitle())) {
+                if (TextUtils.isEmpty(appDocument.getTitle())) {
                     tvMsg.setText(R.string.pm_document_item_id_title);
-                }else{
+                } else {
                     tvMsg.setText(appDocument.getTitle());
                 }
                 ivFullImage.setVisibility(View.GONE);
@@ -119,11 +123,11 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
                 ivDocument.setVisibility(View.GONE);
                 ivDocumentBack.setVisibility(View.GONE);
                 FileDocument file;
-                if(appDocument.getFileDocuments().size() > 0
+                if (appDocument.getFileDocuments().size() > 0
                         && (file = appDocument.getFileDocuments().get(0)) != null
-                        && !TextUtils.isEmpty(file.getImageUri())){
-                    loadImage(file.getImageUri(),ivFullImage);
-                }else {
+                        && !TextUtils.isEmpty(file.getImageUri())) {
+                    loadImage(file.getImageUri(), ivFullImage, true);
+                } else {
                     if (appDocument.getRes() != 0) {
                         ivFullImage.setVisibility(View.VISIBLE);
                         ivFullImage.setImageResource(appDocument.getRes());
@@ -155,17 +159,22 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
             if (id.getImageCroppedBackSmall() != null) {
                 String uriBack = id.getImageCroppedBackSmall().getImageUri();
                 loadImage(uriBack, ivDocumentBack);
-            }else if (id.getImageCroppedBack() != null) {
+            } else if (id.getImageCroppedBack() != null) {
                 String uriBack = id.getImageCroppedBack().getImageUri();
                 loadImage(uriBack, ivDocumentBack);
             }
         }
 
         private void loadImage(String uri, ImageView iv) {
+            loadImage(uri, iv, false);
+        }
+
+        private void loadImage(String uri, ImageView iv, boolean isFull) {
             if (uri != null) {
                 iv.setVisibility(View.VISIBLE);
                 Picasso.with(parent.getContext())
                         .load(uri)
+                        .resize(isFull ? fileWidth : 0, isFull ? 0 : docHeight)
 //                        .placeholder(R.drawable.pm_profil_white)
                         .error(R.color.pm_error_loading_avatar)
                         .into(iv, new Callback() {

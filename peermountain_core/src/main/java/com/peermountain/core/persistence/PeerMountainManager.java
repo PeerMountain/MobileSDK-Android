@@ -23,6 +23,7 @@ import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
@@ -177,6 +178,21 @@ public class PeerMountainManager {
         if (Cache.getInstance().getProfile() == null)
             Cache.getInstance().setProfile(SharedPreferenceManager.getProfile());
         return Cache.getInstance().getProfile();
+    }
+
+    public static void saveJobs(ArrayList<PmJob> jobs) {
+        Cache.getInstance().setJobs(jobs);
+        try {
+            SharedPreferenceManager.saveJobs(MyJsonParser.writeJobs(jobs));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<PmJob> getJobs() {
+        if (Cache.getInstance().getJobs() == null)
+            Cache.getInstance().setJobs(SharedPreferenceManager.getJobs());
+        return Cache.getInstance().getJobs();
     }
 
     public static String shareObjectToJson(ShareObject shareObject) {

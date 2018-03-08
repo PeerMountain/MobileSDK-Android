@@ -1,4 +1,4 @@
-package com.peermountain.core.odk;
+package com.peermountain.sdk.ui.authorized.home.xforms;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.peermountain.core.R;
 import com.peermountain.core.odk.exeptions.JavaRosaException;
 import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.utils.Collect;
@@ -26,6 +25,7 @@ import com.peermountain.core.odk.views.ODKView;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.views.GaleenRecyclerView;
+import com.peermountain.sdk.R;
 import com.rd.PageIndicatorView;
 
 import org.javarosa.form.api.FormEntryCaption;
@@ -34,6 +34,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 
 import java.util.ArrayList;
 
+// TODO: 3/8/2018 extend HomeToolbarFragment
 public class XFormFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
@@ -76,7 +77,7 @@ public class XFormFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pm_xform, container, false);
+        return inflater.inflate(R.layout.pm_fragment_xform, container, false);
     }
 
     private ViewFlipper viewFlipper;

@@ -1,5 +1,7 @@
 package com.peermountain.core.model.guarded;
 
+import java.io.File;
+
 /**
  * Created by Galeen on 10/12/2017.
  */
@@ -10,9 +12,10 @@ public class PmJob {
     public static final int TYPE_WORLD_CARD = 856;
     public static final int TYPE_SV_CARD = 43;
 
-    private String activity, information;
+    private String activity, information, xFormPath;
     private int type = TYPE_CARD;
     private boolean open;
+    private File file;
 
     public PmJob() {
     }
@@ -61,5 +64,28 @@ public class PmJob {
 
     public int getType() {
         return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getxFormPath() {
+        return xFormPath;
+    }
+
+    public void setxFormPath(String xFormPath) {
+        this.xFormPath = xFormPath;
+    }
+
+    public File getFile() {
+        if(file==null){
+            file = new File(xFormPath);
+        }
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

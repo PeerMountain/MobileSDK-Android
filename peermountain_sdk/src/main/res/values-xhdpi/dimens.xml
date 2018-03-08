@@ -4,4 +4,5 @@
     <dimen name="pm_margin_big">24dp</dimen>
     <dimen name="margin_first_card">48dp</dimen>
     <dimen name="pm_intro_security_icon_size">150dp</dimen>
+    <dimen name="pm_file_image_width">300dp</dimen>
 </resources>

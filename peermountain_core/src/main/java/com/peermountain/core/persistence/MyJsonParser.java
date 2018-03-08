@@ -11,6 +11,7 @@ import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
+import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
@@ -79,6 +80,10 @@ class MyJsonParser {
     public static final String FILE_DOCUMENTS = "fileDocuments";
     public static final String FILE_URI = "file_uri";
     public static final String LIVE_SELFIE = "live_selfie";
+    public static final String ACTIVITY = "activity";
+    public static final String INFORMATION = "information";
+    public static final String X_FORM_URI = "xFormUri";
+    public static final String OPEN = "open";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -155,7 +160,7 @@ class MyJsonParser {
         JsonWriter writer = new JsonWriter(sw);
         writer.beginObject();
         writer.name(OPERATION).value(shareObject.getOperation());
-        if(shareObject.getContact()!=null) {
+        if (shareObject.getContact() != null) {
             writer.name(CONTACT);
             writeContact(writer, shareObject.getContact(), true);
         }
@@ -355,7 +360,7 @@ class MyJsonParser {
         if (profile == null) return null;
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
-        writeContact(writer, profile,false);
+        writeContact(writer, profile, false);
 //        writer.beginObject();
 //        writer.name(EMAIL_ADDRESS).value(profile.getMail());
 //        writer.name(FIRST_NAME).value(profile.getNames());
@@ -427,6 +432,7 @@ class MyJsonParser {
         }
         writer.endObject();
     }
+
     private static void writeLiveSelfie(JsonWriter writer, ArrayList<String> images) throws IOException {
         if (images.size() > 0) {
             writer.name(LIVE_SELFIE);
@@ -437,6 +443,7 @@ class MyJsonParser {
             writer.endArray();
         }
     }
+
     private static void writeDocumentsID(JsonWriter writer, ArrayList<DocumentID> documents) throws IOException {
         if (documents.size() > 0) {
             writer.name(DOCUMENTS);
@@ -457,12 +464,13 @@ class MyJsonParser {
         writer.name(RES).value(appDocument.getRes());
         writer.name(TITLE).value(appDocument.getTitle());
         writer.name(IS_EMPTY).value(appDocument.isEmpty());
-        writeDocumentsID(writer,appDocument.getDocuments());
-        writeFileDocuments(writer,appDocument.getFileDocuments());
+        writeDocumentsID(writer, appDocument.getDocuments());
+        writeFileDocuments(writer, appDocument.getFileDocuments());
         writer.endObject();
         writer.close();
         return sw.toString();
     }
+
     private static void writeFileDocuments(JsonWriter writer, ArrayList<FileDocument> documents) throws IOException {
         if (documents.size() > 0) {
             writer.name(FILE_DOCUMENTS);
@@ -476,10 +484,10 @@ class MyJsonParser {
 
     private static void writeFileDocument(JsonWriter writer, FileDocument file) throws IOException {
         writer.beginObject();
-        if(!TextUtils.isEmpty(file.getImageUri())) {
+        if (!TextUtils.isEmpty(file.getImageUri())) {
             writer.name(URI).value(file.getImageUri());
         }
-        if(!TextUtils.isEmpty(file.getFileUri())) {
+        if (!TextUtils.isEmpty(file.getFileUri())) {
             writer.name(FILE_URI).value(file.getFileUri());
         }
         writer.name(TYPE).value(file.getType());
@@ -557,6 +565,80 @@ class MyJsonParser {
         return fileDocument;
     }
 
+    public static String writeJobs(ArrayList<PmJob> jobs) throws IOException {
+        StringWriter sw = new StringWriter();
+        JsonWriter writer = new JsonWriter(sw);
+        writer.beginArray();
+        if (jobs.size() > 0) {
+            for (PmJob job : jobs) {
+                writeJob(writer, job);
+            }
+        }
+        writer.endArray();
+        writer.close();
+        return sw.toString();
+    }
+
+    private static void writeJob(JsonWriter writer, PmJob job) throws IOException {
+        writer.beginObject();
+        if (!TextUtils.isEmpty(job.getActivity())) {
+            writer.name(ACTIVITY).value(job.getActivity());
+        }
+        if (!TextUtils.isEmpty(job.getInformation())) {
+            writer.name(INFORMATION).value(job.getInformation());
+        }
+        if (!TextUtils.isEmpty(job.getxFormPath())) {
+            writer.name(X_FORM_URI).value(job.getxFormPath());
+        }
+        writer.name(TYPE).value(job.getType());
+        writer.name(OPEN).value(job.isOpen());
+
+        writer.endObject();
+    }
+
+    static ArrayList<PmJob> readJobs(String json) throws IOException {
+        JsonReader reader = new JsonReader(new StringReader(json));
+        ArrayList<PmJob> contacts = new ArrayList<>();
+        reader.beginArray();
+        while (reader.hasNext()) {
+            PmJob jo = readJob(reader);
+            if (jo != null) contacts.add(jo);
+        }
+        reader.endArray();
+        return contacts;
+    }
+
+    private static PmJob readJob(JsonReader reader) throws IOException {
+        String name = null;
+        PmJob job = null;
+        reader.beginObject();
+        while (reader.hasNext()) {
+            if (job == null) job = new PmJob();
+            name = reader.nextName();
+            switch (name) {
+                case ACTIVITY:
+                    job.setActivity(getString(reader));
+                    break;
+                case INFORMATION:
+                    job.setInformation(getString(reader));
+                    break;
+                case X_FORM_URI:
+                    job.setxFormPath(getString(reader));
+                    break;
+                case TYPE:
+                    job.setType(getInt(reader));
+                    break;
+                case OPEN:
+                    job.setOpen(getBoolean(reader));
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return job;
+    }
+
     static String writeContacts(Set<Contact> contacts) throws IOException {
         if (contacts == null) return null;
         StringWriter sw = new StringWriter();
@@ -569,11 +651,12 @@ class MyJsonParser {
         writer.close();
         return sw.toString();
     }
+
     static String writeContact(Contact contact) throws IOException {
         if (contact == null) return null;
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
-            writeContact(writer, contact, false);
+        writeContact(writer, contact, false);
         writer.close();
         return sw.toString();
     }

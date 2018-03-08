@@ -60,7 +60,7 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
         return contentView;
     }
 
-    private static class ViewHolder {
+    public static class ViewHolder {
         final PeerMountainTextView tvJobMsg;
         final ImageView ivPmFullImage;
         final LinearLayout llBtn1;
@@ -109,6 +109,7 @@ public class JobsAdapter extends ArrayAdapter<PmJob> {
             btn.setOnClickListener(new RippleOnClickListener() {
                 @Override
                 public void onClickListener(View clickedView) {
+                    clickedView.setTag(job);
                     clickListener.onClick(clickedView);
                 }
             });

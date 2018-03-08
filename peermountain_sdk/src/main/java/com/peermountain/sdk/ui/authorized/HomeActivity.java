@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
@@ -19,11 +21,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.model.guarded.Contact;
+import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.network.BaseEvents;
+import com.peermountain.core.network.MainCallback;
+import com.peermountain.core.network.NetworkResponse;
+import com.peermountain.sdk.ui.authorized.home.xforms.XFormFragment;
+import com.peermountain.core.odk.model.FormController;
+import com.peermountain.core.odk.tasks.FormLoaderTask;
+import com.peermountain.core.odk.utils.Collect;
+import com.peermountain.core.odk.utils.TimerLogger;
+import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
 import com.peermountain.core.persistence.InactiveTimer;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.share.ShareContactActivity;
 import com.peermountain.core.utils.LogUtils;
+import com.peermountain.core.utils.PmCoreUtils;
+import com.peermountain.core.utils.PmDialogUtils;
 import com.peermountain.sdk.PeerMountainSDK;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.contacts.ContactsFragment;
@@ -38,10 +52,14 @@ import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
+import java.io.File;
+import java.util.ArrayList;
+
+// TODO: 3/8/2018 lifecycle activity
 public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener, MenuFragment.OnFragmentInteractionListener, ProfileSettingsFragment.OnFragmentInteractionListener,
         DocumentsFragment.OnFragmentInteractionListener, MyQrCodeFragment.OnFragmentInteractionListener,
         ScanQRFragment.OnFragmentInteractionListener, ContactsFragment.OnListFragmentInteractionListener,
-        ShareFragment.OnFragmentInteractionListener {
+        ShareFragment.OnFragmentInteractionListener, XFormFragment.OnFragmentInteractionListener, QuestionWidget.Events {
     private static final int REQUEST_LOGIN = 123;
     private static final int REQUEST_REGISTER = 321;
     public static final int REQUEST_GET_NEAR_BY_CONTACT = 111;
@@ -54,6 +72,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         getViews();
         initDrawer();
 //        setUpView();
+        getJobs();
     }
 
     @Override
@@ -97,7 +116,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        if(inactivityCallback!=null) {
+        if (inactivityCallback != null) {
             InactiveTimer.startListeningForNewInactivity();
             PeerMountainManager.saveLastTimeActive();
         }
@@ -119,9 +138,23 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (topFragment != null) {
-            topFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == waitingPermissionRequestCode && waitingPermissionCallback != null) {
+            waitingPermissionCallback.onPermission(grantResults);
+        } else {
+            if (topFragment != null) {
+                topFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
         }
+    }
+
+    private int waitingPermissionRequestCode;
+    private QuestionWidget.PermissionCallback waitingPermissionCallback;
+
+    @Override
+    public void requestPermission(String[] permissions, int requestCode, boolean isMandatory, QuestionWidget.PermissionCallback callback) {
+        waitingPermissionCallback = callback;
+        waitingPermissionRequestCode = requestCode;
+        ActivityCompat.requestPermissions(this, permissions, requestCode);
     }
 
 
@@ -164,9 +197,9 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         if (checkUserIsValid()
                 && (PeerMountainManager.getPin() != null || PeerMountainManager.getFingerprint())) {
             //check if was not active for more than 5 min ago
-            if(PeerMountainManager.shouldAuthorize()) {
+            if (PeerMountainManager.shouldAuthorize()) {
                 PeerMountainSDK.authorize(this, REQUEST_LOGIN);
-            }else{
+            } else {
                 setUpView();
             }
         } else
@@ -236,18 +269,29 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         inactivityCallback = new InactiveTimer.InactiveTimerInteractions() {
             @Override
             public void onTimeOfInactivityEnds() {
-                LogUtils.w("inactivityCallback","onTimeOfInactivityEnds");
+                LogUtils.w("inactivityCallback", "onTimeOfInactivityEnds");
                 stopListenForUserInteraction();
                 PeerMountainSDK.authorize(HomeActivity.this, REQUEST_LOGIN);
             }
         };
         startListenForUserInteraction();
         if (!isViewSet) {
+            if (isDownloadingJobs) {
+                waitingToSetView = true;
+            }
             isViewSet = true;
             showHomeFragment();
             setListeners();
         }
         refreshMenu();
+    }
+
+    private boolean isDownloadingJobs = false, waitingToSetView = false;
+
+    private void getJobs() {
+        PeerMountainManager.downloadXForm(new DownloadXFormCallback(null,
+                        MainCallback.TYPE_NO_PROGRESS), // TODO: 3/8/2018 update link
+                "https://www.dropbox.com/s/1yctej8ukivs7eo/AllFieldsFormTermsLong.xml?dl=1");
     }
 
     private void refreshMenu() {
@@ -286,48 +330,43 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
 
     @IdRes
     int containerId = R.id.flContainer;
+    private PmFragmentUtils.FragmentBuilder fragmentBuilder = PmFragmentUtils.init(this, containerId);
 
     private void showHomeFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(false);
-        fb.replace(HomeFragment.newInstance());
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(HomeFragment.newInstance());
     }
 
     private void showMyProfileSettingsFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(false);
-        fb.replace(ProfileSettingsFragment.newInstance(null));
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(ProfileSettingsFragment.newInstance(null));
     }
 
     private void showMyContactsFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(false);
-        fb.replace(ContactsFragment.newInstance(1));
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(ContactsFragment.newInstance(1));
     }
 
 
     private void showContactProfileSettingsFragment(Contact contact) {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(true);
-        fb.replace(ProfileSettingsFragment.newInstance(contact));
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(ProfileSettingsFragment.newInstance(contact));
     }
 
     private void showDocumentsFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(false);
-        fb.replace(DocumentsFragment.newInstance());
+        fragmentBuilder.addToBackStack(false);
+        fragmentBuilder.replace(DocumentsFragment.newInstance());
     }
 
     private void showHomeJobFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(true);
-        fb.replace(HomeJobFragment.newInstance());
+        fragmentBuilder.addToBackStack(true);
+        // TODO: 3/8/2018 load XForm frag
+        fragmentBuilder.replace(HomeJobFragment.newInstance());
     }
 
     private void showMyQrCodeFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(true);
-        fb.replace(MyQrCodeFragment.newInstance());
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(MyQrCodeFragment.newInstance());
     }
 
     private void showShareWithNearBy() {
@@ -335,9 +374,8 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     }
 
     private void showMyShareFragment() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(true);
-        fb.replace(new ShareFragment());
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(new ShareFragment());
     }
 
     public void closeMenu() {
@@ -391,18 +429,16 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
 
     @Override
     public void onContactScannedFromQR(Contact contact) {
-        PmFragmentUtils.FragmentBuilder builder = new PmFragmentUtils.FragmentBuilder(this);
-        builder.pop();//remove scan qr fragment from stack
-        builder.pop();//remove qr code fragment from stack back to share
+        fragmentBuilder.pop();//remove scan qr fragment from stack
+        fragmentBuilder.pop();//remove qr code fragment from stack back to share
 //        builder.pop();//remove share fragment from stack
         showContactProfileSettingsFragment(contact);
     }
 
     @Override
     public void showQrReader() {
-        PmFragmentUtils.FragmentBuilder fb = PmFragmentUtils.init(this, containerId);
-        fb.addToBackStack(true);
-        fb.replace(ScanQRFragment.newInstance());
+        fragmentBuilder.addToBackStack(true);
+        fragmentBuilder.replace(ScanQRFragment.newInstance());
     }
 
     @Override
@@ -411,17 +447,22 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     }
 
     @Override
-    public void onHomeJobedClicked() {
-        showHomeJobFragment();
+    public void onHomeJobClicked(PmJob job) {
+//        showHomeJobFragment();
+        if(job.getFile()!=null){
+            loadXForm(job.getFile());
+        }else{
+            PmDialogUtils.showError(this,"No XForm file!");
+        }
     }
 
     @Override
     public void onJobFinished() {
-        new PmFragmentUtils.FragmentBuilder(this).pop();
+        fragmentBuilder.pop();
     }
 
     public void onShareRefused() {
-        new PmFragmentUtils.FragmentBuilder(this).pop();//return
+        fragmentBuilder.pop();//return
     }
 
     @Override
@@ -443,10 +484,38 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     public void onMyProfileUpdated() {
         refreshMenu();
     }
+
+    private void loadXForm(File file) {
+        // TODO: 3/8/2018 show progress
+        PeerMountainManager.loadXForm(file, new FormLoaderTask.FormLoaderListener() {
+            @Override
+            public void loadingComplete(FormLoaderTask task) {
+                LogUtils.d("ttt", "ttt " + task.getRequestCode());
+                Fragment fragment = new XFormFragment();
+                FormController formController = task.getFormController();
+                Collect.getInstance().setFormController(formController);
+                if (formController.getInstancePath() == null) {
+                    String file = task.formPath.substring(task.formPath.lastIndexOf('/') + 1,
+                            task.formPath.lastIndexOf('.'));
+                    formController.setInstancePath(PmCoreUtils.getAnswersForXForm(file));
+                    formController.getTimerLogger().logTimerEvent(TimerLogger.EventTypes.FORM_START, 0, null, false, true);
+                }
+                fragmentBuilder.addToBackStack(true);
+                fragmentBuilder.replace(fragment);
+            }
+
+            @Override
+            public void loadingError(String errorMsg) {
+                LogUtils.d("eee", "eee " + errorMsg);
+            }
+        });
+    }
+
     GoogleApiClient mGoogleApiClient;
+
     @Override
     public GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso) {
-        if(mGoogleApiClient==null) {
+        if (mGoogleApiClient == null) {
             // Build a GoogleApiClient with access to the Google Sign-In API and the
             // options specified by gso.
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -463,25 +532,52 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         return mGoogleApiClient;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.home, menu);
-//        return true;
-//    }
+    private class DownloadXFormCallback extends MainCallback {
+        // TODO: 2/12/18 add media file links
+        DownloadXFormCallback(BaseEvents presenterCallback, int progressType) {
+            super(presenterCallback, progressType);
+        }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+        @Override
+        public void onPreExecute() {
+            super.onPreExecute();
+            isDownloadingJobs = true;
+        }
+
+        @Override
+        public void inTheEndOfDoInBackground(NetworkResponse networkResponse) {
+            super.inTheEndOfDoInBackground(networkResponse);
+            // TODO: 2/12/18 download media files
+        }
+
+        @Override
+        public void onPostExecute(NetworkResponse networkResponse) {
+            super.onPostExecute(networkResponse);
+            if (networkResponse.file != null) {
+                ArrayList<PmJob> jobs = new ArrayList<PmJob>();
+                PmJob job = new PmJob("Miles & More Card", "Scan your ID or Passport");
+                job.setxFormPath(networkResponse.file.getAbsolutePath());
+                job.setFile(networkResponse.file);
+                jobs.add(job);
+                PeerMountainManager.saveJobs(jobs);
+//                loadXForm(networkResponse.file);
+            }
+            end();
+        }
+
+        @Override
+        public void onError(String msg, NetworkResponse networkResponse) {
+            super.onError(msg, networkResponse);
+            end();
+//            progress.setVisibility(View.GONE);
+        }
+
+        private void end() {
+            isDownloadingJobs = false;
+            if (waitingToSetView) {
+                waitingToSetView = false;
+                setUpView();
+            }
+        }
+    }
 }

@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.peermountain.core.odk.QuestionsRecyclerAdapter;
+//import com.peermountain.core.odk.QuestionsRecyclerAdapter;
 
 /**
  * Created by Galeen on 11.1.2017 г..
@@ -44,7 +44,7 @@ public class RecyclerScrollListenerWithSelectOnFirstVisibleItem extends Recycler
                     View view = recyclerView.getChildAt(2);//recyclerView.getFocusedChild()
                     int pos = recyclerView.getChildAdapterPosition(view);
                     if (pos != lastListPosition) {
-                        callback.getAdapter().updateItems(pos);
+//                        callback.getAdapter().updateItems(pos);
                         lastListPosition = pos;
                         if (dx < 0) { // scroll from left to right
 //                            if (pos > 0)
@@ -107,6 +107,6 @@ public class RecyclerScrollListenerWithSelectOnFirstVisibleItem extends Recycler
 
         LinearLayoutManager getLinearLayoutManager();
 
-        QuestionsRecyclerAdapter getAdapter();
+//        QuestionsRecyclerAdapter getAdapter();
     }
 }

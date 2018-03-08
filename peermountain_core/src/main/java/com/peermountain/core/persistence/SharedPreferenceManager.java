@@ -8,6 +8,7 @@ import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
+import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.utils.LogUtils;
@@ -31,6 +32,7 @@ class SharedPreferenceManager {
     private static final String PREF_KEYWORDS = "PREF_Keywords";
     private static final String PREF_KEYWORDS_OBJECT = "PREF_KEYWORDS_OBJECT";
     private static final String PREF_PROFILE = "PREF_PROFILE";
+    private static final String PREF_JOBS = "PREF_JOBS";
     private static final String PREF_MY_CONTACTS = "PREF_MY_CONTACTS";
     public static final String PREF_MY_DOCUMENTS = "PREF_MY_DOCUMENTS";
     private static final String KEY_MY_LAST_MESSAGES = "my_last_messages";
@@ -71,6 +73,21 @@ class SharedPreferenceManager {
         if (getContext() == null) return null;
         try {
             return MyJsonParser.readProfile(getString(PREF_PROFILE, null));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    static void saveJobs(String jobs) {
+        if (getContext() == null) return;
+        putString(PREF_JOBS, jobs);
+    }
+
+    static ArrayList<PmJob> getJobs() {
+        if (getContext() == null) return null;
+        try {
+            return MyJsonParser.readJobs(getString(PREF_JOBS, null));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -221,6 +238,7 @@ class SharedPreferenceManager {
         editor.remove(PREF_KEYWORDS_OBJECT);
         editor.remove(PREF_MY_CONTACTS);
         editor.remove(PREF_MY_DOCUMENTS);
+        editor.remove(PREF_JOBS);
 //        editor.remove(PREF_CONFIG);//keep config file not related to profile
         editor.commit();
     }

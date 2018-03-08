@@ -1,4 +1,4 @@
-package com.peermountain.core.odk;
+package com.peermountain.sdk.ui.authorized.home.xforms;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

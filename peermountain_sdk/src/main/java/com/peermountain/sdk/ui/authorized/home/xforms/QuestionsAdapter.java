@@ -1,4 +1,4 @@
-package com.peermountain.core.odk;
+package com.peermountain.sdk.ui.authorized.home.xforms;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;

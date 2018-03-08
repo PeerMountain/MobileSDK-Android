@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/pm_confirm_btn_size"
+        android:gravity="center"
         android:orientation="vertical">
 
         <com.peermountain.core.views.PeerMountainTextView
@@ -19,7 +20,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
             android:padding="@dimen/pm_margin_normal"
             android:textColor="@color/pm_text_color_dark"
             android:textSize="@dimen/pm_big_text"
@@ -36,8 +36,10 @@
             style="@style/pm_id_iv"
             android:layout_marginLeft="@dimen/pm_margin_normal"
             android:layout_marginRight="@dimen/pm_margin_normal"/>
-        <ImageView android:id="@+id/ivFullImage"
-            android:layout_width="match_parent"
+
+        <ImageView
+            android:id="@+id/ivFullImage"
+            android:layout_width="@dimen/pm_file_image_width"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/pm_margin_normal"/>
     </LinearLayout>
