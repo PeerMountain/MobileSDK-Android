@@ -19,11 +19,13 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
     private ArrayList<Boolean> values;
     private int emptyFields = 1;
     private PageIndicatorView pageIndicatorView;
+    private Events callback;
 
-    public QuestionsRecyclerAdapter(ArrayList<Boolean> values, int emptyFields, PageIndicatorView pageIndicatorView) {
+    public QuestionsRecyclerAdapter(ArrayList<Boolean> values, int emptyFields, PageIndicatorView pageIndicatorView, Events callback) {
         this.values = values;
         this.emptyFields = emptyFields;
         this.pageIndicatorView = pageIndicatorView;
+        this.callback = callback;
     }
 
     @Override
@@ -59,6 +61,10 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
         return position < emptyFields || position > values.size() - (emptyFields + 1);
     }
 
+    public interface Events {
+        void onItemClicked(int position);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView ivQuestionBkg, ivChecked;
         private int position;
@@ -67,6 +73,12 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
             super(itemView);
             ivQuestionBkg = itemView.findViewById(R.id.ivQuestionBkg);
             ivChecked = itemView.findViewById(R.id.ivChecked);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (callback != null && position != lastListPosition) callback.onItemClicked(position);
+                }
+            });
         }
 
         void bind(int position) {

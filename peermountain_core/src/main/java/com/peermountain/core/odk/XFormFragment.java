@@ -208,7 +208,12 @@ public class XFormFragment extends Fragment {
         }
         rvQuestions.setEmptyFields(emptyFields);
         pageIndicatorView.setCount(odkViews.size());
-        rvQuestions.setAdapter(adapter = new QuestionsRecyclerAdapter(list, emptyFields,pageIndicatorView));
+        rvQuestions.setAdapter(adapter = new QuestionsRecyclerAdapter(list, emptyFields, pageIndicatorView, new QuestionsRecyclerAdapter.Events() {
+            @Override
+            public void onItemClicked(int position) {
+//                rvQuestions.update(position-1,position);
+            }
+        }));
         adapter.updateItems(emptyFields);
     }
 

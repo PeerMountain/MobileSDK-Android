@@ -9,20 +9,29 @@ import android.util.AttributeSet;
  * Created by SmartIntr on 25.11.2015 г..
  */
 public class GaleenRecyclerView extends RecyclerView {
-    OnFlingListenerGaleen onFlingListenerGaleen;
+    private OnFlingListenerGaleen onFlingListenerGaleen;
+    private int mMinFlingVelocity;
 
     public GaleenRecyclerView(Context context) {
         super(context);
+        init();
     }
 
     public GaleenRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public GaleenRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init();
     }
 
+    private void init(){
+//        final ViewConfiguration vc = ViewConfiguration.get(getContext());
+//        mMinFlingVelocity = vc.getScaledMinimumFlingVelocity()*2;
+        mMinFlingVelocity = 500;
+    }
     private int emptyFields = 1, oldPosition;
     private int positionToScroll = emptyFields - 1, positionToSend = emptyFields;
     private boolean canFling = true;
@@ -30,11 +39,10 @@ public class GaleenRecyclerView extends RecyclerView {
 
     @Override
     public boolean fling(int velocityX, int velocityY) {
-//        Log.e("onFling","x : "+ velocityX+" y : "+velocityY);
-        if (!canFling) return false;
-        if (linearLayoutManager == null) {
-            linearLayoutManager = (LinearLayoutManager) getLayoutManager();
-        }
+//        Log.e("onFling","x : "+ velocityX+" y : "+velocityY + " screen "+ mMinFlingVelocity);
+        if (!canFling || Math.abs(velocityX) < mMinFlingVelocity) return false;
+
+        initLinearLayoutManager();
         if (linearLayoutManager.getOrientation() == HORIZONTAL) {
 //these four variables identify the views you see on screen.
 //            int lastVisibleView = linearLayoutManager.findLastVisibleItemPosition();
@@ -71,15 +79,24 @@ public class GaleenRecyclerView extends RecyclerView {
                     positionToScroll--;
                 }
             }
-            positionToSend = positionToScroll + 1;
-//                positionToScroll = linearLayoutManager.findLastVisibleItemPosition();
-            linearLayoutManager.scrollToPositionWithOffset(positionToScroll, 0);
-            if (onFlingListenerGaleen != null)
-                onFlingListenerGaleen.onFling(positionToSend);
+            select();
             return false;
         } else {
             return super.fling(velocityX, velocityY);
         }
+    }
+
+    private void initLinearLayoutManager() {
+        if (linearLayoutManager == null) {
+            linearLayoutManager = (LinearLayoutManager) getLayoutManager();
+        }
+    }
+
+    public void update(int positionToScroll , int positionToSend){
+        oldPosition = this.positionToScroll;
+        this.positionToScroll = positionToScroll;
+        this.positionToSend = positionToSend;
+        select();
     }
 
     public void setCanFling(boolean canFling) {
@@ -88,8 +105,13 @@ public class GaleenRecyclerView extends RecyclerView {
 
     public void revert() {
         positionToScroll = oldPosition;
+        select();
+    }
+
+    private void select() {
         positionToSend = positionToScroll + 1;
 //                positionToScroll = linearLayoutManager.findLastVisibleItemPosition();
+        initLinearLayoutManager();
         linearLayoutManager.scrollToPositionWithOffset(positionToScroll, 0);
         if (onFlingListenerGaleen != null)
             onFlingListenerGaleen.onFling(positionToSend);
