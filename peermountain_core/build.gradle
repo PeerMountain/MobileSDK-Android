@@ -73,6 +73,7 @@ dependencies {
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.romandanylyk:pageindicatorview:1.0.0'
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 

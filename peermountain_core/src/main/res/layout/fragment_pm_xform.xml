@@ -1,9 +1,11 @@
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pm_bkg"
+    android:orientation="vertical"
     tools:context="com.peermountain.core.odk.XFormFragment">
 
     <TextView
@@ -11,42 +13,41 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center"
+        android:textColor="@color/pm_odk_title_form"
         />
-
-    <Button
-        android:id="@+id/pmBtnAddItems"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:text="Next"/>
-
-    <TextView
-        android:id="@+id/tvText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="@dimen/pm_margin_small"
-        android:textColor="@android:color/holo_red_dark"/>
 
     <com.peermountain.core.views.GaleenRecyclerView
         android:id="@+id/rvQuestions"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:layout_marginTop="40dp"/>
+        android:layout_height="wrap_content"/>
 
-    <ViewFlipper
-        android:id="@+id/pmVfXForm"
+    <com.rd.PageIndicatorView
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:piv_animationType="worm"
+        app:piv_selectedColor="#FFFFFFFF"
+        app:piv_unselectedColor="#57FFFFFF"
+        app:piv_padding="@dimen/pm_margin_small"
+        app:piv_radius="6dp" />
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="178dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/pm_share_card_white">
-    </ViewFlipper>
+        android:layout_marginLeft="@dimen/pm_margin_small"
+        android:layout_marginRight="@dimen/pm_margin_small"
+        android:layout_marginTop="@dimen/pm_margin_small"
+        android:background="@color/pm_share_card_bkg">
 
-    <!--<ProgressBar-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:id="@+id/progressViewsLoading"/>-->
-</FrameLayout>
+        <ViewFlipper
+            android:id="@+id/pmVfXForm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/pm_margin_small"
+            android:layout_marginRight="@dimen/pm_margin_small"
+            android:layout_marginTop="@dimen/pm_margin_small"
+            android:background="@android:color/white">
+        </ViewFlipper>
+    </FrameLayout>
+</LinearLayout>

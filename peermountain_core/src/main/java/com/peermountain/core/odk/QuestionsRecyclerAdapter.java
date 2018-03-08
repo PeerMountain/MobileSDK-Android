@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.peermountain.core.R;
+import com.rd.PageIndicatorView;
 
 import java.util.ArrayList;
 
@@ -17,10 +18,12 @@ import java.util.ArrayList;
 public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecyclerAdapter.ViewHolder> {
     private ArrayList<Boolean> values;
     private int emptyFields = 1;
+    private PageIndicatorView pageIndicatorView;
 
-    public QuestionsRecyclerAdapter(ArrayList<Boolean> values, int emptyFields) {
+    public QuestionsRecyclerAdapter(ArrayList<Boolean> values, int emptyFields, PageIndicatorView pageIndicatorView) {
         this.values = values;
         this.emptyFields = emptyFields;
+        this.pageIndicatorView = pageIndicatorView;
     }
 
     @Override
@@ -49,27 +52,33 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
         if (lastListPosition != -1) notifyItemChanged(lastListPosition);
         notifyItemChanged(newPosition);
         lastListPosition = newPosition;
+        pageIndicatorView.setSelection(lastListPosition - emptyFields);
     }
 
     private boolean isEmptyField(int position) {
-        return position < emptyFields || position > values.size() - (emptyFields+1);
+        return position < emptyFields || position > values.size() - (emptyFields + 1);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView ivQuestionBkg;
+        private final ImageView ivQuestionBkg, ivChecked;
         private int position;
 
         ViewHolder(View itemView) {
             super(itemView);
             ivQuestionBkg = itemView.findViewById(R.id.ivQuestionBkg);
+            ivChecked = itemView.findViewById(R.id.ivChecked);
         }
 
         void bind(int position) {
             this.position = position;
             if (isEmptyField(position)) {
-                ivQuestionBkg.setVisibility(View.GONE);
+                itemView.setVisibility(View.INVISIBLE);
             } else {
-                ivQuestionBkg.setVisibility(View.VISIBLE);
+                itemView.setVisibility(View.VISIBLE);
+                if (position >= lastListPosition)
+                    ivChecked.setVisibility(View.GONE);
+                else
+                    ivChecked.setVisibility(View.VISIBLE);
                 if (values.get(position)) {
                     //scale
 //                ivQuestionBkg.setScaleX(1);
@@ -77,7 +86,7 @@ public class QuestionsRecyclerAdapter extends RecyclerView.Adapter<QuestionsRecy
                 } else {
                     //downscale
 //                ivQuestionBkg.setScaleX(0.75f);
-                    ivQuestionBkg.setScaleY(0.75f);
+                    ivQuestionBkg.setScaleY(0.8f);
                 }
             }
         }

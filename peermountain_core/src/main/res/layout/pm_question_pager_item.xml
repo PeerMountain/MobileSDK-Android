@@ -2,13 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="100dp"
-             android:layout_height="150dp">
+             android:layout_height="150dp"
+             android:layout_marginRight="@dimen/pm_margin_small">
 
     <ImageView
         android:id="@+id/ivQuestionBkg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleY=".75"
+        android:scaleType="centerInside"
+        android:scaleY="1"
         android:src="@drawable/pm_employment_contract"/>
 
     <ImageView
