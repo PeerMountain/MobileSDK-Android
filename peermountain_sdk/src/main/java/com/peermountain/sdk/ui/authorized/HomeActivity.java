@@ -26,7 +26,6 @@ import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.network.BaseEvents;
 import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkResponse;
-import com.peermountain.sdk.ui.authorized.home.xforms.XFormFragment;
 import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.odk.utils.Collect;
@@ -47,9 +46,11 @@ import com.peermountain.sdk.ui.authorized.contacts.ShareFragment;
 import com.peermountain.sdk.ui.authorized.documents.DocumentsFragment;
 import com.peermountain.sdk.ui.authorized.home.HomeFragment;
 import com.peermountain.sdk.ui.authorized.home.HomeJobFragment;
+import com.peermountain.sdk.ui.authorized.home.xforms.XFormFragment;
 import com.peermountain.sdk.ui.authorized.menu.MenuFragment;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.ui.base.SecureActivity;
+import com.peermountain.sdk.ui.base.livecycle.EmptyViewModel;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
 import java.io.File;
@@ -73,6 +74,16 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         initDrawer();
 //        setUpView();
         getJobs();
+    }
+
+    @Override
+    protected void setObservers() {
+    }
+
+    @NonNull
+    @Override
+    protected Class getViewModel() {
+        return EmptyViewModel.class;
     }
 
     @Override
@@ -486,7 +497,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     }
 
     private void loadXForm(File file) {
-        // TODO: 3/8/2018 show progress
+        getBaseUI().showProgressDialog();
         PeerMountainManager.loadXForm(file, new FormLoaderTask.FormLoaderListener() {
             @Override
             public void loadingComplete(FormLoaderTask task) {
@@ -502,11 +513,14 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
                 }
                 fragmentBuilder.addToBackStack(true);
                 fragmentBuilder.replace(fragment);
+                getBaseUI().hideProgressDialog();
             }
 
             @Override
             public void loadingError(String errorMsg) {
                 LogUtils.d("eee", "eee " + errorMsg);
+                getBaseUI().hideProgressDialog();
+                activityViewModel.showError("error : " + errorMsg);
             }
         });
     }

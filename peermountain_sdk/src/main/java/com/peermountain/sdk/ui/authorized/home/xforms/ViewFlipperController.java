@@ -66,7 +66,7 @@ public class ViewFlipperController implements View.OnTouchListener {
         if (viewFlipper.getChildCount() == 0 && callback != null) {
             callback.onNewScreen(0);
         }
-
+        viewFlipper.removeAllViews();
         viewFlipper.addView(views.get(0));
         viewFlipper.addView(views.get(1));
 //        }

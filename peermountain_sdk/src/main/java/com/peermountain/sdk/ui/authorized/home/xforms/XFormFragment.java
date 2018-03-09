@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -26,6 +25,7 @@ import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.views.GaleenRecyclerView;
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.rd.PageIndicatorView;
 
 import org.javarosa.form.api.FormEntryCaption;
@@ -34,8 +34,8 @@ import org.javarosa.form.api.FormEntryPrompt;
 
 import java.util.ArrayList;
 
-// TODO: 3/8/2018 extend HomeToolbarFragment
-public class XFormFragment extends Fragment {
+
+public class XFormFragment extends HomeToolbarFragment {
 
     private OnFragmentInteractionListener mListener;
     private FormController formController;
@@ -83,13 +83,14 @@ public class XFormFragment extends Fragment {
     private ViewFlipper viewFlipper;
     private GaleenRecyclerView rvQuestions;
     private ViewFlipperController viewFlipperController;
-    private TextView  pmTvTitle;
+    private TextView pmTvTitle;
     ArrayList<View> odkViews = new ArrayList<>();
     private QuestionsRecyclerAdapter adapter;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+//        setToolbar(getString(R.string.pm_title_application));
         formController = Collect.getInstance().getFormController();
         getViews(view);
         viewFlipperController = new ViewFlipperController(viewFlipper, view, viewFlipperCallback, false);
@@ -100,6 +101,15 @@ public class XFormFragment extends Fragment {
 //            }
 //        });
         initOdkViews();
+    }
+
+    private void setToolbar(String title) {
+        setToolbar(R.drawable.pm_ic_arrow_back_24dp, title, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) mListener.onJobFinished();
+            }
+        });
     }
 
 
@@ -142,7 +152,9 @@ public class XFormFragment extends Fragment {
     public void initOdkViews() {
         if (formController != null) {
             //add odkViews
-            pmTvTitle.setText(formController.getFormTitle());
+//            pmTvTitle.setText(formController.getFormTitle());
+            pmTvTitle.setVisibility(View.GONE);
+            setToolbar(formController.getFormTitle());
 //            createOdkViewsTask = new CreateOdkViewsTask();
 //            createOdkViewsTask.execute();
             int event = formController.getEvent();
@@ -177,7 +189,7 @@ public class XFormFragment extends Fragment {
     public void initRecycler() {
         rvQuestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvQuestions.setOnFlingListenerGaleen(new GaleenRecyclerView.OnFlingListenerGaleen() {
-            int lastPosition = -1;
+            private int lastPosition = -1;
 
             @Override
             public void onFling(int scrolledPosition) {
@@ -514,6 +526,7 @@ public class XFormFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
+        void onJobFinished();
     }
 
     private boolean canSlide = true;

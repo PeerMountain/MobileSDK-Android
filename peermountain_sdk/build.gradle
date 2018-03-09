@@ -32,22 +32,35 @@ dependencies {
 
     compile (project(':peermountain_core'))
     compile project(':linkedin-sdk')
-    compile('com.facebook.android:facebook-android-sdk:4.27.0',
-            {
-                exclude group: 'com.android.support', module: 'appcompat-v7'
-            })
-    compile "com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"
+
+    compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
+    api "android.arch.lifecycle:extensions:1.1.0"
+    compile("com.android.support:support-v4:${rootProject.ext.supportLibraryVersion}"){
+        exclude group: 'com.android.support', module: 'cardview-v7'
+    }
     //ripple animation over all views
     // tinder like cards
-    compile "com.android.support:gridlayout-v7:${rootProject.ext.supportLibraryVersion}"
+    compile ("com.android.support:gridlayout-v7:${rootProject.ext.supportLibraryVersion}"){
+        exclude group: 'com.android.support', module: 'animated-vector-drawable'
+    }
 //    compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibraryVersion}"
+
+    compile('com.facebook.android:facebook-android-sdk:4.28.0') {
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+//        exclude group: 'com.android.support', module: 'cardview-v7'
+//        exclude group: 'com.android.support', module: 'customtabs'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+//        exclude module: 'bolts-android'
+    }
+
     compile 'com.balysv:material-ripple:1.0.2'
     compile 'com.makeramen:roundedimageview:2.3.0'
 //    compile 'de.hdodenhof:circleimageview:2.2.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+//    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.yuyakaido.android:card-stack-view:1.0.0-beta6'
     compile 'me.dm7.barcodescanner:zxing:1.8.4'
-    compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
     implementation 'com.romandanylyk:pageindicatorview:1.0.0'
     testCompile 'junit:junit:4.12'
 

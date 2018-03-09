@@ -1,6 +1,8 @@
 <resources>
-
-
+    <!--Base-->
+    <string name="pm_msg_loading">Loading&#8230;</string>
+    <string name="pm_msg_main_server_error">An error occurred</string>
+    <!--Base end-->
     <string name="pm_btn_scan_id">Scan</string>
     <string name="pm_btn_re_scan_id">Rescan</string>
     <string name="pm_msg_prepare_id">Please prepare your document for scan from MRZ side and click on "Scan"</string>

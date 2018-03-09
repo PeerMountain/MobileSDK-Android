@@ -97,10 +97,17 @@ public class CameraActivity extends AppCompatActivity {
 
     public static ArrayList<Bitmap> bitmaps = null;
 
+    private static ArrayList<Bitmap> getBitmaps(){
+        if(bitmaps==null){
+            bitmaps = new ArrayList<>();
+        }
+        return bitmaps;
+    }
+
     private void onPicture(byte[] jpeg) {
         if (jpeg != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(jpeg, 0, jpeg.length);
-            bitmaps.add(bitmap);
+            getBitmaps().add(bitmap);
         }
     }
 

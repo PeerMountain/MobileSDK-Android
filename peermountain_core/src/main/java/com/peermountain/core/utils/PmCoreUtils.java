@@ -109,6 +109,32 @@ public class PmCoreUtils {
         return file;
     }
 
+    public static void deleteFiles(Context context) {
+        File path = new File(context.getFilesDir(), PmCoreConstants.LOCAL_DOCUMENTS_DIR);
+        deleteDir(path);
+        path = new File(context.getFilesDir(), Collect.ROOT_POSTFIX);//forms and answers
+        deleteDir(path);
+        path = new File(context.getFilesDir(), PmCoreConstants.LOCAL_IMAGE_DIR);
+        deleteDir(path);
+    }
+
+    private static void deleteDir(File path) {
+        if(path==null || !path.isDirectory()) return;
+        if(path.listFiles()!=null){
+            for (File file : path.listFiles()) {
+                if(file!=null){
+                    if(file.isDirectory()){
+                        deleteDir(file);
+                    }else{
+                        file.delete();
+                    }
+                }
+            }
+        }
+        path.delete();
+    }
+
+
     public static boolean browseDocuments(Activity activity, int requestCode) {
         String[] mimeTypes = {
                 FileDocument.TYPE_IMAGE,

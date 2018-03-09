@@ -128,7 +128,11 @@ class Cache {
     }
 
     public void setJobs(ArrayList<PmJob> jobs) {
-        this.jobs = jobs;
+        if(jobs==null){
+            this.jobs = new ArrayList<PmJob>();
+        }else{
+            this.jobs = jobs;
+        }
     }
 }
 

@@ -12,12 +12,10 @@ import android.widget.ImageView;
 
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
-import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.core.odk.views.widgets.base.PermissionQuestionWidget;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.views.PeerMountainTextView;
-import com.squareup.picasso.Picasso;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
@@ -140,14 +138,16 @@ public class DocumentWidget extends PermissionQuestionWidget {
     }
 
     public void loadImage() {
-        if (appDocument.getFileDocuments().size() > 0) {
-            FileDocument fileDocument = appDocument.getFileDocuments().get(0);
-            Picasso.with(activity).load(fileDocument.getImageUri())
-                    .error(R.color.pm_odk_text_error)
-                    .resize(imageView.getWidth(),activity.getResources().getDimensionPixelSize(R.dimen.pm_odk_image_document_height))
-                    .into(imageView);
-            setButtonTitle();
-        }
+        AppDocumentsAdapter.loadDocumentImage(appDocument,imageView,activity.getResources().getDimensionPixelSize(R.dimen.pm_odk_image_document_height));
+        setButtonTitle();
+//        if (appDocument.getFileDocuments().size() > 0) {
+//            FileDocument fileDocument = appDocument.getFileDocuments().get(0);
+//            Picasso.with(activity).load(fileDocument.getImageUri())
+//                    .error(R.color.pm_odk_text_error)
+//                    .resize(imageView.getWidth(),activity.getResources().getDimensionPixelSize(R.dimen.pm_odk_image_document_height))
+//                    .into(imageView);
+//            setButtonTitle();
+//        }
     }
 
     private void setButtonTitle() {

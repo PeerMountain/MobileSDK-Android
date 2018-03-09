@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.facebook.login.LoginManager;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.sdk.ui.LoginActivity;
 import com.peermountain.sdk.ui.authorized.HomeActivity;
 import com.peermountain.sdk.ui.register.RegisterActivity;
@@ -42,6 +43,9 @@ public class PeerMountainSDK {
     }
 
     public static void resetProfile(){
+        if(PeerMountainManager.getApplicationContext()!=null){
+            PmCoreUtils.deleteFiles(PeerMountainManager.getApplicationContext());
+        }
         PeerMountainManager.resetProfile();
         LoginManager.getInstance().logOut();
     }

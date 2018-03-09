@@ -99,6 +99,11 @@ public class PmDocumentsHelper {
 
     private void scanId() {
         if(callback!=null) callback.onScanSDKLoading(true);
+        if(PeerMountainCoreConstants.isFake){
+            handleIdDocumentData(new Intent());
+            if(callback!=null) callback.onScanSDKLoading(false);
+            return;
+        }
         if (PeerMountainManager.isScanIdSDKReady()) {
             if (getFragment() != null) {
                 PeerMountainManager.scanId(getFragment(), PmRequestCodes.REQUEST_SCAN_ID);

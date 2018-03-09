@@ -107,6 +107,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
                 if (documentsAdapter != null) {
                     documentsAdapter.notifyDataSetChanged();
                     cardsEventListener.setCardsBackground();
+//                    setLoading(false);
                 }
             }
 
@@ -122,12 +123,12 @@ public class DocumentsFragment extends HomeToolbarFragment {
 
             @Override
             public void onScanSDKLoading(boolean loading) {
-                if (pmTvLoading != null)
-                    pmTvLoading.setVisibility(!loading ? View.GONE : View.VISIBLE);
+                setLoading(loading);
             }
 
             @Override
             public void onAddingDocumentCanceled(AppDocument document) {
+                setLoading(false);
                 if(documents!=null){
                     documents.remove(document);
                     setAdapter();
@@ -135,6 +136,11 @@ public class DocumentsFragment extends HomeToolbarFragment {
             }
 
         });
+    }
+
+    private void setLoading(boolean loading) {
+        if (pmTvLoading != null)
+            pmTvLoading.setVisibility(!loading ? View.GONE : View.VISIBLE);
     }
 
     CardStackView documentCardsView;

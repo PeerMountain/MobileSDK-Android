@@ -1,6 +1,7 @@
 package com.peermountain.core.odk.views.widgets.image;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
 
         ViewHolder(View itemView) {
             super(itemView);
-            if(imageSize == 0){
+            if (imageSize == 0) {
                 imageSize = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.odk_doc_list_image_size);
             }
             tvDocumentTitle = itemView.findViewById(R.id.tvDocumentTitle);
@@ -61,7 +62,7 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(mListener!=null){
+                    if (mListener != null) {
                         mListener.onDocumentSelected(appDocument);
                     }
                 }
@@ -70,14 +71,45 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
 
         void bind(AppDocument document) {
             appDocument = document;
-            if(document.getFileDocuments()!=null && document.getFileDocuments().size()>0){
-                Picasso.with(ivDoc.getContext())
-                        .load(document.getFileDocuments().get(0).getImageUri())
-                        .resize(0,imageSize)
-                        .into(ivDoc);
+            if (TextUtils.isEmpty(document.getTitle())) {
+                tvDocumentTitle.setText(R.string.pm_document_item_id_title);
+            }else{
+                tvDocumentTitle.setText(document.getTitle());
             }
-            tvDocumentTitle.setText(document.getTitle());
+            loadDocumentImage(document,ivDoc,imageSize);
         }
+
+
+    }
+
+    public static String loadDocumentImage(AppDocument document, ImageView ivDoc, int imageSize) {
+        String title;
+        if (TextUtils.isEmpty(document.getTitle())) {
+            title = ivDoc.getContext().getString(R.string.pm_document_item_id_title);
+        }else{
+            title = document.getTitle();
+        }
+        if (document.getRes() != 0) {
+            Picasso.with(ivDoc.getContext())
+                    .load(document.getRes() )
+                    .resize(0, imageSize)
+                    .into(ivDoc);
+            return title;
+        }
+
+        String filePath = null;
+        if (document.isIdentityDocument() && document.getDocuments().get(0).getImageCropped()!=null) {
+            filePath = document.getDocuments().get(0).getImageCropped().getImageUri();
+        } else if (document.getFileDocuments() != null && document.getFileDocuments().size() > 0) {
+            filePath = document.getFileDocuments().get(0).getImageUri();
+        }
+        if (filePath != null) {
+            Picasso.with(ivDoc.getContext())
+                    .load(filePath)
+                    .resize(0, imageSize)
+                    .into(ivDoc);
+        }
+        return title;
     }
 
     public interface Events {

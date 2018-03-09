@@ -57,6 +57,8 @@ public abstract class ToolbarFragment extends Fragment {
         mToolbarListener.setMenuLeftIcon(leftIconRes);
         mToolbarListener.setToolbarTitle(-1, title);
         mToolbarListener.setLeftMenuButtonEvent(listener);
+        mToolbarListener.setMenuRightIcon(ToolbarFragment.MENU_HIDE);
+        mToolbarListener.setRightMenuButtonEvent(null);
     }
 
     public void setTheme(int theme){

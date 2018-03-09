@@ -105,16 +105,19 @@ public class GaleenRecyclerView extends RecyclerView {
 
     public void revert() {
         positionToScroll = oldPosition;
-        select();
+        select(true);
     }
 
-    private void select() {
+    private void select(boolean isInError) {
         positionToSend = positionToScroll + 1;
 //                positionToScroll = linearLayoutManager.findLastVisibleItemPosition();
         initLinearLayoutManager();
         linearLayoutManager.scrollToPositionWithOffset(positionToScroll, 0);
-        if (onFlingListenerGaleen != null)
+        if (!isInError && onFlingListenerGaleen != null)
             onFlingListenerGaleen.onFling(positionToSend);
+    }
+    private void select() {
+        select(false);
     }
 
     /**

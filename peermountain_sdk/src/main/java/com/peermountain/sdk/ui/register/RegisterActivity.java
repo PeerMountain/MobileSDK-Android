@@ -19,6 +19,7 @@ import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
+import com.peermountain.sdk.ui.base.livecycle.EmptyViewModel;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
@@ -86,6 +87,17 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
                     }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
         }
 
+    }
+
+    @Override
+    protected void setObservers() {
+
+    }
+
+    @NonNull
+    @Override
+    protected Class getViewModel() {
+        return EmptyViewModel.class;
     }
 
     private boolean handleOnBack() {

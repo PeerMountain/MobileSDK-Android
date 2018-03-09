@@ -6,15 +6,15 @@ import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.peermountain.sdk.R;
+import com.peermountain.sdk.ui.base.livecycle.BaseActivity;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 
-public abstract class ToolbarActivity extends AppCompatActivity implements
+public abstract class ToolbarActivity extends BaseActivity implements
         ToolbarFragment.ToolbarEvents, HomeToolbarFragment.HomeToolbarEvents{
 
     public ToolbarFragment topFragment;

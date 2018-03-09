@@ -83,6 +83,16 @@ public class DialogUtils {
             showInfoSnackbar(activity, message);
     }
 
+    public static void showError(View view, int message) {
+        if (view != null)
+            showInfoSnackbar(view, message);
+    }
+
+    public static void showError(View view, String message) {
+        if (view != null)
+            showInfoSnackbar(view, message);
+    }
+
     public static void showErrorToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
