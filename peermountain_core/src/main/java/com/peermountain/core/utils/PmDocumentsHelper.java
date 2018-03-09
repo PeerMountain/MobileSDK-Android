@@ -34,7 +34,6 @@ import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
-import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.core.utils.constants.PmCoreConstants;
@@ -98,10 +97,10 @@ public class PmDocumentsHelper {
     }
 
     private void scanId() {
-        if(callback!=null) callback.onScanSDKLoading(true);
-        if(PeerMountainCoreConstants.isFake){
+        if (callback != null) callback.onScanSDKLoading(true);
+        if (PeerMountainCoreConstants.isFake) {
             handleIdDocumentData(new Intent());
-            if(callback!=null) callback.onScanSDKLoading(false);
+            if (callback != null) callback.onScanSDKLoading(false);
             return;
         }
         if (PeerMountainManager.isScanIdSDKReady()) {
@@ -125,7 +124,7 @@ public class PmDocumentsHelper {
             @Override
             public void onInitError() {
                 // TODO: 10/27/2017 show error
-                if(callback!=null) callback.onScanSDKLoading(false);
+                if (callback != null) callback.onScanSDKLoading(false);
             }
         });
     }
@@ -145,13 +144,13 @@ public class PmDocumentsHelper {
                         showUpdateFileError();
                         onCancelDocument();
                     }
-                }else{
+                } else {
                     onCancelDocument();
                 }
                 handled = true;
                 break;
             case PmRequestCodes.REQUEST_SCAN_ID:
-                if(callback!=null) callback.onScanSDKLoading(false);
+                if (callback != null) callback.onScanSDKLoading(false);
                 if (resultCode == Activity.RESULT_OK
                         || PeerMountainCoreConstants.isFake) {
                     handleIdDocumentData(data);
@@ -172,19 +171,19 @@ public class PmDocumentsHelper {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), Build.VERSION.SDK_INT >= 22 ? android.R.style.Theme_DeviceDefault_Dialog_Alert :
                     android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
             dialog.setCancelable(false);
-                dialog.setMessage(R.string.pm_err_msg_permission_scan_id);
-                dialog.setPositiveButton(R.string.pm_btn_ask_for_permission_again, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        initScanIdSDK();
-                    }
-                });
-                dialog.setNegativeButton(R.string.btn_refuse_permission, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+            dialog.setMessage(R.string.pm_err_msg_permission_scan_id);
+            dialog.setPositiveButton(R.string.pm_btn_ask_for_permission_again, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    initScanIdSDK();
+                }
+            });
+            dialog.setNegativeButton(R.string.btn_refuse_permission, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
             AlertDialog alertDialog = dialog.create();
 //        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
             alertDialog.show();
@@ -207,29 +206,34 @@ public class PmDocumentsHelper {
     }
 
     public ArrayList<AppDocument> getDocumentsForAdapter() {
-        ArrayList<AppDocument> docs = PeerMountainManager.getDocuments();
-        if (docs != null && docs.size() > 0) {//we have saved docs
-            return docs;
-//            PeerMountainManager.saveDocuments(null);
-        } else {
-            ArrayList<AppDocument> documents = new ArrayList<>();
-            AppDocument myID = new AppDocument(getActivity().getString(R.string.pm_document_item_id_title));
-            Profile me = PeerMountainManager.getProfile();
-            if (me != null && me.getDocuments().size() > 0) {
-                myID.getDocuments().add(me.getDocuments().get(0));
-            }
-            documents.add(myID);
-            documents.add(new AppDocument(R.drawable.pm_birther, "Birth Certificate"));
-            documents.add(new AppDocument(R.drawable.pm_employment_contract, "Employment Contract"));
-            documents.add(new AppDocument(R.drawable.pm_income_tax, "Tax Return"));
-            documents.add(new AppDocument(true));
-            PeerMountainManager.saveDocuments(documents);
-            return documents;
-        }
+        return PeerMountainManager.getDocuments();
+//        ArrayList<AppDocument> documents = new ArrayList<>();
+//        ArrayList<AppDocument> docs = PeerMountainManager.getDocuments();
+//        if (docs != null && docs.size() > 0) {//we have saved docs
+//            if(docs.size()<4){
+//                documents.addAll(docs);
+//            }else{
+//                return docs;
+//            }
+////            PeerMountainManager.saveDocuments(null);
+//        }
+//        AppDocument myID = new AppDocument(getActivity().getString(R.string.pm_document_item_id_title));
+//        Profile me = PeerMountainManager.getProfile();
+//        if (me != null && me.getDocuments().size() > 0) {
+//            myID.getDocuments().add(me.getDocuments().get(0));
+//        }
+//        documents.add(myID);
+//        documents.add(new AppDocument(R.drawable.pm_birther, "Birth Certificate"));
+//        documents.add(new AppDocument(R.drawable.pm_employment_contract, "Employment Contract"));
+//        documents.add(new AppDocument(R.drawable.pm_income_tax, "Tax Return"));
+//        documents.add(new AppDocument(true));
+//        PeerMountainManager.saveDocuments(documents);
+//        return documents;
+
     }
 
     private void onCancelDocument() {
-        if(callback!=null && documentToUpdate.isShouldAdd()) callback.onAddingDocumentCanceled(documentToUpdate);
+        if (callback != null && documentToUpdate.isShouldAdd()) callback.onAddingDocumentCanceled(documentToUpdate);
     }
 
     private void copyFile(ParcelFileDescriptor pfd) {
@@ -327,7 +331,7 @@ public class PmDocumentsHelper {
             fileDocument.setFileUri(uri.toString());
             if (documentImageFile != null) {
                 fileDocument.setImageUri(Uri.fromFile(documentImageFile).toString());
-            }else{
+            } else {
                 fileDocument.setImageUri(null);
             }
         } else {
@@ -335,10 +339,10 @@ public class PmDocumentsHelper {
             fileDocument.setImageUri(uri.toString());
             fileDocument.setFileUri(null);
         }
-        if(documentToUpdate.isEmpty() || TextUtils.isEmpty(documentToUpdate.getTitle())) {
+        if (documentToUpdate.isEmpty() || TextUtils.isEmpty(documentToUpdate.getTitle())) {
             documentToUpdate.setEmpty(false);
             showSetNameDialog();
-        }else {
+        } else {
             onDocumentDone();
         }
     }
@@ -347,17 +351,18 @@ public class PmDocumentsHelper {
         if (callback != null) {
             callback.refreshAdapter();
         }
-        if(documentToUpdate.isShouldAdd()){
+        if (documentToUpdate.isShouldAdd()) {
             documentToUpdate.setShouldAdd(false);
             PeerMountainManager.addDocument(documentToUpdate);
-        }else {
+        } else {
             PeerMountainManager.updateDocument(documentToUpdate);
         }
     }
 
     private AlertDialog nameDialog;
-    private void showSetNameDialog(){
-        if(callback.getActivity()==null) return;
+
+    private void showSetNameDialog() {
+        if (callback.getActivity() == null) return;
         final AlertDialog.Builder dialog = new AlertDialog.Builder(callback.getActivity());
         dialog.setCancelable(false);
         LayoutInflater vi = (LayoutInflater) callback.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -398,10 +403,10 @@ public class PmDocumentsHelper {
 //            if (documentId.getImageCroppedBack() != null) sidesDone+=2;
 
             resizeIdImages(getActivity(), documentId,
-                    new SizeImageEventCallback(true,false),
-                    new SizeImageEventCallback(false,false),
-                    new SizeImageEventCallback(true,true),
-                    new SizeImageEventCallback(false,true));
+                    new SizeImageEventCallback(true, false),
+                    new SizeImageEventCallback(false, false),
+                    new SizeImageEventCallback(true, true),
+                    new SizeImageEventCallback(false, true));
         }
     }
 
@@ -432,15 +437,15 @@ public class PmDocumentsHelper {
     }
 
     private void deleteFile(AXTImageResult image) {
-        if(image!=null){
+        if (image != null) {
             deleteFile(image.getImageUri());
         }
     }
 
     private void deleteFile(String uri) {
-        if(!TextUtils.isEmpty(uri)){
+        if (!TextUtils.isEmpty(uri)) {
             File file = new File(Uri.parse(uri).getPath());
-            if(file.exists()) file.delete();
+            if (file.exists()) file.delete();
         }
     }
 
@@ -481,15 +486,15 @@ public class PmDocumentsHelper {
     public static void resizeIdImages(Context context, final DocumentID document, final SizeImageEvent callbackFront, final SizeImageEvent callbackBack, final SizeImageEvent callbackMoveFront, final SizeImageEvent callbackMoveBack) {
         if (document != null) {
             int size = context.getResources().getDimensionPixelSize(R.dimen.pm_id_size);
-            processIdImage(context, size, document.getImageCropped(), System.currentTimeMillis() + "",document.getDocNumber(), callbackFront,callbackMoveFront);
-            processIdImage(context, size, document.getImageCroppedBack(), System.currentTimeMillis() + 1 + "",document.getDocNumber(), callbackBack,callbackMoveBack);
+            processIdImage(context, size, document.getImageCropped(), System.currentTimeMillis() + "", document.getDocNumber(), callbackFront, callbackMoveFront);
+            processIdImage(context, size, document.getImageCroppedBack(), System.currentTimeMillis() + 1 + "", document.getDocNumber(), callbackBack, callbackMoveBack);
         }
     }
 
-    private static void processIdImage(final Context context, int size, final AXTImageResult image, String name,final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
+    private static void processIdImage(final Context context, int size, final AXTImageResult image, String name, final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
         if (image != null && image.getWidth() > size) {
             final File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
-            File newSmallerImage = PmCoreUtils.createLocalFile(context,idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
+            File newSmallerImage = PmCoreUtils.createLocalFile(context, idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
 
             ImageUtils.rotateAndResizeImageAsync(originalImage, newSmallerImage, size,
                     size / 2, false, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
@@ -500,8 +505,8 @@ public class PmDocumentsHelper {
                             if (callback != null) {
                                 callback.onSized(imageResult);
                             }
-                            moveIdImage(context,image, System.currentTimeMillis()+"",
-                                    idNum,callbackMove);
+                            moveIdImage(context, image, System.currentTimeMillis() + "",
+                                    idNum, callbackMove);
                         }
 
                         @Override
@@ -510,8 +515,8 @@ public class PmDocumentsHelper {
                             if (callback != null) {
                                 callback.onError();
                             }
-                            moveIdImage(context,image, System.currentTimeMillis()+"",
-                                    idNum,callbackMove);
+                            moveIdImage(context, image, System.currentTimeMillis() + "",
+                                    idNum, callbackMove);
                         }
                     }
             );
@@ -519,28 +524,28 @@ public class PmDocumentsHelper {
             if (callback != null) {
                 callback.onSized(null);
             }
-            moveIdImage(context,image, System.currentTimeMillis()+"",
-                    idNum,callbackMove);
+            moveIdImage(context, image, System.currentTimeMillis() + "",
+                    idNum, callbackMove);
         }
     }
 
     private static void moveIdImage(Context context, AXTImageResult image, String name,
-                                       String idNum,final SizeImageEvent callback) {
+                                    String idNum, final SizeImageEvent callback) {
         if (image != null) {
             File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
-            File newImage = PmCoreUtils.createLocalFile(context,idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
+            File newImage = PmCoreUtils.createLocalFile(context, idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
             final Uri uri = Uri.fromFile(newImage);
             FileUtils.copyFileAsync(originalImage, newImage, true, new FileUtils.CopyFileEvents() {
                 @Override
                 public void onFinish(boolean isSuccess) {
-                    if(isSuccess){
+                    if (isSuccess) {
                         LogUtils.d("onMoved", uri.toString());
                         AXTImageResult image = new AXTImageResult();
                         image.setImageUri(uri.toString());
                         if (callback != null) {
                             callback.onSized(image);
                         }
-                    }else{
+                    } else {
                         LogUtils.d("onMoved", "error");
                         if (callback != null) {
                             callback.onError();
@@ -554,6 +559,7 @@ public class PmDocumentsHelper {
             }
         }
     }
+
     public interface SizeImageEvent {
         void onSized(AXTImageResult image);
 
@@ -561,7 +567,7 @@ public class PmDocumentsHelper {
     }
 
     private class SizeImageEventCallback implements SizeImageEvent {
-        private Boolean isFront,isMoving;
+        private Boolean isFront, isMoving;
 
         public SizeImageEventCallback(Boolean isFront, Boolean isMoving) {
             this.isFront = isFront;
@@ -570,13 +576,13 @@ public class PmDocumentsHelper {
 
         @Override
         public void onSized(AXTImageResult image) {
-            if(!isMoving) {
+            if (!isMoving) {
                 if (isFront) {
                     documentId.setImageCroppedSmall(image);
                 } else {
                     documentId.setImageCroppedBackSmall(image);
                 }
-            }else{
+            } else {
                 if (isFront) {
                     documentId.setImageCropped(image);
                 } else {
@@ -593,8 +599,8 @@ public class PmDocumentsHelper {
     }
 
     public static DocumentID getScannedData(Intent scannedData) {
-        if(PeerMountainCoreConstants.isFake) return getFakeScannedData();
-        if(scannedData==null) return null;
+        if (PeerMountainCoreConstants.isFake) return getFakeScannedData();
+        if (scannedData == null) return null;
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);
             DocumentID document = new DocumentID();
@@ -649,10 +655,10 @@ public class PmDocumentsHelper {
     }
 
     public static boolean checkDocumentTextNotEmpty(String value) {
-        return  !TextUtils.isEmpty(value) && !value.equalsIgnoreCase("null");
+        return !TextUtils.isEmpty(value) && !value.equalsIgnoreCase("null");
     }
 
     public static boolean checkDocumentImageNotEmpty(AXTImageResult image) {
-        return  image != null && !TextUtils.isEmpty(image.getImageUri());
+        return image != null && !TextUtils.isEmpty(image.getImageUri());
     }
 }

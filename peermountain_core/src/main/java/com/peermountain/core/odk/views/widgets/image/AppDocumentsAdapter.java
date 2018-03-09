@@ -26,7 +26,13 @@ public class AppDocumentsAdapter extends RecyclerView.Adapter<AppDocumentsAdapte
 
 
     public AppDocumentsAdapter(ArrayList<AppDocument> docs, Events mListener) {
-        this.docs = docs;
+        this.docs = new ArrayList<>(docs);
+        for (AppDocument document : this.docs) {
+            if(document.isEmpty()){
+                this.docs.remove(document);
+                break;
+            }
+        }
         this.mListener = mListener;
     }
 

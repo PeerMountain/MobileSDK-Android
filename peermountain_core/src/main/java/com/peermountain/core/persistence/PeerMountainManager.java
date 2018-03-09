@@ -19,6 +19,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
 import com.google.zxing.Result;
+import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
@@ -248,11 +249,11 @@ public class PeerMountainManager {
     }
 
     public static AppDocument getDocument(String id) {
-        if(id == null) return null;
+        if (id == null) return null;
         ArrayList<AppDocument> documents = getDocuments();
-        if(documents!=null){
+        if (documents != null) {
             for (AppDocument document : documents) {
-                if(document.getId().equals(id)){
+                if (document.getId().equals(id)) {
                     return document;
                 }
             }
@@ -281,7 +282,29 @@ public class PeerMountainManager {
     public static ArrayList<AppDocument> getDocuments() {
         if (Cache.getInstance().getDocuments() == null)
             Cache.getInstance().setDocuments(SharedPreferenceManager.getDocuments());
-        return Cache.getInstance().getDocuments();
+        ArrayList<AppDocument> docs = Cache.getInstance().getDocuments();
+        ArrayList<AppDocument> documents;
+        if (docs != null && docs.size() > 0) {//we have saved docs
+            if(docs.size()<4){
+                documents = new ArrayList<>(docs);
+            }else{
+                return docs;
+            }
+        }else{
+            documents = new ArrayList<>();
+        }
+        AppDocument myID = new AppDocument(getApplicationContext().getString(R.string.pm_document_item_id_title));
+        Profile me = PeerMountainManager.getProfile();
+        if (me != null && me.getDocuments().size() > 0) {
+            myID.getDocuments().add(me.getDocuments().get(0));
+        }
+        documents.add(myID);
+        documents.add(new AppDocument(R.drawable.pm_birther, "Birth Certificate"));
+        documents.add(new AppDocument(R.drawable.pm_employment_contract, "Employment Contract"));
+        documents.add(new AppDocument(R.drawable.pm_income_tax, "Tax Return"));
+        documents.add(new AppDocument(true));
+        PeerMountainManager.saveDocuments(documents);
+        return documents;
     }
 
     public static void saveDocuments(ArrayList<AppDocument> documents) {
@@ -446,8 +469,9 @@ public class PeerMountainManager {
 
     /**
      * If local file exist then this XForm is downloaded already and will be returned the file
+     *
      * @param mCallback callback to return the file and notify for events
-     * @param url location to download the file
+     * @param url       location to download the file
      */
     public static void downloadXForm(MainCallback mCallback, String url) {
         // TODO: 1/26/2018 downloadManifestAndMediaFiles
@@ -461,8 +485,8 @@ public class PeerMountainManager {
     }
 
     public static void loadXForm(File file, FormLoaderTask.FormLoaderListener callback) {
-        FormLoaderTask task = new FormLoaderTask(null,null,null);
-        task.execute( file.getAbsolutePath());
+        FormLoaderTask task = new FormLoaderTask(null, null, null);
+        task.execute(file.getAbsolutePath());
         task.setFormLoaderListener(callback);
     }
 }
