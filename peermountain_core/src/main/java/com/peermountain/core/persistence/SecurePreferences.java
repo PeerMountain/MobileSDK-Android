@@ -92,6 +92,8 @@ class SecurePreferences {
         }
     }
 
+    // TODO: 3/13/2018 create a method to check if this is the right key, try to read some predefined data
+
     private void initCiphers(String secureKey) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException,
             InvalidAlgorithmParameterException {
         IvParameterSpec ivSpec = getIv();
