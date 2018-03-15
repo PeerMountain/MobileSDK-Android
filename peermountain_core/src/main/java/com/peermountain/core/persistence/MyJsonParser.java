@@ -15,6 +15,7 @@ import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.network.teleferique.model.SendObject;
 import com.peermountain.core.utils.LogUtils;
 
 import org.json.JSONObject;
@@ -163,6 +164,21 @@ class MyJsonParser {
         if (shareObject.getContact() != null) {
             writer.name(CONTACT);
             writeContact(writer, shareObject.getContact(), true);
+        }
+        writer.endObject();
+        writer.close();
+        return sw.toString();
+    }
+
+    public static String writeToGraphQL(SendObject sendObject) throws IOException {
+        StringWriter sw = new StringWriter();
+        JsonWriter writer = new JsonWriter(sw);
+        writer.beginObject();
+        if(!TextUtils.isEmpty(sendObject.getQuery())){
+            writer.name("query").value(sendObject.getQuery());
+        }
+        if(!TextUtils.isEmpty(sendObject.getVariables())){
+            writer.name("variables").value(sendObject.getVariables());
         }
         writer.endObject();
         writer.close();

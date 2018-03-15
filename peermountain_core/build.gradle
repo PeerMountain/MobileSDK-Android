@@ -76,4 +76,6 @@ dependencies {
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 
+    api 'com.apollographql.apollo:apollo-runtime:0.4.4'
+
 }
