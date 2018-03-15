@@ -84,9 +84,10 @@ public class NetworkRequestHelper {
                             HttpsURLConnection.getDefaultHostnameVerifier();
 
                     Log.e("adr", s);
-                    return s.equalsIgnoreCase("api.kliner.fr") || s.equalsIgnoreCase("maps.googleapis.com") ||
-                            s.equalsIgnoreCase("www.google.com") || s.equalsIgnoreCase("api.parse.com")
-                            || s.equalsIgnoreCase("clients4.google.com") || s.equalsIgnoreCase("csi.gstatic.com");
+                    return true;
+//                    return s.equalsIgnoreCase("api.kliner.fr") || s.equalsIgnoreCase("maps.googleapis.com") ||
+//                            s.equalsIgnoreCase("www.google.com") || s.equalsIgnoreCase("api.parse.com")
+//                            || s.equalsIgnoreCase("clients4.google.com") || s.equalsIgnoreCase("csi.gstatic.com");
                 }
             };
             SSLContext sc = SSLContext.getInstance("TLS");

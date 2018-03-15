@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.apollographql.android'
 
 android {
     compileSdkVersion 26
@@ -72,5 +71,6 @@ dependencies {
 
     //even when same play-services-auth are in peermountain_sdk, without adding it here to app wont compile
     compile "com.google.android.gms:play-services-auth:${rootProject.ext.playServicesVersion}"
+
 }
 apply plugin: 'com.google.gms.google-services'

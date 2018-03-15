@@ -5,10 +5,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
+import com.peermountain.core.network.teleferique.model.SendObject;
+import com.peermountain.core.persistence.MyJsonParser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -36,16 +39,16 @@ public class NetworkManager {
                                                                          boolean concurrent) {
         LogUtils.d("NetworkManager ", log + " ...");
 //        if (mCallback != null) {
-            if (isNetworkAvailable()) {
-                if (concurrent) {
-                    return new ServerOperation(mCallback, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, action);
-                } else {
-                    return new ServerOperation(mCallback, null).execute(action);
-                }
+        if (isNetworkAvailable()) {
+            if (concurrent) {
+                return new ServerOperation(mCallback, null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, action);
             } else {
-                mCallback.onNoNetwork();
-                return null;
+                return new ServerOperation(mCallback, null).execute(action);
             }
+        } else {
+            mCallback.onNoNetwork();
+            return null;
+        }
 //        } else {
 //            return null;
 //        }
@@ -56,8 +59,23 @@ public class NetworkManager {
         return ServerOperation.doServerCall(action, null);
     }
 
-    public static AsyncTask<Action, Void, NetworkResponse> downloadXForm(MainCallback mCallback,String url, File intoFile) {
-        AsyncTask<Action, Void, NetworkResponse> serverOperation =  doMainActionSynchronized(mCallback, Actions.getForm(intoFile,url), "downloadXForm... ");
+    public static AsyncTask<Action, Void, NetworkResponse> getPublicAddress(MainCallback mCallback, String url, SendObject sendObject) {
+        try {
+            Action action = new Action(Action.POST,
+                    url,
+                    MyJsonParser.writeToGraphQL(sendObject));
+            action.isFullUrl = true;
+            AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback, action, "getPublicAddress... ");
+            if (mCallback != null) mCallback.setTask(serverOperation);
+            return serverOperation;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static AsyncTask<Action, Void, NetworkResponse> downloadXForm(MainCallback mCallback, String url, File intoFile) {
+        AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback, Actions.getForm(intoFile, url), "downloadXForm... ");
         mCallback.setTask(serverOperation);
         return serverOperation;
     }

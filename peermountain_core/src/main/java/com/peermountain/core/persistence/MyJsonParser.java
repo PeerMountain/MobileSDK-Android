@@ -33,7 +33,7 @@ import java.util.Set;
 /**
  * Created by Galeen on 21.10.2016 г..
  */
-class MyJsonParser {
+public class MyJsonParser {
 
     private static final String EMAIL_ADDRESS = "emailAddress";
     private static final String FIRST_NAME = "firstName";
@@ -581,7 +581,7 @@ class MyJsonParser {
         return fileDocument;
     }
 
-    public static String writeJobs(ArrayList<PmJob> jobs) throws IOException {
+    static String writeJobs(ArrayList<PmJob> jobs) throws IOException {
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
         writer.beginArray();
