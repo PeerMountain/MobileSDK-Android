@@ -56,6 +56,7 @@ class SharedPreferenceManager {
         if (preferencesSecure == null) {
             preferencesSecure = new SecurePreferences(context, "peer_mountain_core_s",
                     "key", true);
+            // TODO: 3/16/2018 check if preferencesSecure has some special value to validate the key
         }
         return preferencesSecure;
     }
@@ -156,6 +157,7 @@ class SharedPreferenceManager {
 
     static void savePin(String pin) {
         if (getContext() == null) return;
+        // TODO: 3/16/2018 invalidate prefs with new pin
         putString(PREF_PIN, pin);
     }
 
@@ -241,6 +243,7 @@ class SharedPreferenceManager {
         editor.remove(PREF_JOBS);
 //        editor.remove(PREF_CONFIG);//keep config file not related to profile
         editor.commit();
+        // TODO: 3/16/2018 preferencesSecure = null
     }
 
 //    this below do not remove on logoutPublicProfile

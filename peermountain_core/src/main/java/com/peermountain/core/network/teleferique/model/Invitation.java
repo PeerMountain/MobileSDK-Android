@@ -2,11 +2,13 @@ package com.peermountain.core.network.teleferique.model;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+
 /**
  * Created by Galeen on 3/14/2018.
  */
 
-public class Invitation extends PublicEnvelope{
+public class Invitation implements Serializable {
     private int bodyType;//from TfConstants
     private String bootstrapNode; // URL or other trigger to open/install app
     private String bootstrapAddr; // PM Address
@@ -88,39 +90,33 @@ public class Invitation extends PublicEnvelope{
         return this;
     }
 
-    public SendObject build(){
-        messageType = "REGISTRATION";
-        message = "msg";
-        messageHash = "";
-        messageSig = "msg";
-        bodyHash = "msg";
-        dossierHash = "msg";
-        sender = bootstrapAddr;
-        PublicEnvelope envelope = this;
+    public SendObject build() {
+        PublicEnvelope envelope = new PublicEnvelope(this);
+
         return new SendObject().setQuery(
                 "mutation (\n" +
-                "                $sender: Address!\n" +
-                "                $messageType: MessageType!\n" +
-                "                $messageHash: SHA256!\n" +
-                "                $bodyHash: SHA256!\n" +
-                "                $messageSig: Sign!\n" +
-                "                $message: AESEncryptedBlob!\n" +
-                "                $dossierHash: HMACSHA256!\n" +
-                "                ){\n" +
-                "                sendMessage(\n" +
-                "                    envelope: {\n" +
-                "                    sender: $sender\n" +
-                "                    messageType: $messageType\n" +
-                "                    messageHash: $messageHash\n" +
-                "                    bodyHash: $bodyHash\n" +
-                "                    messageSign: $messageSig\n" +
-                "                    message: $message\n" +
-                "                    dossierHash: $dossierHash\n" +
-                "                    }\n" +
-                "                ) {\n" +
-                "                    messageHash\n" +
-                "                }\n" +
-                "            }")
+                        "                $sender: Address!\n" +
+                        "                $messageType: MessageType!\n" +
+                        "                $messageHash: SHA256!\n" +
+                        "                $bodyHash: SHA256!\n" +
+                        "                $messageSig: Sign!\n" +
+                        "                $message: AESEncryptedBlob!\n" +
+                        "                $dossierHash: HMACSHA256!\n" +
+                        "                ){\n" +
+                        "                sendMessage(\n" +
+                        "                    envelope: {\n" +
+                        "                    sender: $sender\n" +
+                        "                    messageType: $messageType\n" +
+                        "                    messageHash: $messageHash\n" +
+                        "                    bodyHash: $bodyHash\n" +
+                        "                    messageSign: $messageSig\n" +
+                        "                    message: $message\n" +
+                        "                    dossierHash: $dossierHash\n" +
+                        "                    }\n" +
+                        "                ) {\n" +
+                        "                    messageHash\n" +
+                        "                }\n" +
+                        "            }")
                 .setVariables(new Gson().toJson(envelope, PublicEnvelope.class));
     }
 }
