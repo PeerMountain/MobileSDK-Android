@@ -8,6 +8,12 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.msgpack.jackson.dataformat.MessagePackFactory;
+import org.spongycastle.crypto.digests.RIPEMD160Digest;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -92,6 +98,15 @@ public class SecureHelper {
         // Generates Key with given spec and saves it to the KeyStore
         return generator.generateKeyPair();
     }
+
+    public static KeyPair getOrCreateAndroidKeyStoreAsymmetricKey(Context context, String alias) {
+        KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
+        if(keyPair == null){
+            keyPair = createAndroidKeyStoreAsymmetricKey(context, alias);
+        }
+        return keyPair;
+    }
+
 
     private static void initGeneratorWithKeyPairGeneratorSpec(Context context, KeyPairGenerator generator, String alias) throws InvalidAlgorithmParameterException {
         Calendar startDate = Calendar.getInstance();
@@ -194,10 +209,38 @@ public class SecureHelper {
         }
     }
 
+    public static String parse(Object data){
+//        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+        try {
+            byte[] bytes = objectMapper.writeValueAsBytes(data);
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+//        return new Gson().toJson(data);
+    }
+
+    public static Object read(String parsedData, Class classType){
+//        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+        try {
+            byte[] bytes = Base64.decode(parsedData, Base64.DEFAULT);
+            return objectMapper.readValue(bytes, classType);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+//        return new Gson().toJson(data);
+    }
+
     /**
      * Read the object from Base64 string.
      */
-    public static Object fromString(String s) throws IOException,
+    public static Object fromBase64String(String s) throws IOException,
             ClassNotFoundException {
         byte[] data = Base64.decode(s, Base64.DEFAULT);
         ObjectInputStream ois = new ObjectInputStream(
@@ -206,11 +249,17 @@ public class SecureHelper {
         ois.close();
         return o;
     }
+    /**
+     * Write the object to a Base64 string.
+     */
+    public static String toBase64String(byte[] bytes) {
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
 
     /**
      * Write the object to a Base64 string.
      */
-    public static String toString(Serializable o) throws IOException {
+    public static String toBase64String(Serializable o) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(o);
@@ -219,7 +268,19 @@ public class SecureHelper {
     }
 
     /**
-     * Write the object to a Base64 string.
+     * Write the object to a HEX string.
+     */
+    public static String toHexString(Serializable o) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(o);
+        oos.close();
+        return bin2hex(baos.toByteArray());
+//        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+    }
+
+    /**
+     * Write the object to a byte[].
      */
     public static byte[] toBytes(Serializable o) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -229,7 +290,20 @@ public class SecureHelper {
         return baos.toByteArray();
     }
 
-    public static byte[] getHash(String password) {
+    public static byte[] ripemd160(String password) {
+        RIPEMD160Digest digest = new RIPEMD160Digest();
+        byte[] bytes = password.getBytes();
+        digest.update(bytes, 0, bytes.length);
+        byte[] out = new byte[bytes.length];
+        digest.doFinal(out, 0);
+        return out;
+    }
+
+    public static byte[] sha256(String password) {
+        return sha256(password.getBytes());
+    }
+
+    public static byte[] sha256(byte[] bytes) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -238,15 +312,23 @@ public class SecureHelper {
             return null;
         }
         digest.reset();
-        return digest.digest(password.getBytes());
+        return digest.digest(bytes);
     }
 
+    /**
+     * @param data bytes
+     * @return HEX String
+     */
     public static String bin2hex(byte[] data) {
         return String.format("%0" + (data.length * 2) + "X", new BigInteger(1, data));
     }
 
-    public static String getHashAsString(String password) {
-        return bin2hex(getHash(password));
+    public static String sha256AsBase64String(String password) {
+        return Base64.encodeToString(sha256(password), Base64.DEFAULT);
+    }
+
+    public static String sha256AsHexString(String password) {
+        return bin2hex(sha256(password));
     }
 
     public static String encodeAES(String pass, String value) {
@@ -290,7 +372,8 @@ public class SecureHelper {
             SecretKey key = new SecretKeySpec(keyBytes, "AES");
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             sha256_HMAC.init(key);
-            return Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), Base64.DEFAULT);
+            return bin2hex(sha256_HMAC.doFinal(str.getBytes()));
+//            return Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {

@@ -17,6 +17,7 @@ public class Invitation implements Serializable {
     private String inviteName; // text // Encrypted AES-256 using the inviteKey
     private String inviteMsgID; // sha256 // Not present on Himalaya - serviceAnnouncementMessage
     private String inviteKey; // key // Not present on Himalaya
+    private String serviceAnnouncementMessage;
 
     public int getBodyType() {
         return bodyType;
@@ -87,6 +88,15 @@ public class Invitation implements Serializable {
 
     public Invitation setInviteKey(String inviteKey) {
         this.inviteKey = inviteKey;
+        return this;
+    }
+
+    public String getServiceAnnouncementMessage() {
+        return serviceAnnouncementMessage;
+    }
+
+    public Invitation setServiceAnnouncementMessage(String serviceAnnouncementMessage) {
+        this.serviceAnnouncementMessage = serviceAnnouncementMessage;
         return this;
     }
 

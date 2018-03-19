@@ -5,10 +5,10 @@ package com.peermountain.core.network.teleferique.model;
  * Invitation Response / Registration Request
  */
 
-public class InvitationResponse implements MessageBody {
+public class RegistrationBody implements MessageBodyObject{
     public String inviteMsgID; // sha256
     public String keyProof; // Teleferique pubKey(invKey)
-    public String ïnviteName; // Teleferique pubKey(inviteName)
+    public String inviteName; // Teleferique pubKey(inviteName)
     public String publicKey; // RSA pubkey
     public String publicNickname; // text
 }

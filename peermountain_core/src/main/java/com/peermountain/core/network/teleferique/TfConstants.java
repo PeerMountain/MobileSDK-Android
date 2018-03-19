@@ -5,8 +5,9 @@ package com.peermountain.core.network.teleferique;
  */
 
 public class TfConstants {
+    public static final String KEY_ALIAS = "test2";
     public static final int MESSAGE_TYPE_SYSTEM = 0;
-    public static final String MESSAGE_TYPE_REGISTRATION = "REGISTRATION";
+    public static final int MESSAGE_TYPE_REGISTRATION = 1;
     public static final int MESSAGE_TYPE_ASSERTION = 2;
     public static final int MESSAGE_TYPE_ATTESTATION = 3;
     public static final int MESSAGE_TYPE_SERVICE = 4;

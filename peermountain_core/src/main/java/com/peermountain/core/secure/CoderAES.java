@@ -31,6 +31,7 @@ public class CoderAES {
         if (writer == null) return null;
         try {
             byte[] secureValue = writer.doFinal(value.getBytes(CHARSET));
+            // TODO: 3/19/18 check to return just String instead
             return Base64.encodeToString(secureValue, Base64.NO_WRAP);
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();

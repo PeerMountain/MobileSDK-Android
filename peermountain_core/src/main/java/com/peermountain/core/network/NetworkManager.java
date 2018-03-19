@@ -46,7 +46,7 @@ public class NetworkManager {
                 return new ServerOperation(mCallback, null).execute(action);
             }
         } else {
-            mCallback.onNoNetwork();
+            if (mCallback != null) mCallback.onNoNetwork();
             return null;
         }
 //        } else {

@@ -1,6 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.apollographql.android'
 
+repositories {
+    mavenCentral()
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -78,5 +82,6 @@ dependencies {
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 
     implementation 'com.apollographql.apollo:apollo-runtime:0.4.4'
-
+    implementation 'org.msgpack:msgpack-core:0.8.15'
+    implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.15'
 }

@@ -3,6 +3,8 @@ package com.peermountain.core.secure;
 import android.support.test.InstrumentationRegistry;
 import android.util.Log;
 
+import com.peermountain.core.network.teleferique.model.SendObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,6 +53,17 @@ public class SecureHelperTest {
         }
         Assert.assertNotNull("wrong", signature);
         Assert.assertTrue("wrong signature",SecureHelper.verify(alias, data.getBytes(), signature));
+    }
+
+    @Test
+    public void parse() throws Exception {
+        SendObject sendObject = new SendObject().setQuery("some query").setVariables("some variables");
+        String msgpacked = SecureHelper.parse(sendObject);
+        Log.w("msgpacked",msgpacked);
+        Assert.assertNotNull("wrong", msgpacked);
+        SendObject sendObject1 = (SendObject) SecureHelper.read(msgpacked,SendObject.class);
+        Assert.assertEquals("not same objects",sendObject.getQuery(),sendObject1.getQuery());
+        Assert.assertEquals("not same objects",sendObject.getVariables(),sendObject1.getVariables());
     }
 
 }
