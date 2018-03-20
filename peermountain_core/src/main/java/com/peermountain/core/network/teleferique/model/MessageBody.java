@@ -1,5 +1,6 @@
 package com.peermountain.core.network.teleferique.model;
 
+import com.google.gson.Gson;
 import com.peermountain.core.secure.SecureHelper;
 import com.peermountain.core.utils.LogUtils;
 
@@ -9,7 +10,7 @@ import com.peermountain.core.utils.LogUtils;
 
 class MessageBody {
     private String messageBody;
-    private String bodyHash;
+    private transient String bodyHash;
     private transient MessageBodyObject body;
 
     public MessageBody(MessageBodyObject body) {
@@ -29,16 +30,10 @@ class MessageBody {
         return bodyHash;
     }
 
-    public void setBodyHash(String bodyHash) {
-        this.bodyHash = bodyHash;
-    }
-
     public void build(){
         messageBody = SecureHelper.parse(body);
         bodyHash = SecureHelper.sha256AsBase64String(messageBody);
-        LogUtils.d("messageBody", messageBody);
-        Object o = SecureHelper.read(messageBody,body.getClass());
-        LogUtils.d("messageBody read",o==null?"null":"not null");
-        LogUtils.d("bodyHash", bodyHash);
+        LogUtils.d("messageBodyAsJson", new Gson().toJson(body));
+//        LogUtils.d("fullMessageBodyAsJson", new Gson().toJson(this));
     }
 }

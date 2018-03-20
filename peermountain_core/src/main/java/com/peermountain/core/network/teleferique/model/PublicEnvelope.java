@@ -2,6 +2,7 @@ package com.peermountain.core.network.teleferique.model;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.secure.Base58;
@@ -28,33 +29,41 @@ public class PublicEnvelope {
     }
 
     public PublicEnvelope(Invitation invitation) {
+        String pass = "Peer Mountain";
         try {
-            String messageBody = getMessage(invitation);
-            LogUtils.d("full messageBody", messageBody);
-
-            String pass = "Peer Mountain";
             //AES encrypt body with passphrase='Peer Mountain'
-            String encryptedBody = SecureHelper.encodeAES(pass,messageBody);
+            invitation.setInviteName(SecureHelper.encodeAES(pass,invitation.getInviteName()));
+
+            MessageBody messageBody = getMessage(invitation);
+//            LogUtils.d("full messageBody", messageBody);
+
+            //AES encrypt body with passphrase='Peer Mountain'
+            String encryptedBody = SecureHelper.encodeAES(pass,messageBody.getMessageBody());
             message = encryptedBody;
-            LogUtils.d("full messageBody encrypted", message);
+//            LogUtils.d("full messageBody encrypted", message);
 
             messageHash = SecureHelper.sha256AsBase64String(encryptedBody);
-            LogUtils.d("encrypted messageHash", messageHash);
+//            LogUtils.d("encrypted messageHash", messageHash);
 
-            bodyHash = SecureHelper.sha256AsBase64String(messageBody);
-            LogUtils.d("full bodyHash", bodyHash);
+            bodyHash = messageBody.getBodyHash();//SecureHelper.sha256AsBase64String(messageBody);
+//            LogUtils.d("full bodyHash", bodyHash);
 
             messageType = "REGISTRATION";
-            LogUtils.d("messageType", messageType+"");
+//            LogUtils.d("messageType", messageType+"");
 
-            dossierHash = SecureHelper.hash_hmac(pass,messageBody);
-            LogUtils.d("dossierHash", dossierHash);
+            dossierHash = SecureHelper.hash_hmac(pass,messageBody.getMessageBody());
+//            LogUtils.d("dossierHash", dossierHash);
 
             messageSig = getMessageSignature();
-            LogUtils.d("messageSig", messageSig);
+//            LogUtils.d("messageSig", messageSig);
 
-            sender = getAddress();
-            LogUtils.d("sender", sender);
+
+            KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(),TfConstants.KEY_ALIAS);
+            sender = getAddress(keyPair.getPublic().getEncoded());
+
+//            LogUtils.d("sender", sender);
+
+            LogUtils.d("envelope", new Gson().toJson(this));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,37 +86,44 @@ public class PublicEnvelope {
 //            # The resulting object is Base58 encoded
 //        return base58.b58encode(step_4)
     @NonNull
-    private String getAddress() {
-        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(),TfConstants.KEY_ALIAS);
+    public static String getAddress(byte[] publicKey) {
+//        byte[] publicKeyPrefixed = new byte[publicKey.length+2];
+//        //add 2 bytes at beginning
+//        publicKeyPrefixed[0] = 1;
+//        publicKeyPrefixed[1] = 0;
+//        //copy publicKey into publicKeyPrefixed from pos 2 to the end
+//        System.arraycopy(publicKey,0,publicKeyPrefixed,2,publicKeyPrefixed.length-2);
+//        publicKey = publicKeyPrefixed;
         //step_1
-        String value = SecureHelper.toBase64String(keyPair.getPublic().getEncoded());
+        String value = SecureHelper.sha256AsBase64String(publicKey);
         //step_2
-        byte[] bytes = SecureHelper.ripemd160(value);
+        byte[] ripemd160 = SecureHelper.ripemd160(value);
         //step_3
-        byte[] bytesPrefixed = new byte[bytes.length+2];
+        byte[] ripemd160Prefixed = new byte[ripemd160.length+2];
         //add 2 bytes at beginning
-        bytesPrefixed[0] = 1;
-        bytesPrefixed[1] = 0;
-        //copy bytes into bytesPrefixed from pos 2 to the end
-        System.arraycopy(bytes,0,bytesPrefixed,2,bytesPrefixed.length-2);
+        ripemd160Prefixed[0] = 1;
+        ripemd160Prefixed[1] = 0;
+        //copy ripemd160 into ripemd160Prefixed from pos 2 to the end
+        System.arraycopy(ripemd160,0,ripemd160Prefixed,2,ripemd160Prefixed.length-2);
         //step_4
-        byte[] step_4_checksum = SecureHelper.sha256(SecureHelper.sha256(bytesPrefixed));
+        byte[] doubleSha256 = SecureHelper.sha256(SecureHelper.sha256(ripemd160Prefixed));
         //step_5
-        byte[] final_checksum = new byte[bytesPrefixed.length+4];
+        byte[] final_checksum = new byte[ripemd160Prefixed.length+4];
         //copy bytesPrefixed into final_checksum from pos 0 to the last 4
-        System.arraycopy(bytesPrefixed,0,final_checksum,0,bytesPrefixed.length-4);
+        System.arraycopy(ripemd160Prefixed,0,final_checksum,0,ripemd160Prefixed.length-4);
         //copy last 4 from step_4_checksum into final_checksum at the end
-        if (step_4_checksum != null) {
-            System.arraycopy(step_4_checksum,step_4_checksum.length-4,
+        if (doubleSha256 != null) {
+            System.arraycopy(doubleSha256,doubleSha256.length-4,
                     final_checksum,final_checksum.length-4,4 );
         }
+//        return SecureHelper.toBase64String(final_checksum);
         return Base58.encode(final_checksum);
     }
 
-    private String getMessage(Invitation invitation) throws IOException {
+    private MessageBody getMessage(Invitation invitation) throws IOException {
         InvitationBody body = new InvitationBody(invitation);
-        MessageBody messageBody = new MessageBody(body);
-        return SecureHelper.parse(messageBody);
+        return  new MessageBody(body);
+//        return SecureHelper.parse(messageBody);
     }
 
     private String getMessageSignature() throws IOException {

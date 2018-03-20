@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -39,6 +40,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 
 import javax.crypto.Mac;
@@ -55,6 +57,7 @@ import javax.security.auth.x500.X500Principal;
 public class SecureHelper {
     private static final String RSA_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
     private static final int KEY_SIZE = 4096;
+    private static final int base64Flag = Base64.NO_WRAP;
 
     private static KeyStore createAndroidKeyStore() {
         KeyStore keyStore = null;
@@ -214,7 +217,7 @@ public class SecureHelper {
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
             byte[] bytes = objectMapper.writeValueAsBytes(data);
-            return Base64.encodeToString(bytes, Base64.DEFAULT);
+            return Base64.encodeToString(bytes, base64Flag);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -226,7 +229,7 @@ public class SecureHelper {
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
-            byte[] bytes = Base64.decode(parsedData, Base64.DEFAULT);
+            byte[] bytes = Base64.decode(parsedData, base64Flag);
             return objectMapper.readValue(bytes, classType);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -242,7 +245,7 @@ public class SecureHelper {
      */
     public static Object fromBase64String(String s) throws IOException,
             ClassNotFoundException {
-        byte[] data = Base64.decode(s, Base64.DEFAULT);
+        byte[] data = Base64.decode(s, base64Flag);
         ObjectInputStream ois = new ObjectInputStream(
                 new ByteArrayInputStream(data));
         Object o = ois.readObject();
@@ -253,7 +256,7 @@ public class SecureHelper {
      * Write the object to a Base64 string.
      */
     public static String toBase64String(byte[] bytes) {
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
+        return Base64.encodeToString(bytes, base64Flag);
     }
 
     /**
@@ -264,7 +267,7 @@ public class SecureHelper {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(o);
         oos.close();
-        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+        return Base64.encodeToString(baos.toByteArray(), base64Flag);
     }
 
     /**
@@ -276,7 +279,7 @@ public class SecureHelper {
         oos.writeObject(o);
         oos.close();
         return bin2hex(baos.toByteArray());
-//        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+//        return Base64.encodeToString(baos.toByteArray(), base64Flag);
     }
 
     /**
@@ -294,7 +297,7 @@ public class SecureHelper {
         RIPEMD160Digest digest = new RIPEMD160Digest();
         byte[] bytes = password.getBytes();
         digest.update(bytes, 0, bytes.length);
-        byte[] out = new byte[bytes.length];
+        byte[] out = new byte[digest.getDigestSize()];
         digest.doFinal(out, 0);
         return out;
     }
@@ -324,7 +327,11 @@ public class SecureHelper {
     }
 
     public static String sha256AsBase64String(String password) {
-        return Base64.encodeToString(sha256(password), Base64.DEFAULT);
+        return sha256AsBase64String(password.getBytes());
+    }
+
+    public static String sha256AsBase64String(byte[] data) {
+        return Base64.encodeToString(sha256(data), base64Flag);
     }
 
     public static String sha256AsHexString(String password) {
@@ -344,7 +351,7 @@ public class SecureHelper {
 
         SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
         sha256_HMAC.init(secretKey);
-        String hash = Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), Base64.DEFAULT);
+        String hash = Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), base64Flag);
         return hash;
     }
 
@@ -373,7 +380,7 @@ public class SecureHelper {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             sha256_HMAC.init(key);
             return bin2hex(sha256_HMAC.doFinal(str.getBytes()));
-//            return Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), Base64.DEFAULT);
+//            return Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), base64Flag);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
@@ -381,6 +388,23 @@ public class SecureHelper {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+
+
+    public static PublicKey getKey(String key){
+        try{
+            byte[] byteKey = Base64.decode(key.getBytes(), base64Flag);
+            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+
+            return kf.generatePublic(X509publicKey);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
         return null;
     }
 }
