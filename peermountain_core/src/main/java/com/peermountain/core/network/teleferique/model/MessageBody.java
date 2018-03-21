@@ -10,7 +10,7 @@ import com.peermountain.core.utils.LogUtils;
  */
 
 class MessageBody {
-    private String messageBody;
+    private byte[] messageBody;
     private int bodyType;//from TfConstants
     public transient String bodyHash;
 
@@ -19,7 +19,7 @@ class MessageBody {
         build(body);
     }
 
-    public String getMessageBody() {
+    public byte[] getMessageBody() {
         return messageBody;
     }
 

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.secure.Base58;
+import com.peermountain.core.secure.CoderAES;
 import com.peermountain.core.secure.SecureHelper;
 import com.peermountain.core.utils.LogUtils;
 
@@ -45,9 +46,17 @@ public class PublicEnvelope {
                     SecureHelper.parse(messageBody));
             message = encryptedBody;
             LogUtils.d("message encoded",encryptedBody);
-            Map<String,Object> messageAsMap = SecureHelper.read(SecureHelper.decodeAES(pass,encryptedBody));
-            LogUtils.d("message decoded",messageAsMap);
-            LogUtils.d("message_body decoded",SecureHelper.read((String) messageAsMap.get("messageBody")));
+            Map<String,Object> messageAsMap = null;
+            try {
+                messageAsMap = SecureHelper.read(
+                        SecureHelper.decodeAES(pass,encryptedBody.getBytes(CoderAES.CHARSET)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(messageAsMap!=null) {
+                LogUtils.d("message decoded", messageAsMap);
+                LogUtils.d("message_body decoded", SecureHelper.read((String) messageAsMap.get("messageBody")));
+            }
 
             messageHash = SecureHelper.sha256AsBase64String(encryptedBody);
 //            LogUtils.d("encrypted messageHash", messageHash);
@@ -148,11 +157,11 @@ public class PublicEnvelope {
 //        })).decode()
         PmSignature pmSignature = new PmSignature(SecureHelper.sign(TfConstants.KEY_ALIAS,
 //                SecureHelper.toBytes(message)
-                SecureHelper.parse(message).getBytes()
+                SecureHelper.parse(message)
         ),time);
         LogUtils.d("message to sign",new Gson().toJson(message));
         LogUtils.d("message to sign in signature as packed",new Gson().toJson(SecureHelper.parse(message)));
         LogUtils.d("signature",new Gson().toJson(pmSignature));
-        return SecureHelper.parse(pmSignature);
+        return SecureHelper.parseToBase64(pmSignature);
     }
 }

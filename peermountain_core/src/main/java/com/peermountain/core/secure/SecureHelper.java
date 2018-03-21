@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -219,7 +220,7 @@ public class SecureHelper {
      * @param data object to pack
      * @return Base64String
      */
-    public static String parse(Object data){
+    public static byte[] parse(Object data){
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
@@ -227,7 +228,8 @@ public class SecureHelper {
             Map<String, Object> objectAsMap = objectMapper.convertValue(data, Map.class);
 
             byte[] bytes = objectMapper.writeValueAsBytes(objectAsMap);
-            return Base64.encodeToString(bytes, base64Flag);
+            return bytes;
+//            return Base64.encodeToString(bytes, base64Flag);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -235,6 +237,9 @@ public class SecureHelper {
 //        return new Gson().toJson(data);
     }
 
+    public static String parseToBase64(Object data){
+        return Base64.encodeToString(parse(data), base64Flag);
+    }
     public static Object read(String parsedData, Class classType){
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
@@ -251,11 +256,31 @@ public class SecureHelper {
     }
 
     public static Map<String, Object> read(String parsedData){
+        try {
+            return read(parsedData.getBytes(CoderAES.CHARSET));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+//        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
+//        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+//        try {
+//            byte[] bytes = parsedData.getBytes(CoderAES.CHARSET);//Base64.decode(parsedData, base64Flag);
+//            return objectMapper.readValue(bytes, new TypeReference<Map<String, Object>>() {});
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        return null;
+//        return new Gson().toJson(data);
+    }
+
+    public static Map<String, Object> read(byte[] parsedData){
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
-            byte[] bytes = Base64.decode(parsedData, base64Flag);
-            return objectMapper.readValue(bytes, new TypeReference<Map<String, Object>>() {});
+           //byte[] bytes = parsedData.getBytes(CoderAES.CHARSET);//Base64.decode(parsedData, base64Flag);
+            return objectMapper.readValue(parsedData, new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -367,7 +392,15 @@ public class SecureHelper {
         return CoderAES.encrypt(pass, value);
     }
 
+    public static String encodeAES(String pass, byte[] value) {
+        return CoderAES.encrypt(pass, value);
+    }
+
     public static String decodeAES(String pass, String value) {
+        return CoderAES.decrypt(pass, value);
+    }
+
+    public static byte[] decodeAES(String pass, byte[] value) {
         return CoderAES.decrypt(pass, value);
     }
 
@@ -380,7 +413,7 @@ public class SecureHelper {
         return hash;
     }
 
-    public static String hash_hmac(String password, String str) {
+    public static String hash_hmac(String password, byte[] bytes) {
 
    /* Store these things on disk used to derive key later: */
         int iterationCount = 1000;
@@ -404,7 +437,7 @@ public class SecureHelper {
             SecretKey key = new SecretKeySpec(keyBytes, "AES");
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             sha256_HMAC.init(key);
-            return bin2hex(sha256_HMAC.doFinal(str.getBytes()));
+            return bin2hex(sha256_HMAC.doFinal(bytes));
 //            return Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), base64Flag);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
