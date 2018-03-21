@@ -58,19 +58,38 @@ public class LogUtils {
         return PeerMountainManager.getPeerMountainConfig() != null && PeerMountainManager.getPeerMountainConfig().isDebug();
     }
 
+    /**
+     * This one should be called only from tests
+     * @param tag tag
+     * @param msg msg will be pretty set as json
+     */
+    public static void t(String tag, String msg) {
+        if(PmSystemHelper.isRunningTest())
+            Log.e(getTag(tag), prettyJson(msg));
+    }
+
+    /**
+     * This one should be called only from tests
+     * tag is PmTests
+     * @param msg msg will be pretty set as json
+     */
+    public static void t( String msg) {
+            t("PmTests", prettyJson(msg));
+    }
+
     public static void d(String tag, String msg) {
         if (isDebug())
-            Log.d(tag, prettyJson(msg));
+            Log.d(getTag(tag), prettyJson(msg));
     }
 
     public static void v(String tag, String msg) {
         if (isDebug())
-            Log.v(tag, prettyJson(msg));
+            Log.v(getTag(tag), prettyJson(msg));
     }
 
     public static void w(String tag, String msg) {
         if (isDebug())
-            Log.w(tag, prettyJson(msg));
+            Log.w(getTag(tag), prettyJson(msg));
     }
 
     public static void d(String tag, HashMap<String, String> postDataParams) {
@@ -82,24 +101,42 @@ public class LogUtils {
                 sb.append(entry.getValue());
                 sb.append("\n");
             }
-            Log.d(tag, sb.toString());
+            d(tag, sb.toString());
         }
     }
 
+    public static void d(String message, Map<String, Object> postDataParams) {
+        if (isDebug() && postDataParams != null) {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, Object> entry : postDataParams.entrySet()) {
+                sb.append(entry.getKey());
+                sb.append(" : ");
+                sb.append(entry.getValue());
+                sb.append("\n");
+            }
+            d(message, sb.toString());
+        }
+    }
+
+
     public static void e(String tag, String msg) {
-        Log.e(tag, prettyJson(msg));
+        Log.e(getTag(tag), prettyJson(msg));
     }
 
     public static void i(String tag, String msg) {
-        Log.i(tag, prettyJson(msg));
+        Log.i(getTag(tag), prettyJson(msg));
     }
 
-    private static String prettyJson(String body) {
+    private static String getTag(String tag){
+        return "PM_"+tag;
+    }
+
+    public static String prettyJson(String body) {
         if (TextUtils.isEmpty(body)) {
             return " ";
         }
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
             jsonWriter.setIndent("\u00A0\u00A0");

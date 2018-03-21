@@ -11,6 +11,7 @@ import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.Map;
 
 /**
  * Created by Galeen on 3/14/2018.
@@ -33,19 +34,25 @@ public class PublicEnvelope {
         try {
             //AES encrypt body with passphrase='Peer Mountain'
             invitation.setInviteName(SecureHelper.encodeAES(pass,invitation.getInviteName()));
+            LogUtils.d("name encoded",invitation.getInviteName());
+            LogUtils.d("name decoded",SecureHelper.decodeAES(pass,invitation.getInviteName()));
 
             MessageBody messageBody = getMessage(invitation);
 //            LogUtils.d("full messageBody", messageBody);
 
             //AES encrypt body with passphrase='Peer Mountain'
-            String encryptedBody = SecureHelper.encodeAES(pass,messageBody.getMessageBody());
+            String encryptedBody = SecureHelper.encodeAES(pass,
+                    SecureHelper.parse(messageBody));
             message = encryptedBody;
-//            LogUtils.d("full messageBody encrypted", message);
+            LogUtils.d("message encoded",encryptedBody);
+            Map<String,Object> messageAsMap = SecureHelper.read(SecureHelper.decodeAES(pass,encryptedBody));
+            LogUtils.d("message decoded",messageAsMap);
+            LogUtils.d("message_body decoded",SecureHelper.read((String) messageAsMap.get("messageBody")));
 
             messageHash = SecureHelper.sha256AsBase64String(encryptedBody);
 //            LogUtils.d("encrypted messageHash", messageHash);
 
-            bodyHash = messageBody.getBodyHash();//SecureHelper.sha256AsBase64String(messageBody);
+            bodyHash = messageBody.bodyHash;//SecureHelper.sha256AsBase64String(messageBody);
 //            LogUtils.d("full bodyHash", bodyHash);
 
             messageType = "REGISTRATION";
@@ -62,7 +69,7 @@ public class PublicEnvelope {
             sender = getAddress(keyPair.getPublic().getEncoded());
 
 //            LogUtils.d("sender", sender);
-
+//            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
             LogUtils.d("envelope", new Gson().toJson(this));
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,6 +150,9 @@ public class PublicEnvelope {
 //                SecureHelper.toBytes(message)
                 SecureHelper.parse(message).getBytes()
         ),time);
-        return SecureHelper.toBase64String(pmSignature);
+        LogUtils.d("message to sign",new Gson().toJson(message));
+        LogUtils.d("message to sign in signature as packed",new Gson().toJson(SecureHelper.parse(message)));
+        LogUtils.d("signature",new Gson().toJson(pmSignature));
+        return SecureHelper.parse(pmSignature);
     }
 }

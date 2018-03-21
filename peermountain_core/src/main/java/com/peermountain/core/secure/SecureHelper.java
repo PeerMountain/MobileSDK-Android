@@ -9,6 +9,7 @@ import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.msgpack.jackson.dataformat.MessagePackFactory;
@@ -42,6 +43,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -212,11 +214,19 @@ public class SecureHelper {
         }
     }
 
+    /**
+     *  Converts the object to Map and packed it for the server
+     * @param data object to pack
+     * @return Base64String
+     */
     public static String parse(Object data){
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
-            byte[] bytes = objectMapper.writeValueAsBytes(data);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> objectAsMap = objectMapper.convertValue(data, Map.class);
+
+            byte[] bytes = objectMapper.writeValueAsBytes(objectAsMap);
             return Base64.encodeToString(bytes, base64Flag);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -231,6 +241,21 @@ public class SecureHelper {
         try {
             byte[] bytes = Base64.decode(parsedData, base64Flag);
             return objectMapper.readValue(bytes, classType);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+//        return new Gson().toJson(data);
+    }
+
+    public static Map<String, Object> read(String parsedData){
+//        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+        try {
+            byte[] bytes = Base64.decode(parsedData, base64Flag);
+            return objectMapper.readValue(bytes, new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (IOException e) {

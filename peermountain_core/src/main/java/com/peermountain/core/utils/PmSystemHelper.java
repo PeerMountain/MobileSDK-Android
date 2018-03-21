@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.peermountain.core.persistence.PeerMountainManager;
+
 /**
  * Created by Galeen on 10/9/17.
  */
@@ -66,6 +68,21 @@ public class PmSystemHelper {
 
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    private static Boolean isRunningTest;
+
+    public static synchronized boolean isRunningTest() {
+        if (PeerMountainManager.getApplicationContext() == null) return true;
+        if (null == isRunningTest) {
+            try {
+                Class.forName(PeerMountainManager.getApplicationContext().getPackageName() + ".ExampleUnitTest");
+                isRunningTest = true;
+            } catch (ClassNotFoundException e) {
+                isRunningTest = false;
+            }
+        }
+        return isRunningTest;
     }
 
 }

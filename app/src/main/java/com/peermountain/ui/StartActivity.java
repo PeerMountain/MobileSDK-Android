@@ -47,7 +47,9 @@ public class StartActivity extends AppCompatActivity {
                 .setInviteKey("72x35FDOXuTkxivh7qYlqPU91jVgy607")                ;
 
 
-        NetworkManager.getPublicAddress(null,"https://teleferic-dev.dxmarkets.com/teleferic/",
+        NetworkManager.getPublicAddress(null,
+                "http://b9d87780.ngrok.io/teleferic/",
+//                "https://teleferic-dev.dxmarkets.com/teleferic/",
                 invitation.build());
     }
 

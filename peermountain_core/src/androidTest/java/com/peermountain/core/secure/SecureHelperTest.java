@@ -8,6 +8,8 @@ import com.peermountain.core.network.teleferique.model.SendObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
  * Created by Galeen on 3/16/2018.
  */
@@ -61,9 +63,9 @@ public class SecureHelperTest {
         String msgpacked = SecureHelper.parse(sendObject);
         Log.w("msgpacked",msgpacked);
         Assert.assertNotNull("wrong", msgpacked);
-        SendObject sendObject1 = (SendObject) SecureHelper.read(msgpacked,SendObject.class);
-        Assert.assertEquals("not same objects",sendObject.getQuery(),sendObject1.getQuery());
-        Assert.assertEquals("not same objects",sendObject.getVariables(),sendObject1.getVariables());
+        Map<String, Object> sendObject1 = SecureHelper.read(msgpacked);
+        Assert.assertEquals("not same objects",sendObject.getQuery(),sendObject1.get("query"));
+        Assert.assertEquals("not same objects",sendObject.getVariables(),sendObject1.get("variables"));
     }
 
 }

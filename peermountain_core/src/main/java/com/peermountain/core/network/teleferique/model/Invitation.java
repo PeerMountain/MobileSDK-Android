@@ -1,6 +1,7 @@
 package com.peermountain.core.network.teleferique.model;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
 
@@ -102,6 +103,9 @@ public class Invitation implements Serializable {
 
     public SendObject build() {
         PublicEnvelope envelope = new PublicEnvelope(this);
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        String variables = gson.toJson(envelope, PublicEnvelope.class);
+//        .replace("\\\\u003d","=");
 
         return new SendObject().setQuery(
                 "mutation (\n" +
@@ -127,6 +131,6 @@ public class Invitation implements Serializable {
                         "                    messageHash\n" +
                         "                }\n" +
                         "            }")
-                .setVariables(new Gson().toJson(envelope, PublicEnvelope.class));
+                .setVariables(variables);
     }
 }

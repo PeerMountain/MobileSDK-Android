@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.apollographql.android'
+//apply plugin: 'com.apollographql.android'
 
 repositories {
     mavenCentral()
@@ -81,7 +81,7 @@ dependencies {
     //ODK end
     compile "com.google.android.gms:play-services-nearby:${rootProject.ext.playServicesVersion}"
 
-    implementation 'com.apollographql.apollo:apollo-runtime:0.4.4'
+//    implementation 'com.apollographql.apollo:apollo-runtime:0.4.4'
     implementation 'org.msgpack:msgpack-core:0.8.15'
     implementation 'org.msgpack:jackson-dataformat-msgpack:0.8.15'
 }

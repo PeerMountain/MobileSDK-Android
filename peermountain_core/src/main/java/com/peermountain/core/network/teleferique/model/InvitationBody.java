@@ -1,12 +1,13 @@
 package com.peermountain.core.network.teleferique.model;
 
+import com.peermountain.core.network.teleferique.TfConstants;
+
 /**
  * Created by Galeen on 3/14/2018.
  * Invitation Response / Registration Request
  */
 
 public class InvitationBody implements MessageBodyObject{
-    private int bodyType;//from TfConstants
     private String bootstrapNode; // URL or other trigger to open/install app
     private String bootstrapAddr; // PM Address
     private String inviteName; // text // Encrypted AES-256 using the inviteKey
@@ -22,7 +23,6 @@ public class InvitationBody implements MessageBodyObject{
     }
 
     public InvitationBody(Invitation in) {
-        this.bodyType = in.getBodyType();
         this.bootstrapNode = in.getBootstrapNode();
         this.bootstrapAddr = in.getBootstrapAddr();
         this.inviteName = in.getInviteName();
@@ -32,21 +32,12 @@ public class InvitationBody implements MessageBodyObject{
     }
 
     public InvitationBody(int bodyType, String bootstrapNode, String bootstrapAddr, String inviteName, String offeringAddr, String serviceOfferingID, String serviceAnnouncementMessage) {
-        this.bodyType = bodyType;
         this.bootstrapNode = bootstrapNode;
         this.bootstrapAddr = bootstrapAddr;
         this.inviteName = inviteName;
         this.offeringAddr = offeringAddr;
         this.serviceOfferingID = serviceOfferingID;
         this.serviceAnnouncementMessage = serviceAnnouncementMessage;
-    }
-
-    public int getBodyType() {
-        return bodyType;
-    }
-
-    public void setBodyType(int bodyType) {
-        this.bodyType = bodyType;
     }
 
     public String getBootstrapNode() {
@@ -95,6 +86,11 @@ public class InvitationBody implements MessageBodyObject{
 
     public void setServiceAnnouncementMessage(String serviceAnnouncementMessage) {
         this.serviceAnnouncementMessage = serviceAnnouncementMessage;
+    }
+
+    @Override
+    public int takeBodyType() {
+        return TfConstants.BODY_TYPE_INVITATION;
     }
 
 //    public String getInviteMsgID() {

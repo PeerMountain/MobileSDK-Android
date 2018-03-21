@@ -5,4 +5,5 @@ package com.peermountain.core.network.teleferique.model;
  */
 
 public interface MessageBodyObject {
+    int takeBodyType();
 }

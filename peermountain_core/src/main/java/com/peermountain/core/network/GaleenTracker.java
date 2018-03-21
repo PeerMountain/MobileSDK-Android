@@ -1,14 +1,7 @@
 package com.peermountain.core.network;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonWriter;
 import com.peermountain.core.utils.LogUtils;
 
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.Map;
 
@@ -41,7 +34,7 @@ public class GaleenTracker {
 
     public void logPrettyJson(String name, String json) {
         if (NetConstants.DEBUG) {
-            LogUtils.d(name.length()>20?name.substring(0,20):name, prettyJson(json));
+            LogUtils.d(name.length()>20?name.substring(0,20):name, LogUtils.prettyJson(json));
         }
     }
     void logPrettyJson(Action action) {
@@ -49,7 +42,7 @@ public class GaleenTracker {
             String params = mapToString(action.params);
             String headers = mapToString(action.headers);
             LogUtils.d("GTr "+action.getOperation(), action.endpoint +
-                    (action.body == null ? "" : "\n" + prettyJson(action.body)) +
+                    (action.body == null ? "" : "\n" + LogUtils.prettyJson(action.body)) +
                     (params == null ? "" : "\nparams : \n" + params) +
                     (headers == null ? "" : "\nheaders : \n" + headers));
         }
@@ -79,26 +72,26 @@ public class GaleenTracker {
             if (res != null)
                 LogUtils.d("GTr response" ,name+ "\ncode : "+
                         res.responseCode+(res.headerLastModified!=null?"\nHeaderLastModified : "+res.headerLastModified:"")
-                        +"\n"+prettyJson(res.json));
+                        +"\n"+LogUtils.prettyJson(res.json));
             else
                 LogUtils.d("GTr response " + name, "null");
         }
     }
 
-     private String prettyJson(String body) {
-        if (body == null || body.isEmpty()) {
-            return "";
-        }
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            StringWriter stringWriter = new StringWriter();
-            JsonWriter jsonWriter = new JsonWriter(stringWriter);
-            jsonWriter.setIndent("\u00A0\u00A0");
-            JsonElement jsonElement = new JsonParser().parse(body);
-            gson.toJson(jsonElement, jsonWriter);
-            return stringWriter.toString();
-        } catch (JsonParseException e) {
-            return body;
-        }
-    }
+//     private String prettyJson(String body) {
+//        if (body == null || body.isEmpty()) {
+//            return "";
+//        }
+//        try {
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            StringWriter stringWriter = new StringWriter();
+//            JsonWriter jsonWriter = new JsonWriter(stringWriter);
+//            jsonWriter.setIndent("\u00A0\u00A0");
+//            JsonElement jsonElement = new JsonParser().parse(body);
+//            gson.toJson(jsonElement, jsonWriter);
+//            return stringWriter.toString();
+//        } catch (JsonParseException e) {
+//            return body;
+//        }
+//    }
 }
