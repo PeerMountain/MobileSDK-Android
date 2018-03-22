@@ -107,7 +107,7 @@ public class SecureHelper {
 
     public static KeyPair getOrCreateAndroidKeyStoreAsymmetricKey(Context context, String alias) {
         KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
-        if(keyPair == null){
+        if (keyPair == null) {
             keyPair = createAndroidKeyStoreAsymmetricKey(context, alias);
         }
         return keyPair;
@@ -216,11 +216,12 @@ public class SecureHelper {
     }
 
     /**
-     *  Converts the object to Map and packed it for the server
+     * Converts the object to Map and packed it for the server
+     *
      * @param data object to pack
      * @return Base64String
      */
-    public static byte[] parse(Object data){
+    public static byte[] parse(Object data) {
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
@@ -237,14 +238,31 @@ public class SecureHelper {
 //        return new Gson().toJson(data);
     }
 
-    public static String parseToBase64(Object data){
+    public static String parseToBase64(Object data) {
         return Base64.encodeToString(parse(data), base64Flag);
     }
-    public static Object read(String parsedData, Class classType){
+
+    public static Object read(String parsedData, Class classType) {
+        try {
+            return read(parsedData.getBytes(CoderAES.CHARSET), classType);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+//        return new Gson().toJson(data);
+        return null;
+    }
+
+    public static Object read(byte[] parsedData, Class classType) {
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
-            byte[] bytes = Base64.decode(parsedData, base64Flag);
+            byte[] bytes;
+            try {
+                bytes = Base64.decode(parsedData, base64Flag);
+            } catch (Exception e) {
+                e.printStackTrace();
+                bytes = parsedData;
+            }
             return objectMapper.readValue(bytes, classType);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -255,7 +273,7 @@ public class SecureHelper {
 //        return new Gson().toJson(data);
     }
 
-    public static Map<String, Object> read(String parsedData){
+    public static Map<String, Object> read(String parsedData) {
         try {
             return read(parsedData.getBytes(CoderAES.CHARSET));
         } catch (UnsupportedEncodingException e) {
@@ -275,12 +293,13 @@ public class SecureHelper {
 //        return new Gson().toJson(data);
     }
 
-    public static Map<String, Object> read(byte[] parsedData){
+    public static Map<String, Object> read(byte[] parsedData) {
 //        MessageBufferPacker packer = MessagePack.newDefaultBufferPacker();
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
-           //byte[] bytes = parsedData.getBytes(CoderAES.CHARSET);//Base64.decode(parsedData, base64Flag);
-            return objectMapper.readValue(parsedData, new TypeReference<Map<String, Object>>() {});
+            //byte[] bytes = parsedData.getBytes(CoderAES.CHARSET);//Base64.decode(parsedData, base64Flag);
+            return objectMapper.readValue(parsedData, new TypeReference<Map<String, Object>>() {
+            });
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -302,6 +321,7 @@ public class SecureHelper {
         ois.close();
         return o;
     }
+
     /**
      * Write the object to a Base64 string.
      */
@@ -450,16 +470,14 @@ public class SecureHelper {
     }
 
 
-
-    public static PublicKey getKey(String key){
-        try{
+    public static PublicKey getKey(String key) {
+        try {
             byte[] byteKey = Base64.decode(key.getBytes(), base64Flag);
             X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
             KeyFactory kf = KeyFactory.getInstance("RSA");
 
             return kf.generatePublic(X509publicKey);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

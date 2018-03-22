@@ -48,8 +48,8 @@ public class StartActivity extends AppCompatActivity {
 
 
         NetworkManager.getPublicAddress(null,
-                "http://b9d87780.ngrok.io/teleferic/",
-//                "https://teleferic-dev.dxmarkets.com/teleferic/",
+//                "http://b9d87780.ngrok.io/teleferic/",
+                "https://teleferic-dev.dxmarkets.com/teleferic/",
                 invitation.build());
     }
 

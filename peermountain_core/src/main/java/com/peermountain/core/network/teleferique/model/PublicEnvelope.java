@@ -6,13 +6,11 @@ import com.google.gson.Gson;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.secure.Base58;
-import com.peermountain.core.secure.CoderAES;
 import com.peermountain.core.secure.SecureHelper;
 import com.peermountain.core.utils.LogUtils;
 
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.Map;
 
 /**
  * Created by Galeen on 3/14/2018.
@@ -46,16 +44,16 @@ public class PublicEnvelope {
                     SecureHelper.parse(messageBody));
             message = encryptedBody;
             LogUtils.d("message encoded",encryptedBody);
-            Map<String,Object> messageAsMap = null;
+            MessageBody messageAsMap = null;
             try {
-                messageAsMap = SecureHelper.read(
-                        SecureHelper.decodeAES(pass,encryptedBody.getBytes(CoderAES.CHARSET)));
+                messageAsMap = (MessageBody) SecureHelper.read(
+                        SecureHelper.decodeAES(pass,encryptedBody), MessageBody.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             if(messageAsMap!=null) {
-                LogUtils.d("message decoded", messageAsMap);
-                LogUtils.d("message_body decoded", SecureHelper.read((String) messageAsMap.get("messageBody")));
+                LogUtils.d("message decoded", messageAsMap.getBodyType()+"");
+                LogUtils.d("message_body decoded", ((InvitationBody)SecureHelper.read(messageAsMap.getMessageBody(),InvitationBody.class)).getBootstrapAddr());
             }
 
             messageHash = SecureHelper.sha256AsBase64String(encryptedBody);

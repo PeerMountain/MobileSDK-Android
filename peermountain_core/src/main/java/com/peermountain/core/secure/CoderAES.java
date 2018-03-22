@@ -71,7 +71,7 @@ public class CoderAES {
 
     static String decrypt(String pass, String securedEncodedValue) {
         try {
-            return new String(decrypt(pass,Base64.decode(securedEncodedValue, Base64.NO_WRAP)), CHARSET);
+            return new String(decrypt(pass, Base64.decode(securedEncodedValue, Base64.NO_WRAP)), CHARSET);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -91,15 +91,19 @@ public class CoderAES {
         return null;
     }
 
-    static byte[]  decrypt(String pass, byte[] securedValue) {
+    static byte[] decrypt(String pass, byte[] securedValue) {
         Cipher reader = getAesReader(pass);
         if (reader == null) return null;
         try {
-            byte[] value = reader.doFinal(securedValue);
+            byte[] value = customUnPadding(reader.doFinal(securedValue));
             return value;
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return null;
@@ -190,7 +194,7 @@ public class CoderAES {
         int diff = key_size - (key.length % key_size);
 //        char c = (char) (diff+ '0');
         byte[] bytes = new byte[key.length + diff];
-        System.arraycopy(key,0,bytes,0,key.length);
+        System.arraycopy(key, 0, bytes, 0, key.length);
         for (int i = key.length; i < bytes.length; i++) {
             bytes[i] = (byte) diff;
         }
@@ -216,14 +220,23 @@ public class CoderAES {
 //        LogUtils.d("key_bytes", sb1.toString());
     }
 
-//    private static byte[] customUnPadding(String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-//        int diff = key_size - (key.length() % key_size);
-//        char c = (char) (diff);// + '0');
-//        StringBuilder sb = new StringBuilder(key);
-//        for (int i = 0; i < diff; i++) {
-//            sb.append(c);
-//        }
-//        LogUtils.d("Padding", sb.toString());
-//        return sb.toString().getBytes(CHARSET);
-//    }
+    private static byte[] customUnPadding(byte[] key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        byte pad = key[key.length - 1];
+        boolean isPadded = false;
+        if (pad < key.length) {
+            isPadded = true;
+            for (int i = key.length - 1; i >= key.length - pad; i--) {
+                if (key[i] != pad) {
+                    isPadded = false;
+                    break;
+                }
+            }
+        }
+        if (isPadded) {
+            byte[] res = new byte[key.length - pad];
+            System.arraycopy(key, 0, res, 0, key.length - pad);
+            return res;
+        }
+        return key;
+    }
 }
