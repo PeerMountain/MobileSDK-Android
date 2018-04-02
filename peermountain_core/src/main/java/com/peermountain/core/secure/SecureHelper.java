@@ -416,6 +416,14 @@ public class SecureHelper {
         return CoderAES.encrypt(pass, value);
     }
 
+    /**
+     * use this method only to visualize data as String
+     * if you have to convert this data to object as SecureHelper.read
+     * use decodeAES(String pass, byte[] value) and convert the response to String
+     * @param pass
+     * @param value
+     * @return
+     */
     public static String decodeAES(String pass, String value) {
         return CoderAES.decrypt(pass, value);
     }

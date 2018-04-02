@@ -174,16 +174,54 @@ public class MyJsonParser {
         StringWriter sw = new StringWriter();
         JsonWriter writer = new JsonWriter(sw);
         writer.beginObject();
-        if(!TextUtils.isEmpty(sendObject.getQuery())){
+        if (!TextUtils.isEmpty(sendObject.getQuery())) {
             writer.name("query").value(sendObject.getQuery());
         }
-        if(!TextUtils.isEmpty(sendObject.getVariables())){
+        if (!TextUtils.isEmpty(sendObject.getVariables())) {
             writer.name("variables").value(sendObject.getVariables());
         }
         writer.endObject();
         writer.close();
         return sw.toString();
     }
+
+    public static String readServerTime(String json) throws IOException {
+        if (json == null) return null;
+        String name;
+        String time = null;
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.beginObject();
+        while (reader.hasNext()) {
+            name = reader.nextName();
+            if (name.equals("data")) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    name = reader.nextName();
+                    if (name.equals("teleferic")) {
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            name = reader.nextName();
+                            if (name.equals("signedTimestamp")) {
+                                time = getString(reader);
+                            } else {
+                                reader.skipValue();
+                            }
+                        }
+                        reader.endObject();
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        reader.close();
+        return time;
+    }
+
 
     static ShareObject readShareObject(String json) throws IOException {
         if (json == null) return null;

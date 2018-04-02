@@ -1,4 +1,4 @@
-package com.peermountain.core.network.teleferique.model;
+package com.peermountain.core.network.teleferique.model.body;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,13 +9,21 @@ import com.peermountain.core.utils.LogUtils;
  * Created by Galeen on 3/14/2018.
  */
 
-class MessageBody {
+public class MessageBody {
     private byte[] messageBody;
     private int bodyType;//from TfConstants
-    public transient String bodyHash;
+    public transient String bodyHash, time;
+
+    public MessageBody() {
+    }
+
+    public MessageBody(int bodyType) {
+        this.bodyType = bodyType;
+    }
 
     public MessageBody(MessageBodyObject body) {
         bodyType = body.takeBodyType();
+        time = body.takeTime();
         build(body);
     }
 
@@ -27,7 +35,7 @@ class MessageBody {
         return bodyType;
     }
 
-    public void build(MessageBodyObject body){
+    public void build(MessageBodyObject body) {
         messageBody = SecureHelper.parse(body);
         bodyHash = SecureHelper.sha256AsBase64String(messageBody);
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();

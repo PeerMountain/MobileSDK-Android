@@ -1,4 +1,4 @@
-package com.peermountain.core.network.teleferique.model;
+package com.peermountain.core.network.teleferique.model.body;
 
 /**
  * Created by Galeen on 3/19/18.
@@ -6,4 +6,5 @@ package com.peermountain.core.network.teleferique.model;
 
 public interface MessageBodyObject {
     int takeBodyType();
+    String takeTime();
 }

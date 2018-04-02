@@ -1,13 +1,15 @@
-package com.peermountain.core.network.teleferique.model;
+package com.peermountain.core.network.teleferique.model.body.invitation;
 
 import com.peermountain.core.network.teleferique.TfConstants;
+import com.peermountain.core.network.teleferique.model.body.base.BaseBody;
+import com.peermountain.core.network.teleferique.model.body.MessageBodyObject;
 
 /**
  * Created by Galeen on 3/14/2018.
  * Invitation Response / Registration Request
  */
 
-public class InvitationBody implements MessageBodyObject{
+public class InvitationBody extends BaseBody implements MessageBodyObject {
     private String bootstrapNode; // URL or other trigger to open/install app
     private String bootstrapAddr; // PM Address
     private String inviteName; // text // Encrypted AES-256 using the inviteKey
@@ -20,24 +22,17 @@ public class InvitationBody implements MessageBodyObject{
 //    private String inviteKey; // key // Not present on Himalaya
 
     public InvitationBody() {
+        super(null);
     }
 
-    public InvitationBody(Invitation in) {
+    public InvitationBody(InvitationBuilder in) {
+        super(in.getTime());
         this.bootstrapNode = in.getBootstrapNode();
         this.bootstrapAddr = in.getBootstrapAddr();
         this.inviteName = in.getInviteName();
         this.offeringAddr = in.getOfferingAddr();
         this.serviceOfferingID = in.getServiceOfferingID();
         this.serviceAnnouncementMessage = in.getServiceAnnouncementMessage();
-    }
-
-    public InvitationBody(int bodyType, String bootstrapNode, String bootstrapAddr, String inviteName, String offeringAddr, String serviceOfferingID, String serviceAnnouncementMessage) {
-        this.bootstrapNode = bootstrapNode;
-        this.bootstrapAddr = bootstrapAddr;
-        this.inviteName = inviteName;
-        this.offeringAddr = offeringAddr;
-        this.serviceOfferingID = serviceOfferingID;
-        this.serviceAnnouncementMessage = serviceAnnouncementMessage;
     }
 
     public String getBootstrapNode() {
@@ -93,19 +88,5 @@ public class InvitationBody implements MessageBodyObject{
         return TfConstants.BODY_TYPE_INVITATION;
     }
 
-//    public String getInviteMsgID() {
-//        return inviteMsgID;
-//    }
-//
-//    public void setInviteMsgID(String inviteMsgID) {
-//        this.inviteMsgID = inviteMsgID;
-//    }
-//
-//    public String getInviteKey() {
-//        return inviteKey;
-//    }
-//
-//    public void setInviteKey(String inviteKey) {
-//        this.inviteKey = inviteKey;
-//    }
+
 }

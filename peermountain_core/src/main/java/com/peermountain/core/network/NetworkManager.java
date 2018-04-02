@@ -59,25 +59,26 @@ public class NetworkManager {
         return ServerOperation.doServerCall(action, null);
     }
 
-    public static AsyncTask<Action, Void, NetworkResponse> getPublicAddress(MainCallback mCallback, String url, SendObject sendObject) {
+    public static void sendToServer(MainCallback mCallback, SendObject sendObject) {
+        String url = "https://teleferic-dev.dxmarkets.com/teleferic/";
         try {
             Action action = new Action(Action.POST,
                     url,
                     MyJsonParser.writeToGraphQL(sendObject));
             action.isFullUrl = true;
-            AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback, action, "getPublicAddress... ");
+            AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback, action, "sendToServer... ");
             if (mCallback != null) mCallback.setTask(serverOperation);
-            return serverOperation;
+//            return serverOperation;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+//            return null;
         }
     }
 
-    public static AsyncTask<Action, Void, NetworkResponse> downloadXForm(MainCallback mCallback, String url, File intoFile) {
+    public static void downloadXForm(MainCallback mCallback, String url, File intoFile) {
         AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback, Actions.getForm(intoFile, url), "downloadXForm... ");
-        mCallback.setTask(serverOperation);
-        return serverOperation;
+        if (mCallback != null) mCallback.setTask(serverOperation);
+//        return serverOperation;
     }
 
 

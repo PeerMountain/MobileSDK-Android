@@ -1,5 +1,7 @@
 package com.peermountain.core.network.teleferique.model;
 
+import com.peermountain.core.network.teleferique.model.body.MessageBody;
+
 /**
  * Created by Galeen on 3/19/18.
  */
