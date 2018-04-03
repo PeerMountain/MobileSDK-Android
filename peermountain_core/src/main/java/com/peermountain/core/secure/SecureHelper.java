@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
+import org.spongycastle.util.io.pem.PemObject;
+import org.spongycastle.util.io.pem.PemWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -173,10 +176,7 @@ public class SecureHelper {
         KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
         if (keyPair == null) return null;
         try {
-            Signature s = Signature.getInstance("SHA256withRSA");
-            s.initSign(keyPair.getPrivate());
-            s.update(data);
-            return s.sign();//signature
+            return sign(data, keyPair.getPrivate());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (SignatureException e) {
@@ -185,6 +185,13 @@ public class SecureHelper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static byte[] sign(byte[] data, PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature s = Signature.getInstance("SHA256withRSA");
+        s.initSign(key);
+        s.update(data);
+        return s.sign();//signature
     }
 
     public static boolean verify(String alias, byte[] data, byte[] signature) {
@@ -490,5 +497,18 @@ public class SecureHelper {
         }
 
         return null;
+    }
+
+    public static String toPEM(PublicKey publicKey) {
+        StringWriter writer = new StringWriter();
+        PemWriter pemWriter = new PemWriter(writer);
+        try {
+            pemWriter.writeObject(new PemObject("PUBLIC KEY", publicKey.getEncoded()));
+            pemWriter.flush();
+            pemWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return writer.toString();
     }
 }

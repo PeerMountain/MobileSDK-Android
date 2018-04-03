@@ -83,9 +83,9 @@ public class PublicEnvelope {
 
 
             KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(),TfConstants.KEY_ALIAS);
-            sender = getAddress(keyPair.getPublic().getEncoded());
+            sender = "2nHZ7xWEwuZMwdLGzji5vLJxd17ahnfJei3";//getAddress(keyPair.getPublic().getEncoded());//SecureHelper.toPEM(keyPair.getPublic()).getBytes());
 
-//            LogUtils.d("sender", sender);
+            LogUtils.d("pkey", SecureHelper.toPEM(keyPair.getPublic()));
 //            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
             LogUtils.d("envelope", new Gson().toJson(this));
         } catch (IOException e) {
@@ -111,13 +111,6 @@ public class PublicEnvelope {
 //        return base58.b58encode(step_4)
     @NonNull
     public static String getAddress(byte[] publicKey) {
-//        byte[] publicKeyPrefixed = new byte[publicKey.length+2];
-//        //add 2 bytes at beginning
-//        publicKeyPrefixed[0] = 1;
-//        publicKeyPrefixed[1] = 0;
-//        //copy publicKey into publicKeyPrefixed from pos 2 to the end
-//        System.arraycopy(publicKey,0,publicKeyPrefixed,2,publicKeyPrefixed.length-2);
-//        publicKey = publicKeyPrefixed;
         //step_1
         String value = SecureHelper.sha256AsBase64String(publicKey);
         //step_2
@@ -140,7 +133,6 @@ public class PublicEnvelope {
             System.arraycopy(doubleSha256,doubleSha256.length-4,
                     final_checksum,final_checksum.length-4,4 );
         }
-//        return SecureHelper.toBase64String(final_checksum);
         return Base58.encode(final_checksum);
     }
 
