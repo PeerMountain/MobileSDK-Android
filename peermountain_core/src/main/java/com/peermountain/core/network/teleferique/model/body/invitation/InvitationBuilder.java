@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.model.PublicEnvelope;
 import com.peermountain.core.network.teleferique.model.SendObject;
+import com.peermountain.core.network.teleferique.model.body.MessageContent;
 import com.peermountain.core.network.teleferique.model.body.base.BaseBuilder;
 
 import java.io.Serializable;
@@ -29,6 +30,12 @@ public class InvitationBuilder extends BaseBuilder implements Serializable {
 
     public InvitationBuilder(int bodyType, String time) {
         super(bodyType, time);
+    }
+
+    @Override
+    public MessageContent getMessageContent() {
+        InvitationBody body = new InvitationBody(this);
+        return  new MessageContent(body);
     }
 
     public String getBootstrapNode() {

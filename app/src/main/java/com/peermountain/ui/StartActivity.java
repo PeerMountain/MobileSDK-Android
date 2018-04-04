@@ -15,6 +15,7 @@ import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.callbacks.TimeCallback;
 import com.peermountain.core.network.teleferique.model.SendObject;
 import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBuilder;
+import com.peermountain.core.network.teleferique.model.body.registration.RegistrationBuilder;
 
 
 public class StartActivity extends AppCompatActivity {
@@ -64,10 +65,17 @@ public class StartActivity extends AppCompatActivity {
                 .setServiceOfferingID("1")
                 .setInviteKey("72x35FDOXuTkxivh7qYlqPU91jVgy607");
 
+        RegistrationBuilder registrationBuilder = new RegistrationBuilder(TfConstants.BODY_TYPE_REGISTRATION,time)
+                .setInviteMsgID("XY+IUYG2tojWCPSQz7dVhcSoEDOTZdGsPlfDIDsYIKg=")
+                .setInviteName("Invite 1")
+                .setKeyProof("72x35FDOXuTkxivh7qYlqPU91jVgy607")
+                .setPublicNickname("Future1");
 
         NetworkManager.sendToServer(new InviteCallback(null,MainCallback.TYPE_NO_PROGRESS),
 //                "http://b9d87780.ngrok.io/teleferic/",
-                invitationBuilder.build());
+                registrationBuilder.build()
+//                invitationBuilder.build()
+        );
     }
 
     @Override

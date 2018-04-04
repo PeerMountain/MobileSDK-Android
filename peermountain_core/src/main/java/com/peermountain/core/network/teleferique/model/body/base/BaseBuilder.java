@@ -1,6 +1,7 @@
 package com.peermountain.core.network.teleferique.model.body.base;
 
 import com.peermountain.core.network.teleferique.model.SendObject;
+import com.peermountain.core.network.teleferique.model.body.MessageContent;
 
 import java.io.Serializable;
 
@@ -17,6 +18,7 @@ public abstract class BaseBuilder implements Serializable {
         this.time = time;
     }
 
+    public abstract MessageContent getMessageContent();
     public abstract SendObject build();
 
     public int getBodyType() {

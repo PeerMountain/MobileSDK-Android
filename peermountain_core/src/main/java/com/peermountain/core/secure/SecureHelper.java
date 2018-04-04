@@ -49,7 +49,11 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -210,6 +214,86 @@ public class SecureHelper {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static String encryptRSAb64(String alias, String value) {
+        byte[] bytes =  encryptRSA(alias, value);
+        return Base64.encodeToString(bytes, base64Flag);
+    }
+
+    public static String encryptRSAb64(String value, PublicKey publicKey) {
+        byte[] bytes =  encryptRSA(value, publicKey);
+        return Base64.encodeToString(bytes, base64Flag);
+    }
+
+    public static byte[] encryptRSA(String alias, String value) {
+        KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
+        if (keyPair == null) return null;
+        return encryptRSA(value,keyPair.getPublic());
+    }
+
+    public static byte[] encryptRSA(String value, PublicKey publicKey) {
+        if (publicKey == null) return null;
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encryptedBytes = cipher.doFinal(value.getBytes());
+            return encryptedBytes;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }  catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String decryptRSAb64(String value, PrivateKey privateKey) {
+        byte[] bytes =  decryptRSA(Base64.decode(value, base64Flag),privateKey);
+        return new String(bytes);
+    }
+
+    public static String decryptRSAb64(String alias, String value) {
+        byte[] bytes =  decryptRSA(alias, Base64.decode(value, base64Flag));
+        return new String(bytes);
+    }
+
+    public static byte[] decryptRSA(String alias,String value) {
+        KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
+        if (keyPair == null) return null;
+        return decryptRSA(value.getBytes(),keyPair.getPrivate());
+    }
+
+    public static byte[] decryptRSA(String alias,byte[] value) {
+        KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
+        if (keyPair == null) return null;
+        return decryptRSA(value,keyPair.getPrivate());
+    }
+
+    public static byte[] decryptRSA(byte[] value, PrivateKey privateKey) {
+        if (privateKey == null) return null;
+        try {
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decryptedBytes = cipher.doFinal(value);
+            return decryptedBytes;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }  catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void deleteKeyPair(String alias) {
@@ -447,19 +531,20 @@ public class SecureHelper {
         String hash = Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), base64Flag);
         return hash;
     }
-
     public static String hash_hmac(String password, byte[] bytes) {
+        return hash_hmac(password, bytes, generateSalt(40));
+    }
+
+    public static String hash_hmac(String password, byte[] bytes,byte[] salt) {
 
    /* Store these things on disk used to derive key later: */
         int iterationCount = 1000;
-        int saltLength = 40; // bytes; should be the same size as the output (256 / 8 = 32)
+//        int saltLength = 40; // bytes; should be the same size as the output (256 / 8 = 32)
         int keyLength = 256; // 256-bits for AES-256, 128-bits for AES-128, etc
-        byte[] salt; // Should be of saltLength
+//        byte[] salt; // Should be of saltLength
 
    /* When first creating the key, obtain a salt with this: */
-        SecureRandom random = new SecureRandom();
-        salt = new byte[saltLength];
-        random.nextBytes(salt);
+//        salt = generateSalt(saltLength);
 
    /* Use this to derive the key from the password: */
         KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt,
@@ -484,14 +569,27 @@ public class SecureHelper {
         return null;
     }
 
+    public static byte[] generateSalt(int saltLength) {
+        byte[] salt;SecureRandom random = new SecureRandom();
+        salt = new byte[saltLength];
+        random.nextBytes(salt);
+        return salt;
+    }
+
 
     public static PublicKey getKey(String key) {
         try {
-            byte[] byteKey = Base64.decode(key.getBytes(), base64Flag);
-            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-
-            return kf.generatePublic(X509publicKey);
+//            byte[] byteKey = Base64.decode(key.getBytes(), base64Flag);
+//            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
+//            KeyFactory kf = KeyFactory.getInstance("RSA");
+//
+//            return kf.generatePublic(X509publicKey);
+            if (key.contains("-----BEGIN PUBLIC KEY-----") || key.contains("-----END PUBLIC KEY-----"))
+                key = key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "");
+            byte[] keyBytes = Base64.decode(key, Base64.DEFAULT);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePublic(spec);
         } catch (Exception e) {
             e.printStackTrace();
         }

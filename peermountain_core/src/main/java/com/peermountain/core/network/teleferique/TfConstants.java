@@ -6,6 +6,21 @@ package com.peermountain.core.network.teleferique;
 
 public class TfConstants {
     public static final String KEY_ALIAS = "test2";
+    public static final String KEY_ADDRESS = "2nHZ7xWEwuZMwdLGzji5vLJxd17ahnfJei3";
+    public static final String KEY_PUBLIC = "-----BEGIN PUBLIC KEY-----\n" +
+            "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAvibs6QJ23DtU01mLVo6F\n" +
+            "B9eyj12FpPHvgFvQ39zdRFnZ3jxqvFxENWBFrBV4x11enh4U3djBg2QhYuiEVYlf\n" +
+            "Tto9NEGQtRz5g5kaM3yiZMVXIkyVmdXvU0cSsQqQP00lt2tm4zdClxVvwt3oN2Kn\n" +
+            "xLH6aO/ENw64fp4rqSq8zJcjYNBGdVjFSNkWj7wxeOrGgUockIDxGmlfcbF/YRxL\n" +
+            "PrJbEerx6ClkRwPVlgof8Lvs2uaEcPuO0POC3R3+sMVE4d627tAl6KR2eW/98Rdn\n" +
+            "I2bQYcUzK9L9/X3lU28L5sUJQBqtsoEcEbOYxylAEkBm9jPn71fV2245oKbs6YBm\n" +
+            "hRNx+lnw9DugLrB4T2Yzu+3JNR5FNXD+SkW8Ay1vcPmAeMEAsvHoXNUxVJzd5hwD\n" +
+            "FIMrDuUuiP7jF+PNh4SGaUgUIgbk36rrgMP8z0xrnbENh9/uHhBSahRHb7a3DAwY\n" +
+            "dwMdk5AZm3lGWL9+I+YPFEHpSY6zy3y9ZNxcpq2LDvERMMW6NqHue8tPII6utT6N\n" +
+            "1ExGn2O6pi7RQEs7ZvK4Mpeys5ZSsfcnFbRMrNVbYBq+btUYw1/FP/P/YGJ7CQHl\n" +
+            "ID6ytYdrODPBftAv4e1avmqCit+7MZyJME2zxG71kBJa59qcvQXf3AoZxfj0tnHG\n" +
+            "onmwCjRva9XmguDORNL460sCAwEAAQ==\n" +
+            "-----END PUBLIC KEY-----";
     public static final int MESSAGE_TYPE_SYSTEM = 0;
     public static final String MESSAGE_TYPE_REGISTRATION = "REGISTRATION";//1;
     public static final int MESSAGE_TYPE_ASSERTION = 2;

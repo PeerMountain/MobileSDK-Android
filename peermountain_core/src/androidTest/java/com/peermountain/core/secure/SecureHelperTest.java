@@ -1,6 +1,7 @@
 package com.peermountain.core.secure;
 
 import android.support.test.InstrumentationRegistry;
+import android.util.Base64;
 import android.util.Log;
 
 import com.peermountain.core.network.teleferique.model.SendObject;
@@ -16,10 +17,10 @@ import java.util.Map;
 public class SecureHelperTest {
     @Test
     public void hash_hmac() throws Exception {
-        String hash = SecureHelper.hash_hmac("test", "pass");
+        String hash = SecureHelper.hash_hmac("test", "pass".getBytes());
         Log.w("hash",hash);
         Assert.assertNotNull("wrong", hash);
-        hash = SecureHelper.hash_hmac("test", "pass");
+        hash = SecureHelper.hash_hmac("test", "pass".getBytes());
         Log.w("hash_new",hash);
         Assert.assertNotNull("wrong", hash);
         hash = SecureHelper.hash_hmac_simple("test", "pass");
@@ -60,7 +61,7 @@ public class SecureHelperTest {
     @Test
     public void parse() throws Exception {
         SendObject sendObject = new SendObject().setQuery("some query").setVariables("some variables");
-        String msgpacked = SecureHelper.parse(sendObject);
+        String msgpacked = Base64.encodeToString(SecureHelper.parse(sendObject),Base64.DEFAULT);
         Log.w("msgpacked",msgpacked);
         Assert.assertNotNull("wrong", msgpacked);
         Map<String, Object> sendObject1 = SecureHelper.read(msgpacked);
