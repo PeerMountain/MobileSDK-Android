@@ -19,13 +19,18 @@ import javax.crypto.spec.SecretKeySpec;
  */
 
 public class CoderAES {
-    private static final String AES_TRANSFORMATION = "AES/ECB/NoPadding";//ISO10126Padding //PKCS5Padding //NoPadding
+    private static final String AES_TRANSFORMATION = "AES/ECB/PKCS7Padding";//ISO10126Padding //PKCS5Padding //NoPadding
+    private static final boolean withCustomPadding = false;
     private static final boolean WITH_IV = false;
     private static final String SECRET_KEY_HASH_TRANSFORMATION = "SHA-256";
     public static final String CHARSET = "UTF-8";
-    private static Cipher writerAes;
-    private static Cipher readerAes;
+    public static Cipher writerAes;
+    public static Cipher readerAes;
 
+    static void clear(){
+        writerAes = null;
+        readerAes = null;
+    }
     // TODO: 3/19/18 check to return just String instead
     static String encrypt(String pass, String value) {
         try {
@@ -55,7 +60,7 @@ public class CoderAES {
         Cipher writer = getAesWriter(pass);
         if (writer == null) return null;
         try {
-            byte[] secureValue = writer.doFinal(customPadding(value, 16));
+            byte[] secureValue = writer.doFinal(customPadding(value, 16,false));
             return Base64.encodeToString(secureValue, Base64.NO_WRAP);
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
@@ -172,7 +177,7 @@ public class CoderAES {
     }
 
     private static byte[] createKeyBytes(String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return customPadding(key.getBytes(CHARSET), 32);
+        return customPadding(key.getBytes(CHARSET), 32,true);
 //        byte[] arrBTmp = key.getBytes();
 //        byte[] arrB = new byte[16];
 //        for (int i = 0; i < arrBTmp.length && i < arrB.length; i++) {
@@ -186,7 +191,8 @@ public class CoderAES {
 //        return keyBytes;
     }
 
-    private static byte[] customPadding(byte[] key, int key_size) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private static byte[] customPadding(byte[] key, int key_size, boolean isKey) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        if(!isKey && !withCustomPadding) return key;
         if (key.length % key_size == 0) {
             printArray(key);
             return key;
@@ -221,6 +227,7 @@ public class CoderAES {
     }
 
     private static byte[] customUnPadding(byte[] key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        if(!withCustomPadding) return key;
         byte pad = key[key.length - 1];
         boolean isPadded = false;
         if (pad < key.length) {

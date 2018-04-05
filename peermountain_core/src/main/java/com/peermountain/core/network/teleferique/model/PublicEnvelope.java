@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.model.body.MessageContent;
-import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBody;
 import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBuilder;
 import com.peermountain.core.network.teleferique.model.body.registration.RegistrationBuilder;
 import com.peermountain.core.network.teleferique.model.body.registration.RegistrationMessage;
@@ -14,8 +13,11 @@ import com.peermountain.core.secure.Base58;
 import com.peermountain.core.secure.SecureHelper;
 import com.peermountain.core.utils.LogUtils;
 
-import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SignatureException;
 
 /**
  * Created by Galeen on 3/14/2018.
@@ -50,18 +52,20 @@ public class PublicEnvelope {
         compose(messageContent);
     }
     private void compose(MessageContent messageContent) {
-        try {
             // TODO: 4/4/2018 in MessageBody
             byte[] salt = SecureHelper.generateSalt(40);
             if(messageContent instanceof RegistrationMessage){
                 ((RegistrationMessage) messageContent).setDossierSalt(SecureHelper.toBase64String(salt));
                 ((RegistrationMessage) messageContent).setSignature(
-                        getMessageSignature(messageContent.time,messageContent.bodyHash.getBytes()));
+                        getMessageSignature(messageContent.time,messageContent.bodyHash));
+                RegistrationMessage fullContent = (RegistrationMessage) messageContent;
+                LogUtils.d("message content", new Gson().toJson(fullContent));
             }
+            // TODO: 4/5/2018 check
+            MessageContent justBodyAndType = messageContent;//new MessageContent(messageContent);
             //AES encrypt body with passphrase='Peer Mountain'
-            String encryptedBody = SecureHelper.encodeAES(pass, SecureHelper.parse(messageContent));
+            String encryptedBody = SecureHelper.encodeAES(pass, SecureHelper.parse(justBodyAndType));
             message = encryptedBody;
-            LogUtils.d("message content", new Gson().toJson(messageContent));
             LogUtils.d("message encoded", encryptedBody);
 //            MessageContent messageAsMap = null;
 //            try {
@@ -84,12 +88,13 @@ public class PublicEnvelope {
             messageType = TfConstants.MESSAGE_TYPE_REGISTRATION;
 //            LogUtils.d("messageType", messageType+"");
 
-            dossierHash = SecureHelper.hash_hmac(pass,messageContent.getMessageBody());
+            dossierHash = SecureHelper.hash_hmac_simple(salt,messageContent.messageBodyPacked);
+//            dossierHash = SecureHelper.hash_hmacAsB64(pass,messageContent.messageBodyPacked,salt);
 //            LogUtils.d("dossierHash", dossierHash);
 
-            messageSig = getMessageSignature(messageContent.time,messageHash.getBytes());
+            messageSig = getMessageSignature(messageContent.time,messageHash);
 //            LogUtils.d("messageSig", messageSig);
-
+            verifySignature(messageSig,messageHash);
 
             KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(), TfConstants.KEY_ALIAS);
             sender = getAddress(keyPair.getPublic().getEncoded());//SecureHelper.toPEM(keyPair.getPublic()).getBytes());
@@ -97,9 +102,6 @@ public class PublicEnvelope {
 //            LogUtils.d("pkey", SecureHelper.toPEM(keyPair.getPublic()));
 //            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
             LogUtils.d("envelope", new Gson().toJson(this));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 //    private void compose(MessageBody messageBody) {
@@ -191,14 +193,7 @@ public class PublicEnvelope {
         return Base58.encode(final_checksum);
     }
 
-    private MessageContent getMessage(InvitationBuilder invitationBuilder) throws IOException {
-        InvitationBody body = new InvitationBody(invitationBuilder);
-        return new MessageContent(body);
-//        return SecureHelper.parse(messageBody);
-    }
-
-    private String getMessageSignature(String time,byte[] hash) throws IOException {
-//                "gqlzaWduYXR1cmXaAqxCZHFtTlMycWZQbk1JVm1PY05JWjdQVy9Da1FpZDB4SlFjS20wTzZHNzNuZUYzYlF5R1R0c3hRd0tPV0d5NFEzNnJNK3pQblU4Ri95R0dkRFozQW1JQUV6Tlp2RjRyc2RIZE42SDg4MFJjNG01YzdVQkk1MWhqOXJ4TXRNY0pXZTVQTUpyNFo4dlhPQUcrTmdVQVNScmtHeHBUNDhJTVlCVkpHQWxIZ3FsaVNTeTJoSzdjdDhHZzlkQk1yVFpWcXFLaVVMNkJ6MGthcmVQazA0WjZrZ2hwOEwyS1ovYjBFM0RnSS9mTVlLMDFjNDl3cUxRRExuZWF4a0NFREhtQUUvYlBha3B2eWJYVk5ldmtEaWtKOVpnbzdsdFhhR1BjVG1jTXZoYjFDVUtieHZISlVFRUpXbVFXb0tCTWhwRzJqWlFtWGJCRFZUczBkUEYzUXlqZnhLelJFWVFTWGJRZk85eFNmdTlwckQrUWtRSmRqdHY2Z2RURHJsU3BMaFloZnJDNXkwclA2amVyQnpzVjVmQkNuMGlzZzB2VllVUGM2M3k0ZW45d3R5UHhhcTlTZ3cvZDhLUmgyS2ZuaG4yNi9QSWxtdlYrU1hYbUFNV2c5TDNOcTdVVXBUNHJNKy9WWGZTNzAvUXRyQmVMdkYvUUFmSkhhRDJFK2RLeEV5cndXdHQ1SEQyVWxBOTlUb01YVk15UHhHaFErOS9Ba21QWVpxS2RzekU3Ym9OYjhQTG44S2dGNUMzYkkrajh4VVhsN3d3Rm9YZ0NlV09VSmdmUHJZV1hETUg2WERRQ3dYZzQyMVN6Y3Jpd2k1dWtKOVhmYjgrVXl6d3locWJQcG9mWEFjZnhHRWJLNVVUZ0NGQlZEMkFRNzFPbytmbnVuYURpNGR1UjV4bWVjbE5FWT2pdGltZXN0YW1wsjE1MjEyMTQ5MDguNzAwMjkxMg==";
+    public static String getMessageSignature(String time,String hash)  {
         MessageForSignature messageForSignature = new MessageForSignature(hash, time);
 //            signable_object = OrderedDict()
 //            signable_object['messageHash'] = message_hash
@@ -211,12 +206,38 @@ public class PublicEnvelope {
 //                    'timestamp': node_signed_timestamp
 //        })).decode()
         PmSignature pmSignature = new PmSignature(SecureHelper.sign(TfConstants.KEY_ALIAS,
-//                SecureHelper.toBytes(message)
                 SecureHelper.parse(messageForSignature)
         ), time);
-        LogUtils.d("message to sign", new Gson().toJson(messageForSignature));
-        LogUtils.d("message to sign in signature as packed", new Gson().toJson(SecureHelper.parse(messageForSignature)));
-        LogUtils.d("signature", new Gson().toJson(pmSignature));
         return SecureHelper.parseToBase64(pmSignature);
+    }
+
+    public static String getMessageSignature(String time, String hash, PrivateKey privateKey)  {
+        //MessageForSignature is just data holder
+        MessageForSignature messageForSignature = new MessageForSignature(hash, time);
+        //PmSignature is just data holder
+        PmSignature pmSignature = null;
+        try {
+            pmSignature = new PmSignature(
+                    SecureHelper.sign(
+                            SecureHelper.parse(messageForSignature)//convert to map and pack
+                            ,privateKey
+                    ),
+                    time
+            );
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        }
+        return SecureHelper.parseToBase64(pmSignature);//convert to map , pack and encodeBase64
+    }
+
+    private void verifySignature(String base64Sign,String hash){
+        PmSignature pmSignature = (PmSignature) SecureHelper.read(base64Sign,PmSignature.class);
+        if (pmSignature==null)return;
+        MessageForSignature messageForSignature = new MessageForSignature(hash, pmSignature.getTimestamp());
+        LogUtils.d("verify",SecureHelper.verify(TfConstants.KEY_ALIAS,SecureHelper.parse(messageForSignature),pmSignature.getSignature())+"");
     }
 }

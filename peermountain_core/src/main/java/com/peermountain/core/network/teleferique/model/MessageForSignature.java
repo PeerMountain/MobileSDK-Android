@@ -7,11 +7,11 @@ import java.io.Serializable;
  */
 
 public class MessageForSignature implements Serializable{
-    public byte[] messageHash;
+    public String messageHash;
     public String timestamp;
 
-    public MessageForSignature(byte[] messageHash, String timestamp) {
-        this.messageHash = messageHash;
+    public MessageForSignature(String messageHash, String timestamp) {
+        this.messageHash = messageHash;//.getBytes();
         this.timestamp = timestamp;
     }
 }

@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.msgpack.jackson.dataformat.MessagePackFactory;
+import org.spongycastle.asn1.ASN1Sequence;
+import org.spongycastle.asn1.DERInteger;
 import org.spongycastle.crypto.digests.RIPEMD160Digest;
 import org.spongycastle.util.io.pem.PemObject;
 import org.spongycastle.util.io.pem.PemWriter;
@@ -26,6 +28,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -45,8 +48,11 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.crypto.BadPaddingException;
@@ -65,7 +71,7 @@ import javax.security.auth.x500.X500Principal;
  */
 
 public class SecureHelper {
-    private static final String RSA_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
+    private static final String RSA_TRANSFORMATION = "RSA";//"RSA/ECB/PKCS1PADDING";
     private static final int KEY_SIZE = 4096;
     private static final int base64Flag = Base64.NO_WRAP;
 
@@ -89,7 +95,7 @@ public class SecureHelper {
     public static KeyPair createAndroidKeyStoreAsymmetricKey(Context context, String alias) {
         KeyPairGenerator generator = null;
         try {
-            generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+            generator = KeyPairGenerator.getInstance(RSA_TRANSFORMATION, "AndroidKeyStore");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
@@ -191,7 +197,7 @@ public class SecureHelper {
         return null;
     }
 
-    private static byte[] sign(byte[] data, PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public static byte[] sign(byte[] data, PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature s = Signature.getInstance("SHA256withRSA");
         s.initSign(key);
         s.update(data);
@@ -226,6 +232,11 @@ public class SecureHelper {
         return Base64.encodeToString(bytes, base64Flag);
     }
 
+    public static String encryptRSAb64(String value, PublicKey publicKey, String transformation) {
+        byte[] bytes =  encryptRSA(value, publicKey,transformation);
+        return Base64.encodeToString(bytes, base64Flag);
+    }
+
     public static byte[] encryptRSA(String alias, String value) {
         KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
         if (keyPair == null) return null;
@@ -233,9 +244,13 @@ public class SecureHelper {
     }
 
     public static byte[] encryptRSA(String value, PublicKey publicKey) {
+        return encryptRSA(value, publicKey, "RSA/ECB/NoPadding");
+    }
+
+    public static byte[] encryptRSA(String value, PublicKey publicKey, String transformation) {
         if (publicKey == null) return null;
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance(transformation);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encryptedBytes = cipher.doFinal(value.getBytes());
             return encryptedBytes;
@@ -523,19 +538,34 @@ public class SecureHelper {
         return CoderAES.decrypt(pass, value);
     }
 
-    public static String hash_hmac_simple(String secret, String str) throws Exception {
-        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+    public static String hash_hmac_simple(byte[] secret, byte[] value) {
+        try {
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
 
-        SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-        sha256_HMAC.init(secretKey);
-        String hash = Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), base64Flag);
-        return hash;
+            SecretKeySpec secretKey = new SecretKeySpec(secret, "HmacSHA256");
+            sha256_HMAC.init(secretKey);
+            String hash = Base64.encodeToString(sha256_HMAC.doFinal(value), base64Flag);
+            return hash;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public static String hash_hmac(String password, byte[] bytes) {
-        return hash_hmac(password, bytes, generateSalt(40));
+        return hash_hmacAsHex(password, bytes, generateSalt(40));
     }
 
-    public static String hash_hmac(String password, byte[] bytes,byte[] salt) {
+    public static String hash_hmacAsHex(String password, byte[] bytes,byte[] salt){
+        return bin2hex(hash_hmac(password, bytes, salt));
+    }
+
+    public static String hash_hmacAsB64(String password, byte[] bytes,byte[] salt){
+        return toBase64String(hash_hmac(password, bytes, salt));
+    }
+
+    public static byte[] hash_hmac(String password, byte[] bytes,byte[] salt) {
 
    /* Store these things on disk used to derive key later: */
         int iterationCount = 1000;
@@ -557,7 +587,7 @@ public class SecureHelper {
             SecretKey key = new SecretKeySpec(keyBytes, "AES");
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             sha256_HMAC.init(key);
-            return bin2hex(sha256_HMAC.doFinal(bytes));
+            return sha256_HMAC.doFinal(bytes);
 //            return Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), base64Flag);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -597,6 +627,7 @@ public class SecureHelper {
         return null;
     }
 
+
     public static String toPEM(PublicKey publicKey) {
         StringWriter writer = new StringWriter();
         PemWriter pemWriter = new PemWriter(writer);
@@ -608,5 +639,78 @@ public class SecureHelper {
             e.printStackTrace();
         }
         return writer.toString();
+    }
+
+    public static String toPEM(PrivateKey privateKey) {
+        return "-----BEGIN RSA PRIVATE KEY-----\n" +
+                Base64.encodeToString(privateKey.getEncoded(),Base64.NO_WRAP) +
+                "\n-----END RSA PRIVATE KEY-----\n";
+    }
+
+    public static PrivateKey pemPrivateKeyPkcs1OrPkcs8Encoded(String privateKeyPem) throws GeneralSecurityException {
+        // PKCS#8 format
+        final String PEM_PRIVATE_START = "-----BEGIN PRIVATE KEY-----";
+        final String PEM_PRIVATE_END = "-----END PRIVATE KEY-----";
+
+        // PKCS#1 format
+        final String PEM_RSA_PRIVATE_START = "-----BEGIN RSA PRIVATE KEY-----";
+        final String PEM_RSA_PRIVATE_END = "-----END RSA PRIVATE KEY-----";
+
+//        Path path = Paths.get(pemFileName.getAbsolutePath());
+//
+//        String privateKeyPem = new String(Files.readAllBytes(path));
+
+        if (privateKeyPem.contains(PEM_PRIVATE_START)) { // PKCS#8 format
+            privateKeyPem = privateKeyPem.replace(PEM_PRIVATE_START, "").replace(PEM_PRIVATE_END, "");
+            privateKeyPem = privateKeyPem.replaceAll("\\s", "");
+
+            byte[] pkcs8EncodedKey = Base64.decode(privateKeyPem, Base64.DEFAULT);
+
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            return factory.generatePrivate(new PKCS8EncodedKeySpec(pkcs8EncodedKey));
+
+        } else if (privateKeyPem.contains(PEM_RSA_PRIVATE_START)) {  // PKCS#1 format
+
+            privateKeyPem = privateKeyPem.replace(PEM_RSA_PRIVATE_START, "").replace(PEM_RSA_PRIVATE_END, "");
+            privateKeyPem = privateKeyPem.replaceAll("\\s", "");
+
+            byte[] encodedPrivateKey = Base64.decode(privateKeyPem, Base64.DEFAULT);
+
+            try {
+                ASN1Sequence primitive = (ASN1Sequence) ASN1Sequence
+                        .fromByteArray(encodedPrivateKey);
+                Enumeration<?> e = primitive.getObjects();
+                BigInteger v = ((DERInteger) e.nextElement()).getValue();
+
+                int version = v.intValue();
+                if (version != 0 && version != 1) {
+                    throw new IllegalArgumentException("wrong version for RSA private key");
+                }
+                /**
+                 * In fact only modulus and private exponent are in use.
+                 */
+                BigInteger modulus = ((DERInteger) e.nextElement()).getValue();
+                BigInteger publicExponent = ((DERInteger) e.nextElement()).getValue();
+                BigInteger privateExponent = ((DERInteger) e.nextElement()).getValue();
+                BigInteger prime1 = ((DERInteger) e.nextElement()).getValue();
+                BigInteger prime2 = ((DERInteger) e.nextElement()).getValue();
+                BigInteger exponent1 = ((DERInteger) e.nextElement()).getValue();
+                BigInteger exponent2 = ((DERInteger) e.nextElement()).getValue();
+                BigInteger coefficient = ((DERInteger) e.nextElement()).getValue();
+
+                RSAPrivateKeySpec spec = new RSAPrivateKeySpec(modulus, privateExponent);
+                KeyFactory kf = KeyFactory.getInstance("RSA");
+                PrivateKey pk = kf.generatePrivate(spec);
+                return pk;
+            } catch (IOException e2) {
+                throw new IllegalStateException();
+            } catch (NoSuchAlgorithmException e) {
+                throw new IllegalStateException(e);
+            } catch (InvalidKeySpecException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
+        throw new GeneralSecurityException("Not supported format of a private key");
     }
 }

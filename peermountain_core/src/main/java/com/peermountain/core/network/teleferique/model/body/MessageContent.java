@@ -10,15 +10,17 @@ import com.peermountain.core.utils.LogUtils;
  */
 
 public class MessageContent {
-    private byte[] messageBody;
+    private String messageBody;//Base64
     private int bodyType;//from TfConstants
     public transient String bodyHash, time;
+    public transient byte[] messageBodyPacked;
 
     public MessageContent() {
     }
 
-    public MessageContent(int bodyType) {
-        this.bodyType = bodyType;
+    public MessageContent(MessageContent messageContent) {
+        this.messageBody = messageContent.getMessageBody();
+        this.bodyType = messageContent.getBodyType();
     }
 
     public MessageContent(MessageBodyObject body) {
@@ -27,7 +29,7 @@ public class MessageContent {
         build(body);
     }
 
-    public byte[] getMessageBody() {
+    public String getMessageBody() {
         return messageBody;
     }
 
@@ -36,11 +38,16 @@ public class MessageContent {
     }
 
     public void build(MessageBodyObject body) {
-        messageBody = SecureHelper.parse(body);// TODO: 4/4/2018 return as base64 ?
+        messageBodyPacked = SecureHelper.parse(body);
+        messageBody = SecureHelper.toBase64String(messageBodyPacked);
         bodyHash = SecureHelper.sha256AsBase64String(messageBody);
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         LogUtils.d("message_body AsJson", gson.toJson(body));
         LogUtils.d("message AsJson", gson.toJson(this));
 //        LogUtils.d("fullMessageBodyAsJson", new Gson().toJson(this));
+    }
+
+    public String encrypt(String pass){
+        return null;
     }
 }

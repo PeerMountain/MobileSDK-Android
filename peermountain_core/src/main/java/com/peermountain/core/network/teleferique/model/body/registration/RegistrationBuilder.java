@@ -52,7 +52,7 @@ public class RegistrationBuilder extends BaseBuilder {
 
     private void prepare() {
         //AES encrypt body with passphrase='Peer Mountain'
-        PublicKey serverPublicKey = SecureHelper.getKey(TfConstants.KEY_PUBLIC);
+        PublicKey serverPublicKey = SecureHelper.getKey(TfConstants.KEY_PUBLIC_SERVER);
         setInviteName(SecureHelper.encryptRSAb64(getInviteName(), serverPublicKey));
         LogUtils.d("invite name encoded", getInviteName());
         setKeyProof(SecureHelper.encryptRSAb64(getKeyProof(), serverPublicKey));
