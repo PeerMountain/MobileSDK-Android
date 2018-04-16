@@ -7,7 +7,6 @@ import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.model.body.MessageContent;
 import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBuilder;
 import com.peermountain.core.network.teleferique.model.body.registration.RegistrationBuilder;
-import com.peermountain.core.network.teleferique.model.body.registration.RegistrationMessage;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.secure.Base58;
 import com.peermountain.core.secure.SecureHelper;
@@ -51,22 +50,14 @@ public class PublicEnvelope {
         MessageContent messageContent = registrationBuilder.getMessageContent();
         compose(messageContent);
     }
+
     private void compose(MessageContent messageContent) {
-            // TODO: 4/4/2018 in MessageBody
-            byte[] salt = SecureHelper.generateSalt(40);
-            if(messageContent instanceof RegistrationMessage){
-                ((RegistrationMessage) messageContent).setDossierSalt(SecureHelper.toBase64String(salt));
-                ((RegistrationMessage) messageContent).setSignature(
-                        getMessageSignature(messageContent.time,messageContent.bodyHash));
-                RegistrationMessage fullContent = (RegistrationMessage) messageContent;
-                LogUtils.d("message content", new Gson().toJson(fullContent));
-            }
-            // TODO: 4/5/2018 check
-            MessageContent justBodyAndType = messageContent;//new MessageContent(messageContent);
-            //AES encrypt body with passphrase='Peer Mountain'
-            String encryptedBody = SecureHelper.encodeAES(pass, SecureHelper.parse(justBodyAndType));
-            message = encryptedBody;
-            LogUtils.d("message encoded", encryptedBody);
+        LogUtils.d("message content", messageContent.asJson());
+
+        //AES encrypt body with passphrase='Peer Mountain'
+        String encryptedBody = SecureHelper.encodeAES(pass, SecureHelper.parse(messageContent));
+        message = encryptedBody;
+        LogUtils.d("message encoded", encryptedBody);
 //            MessageContent messageAsMap = null;
 //            try {
 //                messageAsMap = (RegistrationMessage) SecureHelper.read(
@@ -79,29 +70,25 @@ public class PublicEnvelope {
 //                LogUtils.d("message decoded", messageAsMap.getBodyType() + "");
 ////                LogUtils.d("message_body decoded", ((InvitationBody)SecureHelper.read(messageAsMap.getMessageBody(),InvitationBody.class)).getBootstrapAddr());
 //            }
-            messageHash = SecureHelper.sha256AsBase64String(encryptedBody);
-//            LogUtils.d("encrypted messageHash", messageHash);
+        messageHash = SecureHelper.sha256AsBase64String(encryptedBody);
 
-            bodyHash = messageContent.bodyHash;//SecureHelper.sha256AsBase64String(messageBody);
-//            LogUtils.d("full bodyHash", bodyHash);
+        bodyHash = messageContent.takeBodyHash();//SecureHelper.sha256AsBase64String(messageBody);
 
-            messageType = TfConstants.MESSAGE_TYPE_REGISTRATION;
-//            LogUtils.d("messageType", messageType+"");
+        messageType = messageContent.takeMessageType();
 
-            dossierHash = SecureHelper.hash_hmac_simple(salt,messageContent.messageBodyPacked);
+        dossierHash = SecureHelper.hash_hmac_simple(messageContent.takeSalt()
+                , messageContent.takeMessageBodyPacked());
 //            dossierHash = SecureHelper.hash_hmacAsB64(pass,messageContent.messageBodyPacked,salt);
-//            LogUtils.d("dossierHash", dossierHash);
 
-            messageSig = getMessageSignature(messageContent.time,messageHash);
-//            LogUtils.d("messageSig", messageSig);
-            verifySignature(messageSig,messageHash);
+        messageSig = getMessageSignature(messageContent.takeTime(), messageHash);
 
-            KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(), TfConstants.KEY_ALIAS);
-            sender = getAddress(keyPair.getPublic().getEncoded());//SecureHelper.toPEM(keyPair.getPublic()).getBytes());
+        verifySignature(messageSig, messageHash);
+
+        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(), TfConstants.KEY_ALIAS);
+        sender = getAddress(keyPair.getPublic().getEncoded());//SecureHelper.toPEM(keyPair.getPublic()).getBytes());
 
 //            LogUtils.d("pkey", SecureHelper.toPEM(keyPair.getPublic()));
-//            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-            LogUtils.d("envelope", new Gson().toJson(this));
+        LogUtils.d("envelope", new Gson().toJson(this));
     }
 
 //    private void compose(MessageBody messageBody) {
@@ -193,7 +180,7 @@ public class PublicEnvelope {
         return Base58.encode(final_checksum);
     }
 
-    public static String getMessageSignature(String time,String hash)  {
+    public static String getMessageSignature(String time, String hash) {
         MessageForSignature messageForSignature = new MessageForSignature(hash, time);
 //            signable_object = OrderedDict()
 //            signable_object['messageHash'] = message_hash
@@ -211,7 +198,7 @@ public class PublicEnvelope {
         return SecureHelper.parseToBase64(pmSignature);
     }
 
-    public static String getMessageSignature(String time, String hash, PrivateKey privateKey)  {
+    public static String getMessageSignature(String time, String hash, PrivateKey privateKey) {
         //MessageForSignature is just data holder
         MessageForSignature messageForSignature = new MessageForSignature(hash, time);
         //PmSignature is just data holder
@@ -220,7 +207,7 @@ public class PublicEnvelope {
             pmSignature = new PmSignature(
                     SecureHelper.sign(
                             SecureHelper.parse(messageForSignature)//convert to map and pack
-                            ,privateKey
+                            , privateKey
                     ),
                     time
             );
@@ -234,10 +221,10 @@ public class PublicEnvelope {
         return SecureHelper.parseToBase64(pmSignature);//convert to map , pack and encodeBase64
     }
 
-    private void verifySignature(String base64Sign,String hash){
-        PmSignature pmSignature = (PmSignature) SecureHelper.read(base64Sign,PmSignature.class);
-        if (pmSignature==null)return;
+    private void verifySignature(String base64Sign, String hash) {
+        PmSignature pmSignature = (PmSignature) SecureHelper.read(base64Sign, PmSignature.class);
+        if (pmSignature == null) return;
         MessageForSignature messageForSignature = new MessageForSignature(hash, pmSignature.getTimestamp());
-        LogUtils.d("verify",SecureHelper.verify(TfConstants.KEY_ALIAS,SecureHelper.parse(messageForSignature),pmSignature.getSignature())+"");
+        LogUtils.d("verify", SecureHelper.verify(TfConstants.KEY_ALIAS, SecureHelper.parse(messageForSignature), pmSignature.getSignature()) + "");
     }
 }

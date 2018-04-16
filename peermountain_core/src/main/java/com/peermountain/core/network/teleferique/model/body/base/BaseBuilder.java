@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 public abstract class BaseBuilder implements Serializable {
     private int bodyType;//from TfConstants
+    private String messageType;//from TfConstants
     private  String time;//from server
 
     public BaseBuilder(int bodyType, String time) {
@@ -36,6 +37,15 @@ public abstract class BaseBuilder implements Serializable {
 
     public BaseBuilder setTime(String time) {
         this.time = time;
+        return this;
+    }
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public BaseBuilder setMessageType(String messageType) {
+        this.messageType = messageType;
         return this;
     }
 }

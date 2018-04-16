@@ -5,7 +5,7 @@ package com.peermountain.core.network.teleferique;
  */
 
 public class TfConstants {
-    public static final String KEY_ALIAS = "test4";
+    public static final String KEY_ALIAS = "test7";
     public static final String KEY_ADDRESS = "2nHZ7xWEwuZMwdLGzji5vLJxd17ahnfJei3";
     public static final String KEY_PUBLIC = "-----BEGIN PUBLIC KEY-----\n" +
             "    MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAz614m40n+FfHIzLNFKaR\n" +

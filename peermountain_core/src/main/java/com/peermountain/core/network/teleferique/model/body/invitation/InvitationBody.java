@@ -2,14 +2,13 @@ package com.peermountain.core.network.teleferique.model.body.invitation;
 
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.model.body.base.BaseBody;
-import com.peermountain.core.network.teleferique.model.body.MessageBodyObject;
 
 /**
  * Created by Galeen on 3/14/2018.
  * Invitation Response / Registration Request
  */
 
-public class InvitationBody extends BaseBody implements MessageBodyObject {
+public class InvitationBody extends BaseBody {
     private String bootstrapNode; // URL or other trigger to open/install app
     private String bootstrapAddr; // PM Address
     private String inviteName; // text // Encrypted AES-256 using the inviteKey
@@ -88,5 +87,8 @@ public class InvitationBody extends BaseBody implements MessageBodyObject {
         return TfConstants.BODY_TYPE_INVITATION;
     }
 
-
+    @Override
+    public String takeMessageType() {
+        return TfConstants.MESSAGE_TYPE_REGISTRATION;
+    }
 }

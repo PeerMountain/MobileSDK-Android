@@ -191,7 +191,7 @@ public class CoderAES {
 //        return keyBytes;
     }
 
-    private static byte[] customPadding(byte[] key, int key_size, boolean isKey) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public static byte[] customPadding(byte[] key, int key_size, boolean isKey) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if(!isKey && !withCustomPadding) return key;
         if (key.length % key_size == 0) {
             printArray(key);

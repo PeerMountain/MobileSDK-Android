@@ -1,7 +1,7 @@
 package com.peermountain.core.network.teleferique.model.body.registration;
 
-import com.peermountain.core.network.teleferique.model.body.MessageBodyObject;
 import com.peermountain.core.network.teleferique.model.body.MessageContent;
+import com.peermountain.core.network.teleferique.model.body.base.BaseBody;
 
 /**
  * Created by Galeen on 4/4/2018.
@@ -13,7 +13,7 @@ public class RegistrationMessage extends MessageContent {
     public RegistrationMessage() {
     }
 
-    public RegistrationMessage(MessageBodyObject body) {
+    public RegistrationMessage(BaseBody body) {
         super(body);
     }
 
@@ -21,6 +21,7 @@ public class RegistrationMessage extends MessageContent {
         return signature;
     }
 
+    @Override
     public void setSignature(String signature) {
         this.signature = signature;
     }
@@ -29,6 +30,7 @@ public class RegistrationMessage extends MessageContent {
         return dossierSalt;
     }
 
+    @Override
     public void setDossierSalt(String dossierSalt) {
         this.dossierSalt = dossierSalt;
     }

@@ -71,7 +71,8 @@ import javax.security.auth.x500.X500Principal;
  */
 
 public class SecureHelper {
-    private static final String RSA_TRANSFORMATION = "RSA";//"RSA/ECB/PKCS1PADDING";
+    private static final String RSA_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
+    private static final String RSA_TRANSFORMATION_ENCRYPT = "RSA/ECB/NoPadding";//for python/server
     private static final int KEY_SIZE = 4096;
     private static final int base64Flag = Base64.NO_WRAP;
 
@@ -95,7 +96,7 @@ public class SecureHelper {
     public static KeyPair createAndroidKeyStoreAsymmetricKey(Context context, String alias) {
         KeyPairGenerator generator = null;
         try {
-            generator = KeyPairGenerator.getInstance(RSA_TRANSFORMATION, "AndroidKeyStore");
+            generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
@@ -244,7 +245,7 @@ public class SecureHelper {
     }
 
     public static byte[] encryptRSA(String value, PublicKey publicKey) {
-        return encryptRSA(value, publicKey, "RSA/ECB/NoPadding");
+        return encryptRSA(value, publicKey, RSA_TRANSFORMATION_ENCRYPT);
     }
 
     public static byte[] encryptRSA(String value, PublicKey publicKey, String transformation) {
@@ -293,7 +294,7 @@ public class SecureHelper {
     public static byte[] decryptRSA(byte[] value, PrivateKey privateKey) {
         if (privateKey == null) return null;
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance(RSA_TRANSFORMATION);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] decryptedBytes = cipher.doFinal(value);
             return decryptedBytes;
@@ -538,6 +539,12 @@ public class SecureHelper {
         return CoderAES.decrypt(pass, value);
     }
 
+    /**
+     *
+     * @param secret to use
+     * @param value to hash
+     * @return hmac hash as base64String
+     */
     public static String hash_hmac_simple(byte[] secret, byte[] value) {
         try {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");

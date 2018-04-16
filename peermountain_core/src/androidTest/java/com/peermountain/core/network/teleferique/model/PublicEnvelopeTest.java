@@ -44,7 +44,8 @@ public class PublicEnvelopeTest {
     public void checkRSA() {
 //        PublicKey publicKey = SecureHelper.getKey(TfConstants.KEY_PUBLIC);
         KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(InstrumentationRegistry.getTargetContext(), TfConstants.KEY_ALIAS);
-        String name = SecureHelper.encryptRSAb64(TfConstants.KEY_ALIAS, "test");
+        String name = SecureHelper.encryptRSAb64(TfConstants.KEY_ALIAS,"test");
+//                ,keyPair.getPublic(),"RSA/ECB/NoPadding");
         LogUtils.t("name encoded", name);
         String decodedName = SecureHelper.decryptRSAb64(TfConstants.KEY_ALIAS, name);
         LogUtils.t("name decoded", decodedName);
