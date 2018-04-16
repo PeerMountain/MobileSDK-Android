@@ -44,7 +44,7 @@ public class StartActivity extends AppCompatActivity {
     private void invite(){
         //get time first
         NetworkManager.sendToServer(new TimeCallback(null, MainCallback.TYPE_NO_PROGRESS,
-                        new TimeCallback.Events() {
+                        new TimeCallback.Events(null, MainCallback.TYPE_NO_PROGRESS) {
                             @Override
                             public void onTime(String time) {
                                 if(time!=null) sendInvite(time);

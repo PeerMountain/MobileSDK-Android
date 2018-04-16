@@ -19,6 +19,12 @@ public class TimeCallback extends MainCallback {
     }
 
     @Override
+    public void onNoNetwork() {
+        super.onNoNetwork();
+        if(callback!=null) callback.onNoNetwork();
+    }
+
+    @Override
     public void inTheEndOfDoInBackground(NetworkResponse networkResponse) {
         super.inTheEndOfDoInBackground(networkResponse);
         try {
@@ -40,7 +46,18 @@ public class TimeCallback extends MainCallback {
         }
     }
 
-    public interface Events{
-        void onTime(String time);
+    @Override
+    public void onError(String msg, NetworkResponse networkResponse) {
+        super.onError(msg, networkResponse);
+        if(callback!=null) callback.onError(msg, networkResponse);
+    }
+
+    public static abstract class Events extends MainCallback{
+
+        public Events(BaseEvents presenterCallback, int progressType) {
+            super(presenterCallback, progressType);
+        }
+
+        public abstract void onTime(String time);
     }
 }
