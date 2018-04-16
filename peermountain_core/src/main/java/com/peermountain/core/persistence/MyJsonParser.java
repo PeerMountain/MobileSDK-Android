@@ -15,6 +15,7 @@ import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.network.teleferique.model.Persona;
 import com.peermountain.core.network.teleferique.model.SendObject;
 import com.peermountain.core.utils.LogUtils;
 
@@ -222,6 +223,59 @@ public class MyJsonParser {
         return time;
     }
 
+    public static Persona readServerPersona(String json) throws IOException {
+        if (json == null) return null;
+        String name;
+        Persona persona = new Persona();
+        JsonReader reader = new JsonReader(new StringReader(json));
+        reader.beginObject();
+        while (reader.hasNext()) {
+            name = reader.nextName();
+            if (name.equals("data")) {
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    name = reader.nextName();
+                    if (name.equals("teleferic")) {
+                        reader.beginObject();
+                        while (reader.hasNext()) {
+                            name = reader.nextName();
+                            if (name.equals("persona")) {
+                                reader.beginObject();
+                                while (reader.hasNext()) {
+                                    name = reader.nextName();
+                                    switch (name) {
+                                        case "address" :
+                                            persona.setAddress(getString(reader));
+                                            break;
+                                        case "nickname" :
+                                            persona.setNickname(getString(reader));
+                                            break;
+                                        case "pubkey" :
+                                            persona.setPubkey(getString(reader));
+                                            break;
+                                        default:
+                                            reader.skipValue();
+                                    }
+                                }
+                                reader.endObject();
+                            }else {
+                                reader.skipValue();
+                            }
+                        }
+                        reader.endObject();
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+        reader.close();
+        return persona;
+    }
 
     static ShareObject readShareObject(String json) throws IOException {
         if (json == null) return null;

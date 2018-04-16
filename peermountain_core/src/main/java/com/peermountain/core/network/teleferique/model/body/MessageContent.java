@@ -9,25 +9,27 @@ import com.peermountain.core.utils.LogUtils;
  * Created by Galeen on 3/14/2018.
  */
 
-public class MessageBody {
-    private byte[] messageBody;
+public class MessageContent {
+    private String messageBody;//Base64
     private int bodyType;//from TfConstants
     public transient String bodyHash, time;
+    public transient byte[] messageBodyPacked;
 
-    public MessageBody() {
+    public MessageContent() {
     }
 
-    public MessageBody(int bodyType) {
-        this.bodyType = bodyType;
+    public MessageContent(MessageContent messageContent) {
+        this.messageBody = messageContent.getMessageBody();
+        this.bodyType = messageContent.getBodyType();
     }
 
-    public MessageBody(MessageBodyObject body) {
+    public MessageContent(MessageBodyObject body) {
         bodyType = body.takeBodyType();
         time = body.takeTime();
         build(body);
     }
 
-    public byte[] getMessageBody() {
+    public String getMessageBody() {
         return messageBody;
     }
 
@@ -36,11 +38,16 @@ public class MessageBody {
     }
 
     public void build(MessageBodyObject body) {
-        messageBody = SecureHelper.parse(body);
+        messageBodyPacked = SecureHelper.parse(body);
+        messageBody = SecureHelper.toBase64String(messageBodyPacked);
         bodyHash = SecureHelper.sha256AsBase64String(messageBody);
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         LogUtils.d("message_body AsJson", gson.toJson(body));
         LogUtils.d("message AsJson", gson.toJson(this));
 //        LogUtils.d("fullMessageBodyAsJson", new Gson().toJson(this));
+    }
+
+    public String encrypt(String pass){
+        return null;
     }
 }

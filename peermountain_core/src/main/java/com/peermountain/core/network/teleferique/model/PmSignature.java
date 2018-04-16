@@ -11,6 +11,9 @@ public class PmSignature implements Serializable{
     private byte[] signature;
     private String timestamp;
 
+    public PmSignature() {
+    }
+
     public PmSignature(byte[] signature, String timestamp) {
         this.signature = signature;
         this.timestamp = timestamp;

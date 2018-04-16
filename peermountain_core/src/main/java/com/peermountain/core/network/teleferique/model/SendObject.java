@@ -27,7 +27,7 @@ public class SendObject {
     }
 
     public SendObject getPublicPersonaAddress(){
-        query = "query {  teleferic {    persona {     address    }  } }";
+        query = "query {  teleferic {    persona {     address pubkey   }  } }";
         return this;
     }
 

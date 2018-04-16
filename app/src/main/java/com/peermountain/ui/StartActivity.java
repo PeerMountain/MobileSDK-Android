@@ -3,18 +3,23 @@ package com.peermountain.ui;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.View;
 
 import com.peermountain.R;
 import com.peermountain.core.network.BaseEvents;
 import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkManager;
-import com.peermountain.core.network.NetworkRequestHelper;
 import com.peermountain.core.network.NetworkResponse;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.callbacks.TimeCallback;
+import com.peermountain.core.network.teleferique.model.Persona;
 import com.peermountain.core.network.teleferique.model.SendObject;
 import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBuilder;
+import com.peermountain.core.network.teleferique.model.body.registration.RegistrationBuilder;
+import com.peermountain.core.persistence.MyJsonParser;
+
+import java.io.IOException;
 
 
 public class StartActivity extends AppCompatActivity {
@@ -33,11 +38,9 @@ public class StartActivity extends AppCompatActivity {
         showSplash();
 //                finish();
 //        authorize();
-        NetworkRequestHelper.init();// TODO: 3/19/18 remove after certificate is OK
-        NetworkManager.sendToServer(null,
+//        NetworkRequestHelper.init();// TODO: 3/19/18 remove after certificate is OK
+        NetworkManager.sendToServer(new KeyCallback(null,MainCallback.TYPE_NO_PROGRESS),
                 new SendObject().getPublicPersonaAddress());
-        NetworkManager.sendToServer(null,
-                new SendObject().getPublicPersonaKey());
         invite();
     }
 
@@ -64,10 +67,17 @@ public class StartActivity extends AppCompatActivity {
                 .setServiceOfferingID("1")
                 .setInviteKey("72x35FDOXuTkxivh7qYlqPU91jVgy607");
 
+        RegistrationBuilder registrationBuilder = new RegistrationBuilder(TfConstants.BODY_TYPE_REGISTRATION,time)
+                .setInviteMsgID("XY+IUYG2tojWCPSQz7dVhcSoEDOTZdGsPlfDIDsYIKg=")
+                .setInviteName("Invite 1")
+                .setKeyProof("72x35FDOXuTkxivh7qYlqPU91jVgy607")
+                .setPublicNickname("Future1");
 
         NetworkManager.sendToServer(new InviteCallback(null,MainCallback.TYPE_NO_PROGRESS),
 //                "http://b9d87780.ngrok.io/teleferic/",
-                invitationBuilder.build());
+                registrationBuilder.build()
+//                invitationBuilder.build()
+        );
     }
 
     @Override
@@ -118,6 +128,25 @@ public class StartActivity extends AppCompatActivity {
         @Override
         public void onError(String msg, NetworkResponse networkResponse) {
             super.onError(msg, networkResponse);
+        }
+    }
+
+    private class KeyCallback extends MainCallback {
+        public KeyCallback(BaseEvents presenterCallback, int progressType) {
+            super(presenterCallback, progressType);
+        }
+
+        @Override
+        public void onPostExecute(NetworkResponse networkResponse) {
+            super.onPostExecute(networkResponse);
+            try {
+                Persona persona = MyJsonParser.readServerPersona(networkResponse.json);
+                TfConstants.KEY_PUBLIC_SERVER = new
+                        String(Base64.decode(persona.getPubkey(),Base64.DEFAULT));
+                TfConstants.ADDRESS_PUBLIC_SERVER = persona.getAddress();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

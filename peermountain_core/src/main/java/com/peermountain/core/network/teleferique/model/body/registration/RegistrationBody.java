@@ -24,13 +24,13 @@ public class RegistrationBody extends BaseBody implements MessageBodyObject {
       :param inviteKey: string: Key of the invite. Shared secret between inviter and invitee.
       :param inviteName: string: Name of the invite. Shared secret between inviter and invitee.
       :param nickname: Undocumented parameter.*/
-    public RegistrationBody(String time,String inviteMsgID, String keyProof, String inviteName, String publicKey, String publicNickname) {
-        super(time);
-        this.inviteMsgID = inviteMsgID;
-        this.keyProof = keyProof;
-        this.inviteName = inviteName;
-        this.publicKey = publicKey;
-        this.publicNickname = publicNickname;
+    public RegistrationBody(RegistrationBuilder builder) {
+        super(builder.getTime());
+        this.inviteMsgID = builder.getInviteMsgID();
+        this.keyProof = builder.getKeyProof();
+        this.inviteName = builder.getInviteName();
+        this.publicKey = builder.getPublicKey();
+        this.publicNickname = builder.getPublicNickname();
     }
 
     public String getInviteMsgID() {
