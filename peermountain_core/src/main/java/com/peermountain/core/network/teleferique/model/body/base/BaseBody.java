@@ -6,7 +6,7 @@ package com.peermountain.core.network.teleferique.model.body.base;
  */
 
 public abstract class BaseBody {
-    private String time;
+    private transient String time;
 
     public BaseBody(String time) {
         this.time = time;

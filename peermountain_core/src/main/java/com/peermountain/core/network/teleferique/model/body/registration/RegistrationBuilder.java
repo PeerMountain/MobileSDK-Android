@@ -56,7 +56,7 @@ public class RegistrationBuilder extends BaseBuilder {
         setInviteName(SecureHelper.encryptRSAb64(getInviteName(), serverPublicKey));
         LogUtils.d("invite name encoded", getInviteName());
         setKeyProof(SecureHelper.encryptRSAb64(getKeyProof(), serverPublicKey));
-        LogUtils.d("KeyProof encoded", getInviteName());
+        LogUtils.d("KeyProof encoded", getKeyProof());
         KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(), TfConstants.KEY_ALIAS);
         publicKey = SecureHelper.toPEM(keyPair.getPublic());
         LogUtils.d("publicKey", publicKey);

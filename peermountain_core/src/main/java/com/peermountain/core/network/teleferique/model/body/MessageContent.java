@@ -14,10 +14,10 @@ import com.peermountain.core.utils.LogUtils;
 public class MessageContent {
     private String messageBody;//Base64
     private int bodyType;//from TfConstants
-    private String bodyHash, time;
-    private byte[] messageBodyPacked;
-    private byte[] salt = null;
-    private String messageType;//from TfConstants
+    private transient String bodyHash, time;
+    private transient byte[] messageBodyPacked;
+    private transient byte[] salt = null;
+    private transient String messageType;//from TfConstants
 
     public MessageContent() {
     }
