@@ -2,6 +2,7 @@ package com.peermountain.core.network.teleferique.model;
 
 import android.support.annotation.NonNull;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.peermountain.core.network.teleferique.TfConstants;
 import com.peermountain.core.network.teleferique.model.body.MessageContent;
@@ -192,9 +193,15 @@ public class PublicEnvelope {
 //                    'signature': self.sign(signable_object),
 //                    'timestamp': node_signed_timestamp
 //        })).decode()
-        PmSignature pmSignature = new PmSignature(SecureHelper.sign(TfConstants.KEY_ALIAS,
-                SecureHelper.parse(messageForSignature)
-        ), time);
+        PmSignature pmSignature = null;
+        try {
+            pmSignature = new PmSignature(SecureHelper.sign(TfConstants.KEY_ALIAS,
+                    SecureHelper.parseMap(messageForSignature.getAsMap())
+            ), time);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        assert pmSignature!=null;
         return SecureHelper.parseToBase64(pmSignature);
     }
 
@@ -206,7 +213,7 @@ public class PublicEnvelope {
         try {
             pmSignature = new PmSignature(
                     SecureHelper.sign(
-                            SecureHelper.parse(messageForSignature)//convert to map and pack
+                            SecureHelper.parseMap(messageForSignature.getAsMap())//pack
                             , privateKey
                     ),
                     time
@@ -217,7 +224,10 @@ public class PublicEnvelope {
             e.printStackTrace();
         } catch (SignatureException e) {
             e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
+        assert pmSignature!=null;
         return SecureHelper.parseToBase64(pmSignature);//convert to map , pack and encodeBase64
     }
 

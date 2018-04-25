@@ -24,7 +24,7 @@ public class Persona {
     }
 
     public void setPubKey(String pubKey) {
-        this.pubKey = SecureHelper.getKey(pubkey);
+        this.pubKey = SecureHelper.getPublicKey(pubkey);
         ;
     }
 

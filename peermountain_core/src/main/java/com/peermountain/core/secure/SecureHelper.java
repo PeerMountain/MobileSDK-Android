@@ -53,6 +53,7 @@ import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.crypto.BadPaddingException;
@@ -72,7 +73,7 @@ import javax.security.auth.x500.X500Principal;
 
 public class SecureHelper {
     private static final String RSA_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
-    private static final String RSA_TRANSFORMATION_ENCRYPT = "RSA/ECB/NoPadding";//for python/server
+    private static final String RSA_TRANSFORMATION_ENCRYPT = "RSA/ECB/PKCS1Padding";//for python/server
     private static final int KEY_SIZE = 4096;
     private static final int base64Flag = Base64.NO_WRAP;
 
@@ -207,10 +208,14 @@ public class SecureHelper {
 
     public static boolean verify(String alias, byte[] data, byte[] signature) {
         KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
-        if (keyPair == null) return false;
+        if (keyPair == null || keyPair.getPublic() == null) return false;
+        return verify(data, signature, keyPair.getPublic());
+    }
+
+    public static boolean verify(byte[] data, byte[] signature, PublicKey publicKey) {
         try {
             Signature s = Signature.getInstance("SHA256withRSA");
-            s.initVerify(keyPair.getPublic());
+            s.initVerify(publicKey);
             s.update(data);
             return s.verify(signature);
         } catch (NoSuchAlgorithmException e) {
@@ -240,7 +245,7 @@ public class SecureHelper {
 
     public static byte[] encryptRSA(String alias, String value) {
         KeyPair keyPair = getAndroidKeyStoreAsymmetricKeyPair(alias);
-        if (keyPair == null) return null;
+        if (keyPair == null || keyPair.getPublic() == null) return null;
         return encryptRSA(value,keyPair.getPublic());
     }
 
@@ -335,14 +340,25 @@ public class SecureHelper {
             @SuppressWarnings("unchecked")
             Map<String, Object> objectAsMap = objectMapper.convertValue(data, Map.class);
 
-            byte[] bytes = objectMapper.writeValueAsBytes(objectAsMap);
-            return bytes;
+            return parseMap(objectAsMap);
 //            return Base64.encodeToString(bytes, base64Flag);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return null;
 //        return new Gson().toJson(data);
+    }
+
+    public static byte[] parseMap(Map<String, Object> objectAsMap) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+        byte[] bytes = objectMapper.writeValueAsBytes(objectAsMap);
+        return bytes;
+    }
+
+    public static byte[] parseLinkedMap(LinkedHashMap<String, Object> objectAsMap) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+        byte[] bytes = objectMapper.writeValueAsBytes(objectAsMap);
+        return bytes;
     }
 
     public static String parseToBase64(Object data) {
@@ -614,13 +630,8 @@ public class SecureHelper {
     }
 
 
-    public static PublicKey getKey(String key) {
+    public static PublicKey getPublicKey(String key) {
         try {
-//            byte[] byteKey = Base64.decode(key.getBytes(), base64Flag);
-//            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
-//            KeyFactory kf = KeyFactory.getInstance("RSA");
-//
-//            return kf.generatePublic(X509publicKey);
             if (key.contains("-----BEGIN PUBLIC KEY-----") || key.contains("-----END PUBLIC KEY-----"))
                 key = key.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "");
             byte[] keyBytes = Base64.decode(key, Base64.DEFAULT);
