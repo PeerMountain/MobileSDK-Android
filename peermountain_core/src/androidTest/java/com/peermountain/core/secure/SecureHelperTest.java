@@ -66,7 +66,7 @@ public class SecureHelperTest {
     @Test
     public void cryptoRSA()  {
         String text = "Test 1";
-        PublicKey serverPublicKey = SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC);
+        PublicKey serverPublicKey = SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC_SERVER);
         String encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
 //        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey,"RSA/NONE/NoPadding");
 //        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey,"RSA");
@@ -101,8 +101,9 @@ public class SecureHelperTest {
     @Test
     public void signature() throws Exception {
         KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(InstrumentationRegistry.getTargetContext(),TfConstants.KEY_ALIAS);
-        PrivateKey privateKey = keyPair.getPrivate();
-        PublicKey publicKey = keyPair.getPublic();
+        PrivateKey privateKey = keyPair.getPrivate();//SecureHelper.pemPrivateKeyPkcs1OrPkcs8Encoded(TfConstants.KE Y_PRIVATE_TEST);//
+        PublicKey publicKey = keyPair.getPublic();//SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC_SERVER);//
+        String key = SecureHelper.toPEM(publicKey);
         String time = "gqlzaWduYXR1cmXaAqxCY25QczcwWW80V1BuZ01zMlNBNzFxUmJhWGdBb2c3eDdzS2FITURIRzNhOUZ0OGJZRHZBekZGRnpQQUd3a0pnN1paY3E0U2ozWDJBbVlseDVjNGxrM1JBVngwNkhFSkVGQlVqZ0VwYmFQNUlYcUlMYng1eFAyaVB1NkE1dkFjNUxDTXZDVFVFNFI2Y2hGdnhySWQ4bmhMV0VYMTdSMnlML1NVMTQ1dlNnajh2ejZtYUgrWEwvd292VWM3d0M1T3JsUzdtOFFKNVgxMmp3SzdWWERjUGVzbG9VOHlVZVlta2N0MGlQRVI3NlhGaVpSRnZ2T1RwdWE2bmcxaWRyY1E5cnNrUmxVc1ROdlgrRGJOMk9XVm1oU3JqTjlTK2s0UmxnV2NPakV2U3RjWTFXeU43MVAyYytudXBNVVVLRnAxeVpJOXVSMlhLTVNHeXBTb3hrUitjYzlTTkRUSnNtNFNURE9DVFNuUFZ6NmtSd0dNdmZpWVoxN1FYeEpnOXZTN2d1bWZpaWl0YXBpSkpKTnVOVjlRY09oWlRjS0RLUGtXQnE5RHB0bUdrL203Zlo5UUxGNlRkMjdVYWp1enpIZUxvcmZVVzdOWlpVbk5ySzFLcFBXV0VDS1RQc1ZMSStjRnV5eExZRHl1aFI2dzErUUYyUW5Nb09nSE1QcFJSWGFoeTNhNHNVU2toYnVab05tTm90SGtiM2s4S21UTG1HSTNyMzVBQjdXazgzS1JLMWRrbzk4aDEwNTQyanlTQ0F5YWxZbGpjYlBJU2RFSGpiRGhwT0dOSTdjeXRVS3cwcFRKODFxQlhxWjIyRWFvNW9iNSthQmRQMGFtejRmMWM5TVF6K3dpZFV1WWdzNDJRY0UyVHAvRjRqV3dGWmdoUjY0UTRYd3hKaDh5NE5DRT2pdGltZXN0YW1wsjE1MjI5NDE3MTAuODk0NjEzNQ==";
         String message = "Test";
         String expectedMessageHash = "Uy6qvZV0iA2/drm4zACDLCCm7BE9aCKZVQ16bg80XiU=";
