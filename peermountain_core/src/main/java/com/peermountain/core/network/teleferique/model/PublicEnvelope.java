@@ -196,12 +196,12 @@ public class PublicEnvelope {
         PmSignature pmSignature = null;
         try {
             pmSignature = new PmSignature(SecureHelper.sign(TfConstants.KEY_ALIAS,
-                    SecureHelper.parseMap(messageForSignature.getAsMap())
+                    SecureHelper.parseLinkedMap(messageForSignature.getAsMap())
             ), time);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        assert pmSignature!=null;
+        assert pmSignature != null;
         return SecureHelper.parseToBase64(pmSignature);
     }
 
@@ -213,7 +213,7 @@ public class PublicEnvelope {
         try {
             pmSignature = new PmSignature(
                     SecureHelper.sign(
-                            SecureHelper.parseMap(messageForSignature.getAsMap())//pack
+                            SecureHelper.parseLinkedMap(messageForSignature.getAsMap())//pack
                             , privateKey
                     ),
                     time
@@ -227,7 +227,7 @@ public class PublicEnvelope {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        assert pmSignature!=null;
+        assert pmSignature != null;
         return SecureHelper.parseToBase64(pmSignature);//convert to map , pack and encodeBase64
     }
 
@@ -235,6 +235,11 @@ public class PublicEnvelope {
         PmSignature pmSignature = (PmSignature) SecureHelper.read(base64Sign, PmSignature.class);
         if (pmSignature == null) return;
         MessageForSignature messageForSignature = new MessageForSignature(hash, pmSignature.getTimestamp());
-        LogUtils.d("verify", SecureHelper.verify(TfConstants.KEY_ALIAS, SecureHelper.parse(messageForSignature), pmSignature.getSignature()) + "");
+        try {
+            LogUtils.d("verify", SecureHelper.verify(TfConstants.KEY_ALIAS, SecureHelper.parseLinkedMap(messageForSignature.getAsMap()), SecureHelper.fromBase64(pmSignature.getSignature())) + "");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            LogUtils.d("verify","false");
+        }
     }
 }

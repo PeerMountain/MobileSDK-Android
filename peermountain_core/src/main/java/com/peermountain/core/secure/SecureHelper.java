@@ -75,7 +75,7 @@ public class SecureHelper {
     private static final String RSA_TRANSFORMATION = "RSA/ECB/PKCS1Padding";
     private static final String RSA_TRANSFORMATION_ENCRYPT = "RSA/ECB/PKCS1Padding";//for python/server
     private static final int KEY_SIZE = 4096;
-    private static final int base64Flag = Base64.NO_WRAP;
+    public static final int base64Flag = Base64.NO_WRAP;
 
     private static KeyStore createAndroidKeyStore() {
         KeyStore keyStore = null;
@@ -141,9 +141,9 @@ public class SecureHelper {
                 .setStartDate(startDate.getTime())
                 .setEndDate(endDate.getTime());
 
-        if (Build.VERSION.SDK_INT > 18) {
-            builder.setKeySize(KEY_SIZE);
-        }
+//        if (Build.VERSION.SDK_INT > 18) {
+//            builder.setKeySize(KEY_SIZE);
+//        }
 
         generator.initialize(builder.build());
     }
@@ -443,6 +443,10 @@ public class SecureHelper {
         Object o = ois.readObject();
         ois.close();
         return o;
+    }
+
+    public static byte[] fromBase64(String s)  {
+        return Base64.decode(s, base64Flag);
     }
 
     /**

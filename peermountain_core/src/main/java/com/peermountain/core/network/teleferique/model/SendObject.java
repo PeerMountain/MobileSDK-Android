@@ -26,12 +26,12 @@ public class SendObject {
         return this;
     }
 
-    public SendObject getPublicPersonaAddress(){
+    public SendObject preparePublicPersonaAddress(){
         query = "query {  teleferic {    persona {     address pubkey   }  } }";
         return this;
     }
 
-    public SendObject getPersonaKey(String personaAddress){
+    public SendObject preparePersonaKey(String personaAddress){
         query = String.format("query{\n" +
                 "                    persona(\n" +
                 "                        address: \"%s\"\n" +
@@ -42,12 +42,12 @@ public class SendObject {
         return this;
     }
 
-    public SendObject getPublicPersonaKey(){
+    public SendObject preparePublicPersonaKey(){
         query = "query {  teleferic {    persona {     pubkey    }  } }";
         return this;
     }
 
-    public SendObject getTime(){
+    public SendObject prepareTime(){
         query = "query {  teleferic {    signedTimestamp  } }";
         return this;
     }

@@ -64,22 +64,38 @@ public class SecureHelperTest {
     }
 
     @Test
-    public void cryptoRSA()  {
+    public void cryptoRSAkey() {
+        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(InstrumentationRegistry.getTargetContext(),TfConstants.KEY_ALIAS);
         String text = "Test 1";
-        PublicKey serverPublicKey = SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC);
-        String encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
-//        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey,"RSA/NONE/NoPadding");
-//        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey,"RSA");
-        Assert.assertTrue("not same",encrypted.equals("NSHV4njZuQbvwiBSK/gfBMDYmuhVffWtjuz59xnIokMY73ixBzek1fnEkmnChDZYgIwFQDjuaBJ3cvQJmoAQHQSoVjjCDcIdlV0bRLqIQzKv3U5TKXGf8FtJX80myh8F0ClfCzTkBbUZQNUQJEF4VxoZ08Fh+VVtqf+YGkh4ZmqbigVQ/XLkiNU9MMb7j6qidauhcaj9vPMnPCTbA7XSc+hVVXSUjZi+hJYa16pqXUgjuewUyXJXdk49nuza6RVH4lZ0RqNlv92mNosv5MDYCjuIguwAqaYwaR7f862Gogc/tFLDW/S1fXubfwbRQsZN7nxgB/F8s9rWafjr9hLSysZ/ep2IvXbB6p3g87F4GmIjdXq5dRkD/i4J/9VrV3Oii8x9swW7asv7S7/2fJNGozUtfrL9AygYiJrWUihIDnVnJKFbZDi3UugVIoVAOZ3tJHhUd67MO//POaru5PKdNIM2fqUsHmjkA5wGGl1BouswsO1PLjDpxHQkGvpbKzE0jmW88028WNGXiutOYSJIMRHLrJbsdoBb/hBcTYPb8f66XLPBRWIdFEykQRB91R1LfS2fWTHoyW8vqUkKsvAZrPiKLqNzAKNWIn/W3gmIL66gi2a5MITRbh04fq+PmAF8f/n3xxY95rlctcbVvGiJDxEHShm6xe3cGBq6YkcPKL4="));
+        PublicKey publicKey = keyPair.getPublic();
+        String encrypted = SecureHelper.encryptRSAb64(text, publicKey);
+//        encrypted = SecureHelper.encryptRSAb64(text,publicKey,"RSA/NONE/NoPadding");
+//        encrypted = SecureHelper.encryptRSAb64(text,publicKey,"RSA");
+        String decrypt = new String(SecureHelper.decryptRSA(
+                                        Base64.decode(encrypted, SecureHelper.base64Flag),
+                                        keyPair.getPrivate())
+                                    );
+        Assert.assertTrue("not same", text.equals(decrypt));
 
-        text = "Chuck 2";
-        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
-        Assert.assertTrue("not same",encrypted.equals("Uwq/VsoyScNbSvfzonKDb7+HuB/afGewroGn7fR+smlak6irJr58etbWAdFT56tsmpJstR+nWo9Za0t67mGut0gyyrTuFZ8xX4OktwoMsEqsxUQFX8mmJ4F2tZPaxffw35uLgbNKeda8AUfQDbmWSLBB0ZvWDLezqgaAsKT+lGZ5ogW9kPT1dWLVHS1jdqykUloWj6zopYo7f32SuoKoUAdxPKMRjLxnb8+x0zJ09WTzzRlQKCJ/wrgU+Ujoi34q3cAgUlLIYMz50SnV8hUSayxuAD83Mj7GSHm0C6mYUJl4TkbVjaLakTihke0L3w1NkJ8xwDrUzlgiV+2B8w9QAPIwBG51+YJQmfPQk5UqTMVxwHulih7DfC/OVYHZIfkbSX6e7bZfPypZz91vPgpMelmp9M219vN0CMsZYHVLP59ghfpdJNEhjwajoel2LeHlqW4pAFDjs9S7gBk2ebwQ1tqoHFNev9K57KtusRUbbaTpWHOjCJJRuYhG4ZukRv7cHvGnBwbiKaxu/Kj/Lyi1tX2+TOhvnDB2qiKuZtSciNP4MsVzfWBrgWcblpo/FTdwX2SjyHgwnNFMihXey1JO/pKSzs0pNuiJ7xA+pKKnC0XB1g9noRFh5aYWhsEDQA+fXzBnUpXxdy6ow7EPIAA8Z2N3lv5EGjLOH31mtLN8I38="));
-
-        text = "Sample 3";
-        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
-        Assert.assertTrue("not same",encrypted.equals("D7UDDcKyaDP07jwW7z43Le3musCVsDcVRjDzEXsg6/BK0kSH/mfmv97AqNDxX9eI025aw1goFJTMQ6ljWAPKaFxOWtl7iQQPzm8htyMivaPHnsXRqFckj40WquIJk1wN64cuYSYSnrqTOx1J37Y54tjlNTF1/kJykvkiVkAbUN2n0G8MmUXodBKrqsVOBCKnlYaNaxV1BKQS5CRhoVwi1cojXL+PMZ54azLpjqoFJ840nBU4OiZ6jBCtozhtnJMm7t5ari7+WNxhwjg2PRwrNMu1n7JWOEEPFUCLydQg8ambhtm8NBBSC6Tm3MOkdQCfvj5kfzQvK6QLGaMm7S8mpxtN4fQRjgYBe6aEaF4n7GrGemQ1drTkcZj3jgtK1Ci0GfbAw1UH4hfoTxse+rEugtQO+06SdzF9MoXePK3p4PbA9hs+3UeCccZPhZqPu9o/j9tXOdgPxqruKHOLBZHW680XFHzBjGud+KbgItEkrt5cNNmWLD2tBi7zsTShpOl6KNjOIHIQVZ3gS08HlmtPYHRf+3c2SZZERHmYM4oGTMYK0eWhAumS3M/aU/kaOwQXr0b1N/2tpk9kiTlasuigoSAsseIq1mu1VbehZ3WjXa9imhwqWkxRp1R8M0C7ZF95Vt2rJc1uVc8YYF7pVVkln6SVv2uG8yeEvlfiWU60bDQ="));
     }
+
+//        @Test
+//    public void cryptoRSA()  {
+//        String text = "Test 1";
+//        PublicKey serverPublicKey = SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC);
+//        String encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
+////        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey,"RSA/NONE/NoPadding");
+////        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey,"RSA");
+//        Assert.assertTrue("not same",encrypted.equals("ewgyJKSUVHP5YmrrPJ6ZvSE6Yx/9mK+mQ6Mvr2mjdjN9SArYo5L3HMoMfnptNpTFtyUxbeUWHLQp34mfvJHURY3os4y4IKaprJ4t9dejNO0nxEPxUne0ROevroysG5yw9JTp+ACx9HVCVl9OwNGymK9WiHxI2BHgxgsuqlvb57aByhSWR1Sff10J919zG7cgyI/mZUs0KJ7Z4s8QFs9GpfrGcX1GrVowSvML+VRLf1p7CnkLrRFdhAtv8zRoksGqg39+t0JWMlOMV9/Q3hUIsTVVvptgTE0vKg1Vmz9Ks5wx9Kwk2FI1iByWhGAKCOBP1eE+0TZdZLHyPiDdrvPjhxwrJGhqtA1LuSfw+XQwoeUHn2VjWu5y1zyDrwEbS4l3iQZoLmxNUQXnV6XseyxuCxJjTz2ZSoHCOyqPI9wfvOYRz1m23TzS4kySytTlrhNWedLB1HBOqJBl2R51AS4Wu8voMf4wlUteuPx4W9l9aCTeuAhIl9rj52zQtrVQbb+LnicinKFLxhE9SgCUREIrvSTedJX6Hr+nn9tNlDvUT6euKBLcLqCgq8pL4ly/pOj1TouZ9y2CEfi+D/zESvcrAqR/Lxbjl89qotRC/+U+SHweZipeCBBQ65oOv1K+M26o7joKGzT0DfFHEWqIBXXBqmZBa5LcVgMlfTuAclfvUIk="));
+//
+//        text = "Chuck 2";
+//        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
+//        Assert.assertTrue("not same",encrypted.equals("Uwq/VsoyScNbSvfzonKDb7+HuB/afGewroGn7fR+smlak6irJr58etbWAdFT56tsmpJstR+nWo9Za0t67mGut0gyyrTuFZ8xX4OktwoMsEqsxUQFX8mmJ4F2tZPaxffw35uLgbNKeda8AUfQDbmWSLBB0ZvWDLezqgaAsKT+lGZ5ogW9kPT1dWLVHS1jdqykUloWj6zopYo7f32SuoKoUAdxPKMRjLxnb8+x0zJ09WTzzRlQKCJ/wrgU+Ujoi34q3cAgUlLIYMz50SnV8hUSayxuAD83Mj7GSHm0C6mYUJl4TkbVjaLakTihke0L3w1NkJ8xwDrUzlgiV+2B8w9QAPIwBG51+YJQmfPQk5UqTMVxwHulih7DfC/OVYHZIfkbSX6e7bZfPypZz91vPgpMelmp9M219vN0CMsZYHVLP59ghfpdJNEhjwajoel2LeHlqW4pAFDjs9S7gBk2ebwQ1tqoHFNev9K57KtusRUbbaTpWHOjCJJRuYhG4ZukRv7cHvGnBwbiKaxu/Kj/Lyi1tX2+TOhvnDB2qiKuZtSciNP4MsVzfWBrgWcblpo/FTdwX2SjyHgwnNFMihXey1JO/pKSzs0pNuiJ7xA+pKKnC0XB1g9noRFh5aYWhsEDQA+fXzBnUpXxdy6ow7EPIAA8Z2N3lv5EGjLOH31mtLN8I38="));
+//
+//        text = "Sample 3";
+//        encrypted = SecureHelper.encryptRSAb64(text,serverPublicKey);
+//        Assert.assertTrue("not same",encrypted.equals("D7UDDcKyaDP07jwW7z43Le3musCVsDcVRjDzEXsg6/BK0kSH/mfmv97AqNDxX9eI025aw1goFJTMQ6ljWAPKaFxOWtl7iQQPzm8htyMivaPHnsXRqFckj40WquIJk1wN64cuYSYSnrqTOx1J37Y54tjlNTF1/kJykvkiVkAbUN2n0G8MmUXodBKrqsVOBCKnlYaNaxV1BKQS5CRhoVwi1cojXL+PMZ54azLpjqoFJ840nBU4OiZ6jBCtozhtnJMm7t5ari7+WNxhwjg2PRwrNMu1n7JWOEEPFUCLydQg8ambhtm8NBBSC6Tm3MOkdQCfvj5kfzQvK6QLGaMm7S8mpxtN4fQRjgYBe6aEaF4n7GrGemQ1drTkcZj3jgtK1Ci0GfbAw1UH4hfoTxse+rEugtQO+06SdzF9MoXePK3p4PbA9hs+3UeCccZPhZqPu9o/j9tXOdgPxqruKHOLBZHW680XFHzBjGud+KbgItEkrt5cNNmWLD2tBi7zsTShpOl6KNjOIHIQVZ3gS08HlmtPYHRf+3c2SZZERHmYM4oGTMYK0eWhAumS3M/aU/kaOwQXr0b1N/2tpk9kiTlasuigoSAsseIq1mu1VbehZ3WjXa9imhwqWkxRp1R8M0C7ZF95Vt2rJc1uVc8YYF7pVVkln6SVv2uG8yeEvlfiWU60bDQ="));
+//    }
 
     @Test
     public void sign() throws Exception {
@@ -119,12 +135,12 @@ public class SecureHelperTest {
 
         //PmSignature has only byte[] signature and String timestamp, so we crate the expected message inside
         MessageForSignature expectedMessageInSignature = new MessageForSignature(messageHash, pmSignature.getTimestamp());
-        byte[] bytesOfExpectedMessageInSignature = SecureHelper.parseMap(expectedMessageInSignature.getAsMap());
+        byte[] bytesOfExpectedMessageInSignature = SecureHelper.parseLinkedMap(expectedMessageInSignature.getAsMap());
 
         //verify signature
         Assert.assertTrue("wrong signature",
                 SecureHelper.verify(bytesOfExpectedMessageInSignature,
-                        pmSignature.getSignature(), publicKey));
+                        SecureHelper.fromBase64(pmSignature.getSignature()), publicKey));
 
     }
 
@@ -139,7 +155,9 @@ public class SecureHelperTest {
         Assert.assertTrue("wrong hash",hash.equals(expectedDataHash));
 
         String resultBase64Sign = PublicEnvelope.getMessageSignature(time,hash,serverPrivateKey);
-        Assert.assertTrue("wrong signature", resultBase64Sign.equals("gqlzaWduYXR1cmXFAgAqcs2XIJ/I4m0CR4Wzun6EkvtfMBH9hDJTJCKn9Pg08HGaYJKT5F13/uC9gKA0RZxdqzkL03pdstHzcavRSzdkzpiVQpvvc2L+LZJRK3qTl87aTwDRvFKgucmHMsxaRx4nmOwGexMcDtrQb5RHjc1HLdZ2z3/OTJSkpRA9Ef+8rvCLsy56gncT50B8t0vnI8DfFHTdlIPgRI37uysxYwh4ayB3Tdmg1/bnPle+lmRFxuaVR8CPRYAA9FkinAaT2nEUw9holPa0F20UoUfnbTOMRWm3HkXmLirnjrW1nzuOXmytQ0G1ZaJN1MICdVHcGo2SrplOwW132kN/MxwGcSnEUoc5TAwELhd8zz/7YbcbPN+AqA6Ka2SHExHN32Za6lWqXikiKTAK1AsmX4+d/jlHsaDsyjd0QbTAw2GTYju6A60rfN2XyqEf5ITo3PpNRs4gwibjh79ExfKoUp5/0YzvDK4INLqrVXH0qIlgUg5qMK9HNjQXRqk5+Qbsb3dz2sO4wnJ2sWtg0Kb3DKbFw2r0lZA8/oeOpmwQxEUoe8pfWkm2dr8eZcBjkvrCss3WrFWwqMAEk3bGUmnw+Mi+/rkB6qxejdKqYeTTWYGoP7864BBwFLlNv+qo426dSoGdqsu169G6ndATXdOHQf/AwquqlKbKZteIkm/h3IPExCK39al0aW1lc3RhbXDaA8xncWx6YVdkdVlYUjFjbVhhQXF4Q1kyNVFjemN3V1c4MFYxQnVaMDF6TWxOQk56RnhVbUpoV0dkQmIyYzNlRGR6UzJGSVRVUklSek5oT1VaME9HSlpSSFpCZWtaR1JucFFRVWQzYTBwbk4xcGFZM0UwVTJveldESkJiVmxzZURWak5HeHJNMUpCVm5nd05raEZTa1ZHUWxWcVowVndZbUZRTlVsWWNVbE1ZbmcxZUZBeWFWQjFOa0UxZGtGak5VeERUWFpEVkZWRk5GSTJZMmhHZG5oeVNXUTRibWhNVjBWWU1UZFNNbmxNTDFOVk1UUTFkbE5uYWpoMmVqWnRZVWdyV0V3dmQyOTJWV00zZDBNMVQzSnNVemR0T0ZGS05WZ3hNbXAzU3pkV1dFUmpVR1Z6Ykc5Vk9IbFZaVmx0YTJOME1HbFFSVkkzTmxoR2FWcFNSbloyVDFSd2RXRTJibWN4YVdSeVkxRTVjbk5yVW14VmMxUk9kbGdyUkdKT01rOVhWbTFvVTNKcVRqbFRLMnMwVW14blYyTlBha1YyVTNSaldURlhlVTQzTVZBeVl5dHVkWEJOVlZWTFJuQXhlVnBKT1hWU01saExUVk5IZVhCVGIzaHJVaXRqWXpsVFRrUlVTbk50TkZOVVJFOURWRk51VUZaNk5tdFNkMGROZG1acFdWb3hOMUZZZUVwbk9YWlROMmQxYldacGFXbDBZWEJwU2twS1RuVk9WamxSWTA5b1dsUmpTMFJMVUd0WFFuRTVSSEIwYlVkckwyMDNabG81VVV4R05sUmtNamRWWVdwMWVucElaVXh2Y21aVlZ6ZE9XbHBWYms1eVN6RkxjRkJYVjBWRFMxUlFjMVpNU1N0alJuVjVlRXhaUkhsMWFGSTJkekVyVVVZeVVXNU5iMDluU0UxUWNGSlNXR0ZvZVROaE5ITlZVMnRvWW5WYWIwNXRUbTkwU0d0aU0yczRTMjFVVEcxSFNUTnlNelZCUWpkWGF6Z3pTMUpMTVdScmJ6azRhREV3TlRReWFubFRRMEY1WVd4WmJHcGpZbEJKVTJSRlNHcGlSR2h3VDBkT1NUZGplWFJWUzNjd2NGUktPREZ4UWxoeFdqSXlSV0Z2Tlc5aU5TdGhRbVJRTUdGdGVqUm1NV001VFZGNkszZHBaRlYxV1dkek5ESlJZMFV5VkhBdlJqUnFWM2RHV21kb1VqWTBVVFJZZDNoS2FEaDVORTVEUlQycGRHbHRaWE4wWVcxd3NqRTFNakk1TkRFM01UQXVPRGswTmpFek5RPT0="));
+        Assert.assertTrue("wrong signature", resultBase64Sign.equals
+                ("gqlzaWduYXR1cmXaAqxLbkxObHlDZnlPSnRBa2VGczdwK2hKTDdYekFSL1lReVV5UWlwL1Q0TlBCeG1tQ1NrK1JkZC83Z3ZZQ2dORVdjWGFzNUM5TjZYYkxSODNHcjBVczNaTTZZbFVLYjczTmkvaTJTVVN0Nms1Zk8yazhBMGJ4U29MbkpoekxNV2tjZUo1anNCbnNUSEE3YTBHK1VSNDNOUnkzV2RzOS96a3lVcEtVUVBSSC92Szd3aTdNdWVvSjNFK2RBZkxkTDV5UEEzeFIwM1pTRDRFU04rN3NyTVdNSWVHc2dkMDNab05mMjV6NVh2cFprUmNibWxVZkFqMFdBQVBSWklwd0drOXB4Rk1QWWFKVDJ0QmR0RktGSDUyMHpqRVZwdHg1RjVpNHE1NDYxdFo4N2psNXNyVU5CdFdXaVRkVENBblZSM0JxTmtxNlpUc0Z0ZDlwRGZ6TWNCbkVweEZLSE9Vd01CQzRYZk04LysyRzNHenpmZ0tnT2ltdGtoeE1SemQ5bVd1cFZxbDRwSWlrd0N0UUxKbCtQbmY0NVI3R2c3TW8zZEVHMHdNTmhrMkk3dWdPdEszemRsOHFoSCtTRTZOejZUVWJPSU1JbTQ0ZS9STVh5cUZLZWY5R003d3l1Q0RTNnExVng5S2lKWUZJT2FqQ3ZSelkwRjBhcE9ma0c3RzkzYzlyRHVNSnlkckZyWU5DbTl3eW14Y05xOUpXUVBQNkhqcVpzRU1SRktIdktYMXBKdG5hL0htWEFZNUw2d3JMTjFxeFZzS2pBQkpOMnhsSnA4UGpJdnY2NUFlcXNYbzNTcW1IazAxbUJxRCsvT3VBUWNCUzVUYi9xcU9OdW5VcUJuYXJMdGV2UnVwM1FFMTNUaDBIL3dNS3JxcFNteW1iWGlKSnY0ZHlEeE1RaXQvVT2pdGltZXN0YW1w2gPMZ3FsemFXZHVZWFIxY21YYUFxeENZMjVRY3pjd1dXODBWMUJ1WjAxek1sTkJOekZ4VW1KaFdHZEJiMmMzZURkelMyRklUVVJJUnpOaE9VWjBPR0paUkhaQmVrWkdSbnBRUVVkM2EwcG5OMXBhWTNFMFUyb3pXREpCYlZsc2VEVmpOR3hyTTFKQlZuZ3dOa2hGU2tWR1FsVnFaMFZ3WW1GUU5VbFljVWxNWW5nMWVGQXlhVkIxTmtFMWRrRmpOVXhEVFhaRFZGVkZORkkyWTJoR2RuaHlTV1E0Ym1oTVYwVllNVGRTTW5sTUwxTlZNVFExZGxObmFqaDJlalp0WVVncldFd3ZkMjkyVldNM2QwTTFUM0pzVXpkdE9GRktOVmd4TW1wM1N6ZFdXRVJqVUdWemJHOVZPSGxWWlZsdGEyTjBNR2xRUlZJM05saEdhVnBTUm5aMlQxUndkV0UyYm1jeGFXUnlZMUU1Y25OclVteFZjMVJPZGxnclJHSk9NazlYVm0xb1UzSnFUamxUSzJzMFVteG5WMk5QYWtWMlUzUmpXVEZYZVU0M01WQXlZeXR1ZFhCTlZWVkxSbkF4ZVZwSk9YVlNNbGhMVFZOSGVYQlRiM2hyVWl0all6bFRUa1JVU25OdE5GTlVSRTlEVkZOdVVGWjZObXRTZDBkTmRtWnBXVm94TjFGWWVFcG5PWFpUTjJkMWJXWnBhV2wwWVhCcFNrcEtUblZPVmpsUlkwOW9XbFJqUzBSTFVHdFhRbkU1UkhCMGJVZHJMMjAzWmxvNVVVeEdObFJrTWpkVllXcDFlbnBJWlV4dmNtWlZWemRPV2xwVmJrNXlTekZMY0ZCWFYwVkRTMVJRYzFaTVNTdGpSblY1ZUV4WlJIbDFhRkkyZHpFclVVWXlVVzVOYjA5blNFMVFjRkpTV0dGb2VUTmhOSE5WVTJ0b1luVmFiMDV0VG05MFNHdGlNMnM0UzIxVVRHMUhTVE55TXpWQlFqZFhhemd6UzFKTE1XUnJiems0YURFd05UUXlhbmxUUTBGNVlXeFpiR3BqWWxCSlUyUkZTR3BpUkdod1QwZE9TVGRqZVhSVlMzY3djRlJLT0RGeFFsaHhXakl5UldGdk5XOWlOU3RoUW1SUU1HRnRlalJtTVdNNVRWRjZLM2RwWkZWMVdXZHpOREpSWTBVeVZIQXZSalJxVjNkR1dtZG9ValkwVVRSWWQzaEthRGg1TkU1RFJUMnBkR2x0WlhOMFlXMXdzakUxTWpJNU5ERTNNVEF1T0RrME5qRXpOUT09"));
+//                ("gqlzaWduYXR1cmXFAgAqcs2XIJ/I4m0CR4Wzun6EkvtfMBH9hDJTJCKn9Pg08HGaYJKT5F13/uC9gKA0RZxdqzkL03pdstHzcavRSzdkzpiVQpvvc2L+LZJRK3qTl87aTwDRvFKgucmHMsxaRx4nmOwGexMcDtrQb5RHjc1HLdZ2z3/OTJSkpRA9Ef+8rvCLsy56gncT50B8t0vnI8DfFHTdlIPgRI37uysxYwh4ayB3Tdmg1/bnPle+lmRFxuaVR8CPRYAA9FkinAaT2nEUw9holPa0F20UoUfnbTOMRWm3HkXmLirnjrW1nzuOXmytQ0G1ZaJN1MICdVHcGo2SrplOwW132kN/MxwGcSnEUoc5TAwELhd8zz/7YbcbPN+AqA6Ka2SHExHN32Za6lWqXikiKTAK1AsmX4+d/jlHsaDsyjd0QbTAw2GTYju6A60rfN2XyqEf5ITo3PpNRs4gwibjh79ExfKoUp5/0YzvDK4INLqrVXH0qIlgUg5qMK9HNjQXRqk5+Qbsb3dz2sO4wnJ2sWtg0Kb3DKbFw2r0lZA8/oeOpmwQxEUoe8pfWkm2dr8eZcBjkvrCss3WrFWwqMAEk3bGUmnw+Mi+/rkB6qxejdKqYeTTWYGoP7864BBwFLlNv+qo426dSoGdqsu169G6ndATXdOHQf/AwquqlKbKZteIkm/h3IPExCK39al0aW1lc3RhbXDaA8xncWx6YVdkdVlYUjFjbVhhQXF4Q1kyNVFjemN3V1c4MFYxQnVaMDF6TWxOQk56RnhVbUpoV0dkQmIyYzNlRGR6UzJGSVRVUklSek5oT1VaME9HSlpSSFpCZWtaR1JucFFRVWQzYTBwbk4xcGFZM0UwVTJveldESkJiVmxzZURWak5HeHJNMUpCVm5nd05raEZTa1ZHUWxWcVowVndZbUZRTlVsWWNVbE1ZbmcxZUZBeWFWQjFOa0UxZGtGak5VeERUWFpEVkZWRk5GSTJZMmhHZG5oeVNXUTRibWhNVjBWWU1UZFNNbmxNTDFOVk1UUTFkbE5uYWpoMmVqWnRZVWdyV0V3dmQyOTJWV00zZDBNMVQzSnNVemR0T0ZGS05WZ3hNbXAzU3pkV1dFUmpVR1Z6Ykc5Vk9IbFZaVmx0YTJOME1HbFFSVkkzTmxoR2FWcFNSbloyVDFSd2RXRTJibWN4YVdSeVkxRTVjbk5yVW14VmMxUk9kbGdyUkdKT01rOVhWbTFvVTNKcVRqbFRLMnMwVW14blYyTlBha1YyVTNSaldURlhlVTQzTVZBeVl5dHVkWEJOVlZWTFJuQXhlVnBKT1hWU01saExUVk5IZVhCVGIzaHJVaXRqWXpsVFRrUlVTbk50TkZOVVJFOURWRk51VUZaNk5tdFNkMGROZG1acFdWb3hOMUZZZUVwbk9YWlROMmQxYldacGFXbDBZWEJwU2twS1RuVk9WamxSWTA5b1dsUmpTMFJMVUd0WFFuRTVSSEIwYlVkckwyMDNabG81VVV4R05sUmtNamRWWVdwMWVucElaVXh2Y21aVlZ6ZE9XbHBWYms1eVN6RkxjRkJYVjBWRFMxUlFjMVpNU1N0alJuVjVlRXhaUkhsMWFGSTJkekVyVVVZeVVXNU5iMDluU0UxUWNGSlNXR0ZvZVROaE5ITlZVMnRvWW5WYWIwNXRUbTkwU0d0aU0yczRTMjFVVEcxSFNUTnlNelZCUWpkWGF6Z3pTMUpMTVdScmJ6azRhREV3TlRReWFubFRRMEY1WVd4WmJHcGpZbEJKVTJSRlNHcGlSR2h3VDBkT1NUZGplWFJWUzNjd2NGUktPREZ4UWxoeFdqSXlSV0Z2Tlc5aU5TdGhRbVJRTUdGdGVqUm1NV001VFZGNkszZHBaRlYxV1dkek5ESlJZMFV5VkhBdlJqUnFWM2RHV21kb1VqWTBVVFJZZDNoS2FEaDVORTVEUlQycGRHbHRaWE4wWVcxd3NqRTFNakk1TkRFM01UQXVPRGswTmpFek5RPT0="));
 
     }
 
@@ -149,7 +167,7 @@ public class SecureHelperTest {
         String msgpacked = Base64.encodeToString(SecureHelper.parse(sendObject),Base64.DEFAULT);
         Log.w("msgpacked",msgpacked);
         Assert.assertNotNull("wrong", msgpacked);
-        Map<String, Object> sendObject1 = SecureHelper.read(msgpacked);
+        Map<String, Object> sendObject1 = SecureHelper.read(Base64.decode(msgpacked,Base64.DEFAULT));
         Assert.assertEquals("not same objects",sendObject.getQuery(),sendObject1.get("query"));
         Assert.assertEquals("not same objects",sendObject.getVariables(),sendObject1.get("variables"));
     }

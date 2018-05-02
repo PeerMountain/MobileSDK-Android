@@ -1,5 +1,7 @@
 package com.peermountain.core.network.teleferique.model;
 
+import com.peermountain.core.secure.SecureHelper;
+
 import java.io.Serializable;
 
 /**
@@ -8,22 +10,22 @@ import java.io.Serializable;
 
 public class PmSignature implements Serializable{
 
-    private byte[] signature;
+    private String signature;
     private String timestamp;
 
     public PmSignature() {
     }
 
     public PmSignature(byte[] signature, String timestamp) {
-        this.signature = signature;
+        this.signature = SecureHelper.toBase64String(signature);
         this.timestamp = timestamp;
     }
 
-    public byte[] getSignature() {
+    public String getSignature() {
         return signature;
     }
 
-    public void setSignature(byte[] signature) {
+    public void setSignature(String signature) {
         this.signature = signature;
     }
 

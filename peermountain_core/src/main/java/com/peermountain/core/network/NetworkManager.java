@@ -60,7 +60,9 @@ public class NetworkManager {
     }
 
     public static void sendToServer(MainCallback mCallback, SendObject sendObject) {
-        String url = "https://teleferic-dev.dxmarkets.com/teleferic/";
+        String url =
+//                "https://12eca4f3.ngrok.io/teleferic/";
+                "https://teleferic-dev.dxmarkets.com/teleferic/";
         try {
             Action action = new Action(Action.POST,
                     url,

@@ -40,7 +40,7 @@ public class StartActivity extends AppCompatActivity {
 //        authorize();
 //        NetworkRequestHelper.init();// TODO: 3/19/18 remove after certificate is OK
         NetworkManager.sendToServer(new KeyCallback(null,MainCallback.TYPE_NO_PROGRESS),
-                new SendObject().getPublicPersonaAddress());
+                new SendObject().preparePublicPersonaAddress());
         invite();
     }
 
@@ -53,7 +53,7 @@ public class StartActivity extends AppCompatActivity {
                                 if(time!=null) sendInvite(time);
                             }
                         }),
-                new SendObject().getTime());
+                new SendObject().prepareTime());
     }
 
     private void sendInvite(String time) {// TODO: 4/2/18 get time first
