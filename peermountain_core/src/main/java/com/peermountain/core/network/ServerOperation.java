@@ -97,8 +97,8 @@ public class ServerOperation extends AsyncTask<Action, Void, NetworkResponse> {
                         break;
                     case Action.UPLOAD_FILE:
 //                        res = BackEndHelper.postFile(action.endpoint, action.file, token, action.params);
-                        res = NetworkRequestHelper.multipartRequest(action.endpoint, action.params, action.file,
-                                "file", getMimeType(action.file), token);
+                        res = NetworkRequestHelper.multipartRequest(action.endpoint, action.params, action.files,
+                                action.fileFields,  token);
                         break;
                     case Action.GET:
                         res = NetworkRequestHelper.sendAuthenticatedGet(action.endpoint, token
@@ -158,7 +158,7 @@ public class ServerOperation extends AsyncTask<Action, Void, NetworkResponse> {
     /**
      * @return The MIME type for the given file.
      */
-    private  static String getMimeType(File file) {
+    public   static String getMimeType(File file) {
         String extension = getExtension(file.getName());
 
         if (extension.length() > 0)

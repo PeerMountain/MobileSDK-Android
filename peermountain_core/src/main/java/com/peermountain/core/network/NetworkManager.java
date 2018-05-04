@@ -12,6 +12,7 @@ import com.peermountain.core.utils.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -79,6 +80,13 @@ public class NetworkManager {
 
     public static void downloadXForm(MainCallback mCallback, String url, File intoFile) {
         AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback, Actions.getForm(intoFile, url), "downloadXForm... ");
+        if (mCallback != null) mCallback.setTask(serverOperation);
+//        return serverOperation;
+    }
+
+    public static void sendFiles(MainCallback mCallback, String url, ArrayList<File> files, ArrayList<String> names) {
+        AsyncTask<Action, Void, NetworkResponse> serverOperation = doMainActionSynchronized(mCallback,
+                Actions.sendFiles(url, files, names), "sendFiles... ");
         if (mCallback != null) mCallback.setTask(serverOperation);
 //        return serverOperation;
     }

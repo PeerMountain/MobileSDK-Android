@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -357,7 +358,7 @@ public class NetworkRequestHelper {
         return sendDataToServerParams(httpUrlConnection);
     }
 
-    static NetworkResponse multipartRequest(String urlTo, Map<String, String> params, File file, String fileField, String fileMimeType, String token) throws IOException {
+    static NetworkResponse multipartRequest(String urlTo, Map<String, String> params, ArrayList<File> files, ArrayList<String> fileFields, String token)  {
         HttpURLConnection connection = null;
         DataOutputStream outputStream = null;
 
@@ -374,7 +375,6 @@ public class NetworkRequestHelper {
 
         try {
 //            File file = new File(filepath);
-            FileInputStream fileInputStream = new FileInputStream(file);
 
             URL url = new URL(urlTo);
             connection = (HttpURLConnection) url.openConnection();
@@ -392,46 +392,55 @@ public class NetworkRequestHelper {
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
             outputStream = new DataOutputStream(connection.getOutputStream());
-            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"" + fileField + "\"; filename=\"" + file
-                    .getName() + "\"" + lineEnd);
-            outputStream.writeBytes("Content-Type: " + fileMimeType + lineEnd);
-            outputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
 
-            outputStream.writeBytes(lineEnd);
+            for (int i = 0; i < files.size(); i++) {
+                File file = files.get(i);
+                String fileField = fileFields.get(i);
+                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + fileField
+                        + "\"; filename=\"" + file.getName()
+                        + "\"" + lineEnd);
+                outputStream.writeBytes("Content-Type: " + ServerOperation.getMimeType(file) + lineEnd);
+                outputStream.writeBytes("Content-Transfer-Encoding: binary" + lineEnd);
 
-            bytesAvailable = fileInputStream.available();
-            bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            buffer = new byte[bufferSize];
+                outputStream.writeBytes(lineEnd);
 
-            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-            while (bytesRead > 0) {
-                outputStream.write(buffer, 0, bufferSize);
+                FileInputStream fileInputStream = new FileInputStream(file);
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
+
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                while (bytesRead > 0) {
+                    outputStream.write(buffer, 0, bufferSize);
+                    bytesAvailable = fileInputStream.available();
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                }
+
+                outputStream.writeBytes(lineEnd);
+                fileInputStream.close();
             }
 
-            outputStream.writeBytes(lineEnd);
+            if(params!=null) {
+                // Upload POST Data
+                Iterator<String> keys = params.keySet().iterator();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = params.get(key);
 
-            // Upload POST Data
-            Iterator<String> keys = params.keySet().iterator();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                String value = params.get(key);
-
-                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
-                outputStream.writeBytes("Content-Type: text/plain" + lineEnd);
-                outputStream.writeBytes(lineEnd);
-                outputStream.writeBytes(value);
-                outputStream.writeBytes(lineEnd);
+                    outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+                    outputStream.writeBytes("Content-Disposition: form-data; name=\"" + key + "\"" + lineEnd);
+                    outputStream.writeBytes("Content-Type: text/plain" + lineEnd);
+                    outputStream.writeBytes(lineEnd);
+                    outputStream.writeBytes(value);
+                    outputStream.writeBytes(lineEnd);
+                }
             }
 
             outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
 
-            fileInputStream.close();
             outputStream.flush();
             outputStream.close();
 
@@ -497,10 +506,10 @@ public class NetworkRequestHelper {
             outputStream.close();
             inputStream.close();
             networkResponse = new NetworkResponse(responseCode, file);
-            LogUtils.d("downloadFile","File downloaded");
+            LogUtils.d("downloadFile", "File downloaded");
         } else {
             networkResponse = new NetworkResponse("No file to download. Server replied HTTP code: " + responseCode, responseCode);
-            LogUtils.d("downloadFile","No file to download. Server replied HTTP code: " + responseCode);
+            LogUtils.d("downloadFile", "No file to download. Server replied HTTP code: " + responseCode);
         }
         httpConn.disconnect();
         return networkResponse;

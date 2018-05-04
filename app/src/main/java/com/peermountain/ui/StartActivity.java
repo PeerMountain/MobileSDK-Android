@@ -1,12 +1,17 @@
 package com.peermountain.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.View;
 
 import com.peermountain.R;
+import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.network.BaseEvents;
 import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkManager;
@@ -17,12 +22,22 @@ import com.peermountain.core.network.teleferique.model.Persona;
 import com.peermountain.core.network.teleferique.model.SendObject;
 import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBuilder;
 import com.peermountain.core.network.teleferique.model.body.registration.RegistrationBuilder;
+import com.peermountain.core.odk.views.widgets.image.DocumentsFragmentDialog;
 import com.peermountain.core.persistence.MyJsonParser;
+import com.peermountain.core.utils.PmDocumentsHelper;
+import com.peermountain.sdk.PeerMountainSDK;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class StartActivity extends AppCompatActivity {
+    private PmDocumentsHelper pmDocumentsHelper;
+    private AppDocument appDocument = new AppDocument(true),
+            appDocumentBack = new AppDocument(true);
+    DocumentsFragmentDialog dialog;
+    int step = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,25 +47,116 @@ public class StartActivity extends AppCompatActivity {
         findViewById(R.id.flMain).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                invite();
+//                invite();
+
+//                switch (step) {
+//                    case 0:
+                        pmDocumentsHelper.addDocument(appDocument);
+//                        break;
+//                    case 1 :
+//                        pmDocumentsHelper.addDocument(appDocumentBack);
+//                        break;
+//                    default:
+//                        sendFiles();
+//                }
+
+//                dialog = new DocumentsFragmentDialog();
+//                dialog.setListener(new AppDocumentsAdapter.Events() {
+//                    @Override
+//                    public void onDocumentSelected(AppDocument document) {
+//                        if (document != null) {
+//                            appDocument = document;
+//                            sendFiles();
+//                        }
+//                        dialog.dismiss();
+//                    }
+//                });
+//                dialog.show(getSupportFragmentManager(), "documents_dialog");
             }
         });
-        showSplash();
+//        showSplash();
+
+        initDocumentHelper();
+
+
 //                finish();
 //        authorize();
+
 //        NetworkRequestHelper.init();// TODO: 3/19/18 remove after certificate is OK
-        NetworkManager.sendToServer(new KeyCallback(null,MainCallback.TYPE_NO_PROGRESS),
-                new SendObject().preparePublicPersonaAddress());
-        invite();
+
+//        Teleferic
+//        NetworkManager.sendToServer(new KeyCallback(null,MainCallback.TYPE_NO_PROGRESS),
+//                new SendObject().preparePublicPersonaAddress());
+//        invite();
     }
 
-    private void invite(){
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        pmDocumentsHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void initDocumentHelper() {
+        pmDocumentsHelper = new PmDocumentsHelper(
+                new PmDocumentsHelper.Events() {
+                    @Override
+                    public void refreshAdapter() {
+                        if(step == 0){
+                            step++;
+                            pmDocumentsHelper.addDocument(appDocumentBack);
+                        }else{
+                            sendFiles();
+                        }
+                    }
+
+                    @Override
+                    public Activity getActivity() {
+                        return StartActivity.this;
+                    }
+
+                    @Override
+                    public Fragment getFragment() {
+                        return null;
+                    }
+
+                    @Override
+                    public void onScanSDKLoading(boolean loading) {
+
+                    }
+
+                    @Override
+                    public void onAddingDocumentCanceled(AppDocument document) {
+
+                    }
+                }
+        );
+    }
+
+    private void sendFiles() {
+        ArrayList<String> fileNames = new ArrayList<>();
+        fileNames.add("passportFront");
+        ArrayList<File> files = new ArrayList<>();
+        Uri uri = Uri.parse(appDocument.getFileDocuments().get(0).getImageUri());
+        File file = new File(uri.getPath());
+        files.add(file);
+
+        uri = Uri.parse(appDocumentBack.getFileDocuments().get(0).getImageUri());
+        fileNames.add("passportBack");
+        File file2 = new File(uri.getPath());
+        files.add(file2);
+
+        NetworkManager.sendFiles(new MainCallback(null, MainCallback.TYPE_NO_PROGRESS),
+                "https://api.kyc3.com/rest/api/_mrzExtractor?api_key=bStfjjadHizdxqabdcStOg==",
+                files,
+                fileNames);
+    }
+
+    private void invite() {
         //get time first
         NetworkManager.sendToServer(new TimeCallback(null, MainCallback.TYPE_NO_PROGRESS,
                         new TimeCallback.Events(null, MainCallback.TYPE_NO_PROGRESS) {
                             @Override
                             public void onTime(String time) {
-                                if(time!=null) sendInvite(time);
+                                if (time != null) sendInvite(time);
                             }
                         }),
                 new SendObject().prepareTime());
@@ -67,7 +173,7 @@ public class StartActivity extends AppCompatActivity {
                 .setServiceOfferingID("1")
                 .setInviteKey("72x35FDOXuTkxivh7qYlqPU91jVgy607");
 
-        RegistrationBuilder registrationBuilder = new RegistrationBuilder(TfConstants.BODY_TYPE_REGISTRATION,time)
+        RegistrationBuilder registrationBuilder = new RegistrationBuilder(TfConstants.BODY_TYPE_REGISTRATION, time)
 //                .setInviteMsgID("XY+IUYG2tojWCPSQz7dVhcSoEDOTZdGsPlfDIDsYIKg=")
 //                .setInviteName("Invite 1")
 //                .setKeyProof("72x35FDOXuTkxivh7qYlqPU91jVgy607")
@@ -77,7 +183,7 @@ public class StartActivity extends AppCompatActivity {
                 .setKeyProof("g4l3n")
                 .setPublicNickname("Galeen-test");
 
-        NetworkManager.sendToServer(new InviteCallback(null,MainCallback.TYPE_NO_PROGRESS),
+        NetworkManager.sendToServer(new InviteCallback(null, MainCallback.TYPE_NO_PROGRESS),
 //                "http://b9d87780.ngrok.io/teleferic/",
                 registrationBuilder.build()
 //                invitationBuilder.build()
@@ -103,9 +209,9 @@ public class StartActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-//                PeerMountainSDK.goHome(StartActivity.this);
+                PeerMountainSDK.goHome(StartActivity.this);
                 timer = null;
-//                finish();
+                finish();
             }
         };
         timer.start();
@@ -146,7 +252,7 @@ public class StartActivity extends AppCompatActivity {
             try {
                 Persona persona = MyJsonParser.readServerPersona(networkResponse.json);
                 TfConstants.KEY_PUBLIC_SERVER = new
-                        String(Base64.decode(persona.getPubkey(),Base64.DEFAULT));
+                        String(Base64.decode(persona.getPubkey(), Base64.DEFAULT));
                 TfConstants.ADDRESS_PUBLIC_SERVER = persona.getAddress();
             } catch (IOException e) {
                 e.printStackTrace();
