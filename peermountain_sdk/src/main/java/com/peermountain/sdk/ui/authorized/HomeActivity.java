@@ -213,8 +213,9 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
             } else {
                 setUpView();
             }
-        } else
+        } else{
             PeerMountainSDK.registerFlow(this, REQUEST_REGISTER);
+        }
     }
 
     NavigationView navigationView;

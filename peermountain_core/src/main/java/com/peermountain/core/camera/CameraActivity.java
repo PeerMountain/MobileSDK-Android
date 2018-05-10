@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.Flash;
 import com.peermountain.core.R;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class CameraActivity extends AppCompatActivity {
     public static final int LIVE_SELFIE_FRAME_INTERVAL = 200;
     private CameraView camera;
     private ImageView btnRecord;
-    private Button btnDone;
+    private Button btnDone, btnFlash;
     private ProgressBar progress;
     private TextView tvMsg;
     private boolean isScanningDocument = false;
@@ -50,9 +51,9 @@ public class CameraActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         isScanningDocument = getIntent().getBooleanExtra(EXTRA_SCAN, false);
-        if(isScanningDocument){
+        if (isScanningDocument) {
             setContentView(R.layout.pm_activity_camera_id);
-        }else{
+        } else {
             setContentView(R.layout.pm_activity_camera);
         }
         initView();
@@ -98,7 +99,7 @@ public class CameraActivity extends AppCompatActivity {
         camera.addCameraListener(new CameraListener() {
             public void onCameraOpened(CameraOptions options) {
                 onOpened();
-                camera.startAutoFocus(camera.getWidth()/2, camera.getHeight()/2);
+                camera.startAutoFocus(camera.getWidth() / 2, camera.getHeight() / 2);
             }
 
             public void onPictureTaken(byte[] jpeg) {
@@ -152,6 +153,8 @@ public class CameraActivity extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         tvMsg = findViewById(R.id.tvMsg);
         if (isScanningDocument) {
+            btnFlash = findViewById(R.id.btnFlash);
+            btnFlash.setVisibility(View.VISIBLE);
             idImages = new Bitmap[2];
             camera.setPlaySounds(true);
             tvMsg.setVisibility(View.VISIBLE);
@@ -178,6 +181,15 @@ public class CameraActivity extends AppCompatActivity {
      * type ocl to fast get new setOnClickListener, rr/rc/rs to set ripple
      */
     private void setListeners() {
+        if(btnFlash!=null) {
+            btnFlash.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    btnFlash.setSelected(!btnFlash.isSelected());
+                    camera.setFlash(btnFlash.isSelected() ? Flash.TORCH : Flash.OFF);
+                }
+            });
+        }
         btnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

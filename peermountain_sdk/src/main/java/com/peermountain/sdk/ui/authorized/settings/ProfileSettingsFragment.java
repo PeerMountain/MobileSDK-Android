@@ -468,6 +468,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
         }
         if (uri != null) {
 //            File file = new File(URI.create(uri));
+            Picasso.with(context).invalidate(uri);
 
             Picasso.with(context)
                     .load(uri)
