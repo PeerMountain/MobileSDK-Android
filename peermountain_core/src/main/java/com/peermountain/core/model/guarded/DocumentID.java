@@ -17,6 +17,9 @@ public class DocumentID implements Parcelable {
     private ImageResult imageSource,imageSourceBack,imageCropped, imageCroppedBack,imageFace,imageCroppedSmall, imageCroppedBackSmall;
     private boolean valid;
 
+    public boolean checkIsValid(){
+        return !TextUtils.isEmpty(lastName)&&!TextUtils.isEmpty(firstName)&&!TextUtils.isEmpty(gender)&&!TextUtils.isEmpty(docNumber)&&!TextUtils.isEmpty(country)&&!TextUtils.isEmpty(birthday);
+    }
 
     public String getLastName() {
         return lastName;

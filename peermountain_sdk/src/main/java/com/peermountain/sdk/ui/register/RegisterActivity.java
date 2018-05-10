@@ -100,7 +100,7 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
                 new Observer<DocumentID>() {
                     @Override
                     public void onChanged(@Nullable DocumentID documentID) {
-                        if (documentID == null || !documentID.isValid()) {
+                        if (documentID == null || !documentID.checkIsValid() ) {//|| !documentID.isValid()
                             if(documentID!=null) documentID.deleteDocumentImages();
                             DialogUtils.showErrorToast(RegisterActivity.this, getString(R.string.pm_err_server_data_extraction));
                             showScanIdFragment();
@@ -229,7 +229,7 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
 
     @Override
     public void onScannedIdDataRejected(DocumentID scannedDocument) {
-        fragmentBuilder.pop();
+        fragmentBuilder.popImmediate();
         showScanIdFragment();
     }
 
