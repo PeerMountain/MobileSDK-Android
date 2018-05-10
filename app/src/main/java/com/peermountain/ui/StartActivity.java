@@ -11,6 +11,7 @@ import android.util.Base64;
 import android.view.View;
 
 import com.peermountain.R;
+import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.network.BaseEvents;
 import com.peermountain.core.network.MainCallback;
@@ -25,7 +26,9 @@ import com.peermountain.core.network.teleferique.model.body.registration.Registr
 import com.peermountain.core.odk.views.widgets.image.DocumentsFragmentDialog;
 import com.peermountain.core.persistence.MyJsonParser;
 import com.peermountain.core.utils.PmDocumentsHelper;
+import com.peermountain.core.utils.PmLiveSelfieHelper;
 import com.peermountain.sdk.PeerMountainSDK;
+import com.peermountain.sdk.utils.DialogUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +36,7 @@ import java.util.ArrayList;
 
 
 public class StartActivity extends AppCompatActivity {
+    public static final int REQUEST_IMAGE_CAPTURE = 111;
     private PmDocumentsHelper pmDocumentsHelper;
     private AppDocument appDocument = new AppDocument(true),
             appDocumentBack = new AppDocument(true);
@@ -51,7 +55,9 @@ public class StartActivity extends AppCompatActivity {
 
 //                switch (step) {
 //                    case 0:
-                        pmDocumentsHelper.addDocument(appDocument);
+//                        pmDocumentsHelper.addDocument(appDocument);
+                CameraActivity.show(StartActivity.this, true, REQUEST_IMAGE_CAPTURE);
+
 //                        break;
 //                    case 1 :
 //                        pmDocumentsHelper.addDocument(appDocumentBack);
@@ -92,7 +98,35 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        pmDocumentsHelper.onActivityResult(requestCode, resultCode, data);
+//        pmDocumentsHelper.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (CameraActivity.idImages != null
+                    && CameraActivity.idImages[0] != null) {
+                //save files and send
+                new PmLiveSelfieHelper(true, new PmLiveSelfieHelper.Events() {
+                    @Override
+                    public Activity getActivity() {
+                        return StartActivity.this;
+                    }
+
+                    @Override
+                    public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
+                        ArrayList<File> files = new ArrayList<>();
+                        Uri uri = Uri.parse(liveSelfie.get(0));
+                        File file = new File(uri.getPath());
+                        files.add(file);
+                        if(liveSelfie.size()>1){
+                            uri = Uri.parse(liveSelfie.get(0));
+                            File file2 = new File(uri.getPath());
+                            files.add(file2);
+                        }
+                        sendFiles(files);
+                    }
+                }).saveID();
+            } else {
+                DialogUtils.showInfoSnackbar(this, com.peermountain.sdk.R.string.pm_err_no_liveselfie_created);
+            }
+        }
     }
 
     public void initDocumentHelper() {
@@ -100,11 +134,11 @@ public class StartActivity extends AppCompatActivity {
                 new PmDocumentsHelper.Events() {
                     @Override
                     public void refreshAdapter() {
-                        if(step == 0){
+                        if (step == 0) {
                             step++;
                             pmDocumentsHelper.addDocument(appDocumentBack);
-                        }else{
-                            sendFiles();
+                        } else {
+                            sendFiles(null);
                         }
                     }
 
@@ -131,19 +165,23 @@ public class StartActivity extends AppCompatActivity {
         );
     }
 
-    private void sendFiles() {
+    private void sendFiles(ArrayList<File> filesToSend) {
         ArrayList<String> fileNames = new ArrayList<>();
         fileNames.add("passportFront");
-        ArrayList<File> files = new ArrayList<>();
-        Uri uri = Uri.parse(appDocument.getFileDocuments().get(0).getImageUri());
-        File file = new File(uri.getPath());
-        files.add(file);
-
-        uri = Uri.parse(appDocumentBack.getFileDocuments().get(0).getImageUri());
         fileNames.add("passportBack");
-        File file2 = new File(uri.getPath());
-        files.add(file2);
+        ArrayList<File> files;
+        if (filesToSend != null) {
+            files = filesToSend;
+        } else {
+            files = new ArrayList<>();
+            Uri uri = Uri.parse(appDocument.getFileDocuments().get(0).getImageUri());
+            File file = new File(uri.getPath());
+            files.add(file);
 
+            uri = Uri.parse(appDocumentBack.getFileDocuments().get(0).getImageUri());
+            File file2 = new File(uri.getPath());
+            files.add(file2);
+        }
         NetworkManager.sendFiles(new MainCallback(null, MainCallback.TYPE_NO_PROGRESS),
                 "https://api.kyc3.com/rest/api/_mrzExtractor?api_key=bStfjjadHizdxqabdcStOg==",
                 files,

@@ -796,8 +796,9 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                     Manifest.permission.CAMERA}, REQUEST_CODE_LIVE_WRITE_PERMISSION);
         } else {
             PmSystemHelper.hideKeyboard(getActivity(), etNames);
-            Intent intent = new Intent(getActivity(), CameraActivity.class);
-            startActivityForResult(intent, REQUEST_LIVE_IMAGE_CAPTURE);
+//            Intent intent = new Intent(getActivity(), CameraActivity.class);
+//            startActivityForResult(intent, REQUEST_LIVE_IMAGE_CAPTURE);
+            CameraActivity.show(getActivity(),false,REQUEST_LIVE_IMAGE_CAPTURE);
 //            avatarFile = RegisterProfileFragment.dispatchTakePictureIntent(getActivity(), ProfileSettingsFragment.this, REQUEST_LIVE_IMAGE_CAPTURE);
         }
     }

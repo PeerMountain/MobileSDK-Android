@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 
 public class PmLiveSelfieHelper {
-
+    private boolean isId = false;
     private File dir;
     private ArrayList<File> files = new ArrayList<>();
     private int imagesInProcess = 0;
@@ -25,17 +25,35 @@ public class PmLiveSelfieHelper {
         this.callback = callback;
     }
 
-    public void saveLiveSelfie(){
+    public PmLiveSelfieHelper(boolean isId, Events callback) {
+        this.isId = isId;
+        this.callback = callback;
+    }
+
+    public void saveLiveSelfie() {
         prepareDir();
         imagesInProcess = 0;
         for (Bitmap bitmap : CameraActivity.bitmaps) {
-            saveFrame(bitmap);
+            saveFrame(bitmap, null);
         }
-        CameraActivity.bitmaps=null;
+        CameraActivity.bitmaps = null;
     }
 
-    private void saveFrame(Bitmap bitmap) {
-        String name = System.currentTimeMillis()+imagesInProcess + ".jpg";
+    public void saveID() {
+        prepareDir();
+        imagesInProcess = 0;
+        Bitmap bitmap = CameraActivity.idImages[0];
+        saveFrame(bitmap, "mrz");
+        if (CameraActivity.idImages[1]!=null) {
+            bitmap = CameraActivity.idImages[1];
+            saveFrame(bitmap, "not_mrz");
+        }
+        CameraActivity.idImages = null;
+    }
+
+
+    private void saveFrame(Bitmap bitmap, String fileName) {
+        String name = fileName == null ? "liveSelfie_" + imagesInProcess + ".jpg" : fileName + ".jpg";
         File file = new File(dir, name);
         files.add(file);
         imagesInProcess++;
@@ -53,25 +71,30 @@ public class PmLiveSelfieHelper {
 
     private void prepareDir() {
         if (callback == null) {
-            LogUtils.e("PmLiveSelfieHelper","callback is null");
+            LogUtils.e("PmLiveSelfieHelper", "callback is null");
             return;
         }
-        // TODO: 11/6/17 set dir in local storage?
-        dir = new File(callback.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),"/liveSelfie");
-        if(dir.exists()){
-            if(dir.listFiles().length>0) {
-                for (File file : dir.listFiles()) {
-                    file.delete();
-                }
-            }
-        }else {
+
+        if (isId) {
+            dir = new File(callback.getActivity().getFilesDir(), "/scannedIds");
             dir.mkdirs();
+        } else {// TODO: 11/6/17 set dir in local storage?
+            dir = new File(callback.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "/liveSelfie");
+            if (dir.exists()) {
+                if (dir.listFiles().length > 0) {
+                    for (File file : dir.listFiles()) {
+                        file.delete();
+                    }
+                }
+            } else {
+                dir.mkdirs();
+            }
         }
     }
 
     private void linkImagesToMyProfile() {
         if (callback == null) {
-            LogUtils.e("PmLiveSelfieHelper","callback is null");
+            LogUtils.e("PmLiveSelfieHelper", "callback is null");
             return;
         }
         ArrayList<String> liveSelfie = new ArrayList<>();
@@ -82,8 +105,9 @@ public class PmLiveSelfieHelper {
         callback.onLiveSelfieReady(liveSelfie);
     }
 
-    public interface Events{
+    public interface Events {
         Activity getActivity();
+
         void onLiveSelfieReady(ArrayList<String> liveSelfie);
     }
 }

@@ -10,25 +10,28 @@
 
     <TextView
         android:id="@+id/tvMsg"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="@dimen/pm_margin_big"
         android:text="@string/pm_msg_saving_live_selfie"
+        android:textSize="@dimen/pm_text_big"
         android:textColor="@color/pm_share_text"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <!-- Camera -->
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/camera"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="@dimen/camera_size"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/camera_size"
         android:layout_gravity="center"
         android:keepScreenOn="true"
         app:cameraAudio="off"
         app:cameraCropOutput="true"
-        app:cameraFacing="front"
-        app:cameraFlash="off"
+        app:cameraFacing="back"
+        app:cameraFlash="auto"
         app:cameraGestureLongTap="none"
         app:cameraGesturePinch="zoom"
         app:cameraGestureScrollHorizontal="exposureCorrection"

@@ -366,8 +366,9 @@ public class RegisterProfileFragment extends ToolbarFragment {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_PERMISSION);
         } else {
             PmSystemHelper.hideKeyboard(getActivity(), pmEtNames);
-            Intent intent = new Intent(getActivity(), CameraActivity.class);
-            getActivity().startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+//            Intent intent = new Intent(getActivity(), CameraActivity.class);
+//            getActivity().startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+            CameraActivity.show(getActivity(),false,REQUEST_IMAGE_CAPTURE);
 //            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);
         }
     }

@@ -19,6 +19,8 @@
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
     <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
     <string name="title_activity_show_live_selfie">ShowLiveSelfieActivity</string>
+    <string name="pm_msg_capture_mrz">Please capture your document from MRZ side</string>
+    <string name="pm_msg_capture_not_mrz">If you have other side of your document, please capture it as well</string>
 
 
     <string name="pm_audio_file_error">No audio file was specified.</string>
