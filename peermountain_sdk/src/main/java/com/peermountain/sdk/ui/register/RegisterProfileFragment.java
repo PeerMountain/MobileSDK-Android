@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -48,16 +47,17 @@ import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
 import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.core.model.guarded.ImageResult;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.utils.PmLiveSelfieHelper;
 import com.peermountain.core.utils.PmSystemHelper;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
@@ -367,9 +367,9 @@ public class RegisterProfileFragment extends ToolbarFragment {
         } else {
             PmSystemHelper.hideKeyboard(getActivity(), pmEtNames);
 //            Intent intent = new Intent(getActivity(), CameraActivity.class);
-//            getActivity().startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+//            getActivity().startActivityForResult(intent, REQUEST_ID_CAPTURE);
             CameraActivity.show(getActivity(),false,REQUEST_IMAGE_CAPTURE);
-//            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_IMAGE_CAPTURE);
+//            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_ID_CAPTURE);
         }
     }
 
@@ -379,10 +379,6 @@ public class RegisterProfileFragment extends ToolbarFragment {
     private void saveProfile() {
         if (CameraActivity.bitmaps != null && CameraActivity.bitmaps.size() > 0) {
             new PmLiveSelfieHelper(new PmLiveSelfieHelper.Events() {
-                @Override
-                public Activity getActivity() {
-                    return RegisterProfileFragment.this.getActivity();
-                }
 
                 @Override
                 public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
@@ -607,7 +603,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         }
 
         @Override
-        public void onSized(AXTImageResult image) {
+        public void onSized(ImageResult image) {
             if (!isMoving) {
                 if (isFront) {
                     document.setImageCroppedSmall(image);

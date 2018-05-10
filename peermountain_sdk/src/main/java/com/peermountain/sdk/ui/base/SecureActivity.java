@@ -5,12 +5,13 @@ import android.view.WindowManager;
 
 import com.peermountain.core.persistence.InactiveTimer;
 import com.peermountain.core.persistence.PeerMountainManager;
+import com.peermountain.sdk.ui.base.livecycle.BaseViewModel;
 
 /**
  * Created by Galeen on 12.7.2017 г..
  */
 
-public abstract class SecureActivity extends ToolbarActivity {
+public abstract class SecureActivity<T extends BaseViewModel> extends ToolbarActivity<T> {
     public InactiveTimer.InactiveTimerInteractions inactivityCallback = null;
 //    public abstract void initInactivityCallback();
 

@@ -1,11 +1,11 @@
 package com.peermountain.core.utils;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 
 import com.peermountain.core.camera.CameraActivity;
+import com.peermountain.core.persistence.PeerMountainManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,10 +43,10 @@ public class PmLiveSelfieHelper {
         prepareDir();
         imagesInProcess = 0;
         Bitmap bitmap = CameraActivity.idImages[0];
-        saveFrame(bitmap, "mrz");
-        if (CameraActivity.idImages[1]!=null) {
+        saveFrame(bitmap, System.currentTimeMillis()+"_mrz");
+        if (CameraActivity.idImages[1] != null) {
             bitmap = CameraActivity.idImages[1];
-            saveFrame(bitmap, "not_mrz");
+            saveFrame(bitmap, System.currentTimeMillis()+"_not_mrz");
         }
         CameraActivity.idImages = null;
     }
@@ -70,16 +70,16 @@ public class PmLiveSelfieHelper {
     }
 
     private void prepareDir() {
-        if (callback == null) {
+        if (callback == null || PeerMountainManager.getApplicationContext() == null) {
             LogUtils.e("PmLiveSelfieHelper", "callback is null");
             return;
         }
 
         if (isId) {
-            dir = new File(callback.getActivity().getFilesDir(), "/scannedIds");
+            dir = new File(PeerMountainManager.getApplicationContext().getFilesDir(), "/scannedIds");
             dir.mkdirs();
         } else {// TODO: 11/6/17 set dir in local storage?
-            dir = new File(callback.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "/liveSelfie");
+            dir = new File(PeerMountainManager.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "/liveSelfie");
             if (dir.exists()) {
                 if (dir.listFiles().length > 0) {
                     for (File file : dir.listFiles()) {
@@ -106,8 +106,6 @@ public class PmLiveSelfieHelper {
     }
 
     public interface Events {
-        Activity getActivity();
-
         void onLiveSelfieReady(ArrayList<String> liveSelfie);
     }
 }

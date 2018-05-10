@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 
 import com.peermountain.core.model.guarded.InfoMessage;
 import com.peermountain.core.model.guarded.ProgressData;
+import com.peermountain.core.network.BaseEvents;
 import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkResponse;
 import com.peermountain.core.utils.LogUtils;

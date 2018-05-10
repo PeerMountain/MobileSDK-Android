@@ -268,10 +268,6 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     private void saveLiveSelfie() {
         setToolbar(-1, R.string.pm_profile_settings_title, null);
         new PmLiveSelfieHelper(new PmLiveSelfieHelper.Events() {
-            @Override
-            public Activity getActivity() {
-                return ProfileSettingsFragment.this.getActivity();
-            }
 
             @Override
             public void onLiveSelfieReady(ArrayList<String> liveSelfie) {

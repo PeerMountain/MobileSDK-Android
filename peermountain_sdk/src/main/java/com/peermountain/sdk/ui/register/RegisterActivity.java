@@ -1,11 +1,13 @@
 package com.peermountain.sdk.ui.register;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.ariadnext.android.smartsdk.interfaces.AXTCaptureInterfaceCallback;
@@ -13,19 +15,21 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
-import com.peermountain.sdk.ui.base.livecycle.EmptyViewModel;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
 
-public class RegisterActivity extends SecureActivity implements RegisterPinFragment.OnFragmentInteractionListener,
-         ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
+public class RegisterActivity extends SecureActivity<RegisterViewModel> implements RegisterPinFragment.OnFragmentInteractionListener,
+        ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
         ConfirmationAccountFragment.OnFragmentInteractionListener, SecurityTutorialFragment.OnFragmentInteractionListener {
+
+    public static final int REQUEST_ID_CAPTURE = 111;
     @IdRes
     int containerId = R.id.flContainer;
     PmFragmentUtils.FragmentBuilder fragmentBuilder;
@@ -61,6 +65,7 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
             topFragment.onActivityResult(requestCode, resultCode, data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+            activityViewModel.checkIdCapture(requestCode, resultCode);
         }
     }
 
@@ -91,13 +96,27 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
 
     @Override
     protected void setObservers() {
-
+        activityViewModel.getOnDocumentScannedFromServer().observe(this,
+                new Observer<DocumentID>() {
+                    @Override
+                    public void onChanged(@Nullable DocumentID documentID) {
+                        if (documentID == null || !documentID.isValid()) {
+                            if(documentID!=null) documentID.deleteDocumentImages();
+                            DialogUtils.showErrorToast(RegisterActivity.this, getString(R.string.pm_err_server_data_extraction));
+                            showScanIdFragment();
+                            return;
+                        }
+                        Intent intent = new Intent();
+                        intent.putExtra(ShowScannedIdFragment.ID, documentID);
+                        onIdScanned(intent);
+                    }
+                });
     }
 
     @NonNull
     @Override
     protected Class getViewModel() {
-        return EmptyViewModel.class;
+        return RegisterViewModel.class;
     }
 
     private boolean handleOnBack() {
@@ -122,8 +141,10 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
 
     private void showScanIdFragment() {
 //        registerKeywordsFragment = null;
-        fragmentBuilder.addToBackStack(true);
-        fragmentBuilder.replace(scanIdFragment = ScanIdFragment.newInstance(null, null));
+//        fragmentBuilder.addToBackStack(true);
+//        fragmentBuilder.replace(scanIdFragment = ScanIdFragment.newInstance(null, null));
+
+        CameraActivity.show(this, true, REQUEST_ID_CAPTURE);
     }
 
     private void showScannedIdDataFragment(Intent scannedData) {
@@ -164,9 +185,9 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
 
     @Override
     public void onKeywordsSaved() {
-        if(PeerMountainCoreConstants.isFake){
+        if (PeerMountainCoreConstants.isFake) {
             showScannedIdDataFragment(null);
-        }else{
+        } else {
             showScanIdFragment();
         }
     }
@@ -207,6 +228,12 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
     }
 
     @Override
+    public void onScannedIdDataRejected(DocumentID scannedDocument) {
+        fragmentBuilder.pop();
+        showScanIdFragment();
+    }
+
+    @Override
     public void onProfileRegistered() {
         showConfirmationFragment();
     }
@@ -233,9 +260,10 @@ public class RegisterActivity extends SecureActivity implements RegisterPinFragm
     }
 
     GoogleApiClient mGoogleApiClient;
+
     @Override
     public GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso) {
-        if(mGoogleApiClient==null) {
+        if (mGoogleApiClient == null) {
             // Build a GoogleApiClient with access to the Google Sign-In API and the
             // options specified by gso.
             mGoogleApiClient = new GoogleApiClient.Builder(this)

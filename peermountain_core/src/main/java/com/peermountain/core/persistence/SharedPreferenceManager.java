@@ -74,7 +74,7 @@ class SharedPreferenceManager {
         if (getContext() == null) return null;
         try {
             return MyJsonParser.readProfile(getString(PREF_PROFILE, null));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -89,7 +89,7 @@ class SharedPreferenceManager {
         if (getContext() == null) return null;
         try {
             return MyJsonParser.readJobs(getString(PREF_JOBS, null));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

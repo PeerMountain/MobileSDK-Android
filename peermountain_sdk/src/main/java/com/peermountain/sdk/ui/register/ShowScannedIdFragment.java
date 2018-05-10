@@ -13,9 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.peermountain.core.model.guarded.DocumentID;
-import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.DocumentUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
@@ -25,6 +23,7 @@ import com.peermountain.sdk.utils.ripple.RippleUtils;
 public class ShowScannedIdFragment extends ToolbarFragment {
     private static final int REQUEST_SCAN_ID = 796;
     private static final String ARG_PARAM1 = "param1";
+    public static final String ID = "ID";
 
     private OnFragmentInteractionListener mListener;
     private TextView mTvPmError;
@@ -87,19 +86,20 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        initView(view);
-//        setListeners();
-//        getScannedData(scannedData);
-//        setToolbar(R.drawable.pm_ic_logo,R.string.pm_register_title,null);
-//        setTheme(ToolbarFragment.THEME_LIGHT);
-        if(mListener!=null){
-            document = PmDocumentsHelper.getScannedData(scannedData);
-            mListener.onScannedIdDataAccepted(document);
-        }
+        initView(view);
+        setListeners();
+        getScannedData(scannedData);
+        setToolbar(R.drawable.pm_ic_logo, R.string.pm_register_title, null);
+        setTheme(ToolbarFragment.THEME_LIGHT);
+//        if(mListener!=null){
+//            document = PmDocumentsHelper.getScannedData(scannedData);
+//            mListener.onScannedIdDataAccepted(document);
+//        }
     }
 
     @Override
     public void onDetach() {
+        setTheme(ToolbarFragment.THEME_DARK);
         super.onDetach();
         mListener = null;
     }
@@ -147,7 +147,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         mBtnPmScanIdAccept.setOnClickListener(new RippleOnClickListener() {
             @Override
             public void onClickListener(View view) {
-                if(mListener!=null){
+                if (mListener != null) {
                     mListener.onScannedIdDataAccepted(document);
                 }
             }
@@ -159,18 +159,23 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     RippleOnClickListener onRejectClickListener = new RippleOnClickListener(true) {
         @Override
         public void onClickListener(View view) {
-            PeerMountainManager.scanId(ShowScannedIdFragment.this, REQUEST_SCAN_ID);
+//            PeerMountainManager.scanId(ShowScannedIdFragment.this, REQUEST_SCAN_ID);
+            if (mListener != null) {
+                if (document != null) document.deleteDocumentImages();
+                mListener.onScannedIdDataRejected(document);
+            }
         }
     };
 
     DocumentID document;
+
     private void getScannedData(Intent scannedData) {
-        document = DocumentUtils.getScannedData(scannedData);
+        document = scannedData.getParcelableExtra(ID);
         setDataInView(document);
     }
 
     private void setDataInView(DocumentID document) {
-        if(document==null) return;
+        if (document == null) return;
         StringBuilder sb = new StringBuilder();
 
         DocumentUtils.setImage(mIvPmFullImage, document.getImageCropped(), "\nno ID image", sb);
@@ -182,15 +187,17 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     }
 
     private void showExtraInfo(DocumentID document, StringBuilder sb) {
-        DocumentUtils.setImage(mIvPmFaceImage, document.getImageFace(), "\nno face image", sb);
+//        DocumentUtils.setImage(mIvPmFaceImage, document.getImageFace(), "\nno face image", sb);
         DocumentUtils.setText(mTvPmNumber, "# ", document.getDocNumber(), "\nno number", sb);
-        DocumentUtils.setText(mTvPmFirstName, "First name : ", document.getFirstName(), "\nno first name", sb);
+        DocumentUtils.setText(mTvPmFirstName, "Given name : ", document.getFirstName(), "\nno first name", sb);
         DocumentUtils.setText(mTvPmLastName, "Last name : ", document.getLastName(), "\nno last name", sb);
         DocumentUtils.setText(mTvPmCountry, "Country : ", document.getCountry(), "\nno country", sb);
         DocumentUtils.setText(mTvPmExpiration, "Expiration Date : ", document.getExpirationDate(), "\nno Expiration Date", sb);
-        DocumentUtils.setText(mTvPmIssued, "Emitted : ", document.getEmitDate(), "\nno emitDate", sb);
         DocumentUtils.setText(mTvPmDob, "Dob : ", document.getBirthday(), "\nno Dob", sb);
-        DocumentUtils.setText(mTvPmValid, "", document.isValid() ?"Valid" : "Invalid", "", sb);
+
+        // TODO: 5/10/2018 remove
+        DocumentUtils.setText(mTvPmIssued, "Emitted : ", document.getEmitDate(), "\nno emitDate", sb);
+        DocumentUtils.setText(mTvPmValid, "", document.isValid() ? "Valid" : "Invalid", "", sb);
 
 //        if(document.getScannedResult().getMapDocument().get(AXTSdkResult.RFID_DOCUMENT)==null){
 //            sb.append("\nNo NFC data");
@@ -200,5 +207,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
 
     public interface OnFragmentInteractionListener {
         void onScannedIdDataAccepted(DocumentID scannedDocument);
+
+        void onScannedIdDataRejected(DocumentID scannedDocument);
     }
 }

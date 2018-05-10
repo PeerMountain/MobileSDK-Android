@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_margin="@dimen/pm_margin_big"
-        android:text="@string/pm_msg_saving_live_selfie"
-        android:textSize="@dimen/pm_text_big"
+        android:layout_margin="@dimen/pm_margin_xbig"
+        android:text="@string/pm_msg_capture_mrz"
+        android:textSize="28sp"
         android:textColor="@color/pm_share_text"
         android:visibility="gone"
         tools:visibility="visible"/>
@@ -32,14 +32,19 @@
         app:cameraCropOutput="true"
         app:cameraFacing="back"
         app:cameraFlash="auto"
-        app:cameraGestureLongTap="none"
+        app:cameraGestureLongTap="focusWithMarker"
         app:cameraGesturePinch="zoom"
         app:cameraGestureScrollHorizontal="exposureCorrection"
         app:cameraGestureScrollVertical="none"
         app:cameraGestureTap="focusWithMarker"
         app:cameraGrid="off"
         app:cameraJpegQuality="100"
-        app:cameraSessionType="picture"/>
+        app:cameraSessionType="picture"
+        app:cameraPlaySounds="true"
+        app:cameraPictureSizeMinWidth="2000"
+        app:cameraPictureSizeMaxWidth="2500"
+        app:cameraPictureSizeBiggest="false"
+        />
 
     <ImageView
         android:id="@+id/btnRecord"

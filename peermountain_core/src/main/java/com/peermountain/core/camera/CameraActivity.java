@@ -98,6 +98,7 @@ public class CameraActivity extends AppCompatActivity {
         camera.addCameraListener(new CameraListener() {
             public void onCameraOpened(CameraOptions options) {
                 onOpened();
+                camera.startAutoFocus(camera.getWidth()/2, camera.getHeight()/2);
             }
 
             public void onPictureTaken(byte[] jpeg) {

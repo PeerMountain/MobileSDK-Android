@@ -210,6 +210,7 @@
     <string name="pm_share_using_google_nearby">Using Google NearBy</string>
     <string name="pm_share_using_qr_code">Using QR Code</string>
     <string name="pm_share_title">Add contact</string>
+    <string name="pm_err_server_data_extraction">There was an error on data extraction</string>
     <!--Share fragment end-->
 
 </resources>

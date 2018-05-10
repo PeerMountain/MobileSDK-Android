@@ -5,11 +5,11 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.JsonWriter;
 
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
+import com.peermountain.core.model.guarded.ImageResult;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
@@ -48,11 +48,11 @@ public class MyJsonParser {
     private static final String DOCUMENTS = "documents";
     private static final String LAST_NAME = "lastName";
     private static final String GANDER = "gander";
-    private static final String DOC_NUMBER = "docNumber";
+    private static final String DOC_NUMBER = "PassportNumber";
     private static final String EMIT_DATE = "emitDate";
     private static final String MRZ_ID = "mrzID";
-    private static final String EXPIRATION_DATE = "expirationDate";
-    private static final String VALID = "valid";
+    private static final String EXPIRATION_DATE = "DateOfExpiration";
+    private static final String VALID = "MRZCheck";
     private static final String ID = "id";
     private static final String HEIGHT = "height";
     private static final String WIDTH = "width";
@@ -86,6 +86,12 @@ public class MyJsonParser {
     public static final String INFORMATION = "information";
     public static final String X_FORM_URI = "xFormUri";
     public static final String OPEN = "open";
+    public static final String SEX = "Sex";
+    public static final String GIVEN_NAME = "GivenName";
+    public static final String SURNAME = "Surname";
+    public static final String DATE_OF_BIRTH = "DateOfBirth";
+    public static final String ISSUING_COUNTRY = "IssuingCountry";
+    public static final String PASSPORT_TYPE = "PassportType";
 
     private static String getString(JsonReader reader) throws IOException {
         if (reader.peek() != JsonToken.NULL)
@@ -805,6 +811,12 @@ public class MyJsonParser {
         return documents;
     }
 
+    public static DocumentID readDocument(String json) throws IOException {
+        if (json == null) return null;
+        JsonReader reader = new JsonReader(new StringReader(json));
+        return readDocument(reader);
+    }
+
     private static DocumentID readDocument(JsonReader reader) throws IOException {
         DocumentID document = null;
         String name;
@@ -813,29 +825,29 @@ public class MyJsonParser {
             if (document == null) document = new DocumentID();
             name = reader.nextName();
             switch (name) {
-                case GANDER:
+                case SEX:
                     document.setGender(getString(reader));
                     break;
-                case FIRST_NAME:
+                case GIVEN_NAME:
                     document.setFirstName(getString(reader));
                     break;
-                case LAST_NAME:
+                case SURNAME:
                     document.setLastName(getString(reader));
                     break;
-                case DOB:
+                case DATE_OF_BIRTH:
                     document.setBirthday(getString(reader));
                     break;
                 case DOC_NUMBER:
                     document.setDocNumber(getString(reader));
                     break;
-                case POB:
+                case ISSUING_COUNTRY:
                     document.setCountry(getString(reader));
                     break;
                 case EMIT_DATE:
                     document.setEmitDate(getString(reader));
                     break;
-                case MRZ_ID:
-                    document.setMrzID(getString(reader));
+                case PASSPORT_TYPE:
+                    document.setType(getString(reader));
                     break;
                 case EXPIRATION_DATE:
                     document.setExpirationDate(getString(reader));
@@ -878,13 +890,14 @@ public class MyJsonParser {
             return;
         }
         writer.beginObject();
-        writer.name(GANDER).value(document.getGender());
-        writer.name(FIRST_NAME).value(document.getFirstName());
-        writer.name(LAST_NAME).value(document.getLastName());
-        writer.name(DOB).value(document.getBirthday());
+        writer.name(SEX).value(document.getGender());
+        writer.name(GIVEN_NAME).value(document.getFirstName());
+        writer.name(SURNAME).value(document.getLastName());
+        writer.name(DATE_OF_BIRTH).value(document.getBirthday());
         writer.name(DOC_NUMBER).value(document.getDocNumber());
+        writer.name(ISSUING_COUNTRY).value(document.getCountry());
         writer.name(EMIT_DATE).value(document.getEmitDate());
-        writer.name(MRZ_ID).value(document.getMrzID());
+        writer.name(PASSPORT_TYPE).value(document.getType());
         writer.name(EXPIRATION_DATE).value(document.getExpirationDate());
         writer.name(VALID).value(document.isValid());
         if (checkDocumentImageNotEmpty(document.getImageSource())) {
@@ -918,35 +931,35 @@ public class MyJsonParser {
         writer.endObject();
     }
 
-    private static boolean checkDocumentImageNotEmpty(AXTImageResult image) {
+    private static boolean checkDocumentImageNotEmpty(ImageResult image) {
         return image != null && !TextUtils.isEmpty(image.getImageUri());
     }
 
-    private static void writeAXTImage(JsonWriter writer, AXTImageResult image) throws IOException {
+    private static void writeAXTImage(JsonWriter writer, ImageResult image) throws IOException {
         writer.beginObject();
         writer.name(IMAGE_URI).value(image.getImageUri());
-        writer.name(WIDTH).value(image.getWidth());
-        writer.name(HEIGHT).value(image.getHeight());
+//        writer.name(WIDTH).value(image.getWidth());
+//        writer.name(HEIGHT).value(image.getHeight());
         writer.endObject();
     }
 
-    private static AXTImageResult readAXTImageResult(JsonReader reader) throws IOException {
+    private static ImageResult readAXTImageResult(JsonReader reader) throws IOException {
         String name = null;
-        AXTImageResult axtImageResult = null;
+        ImageResult axtImageResult = null;
         reader.beginObject();
         while (reader.hasNext()) {
-            if (axtImageResult == null) axtImageResult = new AXTImageResult();
+            if (axtImageResult == null) axtImageResult = new ImageResult();
             name = reader.nextName();
             switch (name) {
                 case IMAGE_URI:
                     axtImageResult.setImageUri(getString(reader));
                     break;
-                case WIDTH:
-                    axtImageResult.setWidth(getInt(reader));
-                    break;
-                case HEIGHT:
-                    axtImageResult.setHeight(getInt(reader));
-                    break;
+//                case WIDTH:
+//                    axtImageResult.setWidth(getInt(reader));
+//                    break;
+//                case HEIGHT:
+//                    axtImageResult.setHeight(getInt(reader));
+//                    break;
                 default:
                     reader.skipValue();
             }

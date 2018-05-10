@@ -28,12 +28,12 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentAbstract;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentChip;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentIdentity;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentValidityResult;
-import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
+import com.peermountain.core.model.guarded.ImageResult;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.core.utils.constants.PmCoreConstants;
@@ -417,28 +417,12 @@ public class PmDocumentsHelper {
             if (documentToUpdate.getDocuments().size() > 0) {
                 //don't delete document images, because the SDK override them it self and is the same uri
                 DocumentID oldDocument = documentToUpdate.getDocuments().get(0);
-                deleteDocumentImages(oldDocument);
+                oldDocument.deleteDocumentImages();
                 documentToUpdate.getDocuments().clear();//replace current
             }
             documentToUpdate.getDocuments().add(documentId);
             documentToUpdate.setEmpty(false);
             onDocumentDone();
-        }
-    }
-
-    private void deleteDocumentImages(DocumentID oldDocument) {
-        deleteFile(oldDocument.getImageCropped());
-        deleteFile(oldDocument.getImageCroppedBack());
-        deleteFile(oldDocument.getImageCroppedSmall());
-        deleteFile(oldDocument.getImageCroppedBackSmall());
-        deleteFile(oldDocument.getImageFace());
-        deleteFile(oldDocument.getImageSource());
-        deleteFile(oldDocument.getImageSourceBack());
-    }
-
-    private void deleteFile(AXTImageResult image) {
-        if (image != null) {
-            deleteFile(image.getImageUri());
         }
     }
 
@@ -491,8 +475,8 @@ public class PmDocumentsHelper {
         }
     }
 
-    private static void processIdImage(final Context context, int size, final AXTImageResult image, String name, final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
-        if (image != null && image.getWidth() > size) {
+    private static void processIdImage(final Context context, int size, final ImageResult image, String name, final String idNum, final SizeImageEvent callback, final SizeImageEvent callbackMove) {
+        if (image != null) {
             final File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
             File newSmallerImage = PmCoreUtils.createLocalFile(context, idNum, name, PmCoreConstants.FILE_TYPE_IMAGES);
 
@@ -500,7 +484,7 @@ public class PmDocumentsHelper {
                     size / 2, false, false, new ImageUtils.ConvertImageTask.ImageCompressorListener() {
                         @Override
                         public void onImageCompressed(Bitmap bitmap, Uri uri) {
-                            AXTImageResult imageResult = new AXTImageResult();
+                            ImageResult imageResult = new ImageResult();
                             imageResult.setImageUri(uri.toString());
                             if (callback != null) {
                                 callback.onSized(imageResult);
@@ -529,7 +513,7 @@ public class PmDocumentsHelper {
         }
     }
 
-    private static void moveIdImage(Context context, AXTImageResult image, String name,
+    private static void moveIdImage(Context context, ImageResult image, String name,
                                     String idNum, final SizeImageEvent callback) {
         if (image != null) {
             File originalImage = new File(Uri.parse(image.getImageUri()).getPath());
@@ -540,7 +524,7 @@ public class PmDocumentsHelper {
                 public void onFinish(boolean isSuccess) {
                     if (isSuccess) {
                         LogUtils.d("onMoved", uri.toString());
-                        AXTImageResult image = new AXTImageResult();
+                        ImageResult image = new ImageResult();
                         image.setImageUri(uri.toString());
                         if (callback != null) {
                             callback.onSized(image);
@@ -561,7 +545,7 @@ public class PmDocumentsHelper {
     }
 
     public interface SizeImageEvent {
-        void onSized(AXTImageResult image);
+        void onSized(ImageResult image);
 
         void onError();
     }
@@ -575,7 +559,7 @@ public class PmDocumentsHelper {
         }
 
         @Override
-        public void onSized(AXTImageResult image) {
+        public void onSized(ImageResult image) {
             if (!isMoving) {
                 if (isFront) {
                     documentId.setImageCroppedSmall(image);
@@ -604,11 +588,12 @@ public class PmDocumentsHelper {
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);
             DocumentID document = new DocumentID();
-            document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
-            document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
-            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
-            document.setImageCroppedBack(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO));
-            document.setImageFace(scannedResult.getMapImageFace().get(AXTSdkResult.FACE_CROPPED));
+            // TODO: 5/10/2018 fix
+//            document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
+//            document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
+//            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
+//            document.setImageCroppedBack(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO));
+//            document.setImageFace(scannedResult.getMapImageFace().get(AXTSdkResult.FACE_CROPPED));
             AXTDocumentIdentity documentID = (AXTDocumentIdentity)
                     scannedResult.getMapDocument().get(AXTSdkResult.IDENTITY_DOCUMENT);
             // Récupération des champs document'un document document'identité
@@ -658,7 +643,7 @@ public class PmDocumentsHelper {
         return !TextUtils.isEmpty(value) && !value.equalsIgnoreCase("null");
     }
 
-    public static boolean checkDocumentImageNotEmpty(AXTImageResult image) {
+    public static boolean checkDocumentImageNotEmpty(ImageResult image) {
         return image != null && !TextUtils.isEmpty(image.getImageUri());
     }
 }

@@ -8,7 +8,6 @@ import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.view.View;
 
 import com.peermountain.R;
 import com.peermountain.core.camera.CameraActivity;
@@ -48,41 +47,41 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 //        PeerMountainSDK.logout();//to test login again
-        findViewById(R.id.flMain).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                invite();
+//        findViewById(R.id.flMain).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                invite();
+//
+////                switch (step) {
+////                    case 0:
+////                        pmDocumentsHelper.addDocument(appDocument);
+//                CameraActivity.show(StartActivity.this, true, REQUEST_IMAGE_CAPTURE);
+//
+////                        break;
+////                    case 1 :
+////                        pmDocumentsHelper.addDocument(appDocumentBack);
+////                        break;
+////                    default:
+////                        sendFiles();
+////                }
+//
+////                dialog = new DocumentsFragmentDialog();
+////                dialog.setListener(new AppDocumentsAdapter.Events() {
+////                    @Override
+////                    public void onDocumentSelected(AppDocument document) {
+////                        if (document != null) {
+////                            appDocument = document;
+////                            sendFiles();
+////                        }
+////                        dialog.dismiss();
+////                    }
+////                });
+////                dialog.show(getSupportFragmentManager(), "documents_dialog");
+//            }
+//        });
+        showSplash();
 
-//                switch (step) {
-//                    case 0:
-//                        pmDocumentsHelper.addDocument(appDocument);
-                CameraActivity.show(StartActivity.this, true, REQUEST_IMAGE_CAPTURE);
-
-//                        break;
-//                    case 1 :
-//                        pmDocumentsHelper.addDocument(appDocumentBack);
-//                        break;
-//                    default:
-//                        sendFiles();
-//                }
-
-//                dialog = new DocumentsFragmentDialog();
-//                dialog.setListener(new AppDocumentsAdapter.Events() {
-//                    @Override
-//                    public void onDocumentSelected(AppDocument document) {
-//                        if (document != null) {
-//                            appDocument = document;
-//                            sendFiles();
-//                        }
-//                        dialog.dismiss();
-//                    }
-//                });
-//                dialog.show(getSupportFragmentManager(), "documents_dialog");
-            }
-        });
-//        showSplash();
-
-        initDocumentHelper();
+//        initDocumentHelper();
 
 
 //                finish();
@@ -104,11 +103,6 @@ public class StartActivity extends AppCompatActivity {
                     && CameraActivity.idImages[0] != null) {
                 //save files and send
                 new PmLiveSelfieHelper(true, new PmLiveSelfieHelper.Events() {
-                    @Override
-                    public Activity getActivity() {
-                        return StartActivity.this;
-                    }
-
                     @Override
                     public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
                         ArrayList<File> files = new ArrayList<>();

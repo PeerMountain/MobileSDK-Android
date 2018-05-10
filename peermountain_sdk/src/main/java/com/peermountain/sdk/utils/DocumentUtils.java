@@ -16,6 +16,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentValidityResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTImageResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
 import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.core.model.guarded.ImageResult;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 
@@ -32,11 +33,11 @@ public final class DocumentUtils {
         try {
             AXTSdkResult scannedResult = AXTCaptureInterface.INSTANCE.getResultImageFromCapture(scannedData);
             DocumentID document = new DocumentID();
-            document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
-            document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
-            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
-            document.setImageCroppedBack(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO));
-            document.setImageFace(scannedResult.getMapImageFace().get(AXTSdkResult.FACE_CROPPED));
+//            document.setImageSource(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_RECTO));
+//            document.setImageSourceBack(scannedResult.getMapImageSource().get(AXTSdkResult.IMAGES_VERSO));
+//            document.setImageCropped(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_RECTO));
+//            document.setImageCroppedBack(scannedResult.getMapImageCropped().get(AXTSdkResult.IMAGES_VERSO));
+//            document.setImageFace(scannedResult.getMapImageFace().get(AXTSdkResult.FACE_CROPPED));
             AXTDocumentIdentity documentID = (AXTDocumentIdentity)
                     scannedResult.getMapDocument().get(AXTSdkResult.IDENTITY_DOCUMENT);
             // Récupération des champs document'un document document'identité
@@ -81,7 +82,7 @@ public final class DocumentUtils {
             document.setValid(true);
             return document;
     }
-    public static void setImage(ImageView iv, AXTImageResult image, String error, StringBuilder sb) {
+    public static void setImage(ImageView iv, ImageResult image, String error, StringBuilder sb) {
         if (image != null && !TextUtils.isEmpty(image.getImageUri())) {
             LogUtils.d("image", Uri.parse(image.getImageUri()).toString());
             iv.setImageURI(Uri.parse(image.getImageUri()));
