@@ -12,7 +12,6 @@ import com.peermountain.core.secure.SecureHelper;
 import com.peermountain.core.utils.LogUtils;
 
 import java.security.KeyPair;
-import java.security.PublicKey;
 
 /**
  * Created by Galeen on 4/2/18.
@@ -52,11 +51,11 @@ public class RegistrationBuilder extends BaseBuilder {
 
     private void prepare() {
         //AES encrypt body with passphrase='Peer Mountain'
-        PublicKey serverPublicKey = SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC_SERVER);
-        setInviteName(SecureHelper.encryptRSAb64(getInviteName(), serverPublicKey));
-        LogUtils.d("invite name encoded", getInviteName());
-        setKeyProof(SecureHelper.encryptRSAb64(getKeyProof(), serverPublicKey));
-        LogUtils.d("KeyProof encoded", getKeyProof());
+//        PublicKey serverPublicKey = SecureHelper.getPublicKey(TfConstants.KEY_PUBLIC_SERVER);
+//        setInviteName(SecureHelper.encryptRSAb64(getInviteName(), serverPublicKey));
+//        LogUtils.d("invite name encoded", getInviteName());
+//        setKeyProof(SecureHelper.encryptRSAb64(getKeyProof(), serverPublicKey));
+//        LogUtils.d("KeyProof encoded", getKeyProof());
         KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PeerMountainManager.getApplicationContext(), TfConstants.KEY_ALIAS);
         publicKey = SecureHelper.toPEM(keyPair.getPublic());
         LogUtils.d("publicKey", publicKey);

@@ -21,6 +21,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.TimerLogger;
 import com.peermountain.core.odk.views.ODKView;
+import com.peermountain.core.odk.views.widgets.EndWidget;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.views.GaleenRecyclerView;
@@ -240,17 +241,29 @@ public class XFormFragment extends HomeToolbarFragment {
         @Override
         public void onNewScreen(int position) {
             //this one is called after all answers for the screen are validated and saved
-            StringBuilder sb = new StringBuilder();
             if (position == viewFlipperController.getChildCount() - 1) {//init last screen
+                StringBuilder sb = new StringBuilder();
                 for (ODKView odkView1 : viewFlipperController.getOdkViews()) {
                     for (FormEntryPrompt questionPrompt : odkView1.questionPrompts) {
                         sb.append(questionPrompt.getQuestionText());
                         sb.append(" : ");
                         sb.append(questionPrompt.getAnswerText());
-                        sb.append("\n");
+                        sb.append("\n\n");
                     }
                 }
                 endView.setText(sb.toString());
+                endView.setOnSaveFormListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewFlipperController.saveXFormAnswers(false);
+                    }
+                });
+                endView.setOnSendFormListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewFlipperController.saveXFormAnswers(true);
+                    }
+                });
             } else {
                 ODKView currentOdkView = viewFlipperController.getCurrentOdkView();
                 if (currentOdkView != null) {
@@ -280,7 +293,7 @@ public class XFormFragment extends HomeToolbarFragment {
     }
 
     ODKView odkView;
-    TextView endView;
+    EndWidget endView;
 
     /**
      * Creates a view given the View type and an event
@@ -299,7 +312,8 @@ public class XFormFragment extends HomeToolbarFragment {
                 return createViewForFormBeginning(event, true, formController);
 
             case FormEntryController.EVENT_END_OF_FORM:
-                endView = new TextView(getContext());
+
+                endView = new EndWidget(getContext());
                 endView.setText("End view!");
 //                ((TextView) endView.findViewById(R.id.description))
 //                        .setText(getString(R.string.save_enter_data_description,

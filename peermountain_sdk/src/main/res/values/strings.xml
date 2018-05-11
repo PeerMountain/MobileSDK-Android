@@ -212,6 +212,8 @@
     <string name="pm_share_using_google_nearby">Using Google NearBy</string>
     <string name="pm_share_using_qr_code">Using QR Code</string>
     <string name="pm_share_title">Add contact</string>
+    <string name="pm_msg_form_saved">Saved!</string>
+    <string name="pm_msg_form_saved_and_send">Saved and send!</string>
     <!--Share fragment end-->
 
 </resources>

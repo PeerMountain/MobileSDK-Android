@@ -47,4 +47,6 @@
     <string name="pm_btn_flash">Flash</string>
 
     <string name="pm_ask_for_permission_again_camera">Without Camera permission the app can not continue. Would you give a permission ?</string>
+    <string name="pm_btn_save_form">Save Form</string>
+    <string name="pm_btn_send_form">Send Form</string>
 </resources>

@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.peermountain.core.R;
+import com.peermountain.core.network.ServerOperation;
 import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.exeptions.EncryptionException;
 import com.peermountain.core.odk.model.SaveResult;
@@ -74,6 +75,7 @@ public class SaveToDiskTask extends AsyncTask<Void, String, SaveResult> {
      */
     @Override
     protected SaveResult doInBackground(Void... nothing) {
+        ServerOperation.waitTime(save ? 2000 : 1000);// TODO: 5/11/2018 remove after tests
         SaveResult saveResult = new SaveResult();
 
         FormController formController = Collect.getInstance().getFormController();

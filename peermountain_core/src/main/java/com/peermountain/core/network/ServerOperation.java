@@ -131,7 +131,7 @@ public class ServerOperation extends AsyncTask<Action, Void, NetworkResponse> {
         onFinish(mCallback, res);
     }
 
-    private static void waitTime(int mills) {
+    public static void waitTime(int mills) {
         Log.e("waitTime","start "+ System.currentTimeMillis() );
         try {
             Thread.sleep(mills);

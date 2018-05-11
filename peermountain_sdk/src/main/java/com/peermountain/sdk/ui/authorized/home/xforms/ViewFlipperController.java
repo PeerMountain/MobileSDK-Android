@@ -1,5 +1,6 @@
 package com.peermountain.sdk.ui.authorized.home.xforms;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
@@ -169,7 +170,7 @@ public class ViewFlipperController implements View.OnTouchListener {
 
     public boolean showNext() {
         if (getDisplayedChild() == getChildCount() - 1) {
-            saveXFormAnswers();
+//            saveXFormAnswers();
             return true;
         }
 
@@ -193,23 +194,44 @@ public class ViewFlipperController implements View.OnTouchListener {
         }
         return false;
     }
-
-    public void saveXFormAnswers() {
+    ProgressDialog progressDialog;
+    public void saveXFormAnswers(boolean upload) {
         if (saveToDiskTask == null || saveToDiskTask.getStatus() != AsyncTask.Status.RUNNING) {
-            saveToDiskTask = new SaveToDiskTask(null, true, true, "test_to_save");
+            progressDialog = new ProgressDialog(viewFlipper.getContext());
+            String msg = upload?"Saving and sending form":"Saving form";
+            progressDialog.setMessage(msg);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            saveToDiskTask = new SaveToDiskTask(null, upload, true, "test_to_save");
             saveToDiskTask.setFormSavedListener(new SaveToDiskTask.FormSavedListener() {
                 @Override
                 public void savingComplete(SaveResult saveStatus) {
+                    progressDialog.dismiss();
                     if (saveStatus != null) {
-                        Toast.makeText(viewFlipper.getContext(), "code : " + saveStatus.getSaveResult() +
-                                "\nmsg : " +
-                                saveStatus.getSaveErrorMessage(), Toast.LENGTH_SHORT).show();
+                        String msg;
+                        switch (saveStatus.getSaveResult()){
+                            case SaveToDiskTask.SAVED:
+                                msg = viewFlipper.getContext().getString(com.peermountain.sdk.R.string.pm_msg_form_saved);
+                                break;
+                            case SaveToDiskTask.SAVED_AND_EXIT:
+                                msg = viewFlipper.getContext().getString(com.peermountain.sdk.R.string.pm_msg_form_saved_and_send);
+//                                msg = viewFlipper.getContext().getString(com.peermountain.sdk.R.string.pm_msg_form_saved);
+                                // TODO: 5/11/2018 now upload it
+                                break;
+                            default:
+                                msg = "code : " + saveStatus.getSaveResult() +
+                                        "\nmsg : " +
+                                        saveStatus.getSaveErrorMessage();
+                        }
+
+                        Toast.makeText(viewFlipper.getContext(), msg, Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onProgressStep(String stepMessage) {
-                    Toast.makeText(viewFlipper.getContext(), stepMessage, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(viewFlipper.getContext(), stepMessage, Toast.LENGTH_SHORT).show();
                 }
             });
             saveToDiskTask.execute();
