@@ -3,14 +3,15 @@ package com.peermountain.sdk.ui.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.View;
+
+import com.peermountain.sdk.ui.base.livecycle.BaseFragment;
 
 /**
  * Created by Galeen on 10/9/17.
  */
 
-public abstract class ToolbarFragment extends Fragment {
+public abstract class ToolbarFragment extends BaseFragment {
     public ToolbarEvents mToolbarListener;
 
     @Override

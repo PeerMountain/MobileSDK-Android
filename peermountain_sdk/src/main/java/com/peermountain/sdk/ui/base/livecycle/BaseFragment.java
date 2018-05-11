@@ -33,7 +33,7 @@ public class BaseFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         baseUI.setParentView(view);
-        if(eventsCallback!=null) eventsCallback.setTopFragment(this);
+        if(eventsCallback!=null) eventsCallback.setBaseTopFragment(this);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class BaseFragment extends Fragment {
     }
 
     public interface Events{
-        void setTopFragment(BaseFragment topFragment);
+        void setBaseTopFragment(BaseFragment topFragment);
     }
 }

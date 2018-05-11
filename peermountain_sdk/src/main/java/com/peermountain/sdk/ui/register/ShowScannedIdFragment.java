@@ -197,7 +197,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
 
         // TODO: 5/10/2018 remove
         DocumentUtils.setText(mTvPmIssued, "Emitted : ", document.getEmitDate(), "\nno emitDate", sb);
-        DocumentUtils.setText(mTvPmValid, "", document.isValid() ? "Valid" : "Invalid", "", sb);
+//        DocumentUtils.setText(mTvPmValid, "", document.isValid() ? "Valid" : "Invalid", "", sb);
 
 //        if(document.getScannedResult().getMapDocument().get(AXTSdkResult.RFID_DOCUMENT)==null){
 //            sb.append("\nNo NFC data");

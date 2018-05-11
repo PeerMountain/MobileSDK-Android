@@ -52,7 +52,7 @@ public class MyJsonParser {
     private static final String EMIT_DATE = "emitDate";
     private static final String MRZ_ID = "mrzID";
     private static final String EXPIRATION_DATE = "DateOfExpiration";
-    private static final String VALID = "MRZCheck";
+    private static final String MRZ_CHECK = "MRZCheck";
     private static final String ID = "id";
     private static final String HEIGHT = "height";
     private static final String WIDTH = "width";
@@ -825,6 +825,9 @@ public class MyJsonParser {
             if (document == null) document = new DocumentID();
             name = reader.nextName();
             switch (name) {
+                case "message":
+                    document.setErrorMessage(getString(reader));
+                    break;
                 case SEX:
                     document.setGender(getString(reader));
                     break;
@@ -852,7 +855,8 @@ public class MyJsonParser {
                 case EXPIRATION_DATE:
                     document.setExpirationDate(getString(reader));
                     break;
-                case VALID:
+                // TODO: 5/11/2018 get other checks too
+                case MRZ_CHECK:
                     document.setValid(getBoolean(reader));
                     break;
                 case IMAGE_SOURCE:
@@ -899,7 +903,7 @@ public class MyJsonParser {
         writer.name(EMIT_DATE).value(document.getEmitDate());
         writer.name(PASSPORT_TYPE).value(document.getType());
         writer.name(EXPIRATION_DATE).value(document.getExpirationDate());
-        writer.name(VALID).value(document.isValid());
+        writer.name(MRZ_CHECK).value(document.isValid());
         if (checkDocumentImageNotEmpty(document.getImageSource())) {
             writer.name(IMAGE_SOURCE);
             writeAXTImage(writer, document.getImageSource());

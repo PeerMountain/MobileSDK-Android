@@ -17,7 +17,7 @@ public abstract class BaseActivity<T extends BaseViewModel> extends AppCompatAct
     public static final int REQUEST_CHECK_SETTINGS = 112;
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 33;
     private BaseUI baseUI;
-    public BaseFragment topFragment;
+    public BaseFragment topBaseFragment;
     public T activityViewModel;
 //    private LocationController locationController;
 
@@ -119,8 +119,8 @@ public abstract class BaseActivity<T extends BaseViewModel> extends AppCompatAct
 //    }
 
     @Override
-    public void setTopFragment(BaseFragment topFragment) {
-        this.topFragment = topFragment;
+    public void setBaseTopFragment(BaseFragment topFragment) {
+        this.topBaseFragment = topFragment;
     }
 
     protected abstract void setObservers();

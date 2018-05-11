@@ -13,9 +13,37 @@ import java.io.File;
 
 public class DocumentID implements Parcelable {
     private String lastName, firstName, gender, birthday, docNumber, country, emitDate,
-            mrzID, expirationDate, type;
+            mrzID, expirationDate, type, errorMessage;
     private ImageResult imageSource,imageSourceBack,imageCropped, imageCroppedBack,imageFace,imageCroppedSmall, imageCroppedBackSmall;
     private boolean valid;
+    public boolean isUpdating = false;
+
+
+
+    public DocumentID() {
+    }
+
+//    public DocumentID(DocumentID d) {
+//        this.lastName = d.lastName;
+//        this.firstName = d.firstName;
+//        this.gender = gender;
+//        this.birthday = birthday;
+//        this.docNumber = docNumber;
+//        this.country = country;
+//        this.emitDate = emitDate;
+//        this.mrzID = mrzID;
+//        this.expirationDate = expirationDate;
+//        this.type = type;
+//        this.errorMessage = errorMessage;
+//        this.imageSource = imageSource;
+//        this.imageSourceBack = imageSourceBack;
+//        this.imageCropped = imageCropped;
+//        this.imageCroppedBack = imageCroppedBack;
+//        this.imageFace = imageFace;
+//        this.imageCroppedSmall = imageCroppedSmall;
+//        this.imageCroppedBackSmall = imageCroppedBackSmall;
+//        this.valid = valid;
+//    }
 
     public boolean checkIsValid(){
         return !TextUtils.isEmpty(lastName)&&!TextUtils.isEmpty(firstName)&&!TextUtils.isEmpty(gender)&&!TextUtils.isEmpty(docNumber)&&!TextUtils.isEmpty(country)&&!TextUtils.isEmpty(birthday);
@@ -165,6 +193,14 @@ public class DocumentID implements Parcelable {
         this.type = type;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public void deleteDocumentImages() {
         deleteFile(imageCropped);
         deleteFile(imageCroppedBack);
@@ -187,6 +223,8 @@ public class DocumentID implements Parcelable {
             if (file.exists()) file.delete();
         }
     }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -204,6 +242,7 @@ public class DocumentID implements Parcelable {
         dest.writeString(this.mrzID);
         dest.writeString(this.expirationDate);
         dest.writeString(this.type);
+        dest.writeString(this.errorMessage);
         dest.writeSerializable(this.imageSource);
         dest.writeSerializable(this.imageSourceBack);
         dest.writeSerializable(this.imageCropped);
@@ -212,9 +251,6 @@ public class DocumentID implements Parcelable {
         dest.writeSerializable(this.imageCroppedSmall);
         dest.writeSerializable(this.imageCroppedBackSmall);
         dest.writeByte(this.valid ? (byte) 1 : (byte) 0);
-    }
-
-    public DocumentID() {
     }
 
     protected DocumentID(Parcel in) {
@@ -228,6 +264,7 @@ public class DocumentID implements Parcelable {
         this.mrzID = in.readString();
         this.expirationDate = in.readString();
         this.type = in.readString();
+        this.errorMessage = in.readString();
         this.imageSource = (ImageResult) in.readSerializable();
         this.imageSourceBack = (ImageResult) in.readSerializable();
         this.imageCropped = (ImageResult) in.readSerializable();

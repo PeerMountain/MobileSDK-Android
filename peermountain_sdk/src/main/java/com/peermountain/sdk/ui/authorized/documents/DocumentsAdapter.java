@@ -111,6 +111,7 @@ public class DocumentsAdapter extends ArrayAdapter<AppDocument> {
             btn.setEnabled(true);
             btn.setText(R.string.pm_documents_item_btn_update);
             if (appDocument.isIdentityDocument()) {
+//                btn.setText(R.string.pm_documents_item_btn_remove);
                 if (TextUtils.isEmpty(appDocument.getTitle())) {
                     tvMsg.setText(R.string.pm_document_item_id_title);
                 } else {

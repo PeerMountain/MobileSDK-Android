@@ -1,6 +1,7 @@
 package com.peermountain.core.camera;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.peermountain.core.R;
+import com.peermountain.core.utils.PmDialogUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,10 +63,12 @@ public class CameraActivity extends AppCompatActivity {
         setListeners();
     }
 
+    private boolean permissionRejected = false;
+
     @Override
     protected void onResume() {
         super.onResume();
-        camera.start();
+        if (!permissionRejected) camera.start();
     }
 
     @Override
@@ -90,8 +94,26 @@ public class CameraActivity extends AppCompatActivity {
         for (int grantResult : grantResults) {
             valid = valid && grantResult == PackageManager.PERMISSION_GRANTED;
         }
-        if (valid && !camera.isStarted()) {
-            camera.start();
+        if (valid) {
+            if (!camera.isStarted()) camera.start();
+        } else {
+            permissionRejected = true;
+            // TODO: 5/11/2018 show permission info dialog
+            PmDialogUtils.showChoiceDialog(this, -1, R.string.pm_ask_for_permission_again_camera,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            camera.start();
+                        }
+                    },
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    },
+                    R.string.pm_btn_ask_for_permission_again,
+                    R.string.pm_btn_refuse_permission);
         }
     }
 
@@ -181,7 +203,7 @@ public class CameraActivity extends AppCompatActivity {
      * type ocl to fast get new setOnClickListener, rr/rc/rs to set ripple
      */
     private void setListeners() {
-        if(btnFlash!=null) {
+        if (btnFlash != null) {
             btnFlash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

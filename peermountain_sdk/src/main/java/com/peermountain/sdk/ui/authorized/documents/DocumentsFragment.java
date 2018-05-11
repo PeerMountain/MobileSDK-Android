@@ -1,6 +1,8 @@
 package com.peermountain.sdk.ui.authorized.documents;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,15 +16,18 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.peermountain.core.model.guarded.AppDocument;
+import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.home.CardsEventListener;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
+import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.yuyakaido.android.cardstackview.CardStackView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class DocumentsFragment extends HomeToolbarFragment {
@@ -31,6 +36,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
 
     private OnFragmentInteractionListener mListener;
     PmDocumentsHelper pmDocumentsHelper;
+    DocumentsViewModel viewModel;
 
     public DocumentsFragment() {
         // Required empty public constructor
@@ -58,6 +64,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getBaseUI().setBaseViewModel(viewModel = ViewModelProviders.of(this).get(DocumentsViewModel.class));
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
         }
@@ -77,6 +84,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
         getViews(view);
         setUpView();
         setListeners();
+        setObservers();
     }
 
 
@@ -98,6 +106,18 @@ public class DocumentsFragment extends HomeToolbarFragment {
         pmDocumentsHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    private void setObservers(){
+        viewModel.getOnDocumentScannedFromServer().observe(this,
+                new Observer<DocumentID>() {
+                    @Override
+                    public void onChanged(@Nullable DocumentID documentID) {
+                        String errorMsg = pmDocumentsHelper.onIdScanResult(documentID);
+                        if(errorMsg!=null){
+                            DialogUtils.showError(getActivity(),errorMsg);
+                        }
+                    }
+                });
+    }
 
 
     public void createDocumentsHelper() {
@@ -133,6 +153,11 @@ public class DocumentsFragment extends HomeToolbarFragment {
                     documents.remove(document);
                     setAdapter();
                 }
+            }
+
+            @Override
+            public void ocrId(ArrayList<File> images) {
+                viewModel.sendFiles(images);
             }
 
         });
@@ -207,7 +232,7 @@ public class DocumentsFragment extends HomeToolbarFragment {
         });
         documentsAdapter.addAll(documents);
         documentCardsView.setAdapter(documentsAdapter);
-        documentCardsView.setCardEventListener(cardsEventListener = new CardsEventListener(documents, documentsAdapter, documentCardsView));
+        documentCardsView.setCardEventListener(cardsEventListener = new CardsEventListener<>(documents, documentsAdapter, documentCardsView));
     }
 
     /**
@@ -224,7 +249,6 @@ public class DocumentsFragment extends HomeToolbarFragment {
         btnMenuScanID.setOnClickListener(new RippleOnClickListener() {
             @Override
             public void onClickListener(View view) {
-                llMenuDocuments.setVisibility(View.GONE);
                 AppDocument doc = new AppDocument(true,true);
                 onMenuClicked(doc);
             }

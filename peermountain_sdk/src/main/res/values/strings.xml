@@ -83,6 +83,7 @@
     <string name="btn_refuse_permission">Refuse</string>
     <string name="pm_err_msg_init_scan_id">SDK error init</string>
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
+    <string name="pm_err_no_id_captured">Please capture your document</string>
     <!--scan id fragment end-->
 
     <!--scanned id data fragment -->
@@ -156,6 +157,7 @@
     <string name="pm_document_item_empty">Add new file</string>
     <string name="pm_add_new_file_from_card">Add</string>
     <string name="pm_documents_item_btn_update">Update</string>
+    <string name="pm_documents_item_btn_remove">Remove</string>
     <string name="pm_upload_doc_menu">Upload Doc.</string>
     <string name="pm_scan_id_menu">Scan ID</string>
     <!--documents fragment end-->
@@ -210,7 +212,6 @@
     <string name="pm_share_using_google_nearby">Using Google NearBy</string>
     <string name="pm_share_using_qr_code">Using QR Code</string>
     <string name="pm_share_title">Add contact</string>
-    <string name="pm_err_server_data_extraction">There was an error on data extraction</string>
     <!--Share fragment end-->
 
 </resources>

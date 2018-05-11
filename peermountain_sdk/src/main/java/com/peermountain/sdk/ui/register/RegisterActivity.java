@@ -2,7 +2,6 @@ package com.peermountain.sdk.ui.register;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -18,7 +17,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
@@ -72,25 +70,25 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Boolean permissionsForScan = PmDocumentsHelper.checkPermissionsForScanId(this, requestCode, permissions, grantResults);
-        if (permissionsForScan == null) {//it wasn't meant for it
-
-        } else if (permissionsForScan) {
-            initScanIdSDK();
-        } else {
-            DialogUtils.showChoiceDialog(this, -1, R.string.pm_err_msg_permission_scan_id,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            initScanIdSDK();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                        }
-                    }, R.string.pm_btn_ask_for_permission_again, R.string.btn_refuse_permission);
-        }
+//        Boolean permissionsForScan = PmDocumentsHelper.checkPermissionsForScanId(this, requestCode, permissions, grantResults);
+//        if (permissionsForScan == null) {//it wasn't meant for it
+//
+//        } else if (permissionsForScan) {
+//            initScanIdSDK();
+//        } else {
+//            DialogUtils.showChoiceDialog(this, -1, R.string.pm_err_msg_permission_scan_id,
+//                    new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            initScanIdSDK();
+//                        }
+//                    }, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            finish();
+//                        }
+//                    }, R.string.pm_btn_ask_for_permission_again, R.string.pm_btn_refuse_permission);
+//        }
 
     }
 
@@ -100,9 +98,15 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
                 new Observer<DocumentID>() {
                     @Override
                     public void onChanged(@Nullable DocumentID documentID) {
-                        if (documentID == null || !documentID.checkIsValid() ) {//|| !documentID.isValid()
-                            if(documentID!=null) documentID.deleteDocumentImages();
-                            DialogUtils.showErrorToast(RegisterActivity.this, getString(R.string.pm_err_server_data_extraction));
+                        if (documentID == null || documentID.getErrorMessage()!=null ) {//|| !documentID.isValid(), !documentID.checkIsValid()
+                            String msg;
+                            if(documentID!=null){
+                                documentID.deleteDocumentImages();
+                                msg = documentID.getErrorMessage();
+                            }else{
+                                msg = getString(R.string.pm_err_msg_scan_data);
+                            }
+                            DialogUtils.showErrorToast(RegisterActivity.this, msg);
                             showScanIdFragment();
                             return;
                         }

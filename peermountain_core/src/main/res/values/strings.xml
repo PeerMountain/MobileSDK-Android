@@ -13,14 +13,14 @@
 
 
     <string name="pm_document_item_id_title">Identity Document</string>
-    <string name="btn_refuse_permission">Refuse</string>
+    <string name="pm_btn_refuse_permission">Refuse</string>
     <string name="pm_btn_ask_for_permission_again">OK</string>
     <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
     <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
     <string name="title_activity_show_live_selfie">ShowLiveSelfieActivity</string>
     <string name="pm_msg_capture_mrz">Please capture your document from MRZ side</string>
-    <string name="pm_msg_capture_not_mrz">If you have other side of your document, please capture it as well</string>
+    <string name="pm_msg_capture_not_mrz">If your document has other side with your image, please capture it as well</string>
 
 
     <string name="pm_audio_file_error">No audio file was specified.</string>
@@ -43,8 +43,8 @@
     <string name="pm_change_file_btn">Change %s</string>
     <string name="pm_choose_file_title">Choose File</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pm_btn_done_scanning">Done</string>
     <string name="pm_btn_flash">Flash</string>
+
+    <string name="pm_ask_for_permission_again_camera">Without Camera permission the app can not continue. Would you give a permission ?</string>
 </resources>

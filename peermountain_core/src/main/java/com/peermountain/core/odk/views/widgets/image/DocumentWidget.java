@@ -21,6 +21,9 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
 
+import java.io.File;
+import java.util.ArrayList;
+
 /**
  * Created by Galeen on 3/1/2018.
  */
@@ -132,6 +135,11 @@ public class DocumentWidget extends PermissionQuestionWidget {
                     @Override
                     public void onAddingDocumentCanceled(AppDocument document) {
                         clearAnswer();
+                    }
+
+                    @Override
+                    public void ocrId(ArrayList<File> images) {
+                        // TODO: 5/11/2018 TBI
                     }
                 }
         );

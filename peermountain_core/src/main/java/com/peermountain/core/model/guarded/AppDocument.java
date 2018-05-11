@@ -41,6 +41,10 @@ public class AppDocument {
         id = UUID.randomUUID().toString();
     }
 
+    /**
+     *
+     * @return true if has at least 1 saved ID or Passport
+     */
     public boolean isIdentityDocument(){
         return documents!=null && documents.size()>0 && documents.get(0)!=null;
     }

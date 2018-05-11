@@ -15,7 +15,7 @@
         android:gravity="center"
         android:layout_margin="@dimen/pm_margin_xbig"
         android:text="@string/pm_msg_capture_mrz"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:textColor="@color/pm_share_text"
         android:visibility="gone"
         tools:visibility="visible"/>
@@ -57,23 +57,17 @@
 
     <Button
         android:id="@+id/btnDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/pm_margin_normal"
-        android:drawableLeft="@drawable/ic_check_24dp"
+        android:drawableLeft="@drawable/pm_ic_check_24dp"
         android:drawablePadding="@dimen/pm_margin_small"
         android:text="@string/pm_btn_done_scanning"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        style="@style/camera_extra_buttons"/>
 
     <Button
         android:id="@+id/btnFlash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/camera_extra_buttons"
         android:layout_gravity="bottom|left"
-        android:layout_margin="@dimen/pm_margin_normal"
-        android:drawablePadding="@dimen/pm_margin_small"
         android:text="@string/pm_btn_flash"
         android:visibility="gone"
         tools:visibility="visible"/>

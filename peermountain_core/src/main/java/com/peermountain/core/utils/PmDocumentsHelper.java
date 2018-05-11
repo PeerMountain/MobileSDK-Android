@@ -3,12 +3,10 @@ package com.peermountain.core.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -30,6 +28,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentIdentity;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentValidityResult;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkResult;
 import com.peermountain.core.R;
+import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
@@ -98,20 +97,23 @@ public class PmDocumentsHelper {
 
     private void scanId() {
         if (callback != null) callback.onScanSDKLoading(true);
+
         if (PeerMountainCoreConstants.isFake) {
             handleIdDocumentData(new Intent());
             if (callback != null) callback.onScanSDKLoading(false);
             return;
         }
-        if (PeerMountainManager.isScanIdSDKReady()) {
-            if (getFragment() != null) {
-                PeerMountainManager.scanId(getFragment(), PmRequestCodes.REQUEST_SCAN_ID);
-            } else {
-                PeerMountainManager.scanId(getActivity(), PmRequestCodes.REQUEST_SCAN_ID);
-            }
-        } else {
-            initScanIdSDK();
-        }
+
+        CameraActivity.show(getActivity(), true, PmRequestCodes.REQUEST_SCAN_ID);
+//        if (PeerMountainManager.isScanIdSDKReady()) {
+//            if (getFragment() != null) {
+//                PeerMountainManager.scanId(getFragment(), PmRequestCodes.REQUEST_SCAN_ID);
+//            } else {
+//                PeerMountainManager.scanId(getActivity(), PmRequestCodes.REQUEST_SCAN_ID);
+//            }
+//        } else {
+//            initScanIdSDK();
+//        }
     }
 
     private void initScanIdSDK() {
@@ -151,7 +153,8 @@ public class PmDocumentsHelper {
                 break;
             case PmRequestCodes.REQUEST_SCAN_ID:
                 if (callback != null) callback.onScanSDKLoading(false);
-                if (resultCode == Activity.RESULT_OK
+                if ((resultCode == Activity.RESULT_OK && CameraActivity.idImages != null
+                        && CameraActivity.idImages[0] != null)
                         || PeerMountainCoreConstants.isFake) {
                     handleIdDocumentData(data);
                 } else {
@@ -165,43 +168,43 @@ public class PmDocumentsHelper {
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (PmDocumentsHelper.checkPermissionsForScanId(getActivity(), requestCode, permissions, grantResults)) {
-            initScanIdSDK();
-        } else {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), Build.VERSION.SDK_INT >= 22 ? android.R.style.Theme_DeviceDefault_Dialog_Alert :
-                    android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
-            dialog.setCancelable(false);
-            dialog.setMessage(R.string.pm_err_msg_permission_scan_id);
-            dialog.setPositiveButton(R.string.pm_btn_ask_for_permission_again, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    initScanIdSDK();
-                }
-            });
-            dialog.setNegativeButton(R.string.btn_refuse_permission, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alertDialog = dialog.create();
-//        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
-            alertDialog.show();
-//            DialogUtils.showChoiceDialog(getActivity(), -1, R.string.pm_err_msg_permission_scan_id,
-//                    new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            initScanIdSDK();
-//                        }
-//                    }, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            dialogInterface.dismiss();
-//                        }
-//                    },
-//                    R.string.pm_btn_ask_for_permission_again,
-//                    R.string.btn_refuse_permission);
-        }
+//        if (PmDocumentsHelper.checkPermissionsForScanId(getActivity(), requestCode, permissions, grantResults)) {
+//            initScanIdSDK();
+//        } else {
+//            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity(), Build.VERSION.SDK_INT >= 22 ? android.R.style.Theme_DeviceDefault_Dialog_Alert :
+//                    android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+//            dialog.setCancelable(false);
+//            dialog.setMessage(R.string.pm_err_msg_permission_scan_id);
+//            dialog.setPositiveButton(R.string.pm_btn_ask_for_permission_again, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    initScanIdSDK();
+//                }
+//            });
+//            dialog.setNegativeButton(R.string.pm_btn_refuse_permission, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                }
+//            });
+//            AlertDialog alertDialog = dialog.create();
+////        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
+//            alertDialog.show();
+////            DialogUtils.showChoiceDialog(getActivity(), -1, R.string.pm_err_msg_permission_scan_id,
+////                    new DialogInterface.OnClickListener() {
+////                        @Override
+////                        public void onClick(DialogInterface dialogInterface, int i) {
+////                            initScanIdSDK();
+////                        }
+////                    }, new DialogInterface.OnClickListener() {
+////                        @Override
+////                        public void onClick(DialogInterface dialogInterface, int i) {
+////                            dialogInterface.dismiss();
+////                        }
+////                    },
+////                    R.string.pm_btn_ask_for_permission_again,
+////                    R.string.btn_refuse_permission);
+//        }
 
     }
 
@@ -395,32 +398,87 @@ public class PmDocumentsHelper {
     private DocumentID documentId;
 
     private void handleIdDocumentData(Intent scannedData) {
-        if (scannedData != null) {
-            documentId = getScannedData(scannedData);
-            if (documentId == null) return;
-            sidesDone = 4;
+        //save files and send
+        new PmLiveSelfieHelper(true, new PmLiveSelfieHelper.Events() {
+            @Override
+            public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
+                if (liveSelfie == null || liveSelfie.size() == 0) return;
+                ArrayList<File> files = new ArrayList<>();
+
+                Uri uri = Uri.parse(liveSelfie.get(0));
+                File file = new File(uri.getPath());
+
+                if (liveSelfie.size() > 1) {
+                    uri = Uri.parse(liveSelfie.get(1));
+                    File file2 = new File(uri.getPath());
+                    files.add(file2);//this is front ID
+                }
+                files.add(file);//this is MRZ, if there is front is added before MRZ
+                if (callback != null) {
+                    callback.ocrId(files);
+                } else {
+                    for (File file1 : files) {
+                        file1.delete();
+                    }
+                }
+//                if (documentToUpdate.isIdentityDocument()) {// update
+//                    documentId = documentToUpdate.getDocuments().get(0);
+//                    documentId.deleteDocumentImages();
+//                    addIDImagesToDocument(files, documentId);
+//                    resizeDocumentIdImages();
+//                } else {// new document
+////                    sendFiles(files);
+//                }
+            }
+        }).saveID();
+    }
+
+    /**
+     * @param documentID to process
+     * @return result is error message , if null no errors
+     */
+    public String onIdScanResult(DocumentID documentID) {
+        if (documentID == null || documentID.getErrorMessage() != null) {//|| !documentID.isValid(), !documentID.checkIsValid()
+            String msg;
+            if (documentID != null) {
+                documentID.deleteDocumentImages();
+                msg = documentID.getErrorMessage();
+            } else {
+                msg = PeerMountainManager.getApplicationContext().getString(R.string.pm_err_msg_scan_data);
+            }
+            if (callback != null) callback.onAddingDocumentCanceled(documentToUpdate);
+            return msg;
+        } else {
+            this.documentId = documentID;
+            resizeDocumentIdImages();
+            return null;
+        }
+    }
+
+    private void resizeDocumentIdImages() {
+        if (documentId == null) return;
+        sidesDone = 4;
 //            if (documentId.getImageCropped() != null) sidesDone+=2;//first make a smaller image, then copy and delete the original
 //            if (documentId.getImageCroppedBack() != null) sidesDone+=2;
 
-            resizeIdImages(getActivity(), documentId,
-                    new SizeImageEventCallback(true, false),
-                    new SizeImageEventCallback(false, false),
-                    new SizeImageEventCallback(true, true),
-                    new SizeImageEventCallback(false, true));
-        }
+        resizeIdImages(getActivity(), documentId,
+                new SizeImageEventCallback(true, false),
+                new SizeImageEventCallback(false, false),
+                new SizeImageEventCallback(true, true),
+                new SizeImageEventCallback(false, true));
     }
 
     private void updateIdDocument() {
         sidesDone--;
         if (sidesDone == 0) {
             if (documentToUpdate == null || documentId == null) return;
-            if (documentToUpdate.getDocuments().size() > 0) {
-                //don't delete document images, because the SDK override them it self and is the same uri
+            if (documentToUpdate.isIdentityDocument()) {//update
                 DocumentID oldDocument = documentToUpdate.getDocuments().get(0);
                 oldDocument.deleteDocumentImages();
                 documentToUpdate.getDocuments().clear();//replace current
             }
             documentToUpdate.getDocuments().add(documentId);
+
             documentToUpdate.setEmpty(false);
             onDocumentDone();
         }
@@ -446,6 +504,17 @@ public class PmDocumentsHelper {
         return fileDocument;
     }
 
+    public static void addIDImagesToDocument(ArrayList<File> filesToSend, DocumentID documentID) {
+        if (filesToSend != null && documentID != null && documentID.getErrorMessage() == null) {
+            if (filesToSend.size() == 1) {
+                documentID.setImageCropped(new ImageResult(Uri.fromFile(filesToSend.get(0)).toString()));
+            } else {
+                documentID.setImageCropped(new ImageResult(Uri.fromFile(filesToSend.get(1)).toString()));
+                documentID.setImageCroppedBack(new ImageResult(Uri.fromFile(filesToSend.get(0)).toString()));
+            }
+        }
+    }
+
     @NonNull
     private Activity getActivity() {
         return callback != null ? callback.getActivity() : null;
@@ -465,6 +534,8 @@ public class PmDocumentsHelper {
         void onScanSDKLoading(boolean loading);
 
         void onAddingDocumentCanceled(AppDocument document);
+
+        void ocrId(ArrayList<File> images);
     }
 
     public static void resizeIdImages(Context context, final DocumentID document, final SizeImageEvent callbackFront, final SizeImageEvent callbackBack, final SizeImageEvent callbackMoveFront, final SizeImageEvent callbackMoveBack) {
