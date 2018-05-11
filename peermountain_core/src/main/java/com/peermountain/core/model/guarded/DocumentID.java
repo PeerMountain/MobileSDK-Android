@@ -15,8 +15,7 @@ public class DocumentID implements Parcelable {
     private String lastName, firstName, gender, birthday, docNumber, country, emitDate,
             mrzID, expirationDate, type, errorMessage;
     private ImageResult imageSource,imageSourceBack,imageCropped, imageCroppedBack,imageFace,imageCroppedSmall, imageCroppedBackSmall;
-    private boolean valid;
-    public boolean isUpdating = false;
+    private boolean dobCheck,mrzCheck,numberCheck,doeCheck;
 
 
 
@@ -47,6 +46,30 @@ public class DocumentID implements Parcelable {
 
     public boolean checkIsValid(){
         return !TextUtils.isEmpty(lastName)&&!TextUtils.isEmpty(firstName)&&!TextUtils.isEmpty(gender)&&!TextUtils.isEmpty(docNumber)&&!TextUtils.isEmpty(country)&&!TextUtils.isEmpty(birthday);
+    }
+
+
+    public void deleteDocumentImages() {
+        deleteFile(imageCropped);
+        deleteFile(imageCroppedBack);
+        deleteFile(imageCroppedSmall);
+        deleteFile(imageCroppedBackSmall);
+        deleteFile(imageFace);
+        deleteFile(imageSource);
+        deleteFile(imageSourceBack);
+    }
+
+    private void deleteFile(ImageResult image) {
+        if (image != null) {
+            deleteFile(image.getImageUri());
+        }
+    }
+
+    private void deleteFile(String uri) {
+        if (!TextUtils.isEmpty(uri)) {
+            File file = new File(Uri.parse(uri).getPath());
+            if (file.exists()) file.delete();
+        }
     }
 
     public String getLastName() {
@@ -121,6 +144,22 @@ public class DocumentID implements Parcelable {
         this.expirationDate = expirationDate;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public ImageResult getImageSource() {
         return imageSource;
     }
@@ -161,14 +200,6 @@ public class DocumentID implements Parcelable {
         this.imageFace = imageFace;
     }
 
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
-
     public ImageResult getImageCroppedSmall() {
         return imageCroppedSmall;
     }
@@ -185,43 +216,36 @@ public class DocumentID implements Parcelable {
         this.imageCroppedBackSmall = imageCroppedBackSmall;
     }
 
-    public String getType() {
-        return type;
+    public boolean isDobCheck() {
+        return dobCheck;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDobCheck(boolean dobCheck) {
+        this.dobCheck = dobCheck;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public boolean isMrzCheck() {
+        return mrzCheck;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setMrzCheck(boolean mrzCheck) {
+        this.mrzCheck = mrzCheck;
     }
 
-    public void deleteDocumentImages() {
-        deleteFile(imageCropped);
-        deleteFile(imageCroppedBack);
-        deleteFile(imageCroppedSmall);
-        deleteFile(imageCroppedBackSmall);
-        deleteFile(imageFace);
-        deleteFile(imageSource);
-        deleteFile(imageSourceBack);
+    public boolean isNumberCheck() {
+        return numberCheck;
     }
 
-    private void deleteFile(ImageResult image) {
-        if (image != null) {
-            deleteFile(image.getImageUri());
-        }
+    public void setNumberCheck(boolean numberCheck) {
+        this.numberCheck = numberCheck;
     }
 
-    private void deleteFile(String uri) {
-        if (!TextUtils.isEmpty(uri)) {
-            File file = new File(Uri.parse(uri).getPath());
-            if (file.exists()) file.delete();
-        }
+    public boolean isDoeCheck() {
+        return doeCheck;
+    }
+
+    public void setDoeCheck(boolean doeCheck) {
+        this.doeCheck = doeCheck;
     }
 
 
@@ -250,7 +274,10 @@ public class DocumentID implements Parcelable {
         dest.writeSerializable(this.imageFace);
         dest.writeSerializable(this.imageCroppedSmall);
         dest.writeSerializable(this.imageCroppedBackSmall);
-        dest.writeByte(this.valid ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.dobCheck ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.mrzCheck ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.numberCheck ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.doeCheck ? (byte) 1 : (byte) 0);
     }
 
     protected DocumentID(Parcel in) {
@@ -272,10 +299,13 @@ public class DocumentID implements Parcelable {
         this.imageFace = (ImageResult) in.readSerializable();
         this.imageCroppedSmall = (ImageResult) in.readSerializable();
         this.imageCroppedBackSmall = (ImageResult) in.readSerializable();
-        this.valid = in.readByte() != 0;
+        this.dobCheck = in.readByte() != 0;
+        this.mrzCheck = in.readByte() != 0;
+        this.numberCheck = in.readByte() != 0;
+        this.doeCheck = in.readByte() != 0;
     }
 
-    public static final Creator<DocumentID> CREATOR = new Creator<DocumentID>() {
+    public static final Parcelable.Creator<DocumentID> CREATOR = new Parcelable.Creator<DocumentID>() {
         @Override
         public DocumentID createFromParcel(Parcel source) {
             return new DocumentID(source);

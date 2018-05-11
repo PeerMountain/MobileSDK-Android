@@ -51,7 +51,7 @@ public final class DocumentUtils {
             document.setEmitDate(documentID.getField(AXTDocumentIdentity.AxtField.EMIT_DATE));
             document.setMrzID(documentID.getField(AXTDocumentAbstract.AxtField.CODELINE));
             final AXTDocumentValidityResult validity = documentID.getDocumentValidity();
-            document.setValid(validity == AXTDocumentValidityResult.VALID);
+//            document.setValid(validity == AXTDocumentValidityResult.VALID);
             AXTDocumentChip documentNfc = (AXTDocumentChip)
                     scannedResult.getMapDocument().get(AXTSdkResult.RFID_DOCUMENT);
             if (documentNfc != null) {
@@ -79,7 +79,7 @@ public final class DocumentUtils {
             document.setCountry("fCountry");
             document.setEmitDate("01/04/1990");
             document.setMrzID("kjhsdcaui67yasch");
-            document.setValid(true);
+//            document.setValid(true);
             return document;
     }
     public static void setImage(ImageView iv, ImageResult image, String error, StringBuilder sb) {

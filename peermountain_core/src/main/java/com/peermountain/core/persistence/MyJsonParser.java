@@ -53,6 +53,9 @@ public class MyJsonParser {
     private static final String MRZ_ID = "mrzID";
     private static final String EXPIRATION_DATE = "DateOfExpiration";
     private static final String MRZ_CHECK = "MRZCheck";
+    private static final String DOE_CHECK = "doeCheck";
+    private static final String NUMBER_CHECK = "numberCheck";
+    private static final String DOB_CHECK = "dobCheck";
     private static final String ID = "id";
     private static final String HEIGHT = "height";
     private static final String WIDTH = "width";
@@ -857,7 +860,16 @@ public class MyJsonParser {
                     break;
                 // TODO: 5/11/2018 get other checks too
                 case MRZ_CHECK:
-                    document.setValid(getBoolean(reader));
+                    document.setMrzCheck(getBoolean(reader));
+                    break;
+                case NUMBER_CHECK:
+                    document.setNumberCheck(getBoolean(reader));
+                    break;
+                case DOB_CHECK:
+                    document.setDobCheck(getBoolean(reader));
+                    break;
+                case DOE_CHECK:
+                    document.setDoeCheck(getBoolean(reader));
                     break;
                 case IMAGE_SOURCE:
                     document.setImageSource(readAXTImageResult(reader));
@@ -903,7 +915,10 @@ public class MyJsonParser {
         writer.name(EMIT_DATE).value(document.getEmitDate());
         writer.name(PASSPORT_TYPE).value(document.getType());
         writer.name(EXPIRATION_DATE).value(document.getExpirationDate());
-        writer.name(MRZ_CHECK).value(document.isValid());
+        writer.name(MRZ_CHECK).value(document.isMrzCheck());
+        writer.name(NUMBER_CHECK).value(document.isNumberCheck());
+        writer.name(DOB_CHECK).value(document.isDobCheck());
+        writer.name(DOE_CHECK).value(document.isDoeCheck());
         if (checkDocumentImageNotEmpty(document.getImageSource())) {
             writer.name(IMAGE_SOURCE);
             writeAXTImage(writer, document.getImageSource());
