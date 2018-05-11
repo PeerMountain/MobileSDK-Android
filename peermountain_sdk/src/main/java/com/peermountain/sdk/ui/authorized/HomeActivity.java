@@ -303,7 +303,9 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     private void getJobs() {
         PeerMountainManager.downloadXForm(new DownloadXFormCallback(null,
                         MainCallback.TYPE_NO_PROGRESS), // TODO: 3/8/2018 update link
-                "https://www.dropbox.com/s/1yctej8ukivs7eo/AllFieldsFormTermsLong.xml?dl=1");
+                "https://www.dropbox.com/s/llfl998w0x1m9b7/Form%20A%20%28group%29.xml?dl=1");
+//                "https://www.dropbox.com/s/zddfjtzddtw0ez2/Form%20A.xml?dl=1");//Form A
+//                "https://www.dropbox.com/s/1yctej8ukivs7eo/AllFieldsFormTermsLong.xml?dl=1");// test views
     }
 
     private void refreshMenu() {

@@ -18,10 +18,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.Selection;
 import android.text.TextWatcher;
-import android.text.method.TextKeyListener;
-import android.text.method.TextKeyListener.Capitalize;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,6 +48,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 @SuppressLint("ViewConstructor")
 public class StringWidget extends QuestionWidget {
     private static final String ROWS = "rows";
+    public static final String PREFIX = "@$#";
     private EditText answerText;
     boolean readOnly = false;
 
@@ -74,12 +74,12 @@ public class StringWidget extends QuestionWidget {
     }
 
     private void mainInit(FormEntryPrompt prompt) {
-        // capitalize the first letter of the sentence
-        answerText.setKeyListener(new TextKeyListener(Capitalize.SENTENCES, false));
-
-        // needed to make long read only text scroll
-        answerText.setHorizontallyScrolling(false);
-        answerText.setSingleLine(false);
+//        // capitalize the first letter of the sentence
+//        answerText.setKeyListener(new TextKeyListener(Capitalize.SENTENCES, false));
+//
+//        // needed to make long read only text scroll
+//        answerText.setHorizontallyScrolling(false);
+//        answerText.setSingleLine(false);
 
          /*
          * If a 'rows' attribute is on the input tag, set the minimum number of lines
@@ -136,6 +136,21 @@ public class StringWidget extends QuestionWidget {
             inflater.inflate(R.layout.pm_input_view, viewParent);
             answerText = viewParent.findViewById(R.id.pmEtInput);
             vLine = viewParent.findViewById(R.id.pmEtInputLine);
+            String helpText = getFormEntryPrompt().getHelpText();
+            if(!android.text.TextUtils.isEmpty(helpText) && helpText.startsWith(PREFIX)){
+                try {
+                    int lines = Integer.parseInt(helpText.substring(PREFIX.length()));
+                    answerText.setLines(lines);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    answerText.setMaxLines(1);
+                    answerText.setInputType(InputType.TYPE_CLASS_TEXT);
+                }
+            }else{
+                answerText.setMaxLines(1);
+                answerText.setInputType(InputType.TYPE_CLASS_TEXT);
+//                answerText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            }
             answerText.setOnFocusChangeListener(new OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {

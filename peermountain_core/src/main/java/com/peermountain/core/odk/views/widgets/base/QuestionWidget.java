@@ -36,6 +36,7 @@ import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.odk.utils.TextUtils;
 import com.peermountain.core.odk.utils.Timber;
 import com.peermountain.core.odk.utils.ViewIds;
+import com.peermountain.core.odk.views.widgets.edit_text.StringWidget;
 import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.views.PeerMountainTextView;
 
@@ -318,7 +319,7 @@ public abstract class QuestionWidget
         PeerMountainTextView tvHelp = new PeerMountainTextView(getContext());
         String helpText = prompt.getHelpText();
 
-        if (helpText != null && !helpText.equals("")) {
+        if (validateHelpText(helpText)) {
             tvHelp.setId(ViewIds.generateViewId());
             setTextSize(tvHelp, R.dimen.pm_text_small);
             //noinspection ResourceType
@@ -333,6 +334,10 @@ public abstract class QuestionWidget
             tvHelp.setVisibility(View.GONE);
         }
         return tvHelp;
+    }
+
+    public boolean validateHelpText(String helpText) {
+        return helpText != null && !helpText.equals("") && !helpText.startsWith(StringWidget.PREFIX);
     }
 
     /**
@@ -661,7 +666,8 @@ public abstract class QuestionWidget
             tvHelp.setTextColor(colorError);
             tvLabel.setTextColor(colorError);
         } else {
-            tvHelp.setText(TextUtils.textToHtml(formEntryPrompt.getHelpText()));
+            String helpText = formEntryPrompt.getHelpText();
+            tvHelp.setText(validateHelpText(helpText)?TextUtils.textToHtml(formEntryPrompt.getHelpText()):"");
             tvHelp.setTextColor(colorInactive);
             tvLabel.setTextColor(hasFocus() ? colorActive : colorInactive);
         }
