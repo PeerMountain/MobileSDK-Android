@@ -36,7 +36,7 @@ public class ShowScannedIdFragment extends ToolbarFragment {
     private TextView mTvPmExpiration;
     private TextView mTvPmIssued;
     private TextView mTvPmValid;
-    private TextView mTvPmDob;
+    private TextView mTvPmDob,tvPmMrzCheck,tvPmNumberCheck,tvPmDoeCheck,tvPmDobCheck;
     private ImageView mIvPmFaceImage;
     private ImageView mBtnPmScanIdReject;
     private ImageView mBtnPmScanIdAccept;
@@ -133,6 +133,10 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         mTvPmIssued = (TextView) view.findViewById(R.id.tvPmIssued);
         mTvPmValid = (TextView) view.findViewById(R.id.tvPmValid);
         mTvPmDob = (TextView) view.findViewById(R.id.tvPmDob);
+        tvPmMrzCheck = (TextView) view.findViewById(R.id.tvPmMrzCheck);
+        tvPmNumberCheck = (TextView) view.findViewById(R.id.tvPmNumberCheck);
+        tvPmDoeCheck = (TextView) view.findViewById(R.id.tvPmDoeCheck);
+        tvPmDobCheck = (TextView) view.findViewById(R.id.tvPmDobCheck);
         mIvPmFaceImage = (ImageView) view.findViewById(R.id.ivPmFaceImage);
         mBtnPmScanIdReject = (ImageView) view.findViewById(R.id.btnPmScanIdReject);
         mBtnPmScanIdAccept = (ImageView) view.findViewById(R.id.btnPmScanIdAccept);
@@ -195,9 +199,14 @@ public class ShowScannedIdFragment extends ToolbarFragment {
         DocumentUtils.setText(mTvPmExpiration, "Expiration Date : ", document.getExpirationDate(), "\nno Expiration Date", sb);
         DocumentUtils.setText(mTvPmDob, "Dob : ", document.getBirthday(), "\nno Dob", sb);
 
-        // TODO: 5/10/2018 remove
+        // TODO: 5/10/2018 remove or hide after test
         DocumentUtils.setText(mTvPmIssued, "Emitted : ", document.getEmitDate(), "\nno emitDate", sb);
-//        DocumentUtils.setText(mTvPmValid, "", document.isValid() ? "Valid" : "Invalid", "", sb);
+        DocumentUtils.setText(mTvPmValid, "", document.checkIsValid() ? "Valid" : "Invalid", "", sb);
+
+        DocumentUtils.setText(tvPmMrzCheck, "MRZ Check : ", document.isMrzCheck() ? "True" : "False", "", sb);
+        DocumentUtils.setText(tvPmDobCheck, "Dob Check : ", document.isDobCheck() ? "True" : "False", "", sb);
+        DocumentUtils.setText(tvPmDoeCheck, "Doe Check : ", document.isDoeCheck() ? "True" : "False", "", sb);
+        DocumentUtils.setText(tvPmNumberCheck, "Number Check : ", document.isNumberCheck() ? "True" : "False", "", sb);
 
 //        if(document.getScannedResult().getMapDocument().get(AXTSdkResult.RFID_DOCUMENT)==null){
 //            sb.append("\nNo NFC data");

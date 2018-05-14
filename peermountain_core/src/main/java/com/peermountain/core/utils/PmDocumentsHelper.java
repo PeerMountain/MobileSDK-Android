@@ -505,12 +505,11 @@ public class PmDocumentsHelper {
     }
 
     public static void addIDImagesToDocument(ArrayList<File> filesToSend, DocumentID documentID) {
-        if (filesToSend != null && documentID != null && documentID.getErrorMessage() == null) {
-            if (filesToSend.size() == 1) {
-                documentID.setImageCropped(new ImageResult(Uri.fromFile(filesToSend.get(0)).toString()));
-            } else {
-                documentID.setImageCropped(new ImageResult(Uri.fromFile(filesToSend.get(1)).toString()));
-                documentID.setImageCroppedBack(new ImageResult(Uri.fromFile(filesToSend.get(0)).toString()));
+        if (filesToSend != null && filesToSend.size() > 0
+                && documentID != null && documentID.getErrorMessage() == null) {
+            documentID.setImageCropped(new ImageResult(Uri.fromFile(filesToSend.get(0)).toString()));
+            if (filesToSend.size() > 1) {
+                documentID.setImageCroppedBack(new ImageResult(Uri.fromFile(filesToSend.get(1)).toString()));
             }
         }
     }

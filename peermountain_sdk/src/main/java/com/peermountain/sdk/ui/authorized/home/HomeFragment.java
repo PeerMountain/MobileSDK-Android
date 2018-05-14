@@ -95,7 +95,7 @@ public class HomeFragment extends HomeToolbarFragment {
         setCardsView();
     }
 
-    private void setCardsView() {
+    public void setCardsView() {
         cardStackView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

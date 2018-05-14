@@ -12,10 +12,13 @@
         android:id="@+id/tvMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/pm_msg_saving_live_selfie"
+        android:layout_margin="@dimen/pm_margin_normal"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textSize="@dimen/pm_text_big"
+        android:text="@string/pm_msg_live_selfie"
         android:textColor="@color/pm_share_text"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <!-- Camera -->
     <com.otaliastudios.cameraview.CameraView
@@ -36,7 +39,11 @@
         app:cameraGestureTap="focusWithMarker"
         app:cameraGrid="off"
         app:cameraJpegQuality="100"
-        app:cameraSessionType="picture"/>
+        app:cameraSessionType="picture"
+        app:cameraPlaySounds="false"
+        app:cameraPictureSizeMinWidth="400"
+        app:cameraPictureSizeMaxWidth="800"
+        app:cameraPictureSizeBiggest="false"/>
 
     <ImageView
         android:id="@+id/btnRecord"

@@ -18,6 +18,7 @@
     <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
     <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
+    <string name="pm_msg_live_selfie">Please read the sentence while shooting your selfie : \n\n\"I want my data safe!\"</string>
     <string name="title_activity_show_live_selfie">ShowLiveSelfieActivity</string>
     <string name="pm_msg_capture_mrz">Please capture your document from MRZ side</string>
     <string name="pm_msg_capture_not_mrz">If your document has other side with your image, please capture it as well</string>

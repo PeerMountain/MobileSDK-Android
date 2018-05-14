@@ -140,15 +140,19 @@ public class StringWidget extends QuestionWidget {
             if(!android.text.TextUtils.isEmpty(helpText) && helpText.startsWith(PREFIX)){
                 try {
                     int lines = Integer.parseInt(helpText.substring(PREFIX.length()));
-                    answerText.setLines(lines);
+                    if(lines>1){
+                        answerText.setMaxLines(lines);
+                    }else{
+                        answerText.setMaxLines(1);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     answerText.setMaxLines(1);
-                    answerText.setInputType(InputType.TYPE_CLASS_TEXT);
+                    answerText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);//InputType.TYPE_CLASS_TEXT
                 }
             }else{
                 answerText.setMaxLines(1);
-                answerText.setInputType(InputType.TYPE_CLASS_TEXT);
+                answerText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 //                answerText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
             }
             answerText.setOnFocusChangeListener(new OnFocusChangeListener() {

@@ -97,6 +97,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
                     finish();
                     return;
                 } else {
+                    getJobs();
                     setUpView();
                     handled = true;
                 }
@@ -578,6 +579,9 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
                 jobs.add(job);
                 PeerMountainManager.saveJobs(jobs);
 //                loadXForm(networkResponse.file);
+                if(networkResponse.responseCode == NetworkResponse.FIXE_EXIST && topFragment instanceof  HomeFragment){
+                    ((HomeFragment) topFragment).setCardsView();
+                }
             }
             end();
         }

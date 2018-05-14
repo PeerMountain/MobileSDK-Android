@@ -662,12 +662,21 @@ public abstract class QuestionWidget
     public void onAnswerQuestion(boolean isAnswered) {
         isWithError = !isAnswered;
         if (!isAnswered) {
-            tvHelp.setText(formEntryPrompt.getConstraintText());
-            tvHelp.setTextColor(colorError);
+            String errMsg = formEntryPrompt.getConstraintText();
+            if(!android.text.TextUtils.isEmpty(errMsg)) {
+                tvHelp.setVisibility(VISIBLE);
+                tvHelp.setText(errMsg);
+                tvHelp.setTextColor(colorError);
+            }
             tvLabel.setTextColor(colorError);
         } else {
             String helpText = formEntryPrompt.getHelpText();
-            tvHelp.setText(validateHelpText(helpText)?TextUtils.textToHtml(formEntryPrompt.getHelpText()):"");
+            if(validateHelpText(helpText)) {
+                tvHelp.setVisibility(View.VISIBLE);
+                tvHelp.setText(TextUtils.textToHtml(helpText));
+            }else{
+                tvHelp.setVisibility(View.GONE);
+            }
             tvHelp.setTextColor(colorInactive);
             tvLabel.setTextColor(hasFocus() ? colorActive : colorInactive);
         }

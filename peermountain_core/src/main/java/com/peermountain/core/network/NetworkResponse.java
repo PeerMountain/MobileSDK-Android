@@ -10,6 +10,7 @@ import java.io.File;
  from inTheEndOfDoInBackground to onPostExecute.
  */
 public class NetworkResponse {
+    public static final int FIXE_EXIST = 199;
     public static final int ERROR = 11941;
     public int responseCode;
     public String json;

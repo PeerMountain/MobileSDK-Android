@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.core.model.guarded.VerifySelfie;
 import com.peermountain.core.network.BaseEvents;
 import com.peermountain.core.network.MainCallback;
 import com.peermountain.core.network.NetworkManager;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
  */
 public class DocumentsViewModel extends BaseViewModel {
     private MutableLiveData<DocumentID> onDocumentScannedFromServer;
+    private MutableLiveData<VerifySelfie> onSelfieVerifiedFromServer;
 
     @Override
     protected void init() {
@@ -36,25 +38,51 @@ public class DocumentsViewModel extends BaseViewModel {
         return onDocumentScannedFromServer;
     }
 
-    private ArrayList<File> filesToSend;
+    public LiveData<VerifySelfie> getOnSelfieVerifiedFromServer() {
+        if (onSelfieVerifiedFromServer == null) {
+            onSelfieVerifiedFromServer = new MutableLiveData<>();
+        }
+        return onSelfieVerifiedFromServer;
+    }
 
     public void sendFiles(ArrayList<File> filesToSend) {
-        this.filesToSend = filesToSend;
         ArrayList<String> fileNames = new ArrayList<>();
         fileNames.add("passportFront");
         fileNames.add("passportBack");
-        // TODO: 5/10/2018 onIdScanned
-        NetworkManager.sendFiles(new SendIDCallback(getNetworkCallback(), MainCallback.TYPE_DIALOG, false,
-                        PeerMountainManager.getApplicationContext().getString(R.string.pm_msg_loading)),
+        NetworkManager.sendFiles(
+                new SendIDCallback(getNetworkCallback(), MainCallback.TYPE_DIALOG, false,
+                        PeerMountainManager.getApplicationContext().getString(R.string.pm_msg_extracting_data),
+                        filesToSend),
                 "https://api.kyc3.com/rest/api/_mrzExtractor?api_key=bStfjjadHizdxqabdcStOg==",
                 filesToSend,
                 fileNames);
     }
 
-    private class SendIDCallback extends MainCallback {
+    public void sendFilesToVerifyLiveSelfie(ArrayList<File> filesToSend) {
+        ArrayList<String> fileNames = new ArrayList<>();
+        fileNames.add("file1");
+        fileNames.add("file2");
+        fileNames.add("file3");
+        fileNames.add("file4");
+        fileNames.add("file5");
+        fileNames.add("passportFront");
+        fileNames.add("passportBack");
+        NetworkManager.sendFiles(
+                new VerifySelfieCallback(getNetworkCallback(), MainCallback.TYPE_DIALOG,
+                        false,
+                        PeerMountainManager.getApplicationContext().getString(R.string.pm_msg_verify),
+                        filesToSend),
+                "https://api.kyc3.com/rest/api/_faceRecognizer?api_key=bStfjjadHizdxqabdcStOg==",
+                filesToSend,
+                fileNames);
+    }
 
-        public SendIDCallback(BaseEvents presenterCallback, int progressType, boolean cancelable, String loadingMsg) {
+    private class SendIDCallback extends MainCallback {
+        private ArrayList<File> filesToSend;
+
+        public SendIDCallback(BaseEvents presenterCallback, int progressType, boolean cancelable, String loadingMsg, ArrayList<File> filesToSend) {
             super(presenterCallback, progressType, cancelable, loadingMsg);
+            this.filesToSend = filesToSend;
         }
 
         @Override
@@ -79,6 +107,45 @@ public class DocumentsViewModel extends BaseViewModel {
         @Override
         public void onError(String msg, NetworkResponse networkResponse) {
             super.onError(msg, networkResponse);
+            if (filesToSend != null) {
+                for (File file : filesToSend) {
+                    file.delete();
+                }
+            }
+        }
+    }
+
+    private class VerifySelfieCallback extends MainCallback {
+        private ArrayList<File> filesToSend;
+
+        public VerifySelfieCallback(BaseEvents presenterCallback, int progressType, boolean cancelable, String loadingMsg, ArrayList<File> filesToSend) {
+            super(presenterCallback, progressType, cancelable, loadingMsg);
+            this.filesToSend = filesToSend;
+        }
+
+        @Override
+        public void inTheEndOfDoInBackground(NetworkResponse networkResponse) {
+            super.inTheEndOfDoInBackground(networkResponse);
+            try {
+                networkResponse.object = MyJsonParser.readLiveSelfieResponse(networkResponse.json);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onPostExecute(NetworkResponse networkResponse) {
+            super.onPostExecute(networkResponse);
+            VerifySelfie verifySelfie = (VerifySelfie) networkResponse.object;
+            if (onSelfieVerifiedFromServer != null) onSelfieVerifiedFromServer.postValue(verifySelfie);
+
+        }
+
+        @Override
+        public void onError(String msg, NetworkResponse networkResponse) {
+            super.onError(msg, networkResponse);
+            if (onSelfieVerifiedFromServer != null) onSelfieVerifiedFromServer.postValue(null);
+
             if (filesToSend != null) {
                 for (File file : filesToSend) {
                     file.delete();

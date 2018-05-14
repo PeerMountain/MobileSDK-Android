@@ -88,6 +88,7 @@
 
     <!--scanned id data fragment -->
     <string name="pm_id_scan_lbl">ID SCAN</string>
+    <string name="pm_msg_extracting_data">Extracting&#8230;</string>
     <!--scanned id data fragment end-->
 
 
@@ -106,6 +107,7 @@
     <string name="pm_lbl_confirm_title">Congratulations!</string>
     <string name="pm_lbl_confirm_msg">Your identity\nhas been verified.</string>
     <string name="pm_err_no_liveselfie_created">Please make a live selfie to finish your registration</string>
+    <string name="pm_msg_verify">Verifying&#8230;</string>
     <!--register profile fragment end-->
 
     <!--home fragment-->

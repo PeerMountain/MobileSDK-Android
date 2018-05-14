@@ -15,6 +15,7 @@ import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
+import com.peermountain.core.model.guarded.VerifySelfie;
 import com.peermountain.core.network.teleferique.model.Persona;
 import com.peermountain.core.network.teleferique.model.SendObject;
 import com.peermountain.core.utils.LogUtils;
@@ -858,7 +859,6 @@ public class MyJsonParser {
                 case EXPIRATION_DATE:
                     document.setExpirationDate(getString(reader));
                     break;
-                // TODO: 5/11/2018 get other checks too
                 case MRZ_CHECK:
                     document.setMrzCheck(getBoolean(reader));
                     break;
@@ -949,6 +949,34 @@ public class MyJsonParser {
         }
         writer.endObject();
     }
+
+    public static VerifySelfie readLiveSelfieResponse(String json) throws IOException {
+        if (json == null) return null;
+        JsonReader reader = new JsonReader(new StringReader(json));
+        String name = null;
+        VerifySelfie verifySelfie = null;
+        reader.beginObject();
+        while (reader.hasNext()) {
+            if (verifySelfie == null) verifySelfie = new VerifySelfie();
+            name = reader.nextName();
+            switch (name) {
+                case "liveliness":
+                    verifySelfie.setLiveliness(getBoolean(reader));
+                    break;
+                case "humanFace":
+                    verifySelfie.setHumanFace(getBoolean(reader));
+                    break;
+                case "faceMatch":
+                    verifySelfie.setFaceMatch(getBoolean(reader));
+                    break;
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return verifySelfie;
+    }
+
 
     private static boolean checkDocumentImageNotEmpty(ImageResult image) {
         return image != null && !TextUtils.isEmpty(image.getImageUri());

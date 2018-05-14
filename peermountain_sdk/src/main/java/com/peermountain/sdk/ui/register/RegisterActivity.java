@@ -16,12 +16,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.core.model.guarded.VerifySelfie;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PmFragmentUtils;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class RegisterActivity extends SecureActivity<RegisterViewModel> implements RegisterPinFragment.OnFragmentInteractionListener,
         ScanIdFragment.OnFragmentInteractionListener, ShowScannedIdFragment.OnFragmentInteractionListener, RegisterProfileFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener, RegisterSelectKeywordsFragment.OnFragmentInteractionListener,
@@ -98,7 +102,7 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
                 new Observer<DocumentID>() {
                     @Override
                     public void onChanged(@Nullable DocumentID documentID) {
-                        if (documentID == null || documentID.getErrorMessage()!=null ) {//|| !documentID.isValid(), !documentID.checkIsValid()
+                        if (documentID == null || documentID.getErrorMessage()!=null ) {//!documentID.checkIsValid()
                             String msg;
                             if(documentID!=null){
                                 documentID.deleteDocumentImages();
@@ -113,6 +117,19 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
                         Intent intent = new Intent();
                         intent.putExtra(ShowScannedIdFragment.ID, documentID);
                         onIdScanned(intent);
+                    }
+                });
+        activityViewModel.getOnSelfieVerifiedFromServer().observe(this,
+                new Observer<VerifySelfie>() {
+                    @Override
+                    public void onChanged(@Nullable VerifySelfie verifySelfie) {
+                        if(topFragment instanceof RegisterProfileFragment){
+                            if(verifySelfie!=null  && verifySelfie.checkIsValid()){
+                                ((RegisterProfileFragment) topFragment).onSelfieVerified();
+                            }else{
+                                ((RegisterProfileFragment) topFragment).onSelfieRejected(verifySelfie);
+                            }
+                        }
                     }
                 });
     }
@@ -282,5 +299,10 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
                     .build();
         }
         return mGoogleApiClient;
+    }
+
+    @Override
+    public void verifyLiveSelfie(ArrayList<File> filesToSend) {
+        activityViewModel.sendFilesToVerifyLiveSelfie(filesToSend);
     }
 }

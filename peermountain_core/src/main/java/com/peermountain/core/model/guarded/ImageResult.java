@@ -1,5 +1,8 @@
 package com.peermountain.core.model.guarded;
 
+import android.net.Uri;
+
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -22,5 +25,10 @@ public class ImageResult implements Serializable {
 
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
+    }
+
+    public File takeImageAsFile(){
+        if(imageUri==null) return null;
+        return new File(Uri.parse(imageUri).getPath());
     }
 }

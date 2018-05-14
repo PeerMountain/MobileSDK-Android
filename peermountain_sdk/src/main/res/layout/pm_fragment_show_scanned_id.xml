@@ -70,13 +70,28 @@
                 style="@style/pm_id_tv"/>
 
             <TextView
+                android:id="@+id/tvPmDob"
+                style="@style/pm_id_tv"
+                android:layout_marginBottom="70dp"/>
+
+            <TextView
                 android:id="@+id/tvPmValid"
                 style="@style/pm_id_tv"/>
 
             <TextView
-                android:id="@+id/tvPmDob"
-                style="@style/pm_id_tv"
-                android:layout_marginBottom="70dp"/>
+                android:id="@+id/tvPmMrzCheck"
+                style="@style/pm_id_tv"/>
+
+            <TextView
+                android:id="@+id/tvPmNumberCheck"
+                style="@style/pm_id_tv"/>
+            <TextView
+                android:id="@+id/tvPmDoeCheck"
+                style="@style/pm_id_tv"/>
+            <TextView
+                android:id="@+id/tvPmDobCheck"
+                style="@style/pm_id_tv"/>
+
 
 
             <ImageView

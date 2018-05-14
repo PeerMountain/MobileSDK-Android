@@ -478,7 +478,7 @@ public class PeerMountainManager {
         File file = PmCoreUtils.createLocalFileFromUrl(applicationContext, url,
                 PmCoreConstants.FILE_TYPE_XFORM);
         if (file.exists()) {//it is downloaded
-            if (mCallback != null) mCallback.onPostExecute(new NetworkResponse(200, file));
+            if (mCallback != null) mCallback.onPostExecute(new NetworkResponse(NetworkResponse.FIXE_EXIST, file));
         } else {
             NetworkManager.downloadXForm(mCallback, url, file);
         }

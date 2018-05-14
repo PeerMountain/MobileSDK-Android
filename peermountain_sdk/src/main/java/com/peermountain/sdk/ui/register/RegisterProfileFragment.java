@@ -51,6 +51,7 @@ import com.peermountain.core.model.guarded.ImageResult;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
+import com.peermountain.core.model.guarded.VerifySelfie;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmCoreUtils;
@@ -368,13 +369,14 @@ public class RegisterProfileFragment extends ToolbarFragment {
             PmSystemHelper.hideKeyboard(getActivity(), pmEtNames);
 //            Intent intent = new Intent(getActivity(), CameraActivity.class);
 //            getActivity().startActivityForResult(intent, REQUEST_ID_CAPTURE);
-            CameraActivity.show(getActivity(),false,REQUEST_IMAGE_CAPTURE);
+            CameraActivity.show(getActivity(), false, REQUEST_IMAGE_CAPTURE);
 //            avatarFile = dispatchTakePictureIntent(getActivity(), RegisterProfileFragment.this, REQUEST_ID_CAPTURE);
         }
     }
 
     String pictureUrl = null;
     boolean isDone = false;
+    private ArrayList<String> liveSelfie = null;
 
     private void saveProfile() {
         if (CameraActivity.bitmaps != null && CameraActivity.bitmaps.size() > 0) {
@@ -383,7 +385,26 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 @Override
                 public void onLiveSelfieReady(ArrayList<String> liveSelfie) {
                     if (mListener == null) return;
-                    saveProfile(liveSelfie);
+                    // verify images with ID image
+                    if (liveSelfie == null || liveSelfie.size() <= 10 || document == null
+                            || document.getImageCropped() == null) return;
+                    RegisterProfileFragment.this.liveSelfie = liveSelfie;
+
+                    ArrayList<File> files = new ArrayList<>();
+
+                    for (int i = 0; i < 5; i++) {
+                        files.add(new File(Uri.parse(liveSelfie.get(i*2)).getPath()));
+                    }
+
+                    files.add(document.getImageCropped().takeImageAsFile());
+
+//                    if(document.getImageCroppedBack()!=null){
+//                        files.add(document.getImageCroppedBack().takeImageAsFile());
+//                    }
+                    mListener.verifyLiveSelfie(files);
+
+//                    onSelfieVerified();
+
                 }
             }).saveLiveSelfie();
         }
@@ -412,7 +433,28 @@ public class RegisterProfileFragment extends ToolbarFragment {
 //        isDone = true;
     }
 
-    private void saveProfile(ArrayList<String> liveSelfie) {
+    public void onSelfieRejected(VerifySelfie verifySelfie) {
+        // TODO: 5/14/2018 show message. put in strings
+        liveSelfie = null;
+        String msg = "";
+        if(verifySelfie == null){
+            msg = "Your selfie does not match with your document";
+        }else{
+            if(!verifySelfie.isHumanFace()){
+                msg = "No human face detected";
+            }
+            if(!verifySelfie.isLiveliness()){
+                msg += " No liveliness detected";
+            }
+            if(!verifySelfie.isFaceMatch()){
+                msg += " Face does not match";
+            }
+        }
+        msg += ". Please try again";
+        DialogUtils.showError(getActivity(), msg);
+    }
+
+    public void onSelfieVerified() {
         if (liveSelfie == null || liveSelfie.size() == 0) return;
 
         Profile profile = new Profile();
@@ -630,5 +672,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
         void onProfileRegistered();
 
         GoogleApiClient getGoogleApiClientForSignIn(GoogleSignInOptions gso);
+
+        void verifyLiveSelfie(ArrayList<File> filesToSend);
     }
 }

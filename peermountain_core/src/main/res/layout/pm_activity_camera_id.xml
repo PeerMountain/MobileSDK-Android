@@ -31,7 +31,7 @@
         app:cameraAudio="off"
         app:cameraCropOutput="true"
         app:cameraFacing="back"
-        app:cameraFlash="auto"
+        app:cameraFlash="off"
         app:cameraGestureLongTap="focusWithMarker"
         app:cameraGesturePinch="zoom"
         app:cameraGestureScrollHorizontal="exposureCorrection"

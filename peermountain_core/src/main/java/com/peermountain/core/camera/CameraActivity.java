@@ -257,6 +257,7 @@ public class CameraActivity extends AppCompatActivity {
                 countDownTimer = null;
                 camera.stop();
                 camera.setVisibility(View.GONE);
+                tvMsg.setText(R.string.pm_msg_saving_live_selfie);
                 tvMsg.setVisibility(View.VISIBLE);
                 setResult(RESULT_OK);
                 finish();
