@@ -3,5 +3,5 @@
     package="com.linkedin.android.mobilesdk" >
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <application />
+    <application/>
 </manifest>

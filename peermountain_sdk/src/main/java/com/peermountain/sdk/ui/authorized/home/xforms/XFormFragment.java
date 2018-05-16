@@ -77,6 +77,7 @@ public class XFormFragment extends HomeToolbarFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.pm_fragment_xform, container, false);
     }

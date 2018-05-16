@@ -323,6 +323,10 @@ public class PeerMountainManager {
         return Cache.getInstance().getPin();
     }
 
+    public static void clearLastTimeActive() {
+        Cache.getInstance().setLastTimeActive(0);
+    }
+
     public static void saveLastTimeActive() {
         Cache.getInstance().setLastTimeActive(System.currentTimeMillis());
     }

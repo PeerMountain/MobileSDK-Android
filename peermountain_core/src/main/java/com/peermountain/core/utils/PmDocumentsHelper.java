@@ -390,7 +390,9 @@ public class PmDocumentsHelper {
         });
         dialog.setView(view);
         nameDialog = dialog.create();
-        nameDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        if (nameDialog.getWindow() != null){
+            nameDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
         nameDialog.show();
     }
 

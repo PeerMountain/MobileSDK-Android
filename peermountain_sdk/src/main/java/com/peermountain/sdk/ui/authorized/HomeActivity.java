@@ -11,7 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -179,6 +179,10 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
         }
     }
 
+    private void setAdjustResize() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
     @Override
     public View.OnClickListener getOpenMenuListener() {
         return new View.OnClickListener() {
@@ -254,25 +258,26 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     }
 
     public void scaleAndTranslateMainContent(View drawer, float slideOffset) {
-//        // Scale the View based on current slide offset
-//        final float diffScaledOffset = slideOffset * 0.3f;
-//        final float offsetScale = 1 - diffScaledOffset;
-//        llContentView.setScaleX(offsetScale);
-//        llContentView.setScaleY(offsetScale);
-//
-//        // Translate the View, accounting for the scaled width
-//        final float xOffset = drawer.getWidth() * slideOffset;
-//        final float xOffsetDiff = llContentView.getWidth() * diffScaledOffset / 2;
-//        final float xTranslation = xOffset - xOffsetDiff;
-//        llContentView.setTranslationX(xTranslation);
+        // Scale the View based on current slide offset
+        final float diffScaledOffset = slideOffset * 0.3f;
+        final float offsetScale = 1 - diffScaledOffset;
+        llContentView.setScaleX(offsetScale);
+        llContentView.setScaleY(offsetScale);
 
-        llContentView.setX(navigationView.getWidth() * slideOffset);
-        FrameLayout.LayoutParams lp =
-                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
-        lp.height = drawer.getHeight() -
-                (int) (drawer.getHeight() * slideOffset * 0.3f);
-        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
-        llContentView.setLayoutParams(lp);
+        // Translate the View, accounting for the scaled width
+        final float xOffset = drawer.getWidth() * slideOffset;
+        final float xOffsetDiff = llContentView.getWidth() * diffScaledOffset / 2;
+        final float xTranslation = xOffset - xOffsetDiff;
+        llContentView.setTranslationX(xTranslation);
+
+        //bottom approach breaks the adjustResize logic and keyboard don't resize activity!!!
+//        llContentView.setX(navigationView.getWidth() * slideOffset);
+//        FrameLayout.LayoutParams lp =
+//                (FrameLayout.LayoutParams) llContentView.getLayoutParams();
+//        lp.height = drawer.getHeight() -
+//                (int) (drawer.getHeight() * slideOffset * 0.3f);
+//        lp.topMargin = (drawer.getHeight() - lp.height) / 2;
+//        llContentView.setLayoutParams(lp);
     }
 
     private MenuFragment menuFragment;
@@ -304,7 +309,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
     private void getJobs() {
         PeerMountainManager.downloadXForm(new DownloadXFormCallback(null,
                         MainCallback.TYPE_NO_PROGRESS), // TODO: 3/8/2018 update link
-                "https://www.dropbox.com/s/llfl998w0x1m9b7/Form%20A%20%28group%29.xml?dl=1");
+                "https://www.dropbox.com/s/tr8bkcxmbact4ed/Form%20A%20%281%29.xml?dl=1");
 //                "https://www.dropbox.com/s/zddfjtzddtw0ez2/Form%20A.xml?dl=1");//Form A
 //                "https://www.dropbox.com/s/1yctej8ukivs7eo/AllFieldsFormTermsLong.xml?dl=1");// test views
     }
@@ -338,6 +343,7 @@ public class HomeActivity extends SecureActivity implements HomeJobFragment.OnFr
             public void onClick(View view) {
 //                PeerMountainSDK.resetProfile();
 //                authorize();//go to register
+                PeerMountainManager.clearLastTimeActive();
                 finish();
             }
         });

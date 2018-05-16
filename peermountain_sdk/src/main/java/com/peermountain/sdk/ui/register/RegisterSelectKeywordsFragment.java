@@ -21,6 +21,7 @@ import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.ToolbarFragment;
 import com.peermountain.sdk.utils.PeerMountainSdkConstants;
+import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
 import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.core.views.PeerMountainTextView;
 
@@ -285,9 +286,9 @@ public class RegisterSelectKeywordsFragment extends ToolbarFragment {
     }
 
     private void setListeners() {
-        flNext.setOnClickListener(new View.OnClickListener() {
+        flNext.setOnClickListener(new RippleOnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClickListener(View view) {
                 if (isJustShowing) {
                     isJustShowing = false;
                     setViewForValidate();

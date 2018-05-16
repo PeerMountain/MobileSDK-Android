@@ -22,7 +22,7 @@
 
     <!-- Required for Nearby Connections END -->
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:supportsRtl="true"
         android:theme="@style/PmCoreTheme"
         tools:replace="android:theme">

@@ -96,7 +96,9 @@ public class StringWidget extends QuestionWidget {
         if (height != null && height.length() != 0) {
             try {
                 int rows = Integer.parseInt(height);
-                answerText.setMinLines(rows);
+                if(rows>0){
+                    answerText.setMinLines(rows);
+                }
                 answerText.setGravity(
                         Gravity.TOP); // to write test starting at the top of the edit area
             } catch (Exception e) {
