@@ -196,6 +196,12 @@ public class RegisterProfileFragment extends ToolbarFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        dismissErrors();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
@@ -433,6 +439,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
 //        isDone = true;
     }
 
+
     public void onSelfieRejected(VerifySelfie verifySelfie) {
         // TODO: 5/14/2018 show message. put in strings
         liveSelfie = null;
@@ -451,7 +458,8 @@ public class RegisterProfileFragment extends ToolbarFragment {
             }
         }
         msg += ". Please try again";
-        DialogUtils.showError(getActivity(), msg);
+        dismissErrors();
+        snackbar = DialogUtils.showError(getActivity(), msg);
     }
 
     public void onSelfieVerified() {

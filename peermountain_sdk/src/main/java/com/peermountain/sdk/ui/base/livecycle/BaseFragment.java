@@ -3,6 +3,7 @@ package com.peermountain.sdk.ui.base.livecycle;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -16,6 +17,7 @@ import android.view.View;
 public class BaseFragment extends Fragment {
     private BaseUI baseUI;
     private Events eventsCallback;
+    protected Snackbar snackbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +42,12 @@ public class BaseFragment extends Fragment {
     public void onDetach() {
         baseUI.hideProgresses();
         eventsCallback=null;
+        dismissErrors();
         super.onDetach();
+    }
+
+    public void dismissErrors() {
+        if(snackbar!=null) snackbar.dismiss();
     }
 
     public BaseUI getBaseUI() {

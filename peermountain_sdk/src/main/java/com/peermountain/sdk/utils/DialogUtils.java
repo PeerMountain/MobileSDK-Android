@@ -75,12 +75,13 @@ public class DialogUtils {
 
     public static void showError(Activity activity, int message) {
         if (activity != null)
-            showInfoSnackbar(activity, message, 0, Color.WHITE, 0, null);
+            showInfoSnackbar(activity.findViewById(android.R.id.content), message, null, 0, Color.WHITE, 0, null);
     }
 
-    public static void showError(Activity activity, String message) {
+    public static Snackbar showError(Activity activity, String message) {
         if (activity != null)
-            showInfoSnackbar(activity, message);
+            return showInfoSnackbar(activity.findViewById(android.R.id.content), 0, message, 0, Color.WHITE, 0, null);
+        return null;
     }
 
     public static void showError(View view, int message) {
@@ -94,7 +95,7 @@ public class DialogUtils {
     }
 
     public static void showErrorToast(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     public static void showInfoSnackbar(View v, int message) {
@@ -134,9 +135,14 @@ public class DialogUtils {
             Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
     }
 
-    public static void showInfoSnackbar(Activity activity, int message, int colBtn, int colMsg, int colBkg, View.OnClickListener listener) {
-        if (activity != null && message != 0) {
-            Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+    public static Snackbar showInfoSnackbar(View view, int message, String msg, int colBtn, int colMsg, int colBkg, final View.OnClickListener listener) {
+        if (view != null) {
+            final Snackbar snackbar;
+            if (message != 0) {
+                snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
+            } else {
+                snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_INDEFINITE);
+            }
             // Set the Snackbar action button default text color
             if (colBtn != 0)
                 snackbar.setActionTextColor(colBtn);
@@ -155,19 +161,27 @@ public class DialogUtils {
                 snackbar.setAction(R.string.pm_btn_ok, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        snackbar.dismiss();
+                        snackbar.dismiss();
                     }
                 });
             else
-                snackbar.setAction(R.string.pm_btn_ok, listener);
+                snackbar.setAction(R.string.pm_btn_ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        listener.onClick(view);
+                        snackbar.dismiss();
+                    }
+                });
             // Display the Snackbar
             snackbar.show();
+            return snackbar;
         }
+        return null;
     }
 
     public static void showInfoSnackbar(Activity activity, int message) {
         if (activity != null && message != 0)
-            showInfoSnackbar(activity, message, 0, Color.WHITE, 0, null);
+            showInfoSnackbar(activity.findViewById(android.R.id.content), message, null, 0, Color.WHITE, 0, null);
 //            Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
     }
 
