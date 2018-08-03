@@ -72,7 +72,7 @@ public class ShareContactActivity extends ConnectionsActivity {
         initView();
 
         mName = PeerMountainManager.getProfile().getNames();
-        mCode = generateRandomName();
+        mCode = generateRandomCode();
         mTvCode.setText(mCode);
 
         mBtnConnect.setOnClickListener(new View.OnClickListener() {
@@ -542,13 +542,13 @@ public class ShareContactActivity extends ConnectionsActivity {
         return SERVICE_ID + mEtCode.getText().toString();
     }
 
-    private static String generateRandomName() {
-        String name = "";
+    private static String generateRandomCode() {
+        String code = "";
         Random random = new Random();
         for (int i = 0; i < 5; i++) {
-            name += random.nextInt(10);
+            code += random.nextInt(10);
         }
-        return name;
+        return code;
     }
 
     private void initView() {

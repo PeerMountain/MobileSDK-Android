@@ -551,7 +551,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
     }
 
     /**
-     * @return A list of currently connected endpoints.
+     * @return A list of currently Discovered endpoints.
      */
     protected Set<Endpoint> getDiscoveredEndpoints() {
         Set<Endpoint> endpoints = new HashSet<>();
@@ -620,7 +620,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity
     protected abstract String getName();
 
     /**
-     * @return The client's name. Visible to others when connecting.
+     * @return The client's code. Visible to others when connecting.
      */
     protected abstract String getCode();
 
