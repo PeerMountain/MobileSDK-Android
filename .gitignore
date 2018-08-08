@@ -7,3 +7,6 @@
 /captures
 .externalNativeBuild
 gradle.properties
+linkedin-sdk/build/
+id_demo_app/release/id_demo_app-release.apk
+id_demo_app/release/output.json
