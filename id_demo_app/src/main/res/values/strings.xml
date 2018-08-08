@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ID demo</string>
+    <string name="dialog_ask_for_selfie_msg">Hi %s ,\nnext step is to create a live selfie and we will compare it with
+        your document's face image</string>
+    <string name="dialog_ask_for_selfie_btn_yes">OK</string>
+    <string name="dialog_ask_for_selfie_btn_no">Cancel</string>
 </resources>

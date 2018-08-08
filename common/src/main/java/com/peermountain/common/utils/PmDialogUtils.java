@@ -211,15 +211,24 @@ public class PmDialogUtils {
                 AlertDialog.THEME_DEVICE_DEFAULT_DARK;
     }
 
-    public static void showChoiceDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listener1
-            , DialogInterface.OnClickListener listener2, int btnYes, int btnNo) {
+    public static void showChoiceDialog(Context ctx, int title, int msg, DialogInterface.OnClickListener listenerYes
+            , DialogInterface.OnClickListener listenerNo, int btnYes, int btnNo) {
+        String titleStr = title == -1 ? null : ctx.getString(title);
+        String msgStr = msg == -1 ? null : ctx.getString(msg);
+        String btnYesStr = btnYes == -1 ? null : ctx.getString(btnYes);
+        String btnNoStr = btnNo == -1 ? null : ctx.getString(btnNo);
+        showChoiceDialog(ctx, titleStr, msgStr, listenerYes, listenerNo, btnYesStr, btnNoStr);
+    }
+
+    public static void showChoiceDialog(Context ctx, String title, String msg, DialogInterface.OnClickListener listenerYes
+            , DialogInterface.OnClickListener listenerNo, String btnYes, String btnNo) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(ctx, getDialogStyle());
         dialog.setCancelable(false);
-        if (title != -1)
+        if (title != null)
             dialog.setTitle(title);
-        if (msg != -1)
+        if (msg != null)
             dialog.setMessage(msg);
-        if (listener1 == null)
+        if (listenerYes == null)
             dialog.setPositiveButton(btnYes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -227,8 +236,8 @@ public class PmDialogUtils {
                 }
             });
         else
-            dialog.setPositiveButton(btnYes, listener1);
-        if (listener2 == null)
+            dialog.setPositiveButton(btnYes, listenerYes);
+        if (listenerNo == null)
             dialog.setNegativeButton(btnNo, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -236,7 +245,7 @@ public class PmDialogUtils {
                 }
             });
         else
-            dialog.setNegativeButton(btnNo, listener2);
+            dialog.setNegativeButton(btnNo, listenerNo);
         AlertDialog alertDialog = dialog.create();
 //        alertDialog.getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
         alertDialog.show();

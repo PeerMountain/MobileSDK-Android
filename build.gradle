@@ -35,9 +35,9 @@ task clean(type: Delete) {
 }
 ext {
     // dependencies versions
-    supportLibraryVersion = '26.1.0'
+    supportLibraryVersion = '27.1.1'
     playServicesVersion = '11.8.0'
-    compileSdkVersion = 26
-    buildToolsVersion  = "26.0.2"
+    compileSdkVersion = 27
+    buildToolsVersion  = "27.0.3"
     minSdkVersion = 18
 }
