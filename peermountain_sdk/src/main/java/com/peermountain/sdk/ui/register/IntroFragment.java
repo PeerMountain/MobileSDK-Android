@@ -18,8 +18,8 @@ import android.widget.ViewFlipper;
 
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarFragment;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.pm_livecycle.ToolbarFragment;
+import com.peermountain.common.utils.ripple.RippleUtils;
 
 public class IntroFragment extends ToolbarFragment implements View.OnTouchListener {
     SharedPreferences prefs;

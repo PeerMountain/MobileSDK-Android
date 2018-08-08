@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">common</string>
+    <string name="pm_ask_for_permission_again_camera">Without Camera permission the app can not continue. Would you give a permission ?</string>
+    <string name="pm_btn_ok">OK</string>
+    <string name="pm_btn_refuse_permission">Refuse</string>
+    <string name="pm_btn_ask_for_permission_again">OK</string>
+    <string name="pm_register_title">Sign Up</string>
+</resources>

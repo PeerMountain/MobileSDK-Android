@@ -17,14 +17,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
+import com.peermountain.common.utils.ImageUtils;
 import com.peermountain.core.BuildConfig;
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.core.utils.ImageUtils;
 import com.peermountain.core.utils.LogUtils;
-import com.peermountain.core.utils.constants.PmCoreConstants;
 import com.peermountain.core.utils.PmCoreUtils;
+import com.peermountain.core.utils.constants.PmCoreConstants;
 
 import java.io.FileNotFoundException;
 import java.util.Random;

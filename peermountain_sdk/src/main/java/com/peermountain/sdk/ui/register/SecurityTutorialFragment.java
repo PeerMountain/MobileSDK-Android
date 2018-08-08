@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.pm_livecycle.ToolbarFragment;
 
 public class SecurityTutorialFragment extends ToolbarFragment implements View.OnTouchListener {
     ViewFlipper vf;

@@ -1,0 +1,17 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="pm_margin_normal">16dp</dimen>
+    <dimen name="pm_margin_small">8dp</dimen>
+    <dimen name="pm_margin_big">24dp</dimen>
+    <dimen name="pm_margin_xbig">40dp</dimen>
+    <dimen name="pm_margin_micro">4dp</dimen>
+
+    <dimen name="pm_text_xbig">24sp</dimen>
+    <dimen name="pm_text_big">18sp</dimen>
+    <dimen name="pm_text_normal">16sp</dimen>
+    <dimen name="pm_text_small">12sp</dimen>
+
+    <dimen name="pm_corners">6dp</dimen>
+    <dimen name="pm_camera_size">300dp</dimen>
+    <dimen name="pm_scanned_id_image_height">130dp</dimen>
+</resources>

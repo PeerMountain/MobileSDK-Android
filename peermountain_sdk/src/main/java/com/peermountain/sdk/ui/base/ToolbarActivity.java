@@ -10,10 +10,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.peermountain.pm_livecycle.ToolbarFragment;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.livecycle.BaseActivity;
-import com.peermountain.sdk.ui.base.livecycle.BaseViewModel;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
+import com.peermountain.pm_livecycle.base.BaseActivity;
+import com.peermountain.pm_livecycle.base.BaseViewModel;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
 
 public abstract class ToolbarActivity<T extends BaseViewModel> extends BaseActivity<T> implements
         ToolbarFragment.ToolbarEvents, HomeToolbarFragment.HomeToolbarEvents{

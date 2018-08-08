@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.peermountain.core.model.guarded.AppDocument;
-import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.common.model.DocumentID;
 import com.peermountain.core.model.guarded.FileDocument;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

@@ -16,15 +16,15 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.peermountain.core.model.guarded.AppDocument;
-import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.common.model.DocumentID;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.home.CardsEventListener;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.yuyakaido.android.cardstackview.CardStackView;
 
 import java.io.File;

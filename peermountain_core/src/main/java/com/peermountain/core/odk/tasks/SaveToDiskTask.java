@@ -19,7 +19,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.peermountain.core.R;
-import com.peermountain.core.network.ServerOperation;
+import com.peermountain.pm_net.network.ServerOperation;
 import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.exeptions.EncryptionException;
 import com.peermountain.core.odk.model.SaveResult;

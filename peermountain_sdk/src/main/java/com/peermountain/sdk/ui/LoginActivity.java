@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
-import com.peermountain.sdk.ui.base.livecycle.EmptyViewModel;
+import com.peermountain.pm_livecycle.EmptyViewModel;
 import com.peermountain.sdk.ui.register.RegisterPinFragment;
-import com.peermountain.sdk.utils.PmFragmentUtils;
+import com.peermountain.common.utils.PmFragmentUtils;
 
 
 public class LoginActivity extends SecureActivity implements RegisterPinFragment.OnFragmentInteractionListener{

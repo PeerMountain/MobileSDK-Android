@@ -3,17 +3,17 @@ package com.peermountain.sdk.ui.authorized.documents;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
-import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.common.model.DocumentID;
 import com.peermountain.core.model.guarded.VerifySelfie;
-import com.peermountain.core.network.BaseEvents;
-import com.peermountain.core.network.MainCallback;
-import com.peermountain.core.network.NetworkManager;
-import com.peermountain.core.network.NetworkResponse;
+import com.peermountain.pm_net.network.BaseEvents;
+import com.peermountain.pm_net.network.MainCallback;
+import com.peermountain.pm_net.network.NetworkManager;
+import com.peermountain.pm_net.network.NetworkResponse;
 import com.peermountain.core.persistence.MyJsonParser;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.PmDocumentsHelper;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.livecycle.BaseViewModel;
+import com.peermountain.pm_livecycle.base.BaseViewModel;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,8 +17,8 @@ import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.authorized.HomeActivity;
 import com.peermountain.sdk.ui.authorized.settings.ProfileSettingsFragment;
 import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.peermountain.core.views.PeerMountainTextView;
 
 /**

@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 
 import com.peermountain.core.model.guarded.PmJob;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.peermountain.core.views.PeerMountainTextView;
 
 /**

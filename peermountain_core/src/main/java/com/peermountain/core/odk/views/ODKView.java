@@ -13,12 +13,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.peermountain.common.utils.PmSystemHelper;
 import com.peermountain.core.R;
 import com.peermountain.core.odk.model.FormController;
 import com.peermountain.core.odk.utils.ViewIds;
 import com.peermountain.core.odk.views.widgets.WidgetFactory;
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
-import com.peermountain.core.utils.PmSystemHelper;
 
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.data.IAnswerData;

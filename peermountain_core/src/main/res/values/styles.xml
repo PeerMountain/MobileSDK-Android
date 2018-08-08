@@ -1,13 +1,4 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="PmCoreTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">#FF126B82</item>
-        <item name="colorPrimaryDark">#000000</item>
-        <item name="colorAccent">#49C5DE</item>
-    </style>
-
     <style name="pm_share_text">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -15,13 +6,6 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/pm_share_text</item>
         <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="camera_button">
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
-        <item name="android:layout_gravity">bottom|center_horizontal</item>
-        <item name="android:layout_marginBottom">@dimen/pm_margin_normal</item>
     </style>
 
     <style name="PmCoreTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
@@ -50,15 +34,5 @@
     </style>
     <style name="PmCustomCalendarTextAppearanceWeek" parent="TextAppearance.MaterialCalendarWidget.Date">
         <item name="android:textColor">@color/pm_calendar_week</item>
-    </style>
-
-    <style name="camera_extra_buttons">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">bottom|right</item>
-        <item name="android:padding">@dimen/pm_margin_small</item>
-        <item name="android:layout_margin">@dimen/pm_margin_normal</item>
-        <item name="android:background">@drawable/pm_btn_primary_selector</item>
-        <item name="android:textColor">@color/pm_share_text</item>
     </style>
 </resources>

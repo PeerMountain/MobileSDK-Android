@@ -19,10 +19,10 @@ import com.peermountain.core.model.unguarded.Keyword;
 import com.peermountain.core.model.unguarded.Keywords;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.pm_livecycle.ToolbarFragment;
 import com.peermountain.sdk.utils.PeerMountainSdkConstants;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.peermountain.core.views.PeerMountainTextView;
 
 import java.util.ArrayList;

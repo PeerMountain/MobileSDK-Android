@@ -22,7 +22,7 @@ import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.Flash;
 import com.peermountain.core.R;
-import com.peermountain.core.utils.PmDialogUtils;
+import com.peermountain.common.utils.PmDialogUtils;
 
 import java.io.File;
 import java.util.ArrayList;

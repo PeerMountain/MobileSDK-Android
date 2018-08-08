@@ -1,5 +1,7 @@
 package com.peermountain.core.model.guarded;
 
+import com.peermountain.common.model.DocumentID;
+
 import java.util.ArrayList;
 
 /**

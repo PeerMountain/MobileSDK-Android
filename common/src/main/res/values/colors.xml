@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF126B82</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#49C5DE</color>
+
+
+    <color name="pm_share_text">#FFFFFF</color><!--100%-->
+    <color name="pm_theme_light_bkg">#FFFFFF</color>
+    <color name="pm_line">#FFD8D8D8</color>
+    <color name="pm_text_color_dark">#FF1D1D26</color>
+    <color name="pm_circle_btn">#FF126B82</color>
+
+</resources>

@@ -19,6 +19,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
 import com.google.zxing.Result;
+import com.peermountain.common.CommonLibConfig;
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
@@ -29,9 +30,9 @@ import com.peermountain.core.model.guarded.Profile;
 import com.peermountain.core.model.guarded.PublicUser;
 import com.peermountain.core.model.guarded.ShareObject;
 import com.peermountain.core.model.unguarded.Keywords;
-import com.peermountain.core.network.MainCallback;
-import com.peermountain.core.network.NetworkManager;
-import com.peermountain.core.network.NetworkResponse;
+import com.peermountain.pm_net.network.MainCallback;
+import com.peermountain.pm_net.network.NetworkManager;
+import com.peermountain.pm_net.network.NetworkResponse;
 import com.peermountain.core.odk.tasks.FormLoaderTask;
 import com.peermountain.core.odk.utils.Collect;
 import com.peermountain.core.utils.LogUtils;
@@ -65,6 +66,7 @@ public class PeerMountainManager {
     public static void init(PeerMountainConfig config) {
         PeerMountainManager.applicationContext = config.getApplicationContext();
         config.setApplicationContext(null);
+        CommonLibConfig.init(applicationContext, config.isDebug());
         Cache.getInstance().setConfig(config);
         SharedPreferenceManager.saveConfig(config);
         Collect.createODKDirs();

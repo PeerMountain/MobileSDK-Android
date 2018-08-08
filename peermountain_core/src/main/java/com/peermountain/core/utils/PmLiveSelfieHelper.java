@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 
+import com.peermountain.common.utils.ImageUtils;
 import com.peermountain.core.camera.CameraActivity;
 import com.peermountain.core.persistence.PeerMountainManager;
 

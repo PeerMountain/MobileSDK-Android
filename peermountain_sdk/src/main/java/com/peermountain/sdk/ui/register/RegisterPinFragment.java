@@ -20,13 +20,13 @@ import android.widget.TextView;
 
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarFragment;
+import com.peermountain.pm_livecycle.ToolbarFragment;
 import com.peermountain.sdk.utils.DialogUtils;
 import com.peermountain.sdk.utils.PeerMountainSdkConstants;
 import com.peermountain.sdk.utils.fingerprint.FastLoginHelper;
 import com.peermountain.sdk.utils.fingerprint.FingerprintHandler;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 
 public class RegisterPinFragment extends ToolbarFragment {
     private static final String ARG_LOGIN = "ARG_LOGIN";

@@ -14,13 +14,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.balysv.materialripple.MaterialRippleLayout;
+import com.peermountain.common.utils.PmSystemHelper;
+import com.peermountain.common.utils.ripple.RippleOnClickListener;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.sdk.R;
-import com.peermountain.sdk.ui.base.ToolbarFragment;
-import com.peermountain.core.utils.PmSystemHelper;
-import com.peermountain.sdk.utils.ripple.RippleOnClickListener;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
 import com.peermountain.core.views.PeerMountainTextView;
+import com.peermountain.pm_livecycle.ToolbarFragment;
+import com.peermountain.sdk.R;
 @Deprecated
 public class RegisterKeywordsFragment extends ToolbarFragment {
 

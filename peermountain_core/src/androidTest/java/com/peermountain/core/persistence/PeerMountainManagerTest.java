@@ -9,7 +9,7 @@ import com.google.zxing.Result;
 import com.peermountain.core.BuildConfig;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
-import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.common.model.DocumentID;
 import com.peermountain.core.model.guarded.PeerMountainConfig;
 import com.peermountain.core.model.guarded.PmAccessToken;
 import com.peermountain.core.model.guarded.Profile;

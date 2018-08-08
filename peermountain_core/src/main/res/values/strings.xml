@@ -13,8 +13,6 @@
 
 
     <string name="pm_document_item_id_title">Identity Document</string>
-    <string name="pm_btn_refuse_permission">Refuse</string>
-    <string name="pm_btn_ask_for_permission_again">OK</string>
     <string name="pm_err_msg_permission_scan_id">Please accept all permissions to scan Document</string>
     <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
     <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
@@ -31,7 +29,7 @@
     <string name="pm_activity_not_found">No activity found to handle: %s</string>
     <string name="pm_launch_app">Launch</string>
     <string name="pm_no_app">The requested application is missing. Please manually enter the reading.</string>
-    <string name="pm_btn_ok">OK</string>
+
     <string name="pm_survey_saving_validating_message">Saving data</string>
     <string name="survey_saving_collecting_message">Collecting data…</string>
     <string name="survey_saving_saving_message">Saving to SD card…</string>
@@ -47,7 +45,7 @@
     <string name="pm_btn_done_scanning">Done</string>
     <string name="pm_btn_flash">Flash</string>
 
-    <string name="pm_ask_for_permission_again_camera">Without Camera permission the app can not continue. Would you give a permission ?</string>
+
     <string name="pm_btn_save_form">Save Form</string>
     <string name="pm_btn_send_form">Send Form</string>
 </resources>

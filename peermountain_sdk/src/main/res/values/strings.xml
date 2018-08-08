@@ -1,8 +1,5 @@
 <resources>
-    <!--Base-->
-    <string name="pm_msg_loading">Loading&#8230;</string>
-    <string name="pm_msg_main_server_error">An error occurred</string>
-    <!--Base end-->
+
     <string name="pm_btn_scan_id">Scan</string>
     <string name="pm_btn_re_scan_id">Rescan</string>
     <string name="pm_msg_prepare_id">Please prepare your document for scan from MRZ side and click on "Scan"</string>
@@ -16,7 +13,6 @@
 
     <!-- login fragment -->
     <string name="pm_login_btn_ln">Login with LinkedIn</string>
-    <string name="pm_msg_no_network">No network</string>
     <string name="pm_btn_ok">OK</string>
     <string name="pm_error_msg">Error : %s</string>
     <string name="pm_error_canceled">Canceled!</string>
@@ -32,7 +28,6 @@
     <string name="pm_pin_confirm_msg2">Your pin will be used to unlock your wallet.</string>
     <string name="pm_don_t_remember_your_code">Don\'t remember your code?</string>
     <string name="pm_recover_here">Recover here.</string>
-    <string name="pm_register_title">Sign Up</string>
     <string name="pm_login_title">Login</string>
     <string name="pm_pin_match_error_msg">PIN Code doesn\'t match!</string>
     <!--Fingerprint login-->
@@ -82,12 +77,10 @@
     <string name="pm_lbl_loading_sdk">Loading&#8230;</string>
     <string name="btn_refuse_permission">Refuse</string>
     <string name="pm_err_msg_init_scan_id">SDK error init</string>
-    <string name="pm_err_msg_scan_data">There was a problem with ID data extraction. Please try again!</string>
     <string name="pm_err_no_id_captured">Please capture your document</string>
     <!--scan id fragment end-->
 
     <!--scanned id data fragment -->
-    <string name="pm_id_scan_lbl">ID SCAN</string>
     <string name="pm_msg_extracting_data">Extracting&#8230;</string>
     <!--scanned id data fragment end-->
 

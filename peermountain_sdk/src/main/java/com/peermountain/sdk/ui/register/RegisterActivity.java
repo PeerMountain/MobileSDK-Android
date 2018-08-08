@@ -15,14 +15,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.peermountain.core.camera.CameraActivity;
-import com.peermountain.core.model.guarded.DocumentID;
+import com.peermountain.common.model.DocumentID;
 import com.peermountain.core.model.guarded.VerifySelfie;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.constants.PeerMountainCoreConstants;
+import com.peermountain.scan_id_sdk.show_data.ShowScannedIdFragment;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.SecureActivity;
 import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.sdk.utils.PmFragmentUtils;
+import com.peermountain.common.utils.PmFragmentUtils;
 
 import java.io.File;
 import java.util.ArrayList;

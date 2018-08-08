@@ -1,6 +1,7 @@
 package com.peermountain.sdk.utils.fingerprint;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -20,10 +21,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.peermountain.common.utils.PmSystemHelper;
+import com.peermountain.common.utils.ripple.RippleUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.utils.DialogUtils;
-import com.peermountain.core.utils.PmSystemHelper;
-import com.peermountain.sdk.utils.ripple.RippleUtils;
 
 
 /**
@@ -245,6 +246,7 @@ public class FastLoginHelper {
 //                withFingerprint ? R.string.dialog_fingerprint_info : R.string.dialog_fastlogin_info,null);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void handleFingerprintResult(String result, TextView tv) {
         switch (result) {
             case FingerprintHandler.SUCCESS:

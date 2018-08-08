@@ -5,7 +5,7 @@ import android.view.WindowManager;
 
 import com.peermountain.core.persistence.InactiveTimer;
 import com.peermountain.core.persistence.PeerMountainManager;
-import com.peermountain.sdk.ui.base.livecycle.BaseViewModel;
+import com.peermountain.pm_livecycle.base.BaseViewModel;
 
 /**
  * Created by Galeen on 12.7.2017 г..

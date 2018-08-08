@@ -6,16 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 
 import com.peermountain.R;
-import com.peermountain.core.network.BaseEvents;
-import com.peermountain.core.network.MainCallback;
-import com.peermountain.core.network.NetworkManager;
-import com.peermountain.core.network.NetworkResponse;
-import com.peermountain.core.network.teleferique.TfConstants;
-import com.peermountain.core.network.teleferique.callbacks.TimeCallback;
-import com.peermountain.core.network.teleferique.model.Persona;
-import com.peermountain.core.network.teleferique.model.SendObject;
-import com.peermountain.core.network.teleferique.model.body.invitation.InvitationBuilder;
-import com.peermountain.core.network.teleferique.model.body.registration.RegistrationBuilder;
+import com.peermountain.pm_net.network.BaseEvents;
+import com.peermountain.pm_net.network.MainCallback;
+import com.peermountain.pm_net.network.NetworkManager;
+import com.peermountain.pm_net.network.NetworkResponse;
+import com.peermountain.pm_net.network.teleferique.TfConstants;
+import com.peermountain.pm_net.network.teleferique.callbacks.TimeCallback;
+import com.peermountain.pm_net.network.teleferique.model.Persona;
+import com.peermountain.pm_net.network.teleferique.model.SendObject;
+import com.peermountain.pm_net.network.teleferique.model.body.invitation.InvitationBuilder;
+import com.peermountain.pm_net.network.teleferique.model.body.registration.RegistrationBuilder;
 import com.peermountain.core.persistence.MyJsonParser;
 import com.peermountain.sdk.PeerMountainSDK;
 

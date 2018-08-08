@@ -11,7 +11,7 @@ import android.widget.SeekBar;
 import com.appyvet.materialrangebar.RangeBar;
 import com.peermountain.core.R;
 import com.peermountain.core.odk.views.widgets.base.QuestionWidget;
-import com.peermountain.core.utils.PmDialogUtils;
+import com.peermountain.common.utils.PmDialogUtils;
 
 import org.javarosa.core.model.RangeQuestion;
 import org.javarosa.form.api.FormEntryPrompt;
