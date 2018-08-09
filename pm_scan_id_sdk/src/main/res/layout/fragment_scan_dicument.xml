@@ -15,7 +15,7 @@
         android:layout_margin="@dimen/pm_margin_xbig"
         android:text="@string/pm_msg_capture_mrz"
         android:textSize="24sp"
-        android:textColor="@color/pm_share_text"
+        android:textColor="@color/pm_scan_id_msg"
         android:visibility="gone"
         tools:visibility="visible"/>
 

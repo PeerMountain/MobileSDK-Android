@@ -47,7 +47,7 @@ public class ScanIdentityDocumentCameraActivity extends BaseActivity<IdentityDoc
 
         if (savedInstanceState == null) {
             fragmentBuilder.addToBackStack(false)
-                    .replace(scanDocumentFragment = ScanDocumentFragment.newInstance(null, null));
+                    .replace(scanDocumentFragment = ScanDocumentFragment.newInstance());
         }
     }
 

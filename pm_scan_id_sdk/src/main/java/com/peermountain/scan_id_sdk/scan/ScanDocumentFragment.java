@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +30,6 @@ import java.util.ArrayList;
 
 
 public class ScanDocumentFragment extends BaseFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -44,21 +37,11 @@ public class ScanDocumentFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ScanDicumentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ScanDocumentFragment newInstance(String param1, String param2) {
+    public static ScanDocumentFragment newInstance() {
         ScanDocumentFragment fragment = new ScanDocumentFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        args.putString(ARG_PARAM1, param1);
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -84,8 +67,8 @@ public class ScanDocumentFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -203,19 +186,37 @@ public class ScanDocumentFragment extends BaseFragment {
         btnFlash.setVisibility(View.VISIBLE);
         idImages = new Bitmap[2];
         camera.setPlaySounds(true);
-        tvMsg.setVisibility(View.VISIBLE);
+//        tvMsg.setVisibility(View.VISIBLE);
         setViewForIdStatus();
     }
 
     private void setViewForIdStatus() {
         if (idImages[0] == null) {//take first image
-            tvMsg.setText(R.string.pm_msg_capture_mrz);
-            btnDone.setVisibility(View.GONE);
+            showMessage(R.string.pm_msg_capture_mrz);
+//            tvMsg.setText(R.string.pm_msg_capture_mrz);
+//            tvMsg.setTextColor(ContextCompat.getColor(getActivity(), R.color.pm_scan_id_msg));
+//            btnDone.setVisibility(View.GONE);
         } else {//take second image
-            tvMsg.setText(R.string.pm_msg_capture_not_mrz);
-            btnDone.setVisibility(View.VISIBLE);
+            showMessageWithEnd(R.string.pm_msg_capture_not_mrz);
+//            tvMsg.setText(R.string.pm_msg_capture_not_mrz);
+//            tvMsg.setTextColor(ContextCompat.getColor(getActivity(), R.color.pm_scan_id_back_msg));
+//            btnDone.setVisibility(View.VISIBLE);
         }
         onOpened();
+    }
+
+    public void showMessage(@StringRes int msg) {
+        PmDialogUtils.showSimpleDialog(getActivity(), msg, null);
+    }
+
+    public void showMessageWithEnd(@StringRes int msg) {
+        PmDialogUtils.showChoiceDialog(getActivity(), -1, msg, null,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        endScanning();
+                    }
+                }, R.string.pm_scan_dialog_btn_scan_next_side, R.string.pm_btn_done_scanning);
     }
 
     /**
@@ -253,8 +254,9 @@ public class ScanDocumentFragment extends BaseFragment {
     private void endScanning() {
         camera.stop();
         camera.setVisibility(View.GONE);
-        tvMsg.setVisibility(View.VISIBLE);
+//        tvMsg.setVisibility(View.VISIBLE);
         btnDone.setVisibility(View.GONE);
+        btnRecord.setVisibility(View.GONE);
         progress.setVisibility(View.GONE);
 
         new PmScanIdentityDocumentHelper(new PmScanIdentityDocumentHelper.Events() {

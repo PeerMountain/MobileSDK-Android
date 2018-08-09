@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pm_scan_id_msg">#FFFFFF</color>
+    <color name="pm_scan_id_back_msg">#05f6de</color>
+</resources>
