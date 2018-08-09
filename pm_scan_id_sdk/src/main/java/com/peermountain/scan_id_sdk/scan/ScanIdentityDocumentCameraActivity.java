@@ -56,29 +56,7 @@ public class ScanIdentityDocumentCameraActivity extends BaseActivity<IdentityDoc
         activityViewModel.getOnDocumentScannedFromServer().observe(this, new Observer<DocumentID>() {
             @Override
             public void onChanged(@Nullable DocumentID documentID) {
-                if (documentID == null || documentID.getErrorMessage() != null) {//!documentID.checkIsValid()
-                    String msg;
-                    if (documentID != null) {
-                        documentID.deleteDocumentImages();
-                        msg = documentID.getErrorMessage();
-                    } else {
-                        msg = getString(R.string.pm_err_msg_scan_data);
-                    }
-                    PmDialogUtils.showErrorToast(ScanIdentityDocumentCameraActivity.this, msg);
-                    if (scanDocumentFragment != null) scanDocumentFragment.resetScanning();
-                    return;
-                }
-
-                Intent intent = new Intent();
-                if (!withPreview) {// return document to caller
-                    intent.putExtra(ID, documentID);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                } else {// show data and ask for acceptance
-                    intent.putExtra(ShowScannedIdFragment.ID, documentID);
-                    fragmentBuilder.addToBackStack(true)
-                            .replace(ShowScannedIdFragment.newInstance(intent));
-                }
+                handleDocumentResult(documentID);
             }
         });
     }
@@ -119,5 +97,40 @@ public class ScanIdentityDocumentCameraActivity extends BaseActivity<IdentityDoc
     @Override
     public void onScannedIdDataRejected(DocumentID scannedDocument) {
         fragmentBuilder.pop();
+    }
+
+    private void handleDocumentResult(@Nullable DocumentID documentID) {
+        if (checkDocumentIsValid(documentID)) {
+            onValidDocument(documentID);
+        }
+    }
+
+    private boolean checkDocumentIsValid(@Nullable DocumentID documentID) {
+        if (documentID == null || documentID.getErrorMessage() != null) {//!documentID.checkIsValid()
+            String msg;
+            if (documentID != null) {
+                documentID.deleteDocumentImages();
+                msg = documentID.getErrorMessage();
+            } else {
+                msg = getString(R.string.pm_err_msg_scan_data);
+            }
+            PmDialogUtils.showErrorToast(ScanIdentityDocumentCameraActivity.this, msg);
+            if (scanDocumentFragment != null) scanDocumentFragment.resetScanning();
+            return false;
+        }
+        return true;
+    }
+
+    private void onValidDocument(DocumentID documentID) {
+        Intent intent = new Intent();
+        if (!withPreview) {// return document to caller
+            intent.putExtra(ID, documentID);
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {// show data and ask for acceptance
+            intent.putExtra(ShowScannedIdFragment.ID, documentID);
+            fragmentBuilder.addToBackStack(true)
+                    .replace(ShowScannedIdFragment.newInstance(intent));
+        }
     }
 }

@@ -147,7 +147,7 @@ public class ScanDocumentFragment extends BaseFragment {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                           if(mListener!=null) mListener.onPermissionRefused();
+                            if (mListener != null) mListener.onPermissionRefused();
                         }
                     },
                     R.string.pm_btn_ask_for_permission_again,
@@ -214,8 +214,8 @@ public class ScanDocumentFragment extends BaseFragment {
         } else {//take second image
             tvMsg.setText(R.string.pm_msg_capture_not_mrz);
             btnDone.setVisibility(View.VISIBLE);
-            onOpened();
         }
+        onOpened();
     }
 
     /**
@@ -254,11 +254,13 @@ public class ScanDocumentFragment extends BaseFragment {
         camera.stop();
         camera.setVisibility(View.GONE);
         tvMsg.setVisibility(View.VISIBLE);
+        btnDone.setVisibility(View.GONE);
+        progress.setVisibility(View.GONE);
 
         new PmScanIdentityDocumentHelper(new PmScanIdentityDocumentHelper.Events() {
             @Override
             public void onID_Ready(ArrayList<File> files) {
-                if(mListener!=null) mListener.onID_Ready(files);
+                if (mListener != null) mListener.onID_Ready(files);
             }
 
             @Override
@@ -282,6 +284,7 @@ public class ScanDocumentFragment extends BaseFragment {
 
     public interface OnFragmentInteractionListener {
         void onID_Ready(ArrayList<File> files);
+
         void onPermissionRefused();
     }
 }
