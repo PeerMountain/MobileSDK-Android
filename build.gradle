@@ -34,10 +34,12 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    // dependencies versions
-    supportLibraryVersion = '27.1.1'
-    playServicesVersion = '11.8.0'
     compileSdkVersion = 27
     buildToolsVersion  = "27.0.3"
     minSdkVersion = 18
+    // dependencies versions
+    supportLibraryVersion = '27.1.1'
+    playServicesVersion = '11.8.0'
+    cameraview  = "1.5.0"
+
 }

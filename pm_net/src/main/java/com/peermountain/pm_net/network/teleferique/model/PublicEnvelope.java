@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 import com.peermountain.common.utils.LogUtils;
 import com.peermountain.pm_net.network.teleferique.TfConstants;
 import com.peermountain.pm_net.network.teleferique.model.body.MessageContent;
@@ -85,7 +85,7 @@ public class PublicEnvelope {
 
         verifySignature(messageSig, messageHash);
 
-        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(CommonLibConfig.getApplicationContext(), TfConstants.KEY_ALIAS);
+        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PmBaseConfig.getApplicationContext(), TfConstants.KEY_ALIAS);
         sender = getAddress(keyPair.getPublic().getEncoded());//SecureHelper.toPEM(keyPair.getPublic()).getBytes());
 
 //            LogUtils.d("pkey", SecureHelper.toPEM(keyPair.getPublic()));

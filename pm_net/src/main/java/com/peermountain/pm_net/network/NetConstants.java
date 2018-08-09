@@ -1,7 +1,7 @@
 package com.peermountain.pm_net.network;
 
 
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 
 /**
  * Created by Galeen on 18.1.2016 г..
@@ -17,7 +17,7 @@ public class NetConstants {
     public static final String HEADER_LOCALE = "EN";
     public static final boolean SHOULD_ADD_LOCALE = false;
     public static final String HEADER_AUTHORIZATION = "x-auth-token";
-    public static final boolean DEBUG = CommonLibConfig.isDebug();
+    public static final boolean DEBUG = PmBaseConfig.isDebug();
 
     public static final String API_USERS = "v1.0/users";
 }

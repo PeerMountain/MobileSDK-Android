@@ -1,1 +1,1 @@
-include ':app', ':peermountain_sdk', ':linkedin-sdk', ':peermountain_core', ':id_demo_app', ':pm_scan_id_sdk', ':common', ':pm_net', ':pm_livecycle'
+include ':app', ':peermountain_sdk', ':linkedin-sdk', ':peermountain_core', ':id_demo_app', ':pm_scan_id_sdk', ':common', ':pm_net', ':pm_livecycle', ':pm_scan_selfie_sdk'

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Pm_Scan_Selfie_SDK</string>
+    <string name="pm_live_selfie_btn_done">Done</string>
+    <string name="pm_msg_saving_live_selfie">Saving live selfie&#8230;</string>
+    <string name="pm_msg_live_selfie">Please read the sentence while shooting your selfie : \n\n\"I want my data safe!\"</string>
+    <string name="pm_msg_verify">Verifying&#8230;</string>
+    <string name="pm_error_doing_selfie">There was a problem. Please try again</string>
+
+    <string name="pm_main_server_error_selfie">Your selfie does not match with your document</string>
+    <string name="pm_server_selfie_error_no_human">No human face detected</string>
+    <string name="pm_server_error_selfie_liveliness">No liveliness detected</string>
+    <string name="pm_server_error_selfie_face">Face does not match</string>
+    <string name="pm_server_error_selfie_end">. Please try again</string>
+</resources>

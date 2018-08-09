@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class LogUtils {
 
 
     public static boolean isDebug() {
-        return CommonLibConfig.isDebug();
+        return PmBaseConfig.isDebug();
     }
 
     /**

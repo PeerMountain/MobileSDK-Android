@@ -2,7 +2,7 @@ package com.peermountain.pm_net.network.teleferique.model.body.registration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 import com.peermountain.common.utils.LogUtils;
 import com.peermountain.pm_net.network.teleferique.TfConstants;
 import com.peermountain.pm_net.network.teleferique.model.PublicEnvelope;
@@ -56,7 +56,7 @@ public class RegistrationBuilder extends BaseBuilder {
 //        LogUtils.d("invite name encoded", getInviteName());
 //        setKeyProof(SecureHelper.encryptRSAb64(getKeyProof(), serverPublicKey));
 //        LogUtils.d("KeyProof encoded", getKeyProof());
-        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(CommonLibConfig.getApplicationContext(), TfConstants.KEY_ALIAS);
+        KeyPair keyPair = SecureHelper.getOrCreateAndroidKeyStoreAsymmetricKey(PmBaseConfig.getApplicationContext(), TfConstants.KEY_ALIAS);
         publicKey = SecureHelper.toPEM(keyPair.getPublic());
         LogUtils.d("publicKey", publicKey);
     }

@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 import com.peermountain.common.utils.LogUtils;
 import com.peermountain.pm_net.network.teleferique.GrafJsonParser;
 import com.peermountain.pm_net.network.teleferique.model.SendObject;
@@ -94,7 +94,7 @@ public class NetworkManager {
 
     public static boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) CommonLibConfig.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) PmBaseConfig.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = null;
         if (connectivityManager != null) {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 
 /**
  * Created by Galeen on 10/9/17.
@@ -73,10 +73,10 @@ public class PmSystemHelper {
     private static Boolean isRunningTest;
 
     public static synchronized boolean isRunningTest() {
-        if (CommonLibConfig.getApplicationContext() == null) return true;
+        if (PmBaseConfig.getApplicationContext() == null) return true;
         if (null == isRunningTest) {
             try {
-                Class.forName(CommonLibConfig.getApplicationContext().getPackageName() + ".ExampleUnitTest");
+                Class.forName(PmBaseConfig.getApplicationContext().getPackageName() + ".ExampleUnitTest");
                 isRunningTest = true;
             } catch (ClassNotFoundException e) {
                 isRunningTest = false;

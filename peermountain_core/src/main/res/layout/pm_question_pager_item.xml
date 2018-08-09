@@ -18,5 +18,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_check_24dp"/>
+        app:srcCompat="@drawable/pm_ic_check_dark_24dp"/>
 </FrameLayout>

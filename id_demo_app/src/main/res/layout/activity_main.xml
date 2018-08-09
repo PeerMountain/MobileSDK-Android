@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pm_margin_xbig"
+        android:gravity="center"
+        android:padding="@dimen/pm_margin_normal"
+        android:text="This is client's app screen, which executes SDK options"
+        android:textSize="@dimen/pm_text_big"/>
+
     <Button android:id="@+id/btnStartIdScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

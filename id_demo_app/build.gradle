@@ -28,6 +28,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation (project(':pm_scan_id_sdk'))
+    implementation (project(':pm_scan_selfie_sdk'))
 
 
     testImplementation 'junit:junit:4.12'

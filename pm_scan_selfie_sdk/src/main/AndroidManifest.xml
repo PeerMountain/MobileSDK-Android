@@ -1,0 +1,13 @@
+<manifest package="com.peermountain.pm_scan_selfie_sdk"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <application>
+        <activity
+            android:name=".CameraLiveSelfieActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/PmCoreTheme"/>
+    </application>
+</manifest>

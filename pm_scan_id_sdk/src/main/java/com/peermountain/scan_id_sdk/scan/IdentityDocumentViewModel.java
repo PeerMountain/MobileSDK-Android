@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.net.Uri;
 
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 import com.peermountain.common.model.DocumentID;
 import com.peermountain.common.model.ImageResult;
 import com.peermountain.common.utils.DocumentJsonParser;
@@ -44,7 +44,7 @@ public class IdentityDocumentViewModel extends BaseViewModel {
         fileNames.add("passportBack");
         NetworkManager.sendFiles(
                 new SendIDCallback(getNetworkCallback(), MainCallback.TYPE_DIALOG, false,
-                        CommonLibConfig.getApplicationContext().getString(R.string.pm_msg_extracting_data),
+                        PmBaseConfig.getApplicationContext().getString(R.string.pm_msg_extracting_data),
                         filesToSend), // TODO: 8/8/2018 get key
                 "https://api.kyc3.com/rest/api/_mrzExtractor?api_key=bStfjjadHizdxqabdcStOg==",
                 filesToSend,

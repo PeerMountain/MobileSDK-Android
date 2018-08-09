@@ -19,7 +19,7 @@ import com.ariadnext.android.smartsdk.interfaces.bean.AXTDocumentType;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkInit;
 import com.ariadnext.android.smartsdk.interfaces.bean.AXTSdkParams;
 import com.google.zxing.Result;
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 import com.peermountain.core.R;
 import com.peermountain.core.model.guarded.AppDocument;
 import com.peermountain.core.model.guarded.Contact;
@@ -66,7 +66,7 @@ public class PeerMountainManager {
     public static void init(PeerMountainConfig config) {
         PeerMountainManager.applicationContext = config.getApplicationContext();
         config.setApplicationContext(null);
-        CommonLibConfig.init(applicationContext, config.isDebug());
+        PmBaseConfig.init(applicationContext, config.isDebug());
         Cache.getInstance().setConfig(config);
         SharedPreferenceManager.saveConfig(config);
         Collect.createODKDirs();

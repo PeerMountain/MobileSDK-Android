@@ -2,7 +2,7 @@ package com.peermountain.scan_id_sdk.scan;
 
 import android.graphics.Bitmap;
 
-import com.peermountain.common.CommonLibConfig;
+import com.peermountain.common.PmBaseConfig;
 import com.peermountain.common.utils.ImageUtils;
 import com.peermountain.common.utils.LogUtils;
 
@@ -31,12 +31,12 @@ public class PmScanIdentityDocumentHelper {
         imagesInProcess = 0;
         Bitmap[] idImages = callback.getID_Images();
 
-        saveFrame(idImages[0], System.currentTimeMillis() + "_mrz");
-
-        if (idImages[1] != null) {
+        if (idImages[1] != null) {  // this is face
             saveFrame(idImages[1],
                     System.currentTimeMillis() + "_not_mrz");
-        }
+        }//else is a passport and idImages[0] is face and mrz
+
+        saveFrame(idImages[0], System.currentTimeMillis() + "_mrz");
 
         callback.clearID_Images();
     }
@@ -60,12 +60,12 @@ public class PmScanIdentityDocumentHelper {
     }
 
     private void prepareDir() {
-        if (callback == null || CommonLibConfig.getApplicationContext() == null) {
+        if (callback == null || PmBaseConfig.getApplicationContext() == null) {
             LogUtils.e("PmLiveSelfieHelper", "callback is null");
             return;
         }
 
-        dir = new File(CommonLibConfig.getApplicationContext().getFilesDir(), "/scannedIds");
+        dir = new File(PmBaseConfig.getApplicationContext().getFilesDir(), "/scannedIds");
         dir.mkdirs();
 
     }
