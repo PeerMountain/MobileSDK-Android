@@ -40,7 +40,7 @@ public class ShowLiveSelfieActivity extends AppCompatActivity {
             for (int i = 0; i < PeerMountainManager.getProfile().getLiveSelfie().size(); i++) {
                 String path = Uri.parse(PeerMountainManager.getProfile().getLiveSelfie().get(i)).getPath();
                 liveSelfieAnimation.addFrame(
-                        new BitmapDrawable(getResources(), path), CameraActivity.LIVE_SELFIE_FRAME_INTERVAL);
+                        new BitmapDrawable(getResources(), path), CameraActivity.LIVE_SELFIE_FRAME_INTERVAL);// TODO: 8/9/2018 scan_id_sdk
             }
             liveSelfieAnimation.setOneShot(true);
             ivLiveSelfie.setImageDrawable(liveSelfieAnimation);

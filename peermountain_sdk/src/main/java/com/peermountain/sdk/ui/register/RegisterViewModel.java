@@ -21,7 +21,7 @@ public class RegisterViewModel extends DocumentsViewModel {
 
     }
 
-    void checkIdCapture(int requestCode, int resultCode) {
+    void checkIdCapture(int requestCode, int resultCode) {// TODO: 8/9/2018 scan_id_sdk
         if (resultCode == Activity.RESULT_OK && requestCode == RegisterActivity.REQUEST_ID_CAPTURE) {
             if (CameraActivity.idImages != null
                     && CameraActivity.idImages[0] != null) {

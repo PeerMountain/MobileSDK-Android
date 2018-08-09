@@ -218,7 +218,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
                         }
                     }
                     break;
-                case REQUEST_LIVE_IMAGE_CAPTURE:
+                case REQUEST_LIVE_IMAGE_CAPTURE:// TODO: 8/9/2018 scan_id_sdk
                     if (CameraActivity.bitmaps != null
                             && CameraActivity.bitmaps.size() > 0) {
                         pmIvAvatar.setImageDrawable(new BitmapDrawable(getResources(), CameraActivity.bitmaps.get(0)));
@@ -265,7 +265,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
     ArrayList<File> files = new ArrayList<>();
     int imagesInProcess = 0;
 
-    private void saveLiveSelfie() {
+    private void saveLiveSelfie() {// TODO: 8/9/2018 scan_id_sdk
         setToolbar(-1, R.string.pm_profile_settings_title, null);
         new PmLiveSelfieHelper(new PmLiveSelfieHelper.Events() {
 
@@ -795,6 +795,7 @@ public class ProfileSettingsFragment extends HomeToolbarFragment {
             PmSystemHelper.hideKeyboard(getActivity(), etNames);
 //            Intent intent = new Intent(getActivity(), CameraActivity.class);
 //            startActivityForResult(intent, REQUEST_LIVE_IMAGE_CAPTURE);
+            // TODO: 8/9/2018 scan_id_sdk
             CameraActivity.show(getActivity(),false,REQUEST_LIVE_IMAGE_CAPTURE);
 //            avatarFile = RegisterProfileFragment.dispatchTakePictureIntent(getActivity(), ProfileSettingsFragment.this, REQUEST_LIVE_IMAGE_CAPTURE);
         }

@@ -169,7 +169,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {// TODO: 8/9/2018 scan_id_sdk
             if (CameraActivity.bitmaps != null
                     && CameraActivity.bitmaps.size() > 0) {
                 pmIvAvatar.setImageDrawable(new BitmapDrawable(getResources(), CameraActivity.bitmaps.get(0)));
@@ -371,7 +371,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
                 && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_PERMISSION);
-        } else {
+        } else {// TODO: 8/9/2018 scan_id_sdk
             PmSystemHelper.hideKeyboard(getActivity(), pmEtNames);
 //            Intent intent = new Intent(getActivity(), CameraActivity.class);
 //            getActivity().startActivityForResult(intent, REQUEST_ID_CAPTURE);
@@ -384,7 +384,7 @@ public class RegisterProfileFragment extends ToolbarFragment {
     boolean isDone = false;
     private ArrayList<String> liveSelfie = null;
 
-    private void saveProfile() {
+    private void saveProfile() {// TODO: 8/9/2018 scan_id_sdk
         if (CameraActivity.bitmaps != null && CameraActivity.bitmaps.size() > 0) {
             new PmLiveSelfieHelper(new PmLiveSelfieHelper.Events() {
 

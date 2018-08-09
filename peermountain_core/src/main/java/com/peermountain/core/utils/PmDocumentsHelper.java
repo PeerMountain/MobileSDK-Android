@@ -104,7 +104,7 @@ public class PmDocumentsHelper {
             if (callback != null) callback.onScanSDKLoading(false);
             return;
         }
-
+// TODO: 8/9/2018 scan_id_sdk
         CameraActivity.show(getActivity(), true, PmRequestCodes.REQUEST_SCAN_ID);
 //        if (PeerMountainManager.isScanIdSDKReady()) {
 //            if (getFragment() != null) {
@@ -152,7 +152,7 @@ public class PmDocumentsHelper {
                 }
                 handled = true;
                 break;
-            case PmRequestCodes.REQUEST_SCAN_ID:
+            case PmRequestCodes.REQUEST_SCAN_ID:// TODO: 8/9/2018 scan_id_sdk
                 if (callback != null) callback.onScanSDKLoading(false);
                 if ((resultCode == Activity.RESULT_OK && CameraActivity.idImages != null
                         && CameraActivity.idImages[0] != null)
@@ -400,7 +400,7 @@ public class PmDocumentsHelper {
     private int sidesDone;
     private DocumentID documentId;
 
-    private void handleIdDocumentData(Intent scannedData) {
+    private void handleIdDocumentData(Intent scannedData) {// TODO: 8/9/2018 scan_id_sdk
         //save files and send
         new PmLiveSelfieHelper(true, new PmLiveSelfieHelper.Events() {
             @Override

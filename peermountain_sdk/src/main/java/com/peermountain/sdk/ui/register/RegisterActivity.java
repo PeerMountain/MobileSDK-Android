@@ -165,7 +165,7 @@ public class RegisterActivity extends SecureActivity<RegisterViewModel> implemen
 //        registerKeywordsFragment = null;
 //        fragmentBuilder.addToBackStack(true);
 //        fragmentBuilder.replace(scanIdFragment = ScanIdFragment.newInstance(null, null));
-
+// TODO: 8/9/2018 scan_id_sdk
         CameraActivity.show(this, true, REQUEST_ID_CAPTURE);
     }
 
