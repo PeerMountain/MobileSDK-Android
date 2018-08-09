@@ -66,7 +66,12 @@ public class PeerMountainManager {
     public static void init(PeerMountainConfig config) {
         PeerMountainManager.applicationContext = config.getApplicationContext();
         config.setApplicationContext(null);
-        PmBaseConfig.init(applicationContext, config.isDebug());
+        new PmBaseConfig.Builder()
+                .setApplicationContext(applicationContext)
+                .setDebug(config.isDebug())
+                .setApiScanKey(config.getApiScanKey())
+                .init();
+
         Cache.getInstance().setConfig(config);
         SharedPreferenceManager.saveConfig(config);
         Collect.createODKDirs();

@@ -12,6 +12,10 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        PmBaseConfig.init(this, BuildConfig.DEBUG);
+        new PmBaseConfig.Builder()
+                .setApplicationContext(this)
+                .setDebug(BuildConfig.DEBUG)
+                .setApiScanKey("bStfjjadHizdxqabdcStOg==")
+                .init();
     }
 }

@@ -45,8 +45,8 @@ public class IdentityDocumentViewModel extends BaseViewModel {
         NetworkManager.sendFiles(
                 new SendIDCallback(getNetworkCallback(), MainCallback.TYPE_DIALOG, false,
                         PmBaseConfig.getApplicationContext().getString(R.string.pm_msg_extracting_data),
-                        filesToSend), // TODO: 8/8/2018 get key
-                "https://api.kyc3.com/rest/api/_mrzExtractor?api_key=bStfjjadHizdxqabdcStOg==",
+                        filesToSend),
+                "https://api.kyc3.com/rest/api/_mrzExtractor?api_key=" + PmBaseConfig.getApiScanKey(),
                 filesToSend,
                 fileNames);
     }

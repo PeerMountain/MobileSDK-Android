@@ -12,6 +12,7 @@ public class PeerMountainConfig {
     private String idCheckLicense = null;
     private long userValidTime = 1000*60*5;//5min
     private int fontSize = 14;
+    private String apiScanKey;
 
     public PeerMountainConfig() {
     }
@@ -63,6 +64,15 @@ public class PeerMountainConfig {
      */
     public PeerMountainConfig setFontSize(int fontSize) {
         this.fontSize = fontSize;
+        return this;
+    }
+
+    public String getApiScanKey() {
+        return apiScanKey;
+    }
+
+    public PeerMountainConfig setApiScanKey(String apiScanKey) {
+        this.apiScanKey = apiScanKey;
         return this;
     }
 }

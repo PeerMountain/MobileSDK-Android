@@ -43,12 +43,12 @@ public class LiveSelfieViewModel extends BaseViewModel {
         fileNames.add("file5");
         fileNames.add("passportFront");
         fileNames.add("passportBack");
-        NetworkManager.sendFiles(// TODO: 8/9/2018 update key
+        NetworkManager.sendFiles(
                 new VerifySelfieCallback(getNetworkCallback(), MainCallback.TYPE_DIALOG,
                         false,
                         PmBaseConfig.getApplicationContext().getString(R.string.pm_msg_verify),
                         filesToSend),
-                "https://api.kyc3.com/rest/api/_faceRecognizer?api_key=bStfjjadHizdxqabdcStOg==",
+                "https://api.kyc3.com/rest/api/_faceRecognizer?api_key=" + PmBaseConfig.getApiScanKey(),
                 filesToSend,
                 fileNames);
     }
