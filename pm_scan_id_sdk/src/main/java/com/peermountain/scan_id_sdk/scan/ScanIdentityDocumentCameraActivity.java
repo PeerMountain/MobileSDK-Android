@@ -106,7 +106,8 @@ public class ScanIdentityDocumentCameraActivity extends BaseActivity<IdentityDoc
     }
 
     private boolean checkDocumentIsValid(@Nullable DocumentID documentID) {
-        if (documentID == null || documentID.getErrorMessage() != null) {//!documentID.checkIsValid()
+        if (documentID == null || documentID.getErrorMessage() != null
+                || (!withPreview && !documentID.checkIsValid())) {
             String msg;
             if (documentID != null) {
                 documentID.deleteDocumentImages();

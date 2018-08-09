@@ -7,5 +7,7 @@
 
     <string name="dialog_ask_for_selfie_err_msg">Hi %s ,\nwe did not get any selfie images.\nDo you want to try again ?</string>
 
+    <string name="dialog_ask_for_id_err_msg">Hi there was a problem extracting your data, please try again</string>
+
     <string name="dialog_selfie_received_msg">Hi %s ,\nwe have your live selfie verified! \nHere we return all %d frames to be linked with your profile.</string>
 </resources>

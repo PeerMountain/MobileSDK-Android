@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
@@ -17,12 +18,24 @@
         android:text="This is client's app screen, which executes SDK options"
         android:textSize="@dimen/pm_text_big"/>
 
-    <Button android:id="@+id/btnStartIdScan"
+    <Button
+        android:id="@+id/btnStartIdScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start ID scan"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/pm_margin_xbig"
         android:padding="@dimen/pm_margin_normal"
+        android:text="Start ID scan"
         />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/btnStartIdScanNoDataPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/pm_margin_xbig"
+        android:padding="@dimen/pm_margin_normal"
+        android:text="Start ID scan without data preview"
+        />
+
+</LinearLayout>

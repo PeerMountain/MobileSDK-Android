@@ -30,6 +30,13 @@ public class MainActivity extends AppCompatActivity {
                 ScanIdentityDocumentCameraActivity.show(MainActivity.this, REQUEST_CODE_ID, true);
             }
         });
+
+        findViewById(R.id.btnStartIdScanNoDataPreview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ScanIdentityDocumentCameraActivity.show(MainActivity.this, REQUEST_CODE_ID, false);
+            }
+        });
     }
 
     private DocumentID documentID;
@@ -52,8 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void getDocument(Intent data) {
         documentID = data.getParcelableExtra(ScanIdentityDocumentCameraActivity.ID);
-        if (documentID != null) {
+        if (documentID != null && documentID.checkIsValid()) {
             showStartLiveSelfieDialog(R.string.dialog_ask_for_selfie_msg);
+        }else{
+            PmDialogUtils.showSimpleDialog(this,
+                    getString(R.string.dialog_ask_for_id_err_msg),
+                    null);
         }
     }
 
