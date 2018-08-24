@@ -76,6 +76,7 @@ public class SecureHelper {
     private static final String RSA_TRANSFORMATION_ENCRYPT = "RSA/ECB/PKCS1Padding";//for python/server
     private static final int KEY_SIZE = 4096;
     public static final int base64Flag = Base64.NO_WRAP;
+    public static final String SIGN_ALGORITHM = "SHA256withRSA";
 
     private static KeyStore createAndroidKeyStore() {
         KeyStore keyStore = null;
@@ -200,7 +201,7 @@ public class SecureHelper {
     }
 
     public static byte[] sign(byte[] data, PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature s = Signature.getInstance("SHA256withRSA");
+        Signature s = Signature.getInstance(SIGN_ALGORITHM);
         s.initSign(key);
         s.update(data);
         return s.sign();//signature
@@ -214,7 +215,7 @@ public class SecureHelper {
 
     public static boolean verify(byte[] data, byte[] signature, PublicKey publicKey) {
         try {
-            Signature s = Signature.getInstance("SHA256withRSA");
+            Signature s = Signature.getInstance(SIGN_ALGORITHM);
             s.initVerify(publicKey);
             s.update(data);
             return s.verify(signature);

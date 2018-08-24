@@ -52,7 +52,7 @@ class SecurePreferences {
     }
 
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
-    private static final String KEY_TRANSFORMATION = "AES/ECB/PKCS5Padding";
+    private static final String KEY_TRANSFORMATION = "AES/CBC/PKCS5Padding";//"AES/ECB/PKCS5Padding";
     private static final String SECRET_KEY_HASH_TRANSFORMATION = "SHA-256";
     private static final String CHARSET = "UTF-8";
 

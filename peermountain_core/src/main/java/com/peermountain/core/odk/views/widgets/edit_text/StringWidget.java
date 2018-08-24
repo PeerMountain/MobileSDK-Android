@@ -48,7 +48,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 @SuppressLint("ViewConstructor")
 public class StringWidget extends QuestionWidget {
     private static final String ROWS = "rows";
-    public static final String PREFIX = "@$#";
+    public static final String FLAG_PRIVATE_PREFIX = "@$#";
     private EditText answerText;
     boolean readOnly = false;
 
@@ -139,9 +139,9 @@ public class StringWidget extends QuestionWidget {
             answerText = viewParent.findViewById(R.id.pmEtInput);
             vLine = viewParent.findViewById(R.id.pmEtInputLine);
             String helpText = getFormEntryPrompt().getHelpText();
-            if(!android.text.TextUtils.isEmpty(helpText) && helpText.startsWith(PREFIX)){
+            if(!validateHelpText(helpText)){
                 try {
-                    int lines = Integer.parseInt(helpText.substring(PREFIX.length()));
+                    int lines = Integer.parseInt(helpText.substring(FLAG_PRIVATE_PREFIX.length()));
                     if(lines>1){
                         answerText.setMaxLines(lines);
                     }else{

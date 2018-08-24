@@ -337,7 +337,7 @@ public abstract class QuestionWidget
     }
 
     public boolean validateHelpText(String helpText) {
-        return helpText != null && !helpText.equals("") && !helpText.startsWith(StringWidget.PREFIX);
+        return helpText != null && !helpText.equals("") && !helpText.startsWith(StringWidget.FLAG_PRIVATE_PREFIX);
     }
 
     /**
