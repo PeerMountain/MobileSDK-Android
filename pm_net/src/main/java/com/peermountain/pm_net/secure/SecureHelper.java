@@ -12,12 +12,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERInteger;
-import org.bouncycastle.crypto.digests.RIPEMD160Digest;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
+import org.spongycastle.asn1.ASN1Sequence;
+import org.spongycastle.asn1.DERInteger;
+import org.spongycastle.crypto.digests.RIPEMD160Digest;
+import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.util.io.pem.PemObject;
+import org.spongycastle.util.io.pem.PemWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,6 +43,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
@@ -67,6 +69,12 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
+//import org.bouncycastle.asn1.ASN1Sequence;
+//import org.bouncycastle.asn1.DERInteger;
+//import org.bouncycastle.crypto.digests.RIPEMD160Digest;
+//import org.bouncycastle.util.io.pem.PemObject;
+//import org.bouncycastle.util.io.pem.PemWriter;
+
 /**
  * Created by Galeen on 3/16/2018.
  */
@@ -77,6 +85,10 @@ public class SecureHelper {
     private static final int KEY_SIZE = 4096;
     public static final int base64Flag = Base64.NO_WRAP;
     public static final String SIGN_ALGORITHM = "SHA256withRSA";
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     private static KeyStore createAndroidKeyStore() {
         KeyStore keyStore = null;
@@ -93,6 +105,23 @@ public class SecureHelper {
             e.printStackTrace();
         }
         return keyStore;
+    }
+
+    public static KeyPair createAndroidKeyStoreAsymmetricKeyBouncy() {
+        KeyPairGenerator generator = null;
+        try {
+            generator = KeyPairGenerator.getInstance("RSA", "SC");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        generator.initialize(KEY_SIZE);
+        // Generates Key with given spec and saves it to the KeyStore
+        return generator.generateKeyPair();
     }
 
     public static KeyPair createAndroidKeyStoreAsymmetricKey(Context context, String alias) {
