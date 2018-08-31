@@ -78,7 +78,7 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
             fingerprintManager =
                     (FingerprintManager) activity.getSystemService(Activity.FINGERPRINT_SERVICE);
 
-            if (!fingerprintManager.isHardwareDetected()) {
+            if (fingerprintManager!=null && !fingerprintManager.isHardwareDetected()) {
                 return ERR_NO_HARDWARE;
             }
 

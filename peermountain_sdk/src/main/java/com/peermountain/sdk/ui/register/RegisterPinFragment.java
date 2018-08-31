@@ -366,6 +366,7 @@ public class RegisterPinFragment extends ToolbarFragment {
             }
         } else {
             PeerMountainManager.saveFingerprint(true);
+            // TODO: 8/31/2018 ask for pin to be saved anyway
             onPinConfirmed();
             DialogUtils.showInfoSnackbar(getActivity(), R.string.pm_message_fast_login_enabled);
         }
