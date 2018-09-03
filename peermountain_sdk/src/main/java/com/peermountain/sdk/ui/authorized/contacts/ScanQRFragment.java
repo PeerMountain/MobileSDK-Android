@@ -3,25 +3,37 @@ package com.peermountain.sdk.ui.authorized.contacts;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
 import com.peermountain.core.model.guarded.Contact;
 import com.peermountain.core.persistence.PeerMountainManager;
 import com.peermountain.core.utils.LogUtils;
 import com.peermountain.sdk.R;
 import com.peermountain.sdk.ui.base.HomeToolbarFragment;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerView.ResultHandler{
+public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerView.ResultHandler {
     public static final int REQUEST_CODE_CAMERA = 988588;
     private String mParam2;
 
@@ -57,6 +69,7 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
     }
 
     FrameLayout mainView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,14 +87,15 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(mScannerView!=null) {
+        if (mScannerView != null) {
             startCamera();
-        }else{
+        } else {
             showQrReader();
         }
     }
@@ -113,7 +127,7 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
 
     @Override
     public void handleResult(Result rawResult) {
-        if(mListener!=null){
+        if (mListener != null) {
             mListener.onContactScannedFromQR(PeerMountainManager.handleQrScanResult(rawResult));
         }
 //        final String qrcode =rawResult.getText().toString();
@@ -152,7 +166,7 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
     private void showQrReader() {
         if (hasPermission(getContext(), Manifest.permission.CAMERA)) {
             addScannerView();
-        }else {
+        } else {
             this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
         }
     }
@@ -164,30 +178,65 @@ public class ScanQRFragment extends HomeToolbarFragment implements ZXingScannerV
     }
 
     private void stopCamera() {
-        try{
-            if(mScannerView!=null && hasPermission(getContext(), Manifest.permission.CAMERA)){
+        try {
+            if (mScannerView != null && hasPermission(getContext(), Manifest.permission.CAMERA)) {
                 mScannerView.stopCamera();           // Stop camera on pause
             }
-        }
-        catch (Exception e ){
-            LogUtils.e("scannerStop",e.getMessage());
+        } catch (Exception e) {
+            LogUtils.e("scannerStop", e.getMessage());
         }
     }
 
     private void startCamera() {
-        try{
-            if(mScannerView!=null && hasPermission(getContext(), Manifest.permission.CAMERA)){
+        try {
+            if (mScannerView != null && hasPermission(getContext(), Manifest.permission.CAMERA)) {
                 mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
                 mScannerView.startCamera();
             }
-        }
-        catch (Exception e ){
-            LogUtils.e("scannerStart",e.getMessage());
+        } catch (Exception e) {
+            LogUtils.e("scannerStart", e.getMessage());
         }
     }
 
     private static boolean hasPermission(Context context, String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    protected Result scanQrFile(Uri uri) {
+        try {
+            InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            if (bitmap == null) {
+                Log.e("from qr bitmap", "uri is not a bitmap," + uri.toString());
+            }
+            return getQrBitmapResult(bitmap);
+        } catch (FileNotFoundException e) {
+            Log.e("from qr bitmap", "can not open file" + uri.toString(), e);
+            return null;
+        }
+    }
+
+    @Nullable
+    private Result getQrBitmapResult(Bitmap bitmap) {
+        if (bitmap == null) {
+            Log.e("from qr bitmap", "null bitmap");
+            return null;
+        }
+        int width = bitmap.getWidth(), height = bitmap.getHeight();
+        int[] pixels = new int[width * height];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        bitmap.recycle();
+        bitmap = null;
+        RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+        BinaryBitmap bBitmap = new BinaryBitmap(new HybridBinarizer(source));
+        MultiFormatReader reader = new MultiFormatReader();
+        try {
+            Result result = reader.decode(bBitmap);
+            return result;
+        } catch (NotFoundException e) {
+            Log.e("from qr bitmap", "decode exception", e);
+            return null;
+        }
     }
 
     public interface OnFragmentInteractionListener {
